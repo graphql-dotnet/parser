@@ -161,7 +161,7 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 
 query queryName($foo: ComplexType, $site: Site = MOBILE) {
-  whoever123is: node(id: [123, 456]) {
+  whoever123is: node(id: [123, 456], nullField: null) {
     id ,
     ... on User @defer {
       field2 {
