@@ -125,7 +125,10 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Parse_KitchenSink_DoesNotThrowError()
         {
-            new Parser(new Lexer()).Parse(new Source(LoadKitchenSink()));
+            var document = new Parser(new Lexer()).Parse(new Source(LoadKitchenSink()));
+            if (document != null)
+            {
+            }
         }
 
         [Fact]
@@ -219,14 +222,16 @@ fragment frag on Friend {
 # LICENSE file in the root directory of this source tree. An additional grant
 # of patent rights can be found in the PATENTS file in the same directory.
 
-    schema {
+schema {
   query: QueryType
   mutation: MutationType
 }
 
 type Foo implements Bar
 {
-    one: Type
+  # comment 1
+  one: Type
+  # comment 2
   two(argument: InputType!): Type
   three(argument: InputType, other: String): Int
   four(argument: String = ""string""): String
@@ -236,6 +241,7 @@ type Foo implements Bar
 
 type AnnotatedObject @onObject(arg: ""value"")
 {
+    # a comment
     annotatedField(arg: Type = ""default"" @onArg): Type @onField
 }
 

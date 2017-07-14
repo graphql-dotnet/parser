@@ -2,6 +2,7 @@
 {
     public enum ASTNodeKind
     {
+        Comment,
         Name,
         Document,
         OperationDefinition,
