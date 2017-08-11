@@ -20,3 +20,4 @@ _ReSharper.*
 *.DS_Store
 node_modules
 BenchmarkDotNet.Artifacts
+artifacts/

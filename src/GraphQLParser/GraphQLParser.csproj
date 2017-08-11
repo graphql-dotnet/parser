@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Library containing lexer and parser for GraphQL syntax</Description>
-    <AssemblyTitle>Parser for GraphQL</AssemblyTitle>
+    <AssemblyTitle>GraphQL Parser for .NET</AssemblyTitle>
     <VersionPrefix>3.0.0</VersionPrefix>
     <Authors>Marek Magdziak</Authors>
     <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
