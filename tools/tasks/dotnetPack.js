@@ -7,7 +7,7 @@ function gitBranch() {
   const git = `git rev-parse --abbrev-ref HEAD`;
   exec(git, (code, stdout, stderr)=> {
     if(code === 0) {
-      deferred.resolve(stdout);
+      deferred.resolve(stdout.trim());
     } else {
       deferred.reject(stderr);
     }
@@ -24,7 +24,7 @@ export default function compile() {
 
     let versionSuffixSetting = settings.versionSuffix || ''
 
-    if(branch != 'master' && versionSuffixSetting.length == 0) {
+    if(branch !== 'master' && versionSuffixSetting.length == 0) {
       versionSuffixSetting = '-build'
     }
 
@@ -42,7 +42,7 @@ export default function compile() {
         deferred.reject(stderr);
       }
     });
-  });
+  }).catch(e => deferred.reject(e));
 
   return deferred.promise;
 }
