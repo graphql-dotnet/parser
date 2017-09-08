@@ -21,7 +21,7 @@ export default function version() {
     console.log(`Writing CommonAssemblyInfo.cs\n`);
 
     const options = {
-      description: 'Parser for GraphQL',
+      description: 'GraphQL Parser for .NET',
       productName: 'GraphQL Parser',
       copyright: 'Copyright 2016-2017 Marek Magdziak et al.  All rights reserved.',
       trademark: commit,
