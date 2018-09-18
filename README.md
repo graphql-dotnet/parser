@@ -74,3 +74,26 @@ Json representation of the resulting AST would be:
 	}
 }
 ```
+
+## Printer
+Accepts AST and converts it back into GraphQL query.
+### Usage
+```csharp
+var lexer = new Lexer();
+var parser = new Parser(lexer);
+var printer = new Printer();
+
+var ast = parser.Parse(new Source(@"
+{
+  field
+}"));
+
+/*
+  Should result into:
+
+  {
+    field
+  }
+*/
+var query = printer.Print(ast);
+```

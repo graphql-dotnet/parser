@@ -152,7 +152,7 @@ namespace GraphQLParser.Tests
             return GetSingleOperationDefinition(document).SelectionSet.Selections.Single();
         }
 
-        private static string LoadKitchenSink()
+        public static string LoadKitchenSink()
         {
             return @"﻿# Copyright (c) 2015, Facebook, Inc.
 # All rights reserved.
