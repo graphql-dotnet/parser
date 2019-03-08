@@ -9,8 +9,8 @@
     public class ParserContext : IDisposable
     {
         private Token currentToken;
-        private ILexer lexer;
-        private ISource source;
+        private readonly ILexer lexer;
+        private readonly ISource source;
 
         public ParserContext(ISource source, ILexer lexer)
         {
@@ -626,7 +626,6 @@
             throw new GraphQLSyntaxErrorException(
                     $"Unexpected {this.currentToken}", this.source, this.currentToken.Start);
         }
-
 
         private GraphQLValue ParseObject(bool isConstant)
         {

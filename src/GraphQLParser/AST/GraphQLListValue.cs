@@ -4,7 +4,7 @@
 
     public class GraphQLListValue : GraphQLValue
     {
-        private ASTNodeKind kindField;
+        private readonly ASTNodeKind kindField;
 
         public GraphQLListValue(ASTNodeKind kind)
         {

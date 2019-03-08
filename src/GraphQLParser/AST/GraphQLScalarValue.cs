@@ -2,7 +2,7 @@
 {
     public class GraphQLScalarValue : GraphQLValue
     {
-        private ASTNodeKind kindField;
+        private readonly ASTNodeKind kindField;
 
         public GraphQLScalarValue(ASTNodeKind kind)
         {
