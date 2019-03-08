@@ -5,11 +5,19 @@ namespace GraphQLParser.Tests
     using System.Linq;
     using GraphQLParser;
     using GraphQLParser.AST;
+    using GraphQLParser.Exceptions;
     using Xunit;
 
 
     public class ParserTests
     {
+        [Fact]
+        public void Parse_Unicode_Char_At_EOF_Should_Throw()
+        {
+            var parser = new Parser(new Lexer());
+            Assert.Throws<GraphQLSyntaxErrorException>(() => parser.Parse(new Source("{\"\\ue }")));
+        }
+
         [Fact]
         public void Parse_FieldInput_HasCorrectEndLocationAttribute()
         {
