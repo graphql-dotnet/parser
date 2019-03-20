@@ -1,10 +1,13 @@
 ﻿namespace GraphQLParser.Tests
 {
     using GraphQLParser;
+    using System;
     using Xunit;
 
     public class LexerTests
     {
+        private static readonly string NL = Environment.NewLine;
+
         [Fact]
         public void Lex_ATPunctuation_HasCorrectEnd()
         {
@@ -1062,12 +1065,12 @@
 
         private static Token GetSingleNameTokenLexerSurroundedWithWhitespaces()
         {
-            return new Lexer().Lex(new Source("\r\n        foo\r\n\r\n    "));
+            return new Lexer().Lex(new Source($"{NL}        foo{NL}{NL}    "));
         }
 
         private static Token GetSingleNameTokenLexerWithComments()
         {
-            return new Lexer().Lex(new Source("\r\n#comment\r\nfoo#comment"));
+            return new Lexer().Lex(new Source($"{NL}#comment{NL}foo#comment"));
         }
 
         private static Token GetSingleNameWithBOMHeaderTokenLexer()

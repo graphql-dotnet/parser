@@ -1,12 +1,15 @@
 ﻿namespace GraphQLParser.Tests
 {
-    using System.Linq;
     using GraphQLParser;
     using GraphQLParser.AST;
+    using System;
+    using System.Linq;
     using Xunit;
 
     public class ParserTests
     {
+        private static readonly string NL = Environment.NewLine;
+
         [Fact]
         public void Parse_FieldInput_HasCorrectEndLocationAttribute()
         {
@@ -127,7 +130,7 @@
             {
                 var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
                 var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
-                Assert.Equal(" multiline comments\r\n with very importand description #\r\n # and symbol # and ##", fieldDef.Comment.Text);
+                Assert.Equal($" multiline comments{NL} with very importand description #{NL} # and symbol # and ##", fieldDef.Comment.Text);
             }
         }
 
