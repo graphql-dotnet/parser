@@ -1,12 +1,9 @@
-﻿
-
-namespace GraphQLParser.Tests
+﻿namespace GraphQLParser.Tests
 {
     using System.Linq;
     using GraphQLParser;
     using GraphQLParser.AST;
     using Xunit;
-
 
     public class ParserTests
     {
@@ -128,6 +125,11 @@ namespace GraphQLParser.Tests
             var document = new Parser(new Lexer()).Parse(new Source(LoadKitchenSink()));
             if (document != null)
             {
+                var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
+                var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
+                Assert.Equal(@" multiline comments
+ with very importand description #
+ # and symbol # and ##", fieldDef.Comment.Text);
             }
         }
 
@@ -241,9 +243,9 @@ type Foo implements Bar
   one: Type
   # comment 2
   two(argument: InputType!): Type
-  # multiline
-  # multiline bla bla bla # bla #
-  # end of multiline #
+  # multiline comments
+  # with very importand description #
+  # # and symbol # and ##
   three(argument: InputType, other: String): Int
   four(argument: String = ""string""): String
   five(argument: [String] = [""string"", ""string""]): String
