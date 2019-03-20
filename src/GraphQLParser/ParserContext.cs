@@ -689,7 +689,6 @@
                     $"Unexpected {this.currentToken}", this.source, this.currentToken.Start);
         }
 
-
         private GraphQLValue ParseObject(bool isConstant)
         {
             var comment = GetComment();

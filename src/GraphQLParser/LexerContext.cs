@@ -6,7 +6,7 @@
     public class LexerContext : IDisposable
     {
         private int currentIndex;
-        private ISource source;
+        private readonly ISource source;
 
         public LexerContext(ISource source, int index)
         {

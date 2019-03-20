@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Text;
 
     public class GraphQLSyntaxErrorException : Exception
     {
@@ -49,13 +50,48 @@
 
         private static string ReplaceWithUnicodeRepresentation(string str)
         {
+            if (!HasReplacementCharacter(str))
+                return str;
+
+            var buffer = new StringBuilder(str.Length);
+
             foreach (var code in str)
             {
-                if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
-                    str = str.Replace(string.Empty + code, "\\u" + ((int)code).ToString("D4"));
+                if (IsReplacementCharacter(code))
+                {
+                    buffer.Append(GetUnicodeRepresentation(code));
+                }
+                else
+                {
+                    buffer.Append(code);
+                }
             }
 
-            return str;
+            return buffer.ToString();
+        }
+
+        private static bool HasReplacementCharacter(string str)
+        {
+            foreach (var code in str)
+            {
+                if (IsReplacementCharacter(code))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsReplacementCharacter(char code) => code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D;
+
+        private static string GetUnicodeRepresentation(char code)
+        {
+            switch (code)
+            {
+                case '\0':
+                    return "\\u0000";
+                default:
+                    return "\\u" + ((int)code).ToString("D4");
+            }
         }
     }
 }
