@@ -127,9 +127,7 @@
             {
                 var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
                 var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
-                Assert.Equal(@" multiline comments
- with very importand description #
- # and symbol # and ##", fieldDef.Comment.Text);
+                Assert.Equal(" multiline comments\r\n with very importand description #\r\n # and symbol # and ##", fieldDef.Comment.Text);
             }
         }
 
