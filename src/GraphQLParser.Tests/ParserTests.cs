@@ -1,15 +1,15 @@
-﻿
-
-namespace GraphQLParser.Tests
+﻿namespace GraphQLParser.Tests
 {
-    using System.Linq;
     using GraphQLParser;
     using GraphQLParser.AST;
+    using System;
+    using System.Linq;
     using Xunit;
-
 
     public class ParserTests
     {
+        private static readonly string NL = Environment.NewLine;
+
         [Fact]
         public void Parse_FieldInput_HasCorrectEndLocationAttribute()
         {
@@ -125,7 +125,13 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Parse_KitchenSink_DoesNotThrowError()
         {
-            new Parser(new Lexer()).Parse(new Source(LoadKitchenSink()));
+            var document = new Parser(new Lexer()).Parse(new Source(LoadKitchenSink()));
+            if (document != null)
+            {
+                var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
+                var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
+                Assert.Equal($" multiline comments{NL} with very importand description #{NL} # and symbol # and ##", fieldDef.Comment.Text);
+            }
         }
 
         [Fact]
@@ -227,15 +233,20 @@ fragment frag on Friend {
 # LICENSE file in the root directory of this source tree. An additional grant
 # of patent rights can be found in the PATENTS file in the same directory.
 
-    schema {
+schema {
   query: QueryType
   mutation: MutationType
 }
 
 type Foo implements Bar
 {
-    one: Type
+  # comment 1
+  one: Type
+  # comment 2
   two(argument: InputType!): Type
+  # multiline comments
+  # with very importand description #
+  # # and symbol # and ##
   three(argument: InputType, other: String): Int
   four(argument: String = ""string""): String
   five(argument: [String] = [""string"", ""string""]): String
@@ -244,6 +255,7 @@ type Foo implements Bar
 
 type AnnotatedObject @onObject(arg: ""value"")
 {
+    # a comment
     annotatedField(arg: Type = ""default"" @onArg): Type @onField
 }
 

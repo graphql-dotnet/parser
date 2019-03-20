@@ -4,13 +4,7 @@
     {
         public object DefaultValue { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.VariableDefinition;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.VariableDefinition;
 
         public GraphQLType Type { get; set; }
         public GraphQLVariable Variable { get; set; }

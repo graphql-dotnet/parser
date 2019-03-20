@@ -4,12 +4,6 @@
     {
         public GraphQLObjectTypeDefinition Definition { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.TypeExtensionDefinition;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.TypeExtensionDefinition;
     }
 }

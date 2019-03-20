@@ -1,10 +1,13 @@
 ﻿namespace GraphQLParser.Tests
 {
     using GraphQLParser;
+    using System;
     using Xunit;
 
     public class LexerTests
     {
+        private static readonly string NL = Environment.NewLine;
+
         [Fact]
         public void Lex_ATPunctuation_HasCorrectEnd()
         {
@@ -297,28 +300,28 @@
         public void Lex_NameTokenWithComments_HasCorrectEnd()
         {
             var token = GetSingleNameTokenLexerWithComments();
-            Assert.Equal(13, token.End);
+            Assert.Equal(10, token.End);
         }
 
         [Fact]
         public void Lex_NameTokenWithComments_HasCorrectStart()
         {
             var token = GetSingleNameTokenLexerWithComments();
-            Assert.Equal(10, token.Start);
+            Assert.Equal(1, token.Start);
         }
 
         [Fact]
         public void Lex_NameTokenWithComments_HasCorrectValue()
         {
             var token = GetSingleNameTokenLexerWithComments();
-            Assert.Equal("foo", token.Value);
+            Assert.Equal("comment", token.Value);
         }
 
         [Fact]
         public void Lex_NameTokenWithComments_HasNameKind()
         {
             var token = GetSingleNameTokenLexerWithComments();
-            Assert.Equal(TokenKind.NAME, token.Kind);
+            Assert.Equal(TokenKind.COMMENT, token.Kind);
         }
 
         [Fact]
@@ -1062,12 +1065,12 @@
 
         private static Token GetSingleNameTokenLexerSurroundedWithWhitespaces()
         {
-            return new Lexer().Lex(new Source("\r\n        foo\r\n\r\n    "));
+            return new Lexer().Lex(new Source($"{NL}        foo{NL}{NL}    "));
         }
 
         private static Token GetSingleNameTokenLexerWithComments()
         {
-            return new Lexer().Lex(new Source("\r\n#comment\r\nfoo#comment"));
+            return new Lexer().Lex(new Source($"{NL}#comment{NL}foo#comment"));
         }
 
         private static Token GetSingleNameWithBOMHeaderTokenLexer()

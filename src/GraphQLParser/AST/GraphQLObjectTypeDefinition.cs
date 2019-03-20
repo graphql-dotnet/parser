@@ -10,13 +10,7 @@ namespace GraphQLParser.AST
 
         public IEnumerable<GraphQLNamedType> Interfaces { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.ObjectTypeDefinition;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeDefinition;
 
         public GraphQLName Name { get; set; }
     }
