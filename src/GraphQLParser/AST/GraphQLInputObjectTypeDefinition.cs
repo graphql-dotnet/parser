@@ -8,13 +8,7 @@
 
         public IEnumerable<GraphQLInputValueDefinition> Fields { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.InputObjectTypeDefinition;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeDefinition;
 
         public GraphQLName Name { get; set; }
     }

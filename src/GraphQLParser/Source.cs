@@ -8,8 +8,8 @@
 
         public Source(string body, string name)
         {
-            this.Name = name;
-            this.Body = MonetizeLineBreaks(body);
+            Name = name;
+            Body = MonetizeLineBreaks(body);
         }
 
         public string Body { get; set; }

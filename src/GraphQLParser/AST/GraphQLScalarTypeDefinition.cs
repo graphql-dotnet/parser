@@ -6,13 +6,7 @@ namespace GraphQLParser.AST
     {
         public IEnumerable<GraphQLDirective> Directives { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.ScalarTypeDefinition;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.ScalarTypeDefinition;
 
         public GraphQLName Name { get; set; }
     }

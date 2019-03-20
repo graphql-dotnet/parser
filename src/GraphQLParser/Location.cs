@@ -7,8 +7,8 @@
         public Location(ISource source, int position)
         {
             var lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
-            this.Line = 1;
-            this.Column = position + 1;
+            Line = 1;
+            Column = position + 1;
 
             var matches = lineRegex.Matches(source.Body);
             foreach (Match match in matches)
@@ -16,8 +16,8 @@
                 if (match.Index >= position)
                     break;
 
-                this.Line++;
-                this.Column = position + 1 - (match.Index + matches[0].Length);
+                Line++;
+                Column = position + 1 - (match.Index + matches[0].Length);
             }
         }
 

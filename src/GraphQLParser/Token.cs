@@ -60,9 +60,9 @@
 
         public override string ToString()
         {
-            return this.Value != null
-                ? $"{GetTokenKindDescription(this.Kind)} \"{this.Value}\""
-                : GetTokenKindDescription(this.Kind);
+            return Value != null
+                ? $"{GetTokenKindDescription(Kind)} \"{Value}\""
+                : GetTokenKindDescription(Kind);
         }
     }
 }

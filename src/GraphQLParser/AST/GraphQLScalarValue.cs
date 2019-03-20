@@ -2,29 +2,23 @@
 {
     public class GraphQLScalarValue : GraphQLValue
     {
-        private ASTNodeKind kindField;
+        private readonly ASTNodeKind kindField;
 
         public GraphQLScalarValue(ASTNodeKind kind)
         {
-            this.kindField = kind;
+            kindField = kind;
         }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return this.kindField;
-            }
-        }
+        public override ASTNodeKind Kind => kindField;
 
         public string Value { get; set; }
 
         public override string ToString()
         {
-            if (this.Kind == ASTNodeKind.StringValue)
-                return $"\"{this.Value}\"";
+            if (Kind == ASTNodeKind.StringValue)
+                return $"\"{Value}\"";
 
-            return this.Value.ToString();
+            return Value.ToString();
         }
     }
 }

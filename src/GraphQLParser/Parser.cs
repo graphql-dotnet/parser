@@ -4,7 +4,7 @@
 
     public class Parser
     {
-        private ILexer lexer;
+        private readonly ILexer lexer;
 
         public Parser(ILexer lexer)
         {
