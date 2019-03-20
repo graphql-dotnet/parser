@@ -2,6 +2,7 @@
 {
     using GraphQLParser;
     using GraphQLParser.AST;
+    using GraphQLParser.Exceptions;
     using System;
     using System.Linq;
     using Xunit;
@@ -9,6 +10,13 @@
     public class ParserTests
     {
         private static readonly string NL = Environment.NewLine;
+
+        [Fact]
+        public void Parse_Unicode_Char_At_EOF_Should_Throw()
+        {
+            var parser = new Parser(new Lexer());
+            Assert.Throws<GraphQLSyntaxErrorException>(() => parser.Parse(new Source("{\"\\ue }")));
+        }
 
         [Fact]
         public void Parse_FieldInput_HasCorrectEndLocationAttribute()

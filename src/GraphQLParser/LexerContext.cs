@@ -315,8 +315,14 @@
 
         private char GetUnicodeChar()
         {
-            var expression = this.source.Body.Substring(this.currentIndex, 5);
+            if (this.currentIndex + 5 > this.source.Body.Length)
+            {
+                var truncatedExpression = this.source.Body.Substring(this.currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", this.source, this.currentIndex);
+            }
 
+            var expression = this.source.Body.Substring(this.currentIndex, 5);
+            
             if (!this.OnlyHexInString(expression.Substring(1)))
             {
                 throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{expression}.", this.source, this.currentIndex);
