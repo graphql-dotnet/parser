@@ -6,12 +6,6 @@ namespace GraphQLParser.AST
     {
         public IEnumerable<GraphQLObjectField> Fields { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.ObjectValue;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
     }
 }

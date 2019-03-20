@@ -19,7 +19,8 @@
         NAME = 15,
         INT = 16,
         FLOAT = 17,
-        STRING = 18
+        STRING = 18,
+        COMMENT = 19
     }
 
     public class Token
@@ -51,6 +52,7 @@
                 case TokenKind.INT: return "Int";
                 case TokenKind.FLOAT: return "Float";
                 case TokenKind.STRING: return "String";
+                case TokenKind.COMMENT: return "#";
             }
 
             return string.Empty;
@@ -58,9 +60,9 @@
 
         public override string ToString()
         {
-            return this.Value != null
-                ? $"{GetTokenKindDescription(this.Kind)} \"{this.Value}\""
-                : GetTokenKindDescription(this.Kind);
+            return Value != null
+                ? $"{GetTokenKindDescription(Kind)} \"{Value}\""
+                : GetTokenKindDescription(Kind);
         }
     }
 }

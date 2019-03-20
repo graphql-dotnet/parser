@@ -6,12 +6,6 @@ namespace GraphQLParser.AST
     {
         public IEnumerable<ASTNode> Definitions { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.Document;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.Document;
     }
 }

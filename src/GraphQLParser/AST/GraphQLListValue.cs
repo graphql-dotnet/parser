@@ -8,24 +8,15 @@
 
         public GraphQLListValue(ASTNodeKind kind)
         {
-            this.kindField = kind;
+            kindField = kind;
         }
 
         public string AstValue { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return this.kindField;
-            }
-        }
+        public override ASTNodeKind Kind => kindField;
 
         public IEnumerable<GraphQLValue> Values { get; set; }
 
-        public override string ToString()
-        {
-            return this.AstValue;
-        }
+        public override string ToString() => AstValue;
     }
 }
