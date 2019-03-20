@@ -2,19 +2,10 @@
 {
     public class GraphQLNonNullType : GraphQLType
     {
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.NonNullType;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.NonNullType;
 
         public GraphQLType Type { get; set; }
 
-        public override string ToString()
-        {
-            return this.Type.ToString() + "!";
-        }
+        public override string ToString() => Type.ToString() + "!";
     }
 }

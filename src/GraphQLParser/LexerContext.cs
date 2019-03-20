@@ -36,6 +36,9 @@
             if (token != null)
                 return token;
 
+            if (code == '#')
+                return this.ReadComment();
+
             if (char.IsLetter(code) || code == '_')
                 return this.ReadName();
 
@@ -52,6 +55,30 @@
         public bool OnlyHexInString(string test)
         {
             return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
+        }
+
+        public Token ReadComment()
+        {
+            var start = this.currentIndex;
+
+            var chunkStart = ++this.currentIndex;
+            var code = this.GetCode();
+            var value = string.Empty;
+
+            while (this.IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D)
+            {
+                code = this.ProcessCharacter(ref value, ref chunkStart);
+            }
+
+            value += this.source.Body.Substring(chunkStart, this.currentIndex - chunkStart);
+
+            return new Token()
+            {
+                Kind = TokenKind.COMMENT,
+                Value = value,
+                Start = start,
+                End = this.currentIndex + 1
+            };
         }
 
         public Token ReadNumber()
@@ -274,9 +301,9 @@
                         ++position;
                         break;
 
-                    case '#':
-                        position = this.WaitForEndOfComment(body, position, code);
-                        break;
+//                    case '#':
+//                        position = this.WaitForEndOfComment(body, position, code);
+//                        break;
 
                     default:
                         return position;

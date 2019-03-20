@@ -2,19 +2,10 @@
 {
     public class GraphQLNamedType : GraphQLType
     {
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.NamedType;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.NamedType;
 
         public GraphQLName Name { get; set; }
 
-        public override string ToString()
-        {
-            return this.Name.Value;
-        }
+        public override string ToString() => Name.Value;
     }
 }

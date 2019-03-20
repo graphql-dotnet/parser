@@ -2,10 +2,7 @@
 {
     public class Lexer : ILexer
     {
-        public Token Lex(ISource source)
-        {
-            return this.Lex(source, 0);
-        }
+        public Token Lex(ISource source) => Lex(source, 0);
 
         public Token Lex(ISource source, int start)
         {

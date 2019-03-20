@@ -8,13 +8,7 @@ namespace GraphQLParser.AST
 
         public IEnumerable<GraphQLDirective> Directives { get; set; }
 
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.FieldDefinition;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.FieldDefinition;
 
         public GraphQLName Name { get; set; }
         public GraphQLType Type { get; set; }

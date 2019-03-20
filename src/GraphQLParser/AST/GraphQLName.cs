@@ -2,13 +2,7 @@
 {
     public class GraphQLName : ASTNode
     {
-        public override ASTNodeKind Kind
-        {
-            get
-            {
-                return ASTNodeKind.Name;
-            }
-        }
+        public override ASTNodeKind Kind => ASTNodeKind.Name;
 
         public string Value { get; set; }
     }
