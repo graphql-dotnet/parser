@@ -9,6 +9,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLParser.Tests", "Grap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLParser.Benchmarks", "GraphQLParser.Benchmarks\GraphQLParser.Benchmarks.csproj", "{78D53BE8-375C-4E27-8EDA-F79B65B52C93}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C164141-79F1-43D7-A771-5FED6B2150B6}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\appveyor.yml = ..\appveyor.yml
+		Directory.Build.props = Directory.Build.props
+		..\global.json = ..\global.json
+		..\.vscode\launch.json = ..\.vscode\launch.json
+		..\LICENSE.md = ..\LICENSE.md
+		NuGet.config = NuGet.config
+		..\package.json = ..\package.json
+		..\README.md = ..\README.md
+		..\.vscode\tasks.json = ..\.vscode\tasks.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97776AD7-C80A-46FD-AEAB-EB06DF0BC00D}
 	EndGlobalSection
 EndGlobal
