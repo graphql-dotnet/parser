@@ -147,7 +147,7 @@
         {
             var document = new Parser(new Lexer()).Parse(new Source(null));
 
-            Assert.Equal(0, document.Definitions.Count());
+            Assert.Empty(document.Definitions);
         }
 
         [Fact]
