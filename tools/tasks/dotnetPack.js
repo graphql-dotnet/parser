@@ -31,7 +31,7 @@ export default function compile() {
   }
 
   if(versionSuffixSetting.length > 0) {
-    versionSuffix = `${versionSuffixSetting}-${settings.revision}`;
+    versionSuffix = `-${versionSuffixSetting}-${settings.revision}`;
   }
 
   const cmd = `dotnet pack src/GraphQLParser -o ${settings.artifacts} -c ${settings.target} /p:PackageVersion=${settings.version}${versionSuffix}`
