@@ -10,25 +10,25 @@
     
     public class GraphQLAstVisitorTests
     {
-        private Parser parser;
-        private List<GraphQLName> visitedAliases;
-        private List<GraphQLArgument> visitedArguments;
-        private List<ASTNode> visitedDefinitions;
-        private List<GraphQLDirective> visitedDirectives;
-        private List<GraphQLScalarValue> visitedEnumValues;
-        private List<GraphQLFieldSelection> visitedFieldSelections;
-        private List<GraphQLScalarValue> visitedFloatValues;
-        private List<GraphQLFragmentDefinition> visitedFragmentDefinitions;
-        private List<GraphQLFragmentSpread> visitedFragmentSpreads;
-        private List<GraphQLNamedType> visitedFragmentTypeConditions;
-        private List<GraphQLInlineFragment> visitedInlineFragments;
-        private List<GraphQLScalarValue> visitedIntValues;
-        private List<GraphQLName> visitedNames;
-        private List<GraphQLSelectionSet> visitedSelectionSets;
-        private List<GraphQLScalarValue> visitedStringValues;
-        private List<GraphQLVariable> visitedVariables;
-        private GraphQLAstVisitor visitor;
-        public List<GraphQLScalarValue> visitedBooleanValues { get; private set; }
+        private readonly Parser parser;
+        private readonly List<GraphQLName> visitedAliases;
+        private readonly List<GraphQLArgument> visitedArguments;
+        private readonly List<ASTNode> visitedDefinitions;
+        private readonly List<GraphQLDirective> visitedDirectives;
+        private readonly List<GraphQLScalarValue> visitedEnumValues;
+        private readonly List<GraphQLFieldSelection> visitedFieldSelections;
+        private readonly List<GraphQLScalarValue> visitedFloatValues;
+        private readonly List<GraphQLFragmentDefinition> visitedFragmentDefinitions;
+        private readonly List<GraphQLFragmentSpread> visitedFragmentSpreads;
+        private readonly List<GraphQLNamedType> visitedFragmentTypeConditions;
+        private readonly List<GraphQLInlineFragment> visitedInlineFragments;
+        private readonly List<GraphQLScalarValue> visitedIntValues;
+        private readonly List<GraphQLName> visitedNames;
+        private readonly List<GraphQLSelectionSet> visitedSelectionSets;
+        private readonly List<GraphQLScalarValue> visitedStringValues;
+        private readonly List<GraphQLVariable> visitedVariables;
+        private readonly GraphQLAstVisitor visitor;
+        private readonly List<GraphQLScalarValue> visitedBooleanValues;
 
         public GraphQLAstVisitorTests()
         {
