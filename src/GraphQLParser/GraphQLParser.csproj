@@ -2,33 +2,13 @@
 
   <PropertyGroup>
     <Description>Library containing lexer and parser for GraphQL syntax</Description>
+    <Product>GraphQL Parser</Product>
     <AssemblyTitle>GraphQL Parser for .NET</AssemblyTitle>
-    <VersionPrefix>3.1.0</VersionPrefix>
-    <Authors>Marek Magdziak</Authors>
-    <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>GraphQL-Parser</AssemblyName>
-    <PackageId>GraphQL-Parser</PackageId>
     <PackageTags>GraphQL;json;api</PackageTags>
     <PackageProjectUrl>https://github.com/graphql-dotnet/parser</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/graphql-dotnet/parser/blob/master/LICENSE.md</PackageLicenseUrl>
-    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.1' ">1.6.0</NetStandardImplicitPackageVersion>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
+  
 </Project>

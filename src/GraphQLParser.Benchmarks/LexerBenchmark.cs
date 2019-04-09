@@ -4,9 +4,7 @@ using System.IO;
 
 namespace GraphQLParser.Benchmarks
 {
-#if NET46
     [MemoryDiagnoser]
-#endif
     public class LexerBenchmark
     {
         private static readonly string Binary = File.ReadAllText("BinaryTest.graphql");

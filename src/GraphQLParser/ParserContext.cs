@@ -321,11 +321,13 @@
                 Advance();
             } while (currentToken.Kind == TokenKind.COMMENT);
 
-            var comment = new GraphQLComment(string.Join(Environment.NewLine, text));
-            comment.Location = new GraphQLLocation
+            var comment = new GraphQLComment(string.Join(Environment.NewLine, text))
             {
-                Start = start,
-                End = end
+                Location = new GraphQLLocation
+                {
+                    Start = start,
+                    End = end
+                }
             };
 
             _comments.Push(comment);
