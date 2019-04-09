@@ -2,7 +2,6 @@
 {
     public enum ASTNodeKind
     {
-        Comment,
         Name,
         Document,
         OperationDefinition,
@@ -39,7 +38,8 @@
         EnumValueDefinition,
         InputObjectTypeDefinition,
         TypeExtensionDefinition,
-        DirectiveDefinition
+        DirectiveDefinition,
+        Comment,
     }
 
     public enum OperationType
