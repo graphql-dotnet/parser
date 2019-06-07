@@ -1,12 +1,10 @@
-﻿
-namespace GraphQLParser.Tests.Validation
+﻿namespace GraphQLParser.Tests.Validation
 {
     using Exceptions;
     using GraphQLParser;
     using System;
     using Xunit;
 
-    
     public class ParserValidationTests
     {
         [Fact]

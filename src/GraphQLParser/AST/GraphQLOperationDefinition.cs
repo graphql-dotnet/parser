@@ -9,8 +9,11 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
 
         public GraphQLName Name { get; set; }
+
         public OperationType Operation { get; set; }
+
         public GraphQLSelectionSet SelectionSet { get; set; }
+
         public IEnumerable<GraphQLVariableDefinition> VariableDefinitions { get; set; }
     }
 }

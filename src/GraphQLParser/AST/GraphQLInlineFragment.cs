@@ -9,6 +9,7 @@
         public override ASTNodeKind Kind => ASTNodeKind.InlineFragment;
 
         public GraphQLSelectionSet SelectionSet { get; set; }
+
         public GraphQLNamedType TypeCondition { get; set; }
     }
 }

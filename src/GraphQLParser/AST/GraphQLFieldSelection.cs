@@ -13,6 +13,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.Field;
 
         public GraphQLName Name { get; set; }
+
         public GraphQLSelectionSet SelectionSet { get; set; }
     }
 }

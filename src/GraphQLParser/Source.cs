@@ -13,6 +13,7 @@
         }
 
         public string Body { get; set; }
+
         public string Name { get; set; }
 
         private static string MonetizeLineBreaks(string input)

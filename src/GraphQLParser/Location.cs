@@ -22,6 +22,7 @@
         }
 
         public int Column { get; private set; }
+
         public int Line { get; private set; }
     }
 }

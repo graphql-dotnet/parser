@@ -9,6 +9,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.UnionTypeDefinition;
 
         public GraphQLName Name { get; set; }
+
         public IEnumerable<GraphQLNamedType> Types { get; set; }
     }
 }

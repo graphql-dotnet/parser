@@ -18,7 +18,7 @@
             if (Kind == ASTNodeKind.StringValue)
                 return $"\"{Value}\"";
 
-            return Value.ToString();
+            return Value;
         }
     }
 }

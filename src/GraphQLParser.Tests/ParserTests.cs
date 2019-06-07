@@ -158,7 +158,7 @@
 
         private static GraphQLOperationDefinition GetSingleOperationDefinition(GraphQLDocument document)
         {
-            return ((GraphQLOperationDefinition)document.Definitions.Single());
+            return (GraphQLOperationDefinition)document.Definitions.Single();
         }
 
         private static ASTNode GetSingleSelection(GraphQLDocument document)

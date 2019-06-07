@@ -7,6 +7,7 @@
         public override ASTNodeKind Kind => ASTNodeKind.VariableDefinition;
 
         public GraphQLType Type { get; set; }
+
         public GraphQLVariable Variable { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.EnumTypeDefinition;
 
         public GraphQLName Name { get; set; }
+
         public IEnumerable<GraphQLEnumValueDefinition> Values { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.FieldDefinition;
 
         public GraphQLName Name { get; set; }
+
         public GraphQLType Type { get; set; }
     }
 }
