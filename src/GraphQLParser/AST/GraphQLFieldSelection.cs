@@ -2,7 +2,7 @@
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLFieldSelection : ASTNode, IHasDirectivesNode
+    public class GraphQLFieldSelection : ASTNode, IHasDirectivesNode, INamedNode
     {
         public GraphQLName Alias { get; set; }
 

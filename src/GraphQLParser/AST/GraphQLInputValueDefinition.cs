@@ -2,7 +2,7 @@
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
+    public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode, INamedNode
     {
         public GraphQLValue DefaultValue { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace GraphQLParser.AST
 {
-    public class GraphQLVariable : GraphQLValue
+    public class GraphQLVariable : GraphQLValue, INamedNode
     {
         public override ASTNodeKind Kind => ASTNodeKind.Variable;
 
