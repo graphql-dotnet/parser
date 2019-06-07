@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class GraphQLInputObjectTypeDefinition : GraphQLTypeDefinition
+    public class GraphQLInputObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
         public IEnumerable<GraphQLDirective> Directives { get; set; }
 
