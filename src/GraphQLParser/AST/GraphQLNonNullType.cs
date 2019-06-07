@@ -6,6 +6,6 @@
 
         public GraphQLType Type { get; set; }
 
-        public override string ToString() => Type.ToString() + "!";
+        public override string ToString() => Type + "!";
     }
 }

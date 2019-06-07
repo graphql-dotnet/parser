@@ -67,7 +67,8 @@ fragment frag on Friend {
             var source = new Source(KitchenSink);
             var resetPosition = 0;
             Token token;
-            while((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF) {
+            while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
+            {
                 resetPosition = token.End;
             }
         }

@@ -10,7 +10,7 @@
 
         public LexerContext(ISource source, int index)
         {
-            this.currentIndex = index;
+            currentIndex = index;
             this.source = source;
         }
 
@@ -20,36 +20,36 @@
 
         public Token GetToken()
         {
-            if (this.source.Body == null)
-                return this.CreateEOFToken();
+            if (source.Body == null)
+                return CreateEOFToken();
 
-            this.currentIndex = this.GetPositionAfterWhitespace(this.source.Body, this.currentIndex);
+            currentIndex = GetPositionAfterWhitespace(source.Body, currentIndex);
 
-            if (this.currentIndex >= this.source.Body.Length)
-                return this.CreateEOFToken();
+            if (currentIndex >= source.Body.Length)
+                return CreateEOFToken();
 
-            var code = this.source.Body[this.currentIndex];
+            var code = source.Body[currentIndex];
 
-            this.ValidateCharacterCode(code);
+            ValidateCharacterCode(code);
 
-            var token = this.CheckForPunctuationTokens(code);
+            var token = CheckForPunctuationTokens(code);
             if (token != null)
                 return token;
 
             if (code == '#')
-                return this.ReadComment();
+                return ReadComment();
 
             if (char.IsLetter(code) || code == '_')
-                return this.ReadName();
+                return ReadName();
 
             if (char.IsNumber(code) || code == '-')
-                return this.ReadNumber();
+                return ReadNumber();
 
             if (code == '"')
-                return this.ReadString();
+                return ReadString();
 
             throw new GraphQLSyntaxErrorException(
-                $"Unexpected character {this.ResolveCharName(code, IfUnicodeGetString())}", this.source, this.currentIndex);
+                $"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", source, currentIndex);
         }
 
         public bool OnlyHexInString(string test)
@@ -59,80 +59,80 @@
 
         public Token ReadComment()
         {
-            var start = this.currentIndex;
+            var start = currentIndex;
 
-            var chunkStart = ++this.currentIndex;
-            var code = this.GetCode();
+            var chunkStart = ++currentIndex;
+            var code = GetCode();
             var value = string.Empty;
 
-            while (this.IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D)
+            while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D)
             {
-                code = this.ProcessCharacter(ref value, ref chunkStart);
+                code = ProcessCharacter(ref value, ref chunkStart);
             }
 
-            value += this.source.Body.Substring(chunkStart, this.currentIndex - chunkStart);
+            value += source.Body.Substring(chunkStart, currentIndex - chunkStart);
 
-            return new Token()
+            return new Token
             {
                 Kind = TokenKind.COMMENT,
                 Value = value,
                 Start = start,
-                End = this.currentIndex + 1
+                End = currentIndex + 1
             };
         }
 
         public Token ReadNumber()
         {
             var isFloat = false;
-            var start = this.currentIndex;
-            var code = this.source.Body[start];
+            var start = currentIndex;
+            var code = source.Body[start];
 
             if (code == '-')
-                code = this.NextCode();
+                code = NextCode();
 
             var nextCode = code == '0'
-                ? this.NextCode()
-                : this.ReadDigitsFromOwnSource(code);
+                ? NextCode()
+                : ReadDigitsFromOwnSource(code);
 
             if (nextCode >= 48 && nextCode <= 57)
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid number, unexpected digit after {code}: \"{nextCode}\"", this.source, this.currentIndex);
+                    $"Invalid number, unexpected digit after {code}: \"{nextCode}\"", source, currentIndex);
             }
 
             code = nextCode;
             if (code == '.')
             {
                 isFloat = true;
-                code = this.ReadDigitsFromOwnSource(this.NextCode());
+                code = ReadDigitsFromOwnSource(NextCode());
             }
 
             if (code == 'E' || code == 'e')
             {
                 isFloat = true;
-                code = this.NextCode();
+                code = NextCode();
                 if (code == '+' || code == '-')
                 {
-                    code = this.NextCode();
+                    code = NextCode();
                 }
 
-                code = this.ReadDigitsFromOwnSource(code);
+                code = ReadDigitsFromOwnSource(code);
             }
 
-            return isFloat ? this.CreateFloatToken(start) : this.CreateIntToken(start);
+            return isFloat ? CreateFloatToken(start) : CreateIntToken(start);
         }
 
         public Token ReadString()
         {
-            var start = this.currentIndex;
-            var value = this.ProcessStringChunks();
+            var start = currentIndex;
+            var value = ProcessStringChunks();
 
-            return new Token()
+            return new Token
             {
                 Kind = TokenKind.STRING,
                 Value = value,
                 Start = start,
-                End = this.currentIndex + 1
+                End = currentIndex + 1
             };
         }
 
@@ -143,7 +143,7 @@
 
         private string AppendCharactersFromLastChunk(string value, int chunkStart)
         {
-            return value + this.source.Body.Substring(chunkStart, this.currentIndex - chunkStart - 1);
+            return value + source.Body.Substring(chunkStart, currentIndex - chunkStart - 1);
         }
 
         private string AppendToValueByCode(string value, char code)
@@ -158,25 +158,22 @@
                 case 'n': value += '\n'; break;
                 case 'r': value += '\r'; break;
                 case 't': value += '\t'; break;
-                case 'u': value += this.GetUnicodeChar(); break;
+                case 'u': value += GetUnicodeChar(); break;
                 default:
-                    throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{code}.", this.source, this.currentIndex);
+                    throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{code}.", source, currentIndex);
             }
 
             return value;
         }
 
-        private int CharToHex(char code)
-        {
-            return Convert.ToByte(code.ToString(), 16);
-        }
+        private int CharToHex(char code) => Convert.ToByte(code.ToString(), 16);
 
         private void CheckForInvalidCharacters(char code)
         {
             if (code < 0x0020 && code != 0x0009)
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid character within String: \\u{((int)code).ToString("D4")}.", this.source, this.currentIndex);
+                    $"Invalid character within String: \\u{((int)code).ToString("D4")}.", source, currentIndex);
             }
         }
 
@@ -184,31 +181,31 @@
         {
             switch (code)
             {
-                case '!': return this.CreatePunctuationToken(TokenKind.BANG, 1);
-                case '$': return this.CreatePunctuationToken(TokenKind.DOLLAR, 1);
-                case '(': return this.CreatePunctuationToken(TokenKind.PAREN_L, 1);
-                case ')': return this.CreatePunctuationToken(TokenKind.PAREN_R, 1);
-                case '.': return this.CheckForSpreadOperator();
-                case ':': return this.CreatePunctuationToken(TokenKind.COLON, 1);
-                case '=': return this.CreatePunctuationToken(TokenKind.EQUALS, 1);
-                case '@': return this.CreatePunctuationToken(TokenKind.AT, 1);
-                case '[': return this.CreatePunctuationToken(TokenKind.BRACKET_L, 1);
-                case ']': return this.CreatePunctuationToken(TokenKind.BRACKET_R, 1);
-                case '{': return this.CreatePunctuationToken(TokenKind.BRACE_L, 1);
-                case '|': return this.CreatePunctuationToken(TokenKind.PIPE, 1);
-                case '}': return this.CreatePunctuationToken(TokenKind.BRACE_R, 1);
+                case '!': return CreatePunctuationToken(TokenKind.BANG, 1);
+                case '$': return CreatePunctuationToken(TokenKind.DOLLAR, 1);
+                case '(': return CreatePunctuationToken(TokenKind.PAREN_L, 1);
+                case ')': return CreatePunctuationToken(TokenKind.PAREN_R, 1);
+                case '.': return CheckForSpreadOperator();
+                case ':': return CreatePunctuationToken(TokenKind.COLON, 1);
+                case '=': return CreatePunctuationToken(TokenKind.EQUALS, 1);
+                case '@': return CreatePunctuationToken(TokenKind.AT, 1);
+                case '[': return CreatePunctuationToken(TokenKind.BRACKET_L, 1);
+                case ']': return CreatePunctuationToken(TokenKind.BRACKET_R, 1);
+                case '{': return CreatePunctuationToken(TokenKind.BRACE_L, 1);
+                case '|': return CreatePunctuationToken(TokenKind.PIPE, 1);
+                case '}': return CreatePunctuationToken(TokenKind.BRACE_R, 1);
                 default: return null;
             }
         }
 
         private Token CheckForSpreadOperator()
         {
-            var char1 = this.source.Body.Length > this.currentIndex + 1 ? this.source.Body[this.currentIndex + 1] : 0;
-            var char2 = this.source.Body.Length > this.currentIndex + 2 ? this.source.Body[this.currentIndex + 2] : 0;
+            var char1 = source.Body.Length > currentIndex + 1 ? source.Body[currentIndex + 1] : 0;
+            var char2 = source.Body.Length > currentIndex + 2 ? source.Body[currentIndex + 2] : 0;
 
             if (char1 == '.' && char2 == '.')
             {
-                return this.CreatePunctuationToken(TokenKind.SPREAD, 3);
+                return CreatePunctuationToken(TokenKind.SPREAD, 3);
             }
 
             return null;
@@ -218,59 +215,59 @@
         {
             if (code != '"')
             {
-                throw new GraphQLSyntaxErrorException("Unterminated string.", this.source, this.currentIndex);
+                throw new GraphQLSyntaxErrorException("Unterminated string.", source, currentIndex);
             }
         }
 
         private Token CreateEOFToken()
         {
-            return new Token()
+            return new Token
             {
-                Start = this.currentIndex,
-                End = this.currentIndex,
+                Start = currentIndex,
+                End = currentIndex,
                 Kind = TokenKind.EOF
             };
         }
 
         private Token CreateFloatToken(int start)
         {
-            return new Token()
+            return new Token
             {
                 Kind = TokenKind.FLOAT,
                 Start = start,
-                End = this.currentIndex,
-                Value = this.source.Body.Substring(start, this.currentIndex - start)
+                End = currentIndex,
+                Value = source.Body.Substring(start, currentIndex - start)
             };
         }
 
         private Token CreateIntToken(int start)
         {
-            return new Token()
+            return new Token
             {
                 Kind = TokenKind.INT,
                 Start = start,
-                End = this.currentIndex,
-                Value = this.source.Body.Substring(start, this.currentIndex - start)
+                End = currentIndex,
+                Value = source.Body.Substring(start, currentIndex - start)
             };
         }
 
         private Token CreateNameToken(int start)
         {
-            return new Token()
+            return new Token
             {
                 Start = start,
-                End = this.currentIndex,
+                End = currentIndex,
                 Kind = TokenKind.NAME,
-                Value = this.source.Body.Substring(start, this.currentIndex - start)
+                Value = source.Body.Substring(start, currentIndex - start)
             };
         }
 
         private Token CreatePunctuationToken(TokenKind kind, int offset)
         {
-            return new Token()
+            return new Token
             {
-                Start = this.currentIndex,
-                End = this.currentIndex + offset,
+                Start = currentIndex,
+                End = currentIndex + offset,
                 Kind = kind,
                 Value = null
             };
@@ -278,8 +275,8 @@
 
         private char GetCode()
         {
-            return this.IsNotAtTheEndOfQuery()
-                ? this.source.Body[this.currentIndex]
+            return IsNotAtTheEndOfQuery()
+                ? source.Body[currentIndex]
                 : (char)0;
         }
 
@@ -302,7 +299,7 @@
                         break;
 
 //                    case '#':
-//                        position = this.WaitForEndOfComment(body, position, code);
+//                        position = WaitForEndOfComment(body, position, code);
 //                        break;
 
                     default:
@@ -315,79 +312,74 @@
 
         private char GetUnicodeChar()
         {
-            if (this.currentIndex + 5 > this.source.Body.Length)
+            if (currentIndex + 5 > source.Body.Length)
             {
-                var truncatedExpression = this.source.Body.Substring(this.currentIndex);
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", this.source, this.currentIndex);
+                var truncatedExpression = source.Body.Substring(currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", source, currentIndex);
             }
 
-            var expression = this.source.Body.Substring(this.currentIndex, 5);
-            
-            if (!this.OnlyHexInString(expression.Substring(1)))
+            var expression = source.Body.Substring(currentIndex, 5);
+
+            if (!OnlyHexInString(expression.Substring(1)))
             {
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{expression}.", this.source, this.currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{expression}.", source, currentIndex);
             }
 
-            var character = (char)(
-                this.CharToHex(this.NextCode()) << 12 |
-                this.CharToHex(this.NextCode()) << 8 |
-                this.CharToHex(this.NextCode()) << 4 |
-                this.CharToHex(this.NextCode()));
-
-            return character;
+            return (char)(
+                CharToHex(NextCode()) << 12 |
+                CharToHex(NextCode()) << 8 |
+                CharToHex(NextCode()) << 4 |
+                CharToHex(NextCode()));
         }
 
         private string IfUnicodeGetString()
         {
-            return this.source.Body.Length > this.currentIndex + 5 &&
-                this.OnlyHexInString(this.source.Body.Substring(this.currentIndex + 2, 4))
-                ? this.source.Body.Substring(this.currentIndex, 6)
+            return source.Body.Length > currentIndex + 5 &&
+                OnlyHexInString(source.Body.Substring(currentIndex + 2, 4))
+                ? source.Body.Substring(currentIndex, 6)
                 : null;
         }
 
-        private bool IsNotAtTheEndOfQuery()
-        {
-            return this.currentIndex < this.source.Body.Length;
-        }
+        private bool IsNotAtTheEndOfQuery() => currentIndex < source.Body.Length;
 
         private char NextCode()
         {
-            this.currentIndex++;
-            return this.IsNotAtTheEndOfQuery()
-                ? this.source.Body[this.currentIndex]
+            currentIndex++;
+            return IsNotAtTheEndOfQuery()
+                ? source.Body[currentIndex]
                 : (char)0;
         }
 
         private char ProcessCharacter(ref string value, ref int chunkStart)
         {
-            var code = this.GetCode();
-            ++this.currentIndex;
+            var code = GetCode();
+            ++currentIndex;
 
             if (code == '\\')
             {
-                value = this.AppendToValueByCode(this.AppendCharactersFromLastChunk(value, chunkStart), this.GetCode());
+                value = AppendToValueByCode(AppendCharactersFromLastChunk(value, chunkStart), GetCode());
 
-                ++this.currentIndex;
-                chunkStart = this.currentIndex;
+                ++currentIndex;
+                chunkStart = currentIndex;
             }
 
-            return this.GetCode();
+            return GetCode();
         }
 
         private string ProcessStringChunks()
         {
-            var chunkStart = ++this.currentIndex;
-            var code = this.GetCode();
+            var chunkStart = ++currentIndex;
+            var code = GetCode();
             var value = string.Empty;
 
-            while (this.IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D && code != '"')
+            while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D && code != '"')
             {
-                this.CheckForInvalidCharacters(code);
-                code = this.ProcessCharacter(ref value, ref chunkStart);
+                CheckForInvalidCharacters(code);
+                code = ProcessCharacter(ref value, ref chunkStart);
             }
 
-            this.CheckStringTermination(code);
-            value += this.source.Body.Substring(chunkStart, this.currentIndex - chunkStart);
+            CheckStringTermination(code);
+            value += source.Body.Substring(chunkStart, currentIndex - chunkStart);
             return value;
         }
 
@@ -400,7 +392,7 @@
             if (!char.IsNumber(code))
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid number, expected digit but got: {this.ResolveCharName(code)}", this.source, this.currentIndex);
+                    $"Invalid number, expected digit but got: {ResolveCharName(code)}", source, currentIndex);
             }
 
             do
@@ -416,24 +408,23 @@
 
         private char ReadDigitsFromOwnSource(char code)
         {
-            this.currentIndex = this.ReadDigits(this.source, this.currentIndex, code);
-            code = this.GetCode();
-            return code;
+            currentIndex = ReadDigits(source, currentIndex, code);
+            return GetCode();
         }
 
         private Token ReadName()
         {
-            var start = this.currentIndex;
+            var start = currentIndex;
             var code = (char)0;
 
             do
             {
-                this.currentIndex++;
-                code = this.GetCode();
+                currentIndex++;
+                code = GetCode();
             }
-            while (this.IsNotAtTheEndOfQuery() && IsValidNameCharacter(code));
+            while (IsNotAtTheEndOfQuery() && IsValidNameCharacter(code));
 
-            return this.CreateNameToken(start);
+            return CreateNameToken(start);
         }
 
         private string ResolveCharName(char code, string unicodeString = null)
@@ -452,7 +443,7 @@
             if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid character \"\\u{code.ToString("D4")}\".", this.source, this.currentIndex);
+                    $"Invalid character \"\\u{code.ToString("D4")}\".", source, currentIndex);
             }
         }
 

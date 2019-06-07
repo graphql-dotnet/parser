@@ -1,6 +1,6 @@
 ﻿namespace GraphQLParser.AST
 {
-    public class GraphQLFragmentDefinition : GraphQLInlineFragment
+    public class GraphQLFragmentDefinition : GraphQLInlineFragment, INamedNode
     {
         public override ASTNodeKind Kind => ASTNodeKind.FragmentDefinition;
 

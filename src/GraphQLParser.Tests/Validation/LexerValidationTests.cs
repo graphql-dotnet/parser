@@ -5,7 +5,6 @@
     using System;
     using Xunit;
 
-    
     public class LexerValidationTests
     {
         [Fact]
@@ -184,7 +183,6 @@
        ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
         }
-
 
         [Fact]
         public void Lex_NonNumericCharacterInNumberExponent_ThrowsExceptionWithCorrectMessage()

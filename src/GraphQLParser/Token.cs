@@ -26,8 +26,11 @@
     public class Token
     {
         public int End { get; set; }
+
         public TokenKind Kind { get; set; }
+
         public int Start { get; set; }
+
         public string Value { get; set; }
 
         public static string GetTokenKindDescription(TokenKind kind)
@@ -53,9 +56,8 @@
                 case TokenKind.FLOAT: return "Float";
                 case TokenKind.STRING: return "String";
                 case TokenKind.COMMENT: return "#";
+                default: return string.Empty;
             }
-
-            return string.Empty;
         }
 
         public override string ToString()
