@@ -23,6 +23,8 @@
 
         public void Dispose()
         {
+            if (comments.Count > 0)
+                throw new ApplicationException($"ParserContext has {comments.Count} not applied comments.");
         }
 
         public GraphQLComment GetComment() => comments.Count > 0 ? comments.Pop() : null;
@@ -417,9 +419,12 @@
 
         private GraphQLEnumValueDefinition ParseEnumValueDefinition()
         {
+            var comment = GetComment();
             var start = currentToken.Start;
+
             return new GraphQLEnumValueDefinition
             {
+                Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
                 Location = GetLocation(start)

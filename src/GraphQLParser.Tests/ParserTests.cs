@@ -3,6 +3,7 @@
     using GraphQLParser;
     using GraphQLParser.AST;
     using GraphQLParser.Exceptions;
+    using Shouldly;
     using System;
     using System.Linq;
     using Xunit;
@@ -10,6 +11,46 @@
     public class ParserTests
     {
         private static readonly string NL = Environment.NewLine;
+
+        [Fact]
+        public void Comments_On_Enums_Should_Read_Correctly()
+        {
+            var parser = new Parser(new Lexer());
+            var document = parser.Parse(new Source(@"
+# different animals
+enum Animal {
+    #a cat
+    Cat
+    #a dog
+    Dog
+    Octopus
+    #bird is the word
+    Bird
+}
+
+input Parameter {
+    #any value
+    Value: String
+}
+
+scalar JSON
+"));
+            document.Definitions.Count().ShouldBe(3);
+            var d1 = document.Definitions.First() as GraphQLEnumTypeDefinition;
+            d1.Name.Value.ShouldBe("Animal");
+            d1.Comment.Text.ShouldBe(" different animals");
+            d1.Values.First().Name.Value.ShouldBe("Cat");
+            d1.Values.First().Comment.ShouldNotBeNull();
+            d1.Values.First().Comment.Text.ShouldBe("a cat");
+            d1.Values.Skip(2).First().Name.Value.ShouldBe("Octopus");
+            d1.Values.Skip(2).First().Comment.ShouldBeNull();
+
+            var d2 = document.Definitions.Skip(1).First() as GraphQLInputObjectTypeDefinition;
+            d2.Name.Value.ShouldBe("Parameter");
+            d2.Comment.ShouldBeNull();
+            d2.Fields.Count().ShouldBe(1);
+            d2.Fields.First().Comment.Text.ShouldBe("any value");
+        }
 
         [Fact]
         public void Parse_Unicode_Char_At_EOF_Should_Throw()
