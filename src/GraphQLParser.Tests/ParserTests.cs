@@ -372,5 +372,43 @@ directive @include(if: Boolean!)
         {
             return new Parser(new Lexer()).Parse(new Source("mutation Foo { field }"));
         }
+
+        [Theory]
+        [InlineData("directive @dir on FIELD_DEFINITION | ENUM_VALUE")]
+        [InlineData("directive @dir on | FIELD_DEFINITION | ENUM_VALUE")]
+        [InlineData(@"directive @dir on
+FIELD_DEFINITION | ENUM_VALUE")]
+        [InlineData(@"directive @dir on
+FIELD_DEFINITION
+| ENUM_VALUE")]
+        [InlineData(@"directive @dir on
+| FIELD_DEFINITION
+| ENUM_VALUE")]
+        [InlineData(@"directive @dir on   
+|  FIELD_DEFINITION
+|          ENUM_VALUE")]
+        public void Should_Parse_Directives(string text)
+        {
+            new Parser(new Lexer()).Parse(new Source(text)).ShouldNotBeNull();
+        }
+
+        [Theory]
+        [InlineData("union Animal = Cat | Dog")]
+        [InlineData("union Animal = | Cat | Dog")]
+        [InlineData(@"union Animal =
+Cat | Dog")]
+        [InlineData(@"union Animal =
+Cat
+| Dog")]
+        [InlineData(@"union Animal =
+| Cat
+| Dog")]
+        [InlineData(@"union Animal =   
+|  Cat
+|       Dog")]
+        public void Should_Parse_Unions(string text)
+        {
+            new Parser(new Lexer()).Parse(new Source(text)).ShouldNotBeNull();
+        }
     }
 }
