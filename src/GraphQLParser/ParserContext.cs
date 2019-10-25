@@ -365,6 +365,10 @@
         {
             var locations = new List<GraphQLName>();
 
+            // Directive locations may be defined with an optional leading | character
+            // to aid formatting when representing a longer list of possible locations
+            Skip(TokenKind.PIPE);
+
             do
             {
                 locations.Add(ParseName());
@@ -903,6 +907,10 @@
         private IEnumerable<GraphQLNamedType> ParseUnionMembers()
         {
             var members = new List<GraphQLNamedType>();
+
+            // Union members may be defined with an optional leading | character
+            // to aid formatting when representing a longer list of possible types
+            Skip(TokenKind.PIPE);
 
             do
             {
