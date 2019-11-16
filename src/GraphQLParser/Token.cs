@@ -33,32 +33,29 @@
 
         public string Value { get; set; }
 
-        public static string GetTokenKindDescription(TokenKind kind)
+        public static string GetTokenKindDescription(TokenKind kind) => kind switch
         {
-            switch (kind)
-            {
-                case TokenKind.EOF: return "EOF";
-                case TokenKind.BANG: return "!";
-                case TokenKind.DOLLAR: return "$";
-                case TokenKind.PAREN_L: return "(";
-                case TokenKind.PAREN_R: return ")";
-                case TokenKind.SPREAD: return "...";
-                case TokenKind.COLON: return ":";
-                case TokenKind.EQUALS: return "=";
-                case TokenKind.AT: return "@";
-                case TokenKind.BRACKET_L: return "[";
-                case TokenKind.BRACKET_R: return "]";
-                case TokenKind.BRACE_L: return "{";
-                case TokenKind.PIPE: return "|";
-                case TokenKind.BRACE_R: return "}";
-                case TokenKind.NAME: return "Name";
-                case TokenKind.INT: return "Int";
-                case TokenKind.FLOAT: return "Float";
-                case TokenKind.STRING: return "String";
-                case TokenKind.COMMENT: return "#";
-                default: return string.Empty;
-            }
-        }
+            TokenKind.EOF => "EOF",
+            TokenKind.BANG => "!",
+            TokenKind.DOLLAR => "$",
+            TokenKind.PAREN_L => "(",
+            TokenKind.PAREN_R => ")",
+            TokenKind.SPREAD => "...",
+            TokenKind.COLON => ":",
+            TokenKind.EQUALS => "=",
+            TokenKind.AT => "@",
+            TokenKind.BRACKET_L => "[",
+            TokenKind.BRACKET_R => "]",
+            TokenKind.BRACE_L => "{",
+            TokenKind.PIPE => "|",
+            TokenKind.BRACE_R => "}",
+            TokenKind.NAME => "Name",
+            TokenKind.INT => "Int",
+            TokenKind.FLOAT => "Float",
+            TokenKind.STRING => "String",
+            TokenKind.COMMENT => "#",
+            _ => string.Empty
+        };
 
         public override string ToString()
         {

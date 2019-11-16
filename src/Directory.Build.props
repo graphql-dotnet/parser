@@ -6,6 +6,7 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <Copyright>Copyright 2016-2019 Marek Magdziak et al. All rights reserved.</Copyright>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
 </Project>

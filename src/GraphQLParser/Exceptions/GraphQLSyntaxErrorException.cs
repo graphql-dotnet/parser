@@ -83,15 +83,10 @@
 
         private static bool IsReplacementCharacter(char code) => code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D;
 
-        private static string GetUnicodeRepresentation(char code)
+        private static string GetUnicodeRepresentation(char code) => code switch
         {
-            switch (code)
-            {
-                case '\0':
-                    return "\\u0000";
-                default:
-                    return "\\u" + ((int)code).ToString("D4");
-            }
-        }
+            '\0' => "\\u0000",
+            _ => "\\u" + ((int)code).ToString("D4")
+        };
     }
 }
