@@ -411,7 +411,7 @@
         private Token ReadName()
         {
             var start = currentIndex;
-            var code = (char)0;
+            char code;
 
             do
             {
