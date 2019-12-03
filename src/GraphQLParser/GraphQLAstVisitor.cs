@@ -135,33 +135,30 @@
             return typeCondition;
         }
 
-        public virtual ASTNode BeginVisitNode(ASTNode node)
+        public virtual ASTNode BeginVisitNode(ASTNode node) => node.Kind switch
         {
-            switch (node.Kind)
-            {
-                case ASTNodeKind.OperationDefinition: return BeginVisitOperationDefinition((GraphQLOperationDefinition)node);
-                case ASTNodeKind.SelectionSet: return BeginVisitSelectionSet((GraphQLSelectionSet)node);
-                case ASTNodeKind.Field: return BeginVisitNonIntrospectionFieldSelection((GraphQLFieldSelection)node);
-                case ASTNodeKind.Name: return BeginVisitName((GraphQLName)node);
-                case ASTNodeKind.Argument: return BeginVisitArgument((GraphQLArgument)node);
-                case ASTNodeKind.FragmentSpread: return BeginVisitFragmentSpread((GraphQLFragmentSpread)node);
-                case ASTNodeKind.FragmentDefinition: return BeginVisitFragmentDefinition((GraphQLFragmentDefinition)node);
-                case ASTNodeKind.InlineFragment: return BeginVisitInlineFragment((GraphQLInlineFragment)node);
-                case ASTNodeKind.NamedType: return BeginVisitNamedType((GraphQLNamedType)node);
-                case ASTNodeKind.Directive: return BeginVisitDirective((GraphQLDirective)node);
-                case ASTNodeKind.Variable: return BeginVisitVariable((GraphQLVariable)node);
-                case ASTNodeKind.IntValue: return BeginVisitIntValue((GraphQLScalarValue)node);
-                case ASTNodeKind.FloatValue: return BeginVisitFloatValue((GraphQLScalarValue)node);
-                case ASTNodeKind.StringValue: return BeginVisitStringValue((GraphQLScalarValue)node);
-                case ASTNodeKind.BooleanValue: return BeginVisitBooleanValue((GraphQLScalarValue)node);
-                case ASTNodeKind.EnumValue: return BeginVisitEnumValue((GraphQLScalarValue)node);
-                case ASTNodeKind.ListValue: return BeginVisitListValue((GraphQLListValue)node);
-                case ASTNodeKind.ObjectValue: return BeginVisitObjectValue((GraphQLObjectValue)node);
-                case ASTNodeKind.ObjectField: return BeginVisitObjectField((GraphQLObjectField)node);
-                case ASTNodeKind.VariableDefinition: return BeginVisitVariableDefinition((GraphQLVariableDefinition)node);
-                default: return null;
-            }
-        }
+            ASTNodeKind.OperationDefinition => BeginVisitOperationDefinition((GraphQLOperationDefinition)node),
+            ASTNodeKind.SelectionSet => BeginVisitSelectionSet((GraphQLSelectionSet)node),
+            ASTNodeKind.Field => BeginVisitNonIntrospectionFieldSelection((GraphQLFieldSelection)node),
+            ASTNodeKind.Name => BeginVisitName((GraphQLName)node),
+            ASTNodeKind.Argument => BeginVisitArgument((GraphQLArgument)node),
+            ASTNodeKind.FragmentSpread => BeginVisitFragmentSpread((GraphQLFragmentSpread)node),
+            ASTNodeKind.FragmentDefinition => BeginVisitFragmentDefinition((GraphQLFragmentDefinition)node),
+            ASTNodeKind.InlineFragment => BeginVisitInlineFragment((GraphQLInlineFragment)node),
+            ASTNodeKind.NamedType => BeginVisitNamedType((GraphQLNamedType)node),
+            ASTNodeKind.Directive => BeginVisitDirective((GraphQLDirective)node),
+            ASTNodeKind.Variable => BeginVisitVariable((GraphQLVariable)node),
+            ASTNodeKind.IntValue => BeginVisitIntValue((GraphQLScalarValue)node),
+            ASTNodeKind.FloatValue => BeginVisitFloatValue((GraphQLScalarValue)node),
+            ASTNodeKind.StringValue => BeginVisitStringValue((GraphQLScalarValue)node),
+            ASTNodeKind.BooleanValue => BeginVisitBooleanValue((GraphQLScalarValue)node),
+            ASTNodeKind.EnumValue => BeginVisitEnumValue((GraphQLScalarValue)node),
+            ASTNodeKind.ListValue => BeginVisitListValue((GraphQLListValue)node),
+            ASTNodeKind.ObjectValue => BeginVisitObjectValue((GraphQLObjectValue)node),
+            ASTNodeKind.ObjectField => BeginVisitObjectField((GraphQLObjectField)node),
+            ASTNodeKind.VariableDefinition => BeginVisitVariableDefinition((GraphQLVariableDefinition)node),
+            _ => null
+        };
 
         public virtual GraphQLOperationDefinition BeginVisitOperationDefinition(GraphQLOperationDefinition definition)
         {

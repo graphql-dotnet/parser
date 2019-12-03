@@ -148,20 +148,19 @@
 
         private string AppendToValueByCode(string value, char code)
         {
-            switch (code)
+            value += code switch
             {
-                case '"': value += '"'; break;
-                case '/': value += '/'; break;
-                case '\\': value += '\\'; break;
-                case 'b': value += '\b'; break;
-                case 'f': value += '\f'; break;
-                case 'n': value += '\n'; break;
-                case 'r': value += '\r'; break;
-                case 't': value += '\t'; break;
-                case 'u': value += GetUnicodeChar(); break;
-                default:
-                    throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{code}.", source, currentIndex);
-            }
+                '"' => '"',
+                '/' => '/',
+                '\\' => '\\',
+                'b' => '\b',
+                'f' => '\f',
+                'n' => '\n',
+                'r' => '\r',
+                't' => '\t',
+                'u' => GetUnicodeChar(),
+                _ => throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{code}.", source, currentIndex),
+            };
 
             return value;
         }
@@ -177,26 +176,23 @@
             }
         }
 
-        private Token CheckForPunctuationTokens(char code)
+        private Token CheckForPunctuationTokens(char code) => code switch
         {
-            switch (code)
-            {
-                case '!': return CreatePunctuationToken(TokenKind.BANG, 1);
-                case '$': return CreatePunctuationToken(TokenKind.DOLLAR, 1);
-                case '(': return CreatePunctuationToken(TokenKind.PAREN_L, 1);
-                case ')': return CreatePunctuationToken(TokenKind.PAREN_R, 1);
-                case '.': return CheckForSpreadOperator();
-                case ':': return CreatePunctuationToken(TokenKind.COLON, 1);
-                case '=': return CreatePunctuationToken(TokenKind.EQUALS, 1);
-                case '@': return CreatePunctuationToken(TokenKind.AT, 1);
-                case '[': return CreatePunctuationToken(TokenKind.BRACKET_L, 1);
-                case ']': return CreatePunctuationToken(TokenKind.BRACKET_R, 1);
-                case '{': return CreatePunctuationToken(TokenKind.BRACE_L, 1);
-                case '|': return CreatePunctuationToken(TokenKind.PIPE, 1);
-                case '}': return CreatePunctuationToken(TokenKind.BRACE_R, 1);
-                default: return null;
-            }
-        }
+            '!' => CreatePunctuationToken(TokenKind.BANG, 1),
+            '$' => CreatePunctuationToken(TokenKind.DOLLAR, 1),
+            '(' => CreatePunctuationToken(TokenKind.PAREN_L, 1),
+            ')' => CreatePunctuationToken(TokenKind.PAREN_R, 1),
+            '.' => CheckForSpreadOperator(),
+            ':' => CreatePunctuationToken(TokenKind.COLON, 1),
+            '=' => CreatePunctuationToken(TokenKind.EQUALS, 1),
+            '@' => CreatePunctuationToken(TokenKind.AT, 1),
+            '[' => CreatePunctuationToken(TokenKind.BRACKET_L, 1),
+            ']' => CreatePunctuationToken(TokenKind.BRACKET_R, 1),
+            '{' => CreatePunctuationToken(TokenKind.BRACE_L, 1),
+            '|' => CreatePunctuationToken(TokenKind.PIPE, 1),
+            '}' => CreatePunctuationToken(TokenKind.BRACE_R, 1),
+            _ => null
+        };
 
         private Token CheckForSpreadOperator()
         {

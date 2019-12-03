@@ -13,10 +13,8 @@
 
         public GraphQLDocument Parse(ISource source)
         {
-            using (var context = new ParserContext(source, lexer))
-            {
-                return context.Parse();
-            }
+            using var context = new ParserContext(source, lexer);
+            return context.Parse();
         }
     }
 }

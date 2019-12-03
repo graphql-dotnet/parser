@@ -772,13 +772,12 @@
             var token = currentToken;
             Expect(TokenKind.NAME);
 
-            switch (token.Value)
+            return token.Value switch
             {
-                case "mutation": return OperationType.Mutation;
-                case "subscription": return OperationType.Subscription;
-                case "query":
-                default: return OperationType.Query;
-            }
+                "mutation" => OperationType.Mutation,
+                "subscription" => OperationType.Subscription,
+                _ => OperationType.Query
+            };
         }
 
         private GraphQLOperationTypeDefinition ParseOperationTypeDefinition()
@@ -941,24 +940,17 @@
             };
         }
 
-        private GraphQLValue ParseValueLiteral(bool isConstant)
+        private GraphQLValue ParseValueLiteral(bool isConstant) => currentToken.Kind switch
         {
-            var token = currentToken;
-
-            switch (token.Kind)
-            {
-                case TokenKind.BRACKET_L: return ParseList(isConstant);
-                case TokenKind.BRACE_L: return ParseObject(isConstant);
-                case TokenKind.INT: return ParseInt(isConstant);
-                case TokenKind.FLOAT: return ParseFloat(isConstant);
-                case TokenKind.STRING: return ParseString(isConstant);
-                case TokenKind.NAME: return ParseNameValue(isConstant);
-                case TokenKind.DOLLAR: if (!isConstant) return ParseVariable(); break;
-            }
-
-            throw new GraphQLSyntaxErrorException(
-                    $"Unexpected {currentToken}", source, currentToken.Start);
-        }
+            TokenKind.BRACKET_L => ParseList(isConstant),
+            TokenKind.BRACE_L => ParseObject(isConstant),
+            TokenKind.INT => ParseInt(isConstant),
+            TokenKind.FLOAT => ParseFloat(isConstant),
+            TokenKind.STRING => ParseString(isConstant),
+            TokenKind.NAME => ParseNameValue(isConstant),
+            TokenKind.DOLLAR when !isConstant => ParseVariable(),
+            _ => throw new GraphQLSyntaxErrorException($"Unexpected {currentToken}", source, currentToken.Start)
+        };
 
         private GraphQLValue ParseValueValue() => ParseValueLiteral(false);
 
