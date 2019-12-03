@@ -893,6 +893,7 @@
             return new GraphQLTypeExtensionDefinition
             {
                 Comment = comment,
+                Name = definition.Name,
                 Definition = definition,
                 Location = GetLocation(start)
             };
