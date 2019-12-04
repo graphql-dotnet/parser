@@ -272,7 +272,7 @@
 
             if (Peek(TokenKind.NAME))
             {
-                ASTNode definition = null;
+                ASTNode definition;
                 if ((definition = ParseNamedDefinition()) != null)
                     return definition;
             }
@@ -458,8 +458,8 @@
         {
             var start = currentToken.Start;
             var nameOrAlias = ParseName();
-            GraphQLName name = null;
-            GraphQLName alias = null;
+            GraphQLName name;
+            GraphQLName alias;
 
             if (Skip(TokenKind.COLON))
             {
@@ -636,28 +636,23 @@
 
         private ASTNode ParseNamedDefinition()
         {
-            switch (currentToken.Value)
+            return currentToken.Value switch
             {
-                // Note: subscription is an experimental non-spec addition.
-                case "query":
-                case "mutation":
-                case "subscription":
-                    return ParseOperationDefinition();
-
-                case "fragment": return ParseFragmentDefinition();
-
-                // Note: the Type System IDL is an experimental non-spec addition.
-                case "schema": return ParseSchemaDefinition();
-                case "scalar": return ParseScalarTypeDefinition();
-                case "type": return ParseObjectTypeDefinition();
-                case "interface": return ParseInterfaceTypeDefinition();
-                case "union": return ParseUnionTypeDefinition();
-                case "enum": return ParseEnumTypeDefinition();
-                case "input": return ParseInputObjectTypeDefinition();
-                case "extend": return ParseTypeExtensionDefinition();
-                case "directive": return ParseDirectiveDefinition();
-                default: return null;
-            }
+                "query" => ParseOperationDefinition(),
+                "mutation" => ParseOperationDefinition(),
+                "subscription" => ParseOperationDefinition(),
+                "fragment" => ParseFragmentDefinition(),
+                "schema" => ParseSchemaDefinition(),
+                "scalar" => ParseScalarTypeDefinition(),
+                "type" => ParseObjectTypeDefinition(),
+                "interface" => ParseInterfaceTypeDefinition(),
+                "union" => ParseUnionTypeDefinition(),
+                "enum" => ParseEnumTypeDefinition(),
+                "input" => ParseInputObjectTypeDefinition(),
+                "extend" => ParseTypeExtensionDefinition(),
+                "directive" => ParseDirectiveDefinition(),
+                _ => null
+            };
         }
 
         private GraphQLNamedType ParseNamedType()
@@ -859,7 +854,7 @@
 
         private GraphQLType ParseType()
         {
-            GraphQLType type = null;
+            GraphQLType type;
             var start = currentToken.Start;
             if (Skip(TokenKind.BRACKET_L))
             {
@@ -898,6 +893,7 @@
             return new GraphQLTypeExtensionDefinition
             {
                 Comment = comment,
+                Name = definition.Name,
                 Definition = definition,
                 Location = GetLocation(start)
             };
