@@ -6,9 +6,14 @@
     <AssemblyTitle>GraphQL Parser for .NET</AssemblyTitle>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>GraphQL-Parser</AssemblyName>
-    <PackageTags>GraphQL;json;api</PackageTags>
+    <PackageTags>GraphQL;json;api;parser</PackageTags>
     <PackageProjectUrl>https://github.com/graphql-dotnet/parser</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/graphql-dotnet/parser/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>logo.64x64.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\assets\logo.64x64.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
   
 </Project>
