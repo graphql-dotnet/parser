@@ -69,10 +69,11 @@
             };
         }
 
-        private GraphQLFieldSelection CreateFieldSelection(int start, GraphQLName name, GraphQLName alias)
+        private GraphQLFieldSelection CreateFieldSelection(int start, GraphQLName name, GraphQLName alias, GraphQLComment comment)
         {
             return new GraphQLFieldSelection
             {
+                Comment = comment,
                 Alias = alias,
                 Name = name,
                 Arguments = ParseArguments(),
@@ -456,6 +457,7 @@
 
         private GraphQLFieldSelection ParseFieldSelection()
         {
+            var comment = GetComment();
             var start = currentToken.Start;
             var nameOrAlias = ParseName();
             GraphQLName name;
@@ -472,7 +474,7 @@
                 name = nameOrAlias;
             }
 
-            return CreateFieldSelection(start, name, alias);
+            return CreateFieldSelection(start, name, alias, comment);
         }
 
         private GraphQLValue ParseFloat(bool isConstant)

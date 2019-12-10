@@ -13,6 +13,27 @@
         private static readonly string NL = Environment.NewLine;
 
         [Fact]
+        public void Comments_On_SelectionSet_Should_Read_Correctly()
+        {
+            var parser = new Parser(new Lexer());
+            var document = parser.Parse(new Source(@"
+query {
+    # a comment below query
+    field1
+    field2
+    #second comment
+    field3
+}
+"));
+            document.Definitions.Count().ShouldBe(1);
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count().ShouldBe(3);
+            def.SelectionSet.Selections.First().Comment.Text.ShouldBe(" a comment below query");
+            def.SelectionSet.Selections.Skip(1).First().Comment.ShouldBe(null);
+            def.SelectionSet.Selections.Skip(2).First().Comment.Text.ShouldBe("second comment");
+        }
+
+        [Fact]
         public void Comments_On_Enums_Should_Read_Correctly()
         {
             var parser = new Parser(new Lexer());
