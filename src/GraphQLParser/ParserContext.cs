@@ -10,7 +10,7 @@
     {
         private readonly ILexer lexer;
         private readonly ISource source;
-        private readonly Stack<GraphQLComment> comments = new Stack<GraphQLComment>();
+        private Stack<GraphQLComment> comments;
         private Token currentToken;
 
         public ParserContext(ISource source, ILexer lexer)
@@ -23,11 +23,11 @@
 
         public void Dispose()
         {
-            if (comments.Count > 0)
+            if (comments?.Count > 0)
                 throw new ApplicationException($"ParserContext has {comments.Count} not applied comments.");
         }
 
-        public GraphQLComment GetComment() => comments.Count > 0 ? comments.Pop() : null;
+        public GraphQLComment GetComment() => comments?.Count > 0 ? comments.Pop() : null;
 
         public GraphQLDocument Parse() => ParseDocument();
 
@@ -60,11 +60,7 @@
         {
             return new GraphQLDocument
             {
-                Location = new GraphQLLocation
-                {
-                    Start = start,
-                    End = currentToken.End
-                },
+                Location = new GraphQLLocation(start, currentToken.End),
                 Definitions = definitions
             };
         }
@@ -156,7 +152,7 @@
         private void ExpectKeyword(string keyword)
         {
             var token = currentToken;
-            if (token.Kind == TokenKind.NAME && token.Value.Equals(keyword))
+            if (token.Kind == TokenKind.NAME && token.Value.Equals(keyword, StringComparison.InvariantCulture))
             {
                 Advance();
                 return;
@@ -185,11 +181,7 @@
 
         private GraphQLLocation GetLocation(int start)
         {
-            return new GraphQLLocation
-            {
-                Start = start,
-                End = currentToken.End
-            };
+            return new GraphQLLocation(start, currentToken.End);
         }
 
         private GraphQLName GetName() => Peek(TokenKind.NAME) ? ParseName() : null;
@@ -197,7 +189,7 @@
         private GraphQLNamedType GetTypeCondition()
         {
             GraphQLNamedType typeCondition = null;
-            if (currentToken.Value != null && currentToken.Value.Equals("on"))
+            if (currentToken.Value != null && currentToken.Value.Equals("on", StringComparison.InvariantCulture))
             {
                 Advance();
                 typeCondition = ParseNamedType();
@@ -250,7 +242,7 @@
                 Array.Empty<GraphQLArgument>();
         }
 
-        private GraphQLValue ParseBooleanValue(Token token)
+        private GraphQLValue ParseBooleanValue(in Token token)
         {
             Advance();
             return new GraphQLScalarValue(ASTNodeKind.BooleanValue)
@@ -315,12 +307,11 @@
 
             var comment = new GraphQLComment(string.Join(Environment.NewLine, text))
             {
-                Location = new GraphQLLocation
-                {
-                    Start = start,
-                    End = end
-                }
+                Location = new GraphQLLocation(start, end)
             };
+
+            if (comments == null)
+                comments = new Stack<GraphQLComment>();
 
             comments.Push(comment);
 
@@ -412,7 +403,7 @@
             };
         }
 
-        private GraphQLValue ParseEnumValue(Token token)
+        private GraphQLValue ParseEnumValue(in Token token)
         {
             Advance();
             return new GraphQLScalarValue(ASTNodeKind.EnumValue)
@@ -493,7 +484,7 @@
             var start = currentToken.Start;
             Expect(TokenKind.SPREAD);
 
-            if (Peek(TokenKind.NAME) && !currentToken.Value.Equals("on"))
+            if (Peek(TokenKind.NAME) && !currentToken.Value.Equals("on", StringComparison.InvariantCulture))
             {
                 return CreateGraphQLFragmentSpread(start);
             }
@@ -520,7 +511,7 @@
 
         private GraphQLName ParseFragmentName()
         {
-            if (currentToken.Value.Equals("on"))
+            if (currentToken.Value.Equals("on", StringComparison.InvariantCulture))
             {
                 throw new GraphQLSyntaxErrorException(
                     $"Unexpected {currentToken}", source, currentToken.Start);
@@ -532,7 +523,7 @@
         private IEnumerable<GraphQLNamedType> ParseImplementsInterfaces()
         {
             var types = new SmallSizeOptimizedList<GraphQLNamedType>();
-            if (currentToken.Value?.Equals("implements") == true)
+            if (currentToken.Value?.Equals("implements", StringComparison.InvariantCulture) == true)
             {
                 Advance();
 
@@ -671,13 +662,13 @@
         {
             var token = currentToken;
 
-            if (token.Value.Equals("true") || token.Value.Equals("false"))
+            if (token.Value.Equals("true", StringComparison.InvariantCulture) || token.Value.Equals("false", StringComparison.InvariantCulture))
             {
                 return ParseBooleanValue(token);
             }
             else if (token.Value != null)
             {
-                if (token.Value.Equals("null"))
+                if (token.Value.Equals("null", StringComparison.InvariantCulture))
                     return ParseNullValue(token);
                 else
                     return ParseEnumValue(token);
@@ -700,12 +691,11 @@
             };
         }
 
-        private GraphQLValue ParseNullValue(Token token)
+        private GraphQLValue ParseNullValue(in Token token)
         {
             Advance();
             return new GraphQLScalarValue(ASTNodeKind.NullValue)
             {
-                Value = null,
                 Location = GetLocation(token.Start)
             };
         }

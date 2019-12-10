@@ -19,7 +19,7 @@
                 "\n" + HighlightSourceAtLocation(source, location);
         }
 
-        private static string HighlightSourceAtLocation(ISource source, Location location)
+        private static string HighlightSourceAtLocation(ISource source, in Location location)
         {
             var line = location.Line;
             var prevLineNum = (line - 1).ToString();

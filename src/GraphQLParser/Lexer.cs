@@ -6,7 +6,7 @@
 
         public Token Lex(ISource source, int start)
         {
-            using var context = new LexerContext(source, start);
+            var context = new LexerContext(source, start);
             return context.GetToken();
         }
     }

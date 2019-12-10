@@ -3,7 +3,7 @@
     using Exceptions;
     using System;
 
-    public class LexerContext : IDisposable
+    public struct LexerContext
     {
         private int currentIndex;
         private readonly ISource source;
@@ -12,10 +12,6 @@
         {
             currentIndex = index;
             this.source = source;
-        }
-
-        public void Dispose()
-        {
         }
 
         public Token GetToken()
@@ -33,7 +29,7 @@
             ValidateCharacterCode(code);
 
             var token = CheckForPunctuationTokens(code);
-            if (token != null)
+            if (token.Kind != TokenKind.Unknown)
                 return token;
 
             if (code == '#')
@@ -72,13 +68,7 @@
 
             value += source.Body.Substring(chunkStart, currentIndex - chunkStart);
 
-            return new Token
-            {
-                Kind = TokenKind.COMMENT,
-                Value = value,
-                Start = start,
-                End = currentIndex + 1
-            };
+            return new Token(TokenKind.COMMENT, value, start, currentIndex + 1);
         }
 
         public Token ReadNumber()
@@ -127,13 +117,7 @@
             var start = currentIndex;
             var value = ProcessStringChunks();
 
-            return new Token
-            {
-                Kind = TokenKind.STRING,
-                Value = value,
-                Start = start,
-                End = currentIndex + 1
-            };
+            return new Token(TokenKind.STRING, value, start, currentIndex + 1);
         }
 
         private static bool IsValidNameCharacter(char code)
@@ -165,6 +149,7 @@
             return value;
         }
 
+        //TODO: remove ToString(), change implementation
         private int CharToHex(char code) => Convert.ToByte(code.ToString(), 16);
 
         private void CheckForInvalidCharacters(char code)
@@ -191,7 +176,7 @@
             '{' => CreatePunctuationToken(TokenKind.BRACE_L, 1),
             '|' => CreatePunctuationToken(TokenKind.PIPE, 1),
             '}' => CreatePunctuationToken(TokenKind.BRACE_R, 1),
-            _ => null
+            _ => CreateUnknownToken()
         };
 
         private Token CheckForSpreadOperator()
@@ -204,7 +189,7 @@
                 return CreatePunctuationToken(TokenKind.SPREAD, 3);
             }
 
-            return null;
+            return CreateUnknownToken();
         }
 
         private void CheckStringTermination(char code)
@@ -215,58 +200,34 @@
             }
         }
 
+        private Token CreateUnknownToken()
+        {
+            return new Token(TokenKind.Unknown, null, 0, 0);
+        }
+
         private Token CreateEOFToken()
         {
-            return new Token
-            {
-                Start = currentIndex,
-                End = currentIndex,
-                Kind = TokenKind.EOF
-            };
+            return new Token(TokenKind.EOF, null, currentIndex, currentIndex);
         }
 
         private Token CreateFloatToken(int start)
         {
-            return new Token
-            {
-                Kind = TokenKind.FLOAT,
-                Start = start,
-                End = currentIndex,
-                Value = source.Body.Substring(start, currentIndex - start)
-            };
+            return new Token(TokenKind.FLOAT, source.Body.Substring(start, currentIndex - start), start, currentIndex);
         }
 
         private Token CreateIntToken(int start)
         {
-            return new Token
-            {
-                Kind = TokenKind.INT,
-                Start = start,
-                End = currentIndex,
-                Value = source.Body.Substring(start, currentIndex - start)
-            };
+            return new Token(TokenKind.INT, source.Body.Substring(start, currentIndex - start), start, currentIndex);
         }
 
         private Token CreateNameToken(int start)
         {
-            return new Token
-            {
-                Start = start,
-                End = currentIndex,
-                Kind = TokenKind.NAME,
-                Value = source.Body.Substring(start, currentIndex - start)
-            };
+            return new Token(TokenKind.NAME, source.Body.Substring(start, currentIndex - start), start, currentIndex);
         }
 
         private Token CreatePunctuationToken(TokenKind kind, int offset)
         {
-            return new Token
-            {
-                Start = currentIndex,
-                End = currentIndex + offset,
-                Kind = kind,
-                Value = null
-            };
+            return new Token(kind, null, currentIndex, currentIndex + offset);
         }
 
         private char GetCode()
