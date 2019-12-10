@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
+using System;
 
 namespace GraphQLParser.Benchmarks
 {
@@ -9,6 +10,8 @@ namespace GraphQLParser.Benchmarks
 //            var bench = new LexerBenchmark();
 //            bench.LexKitchenSink();
             BenchmarkRunner.Run<LexerBenchmark>();
+            Console.WriteLine("===DONE===");
+            Console.ReadLine();
         }
     }
 }
