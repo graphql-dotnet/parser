@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2</TargetFrameworks>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
@@ -12,9 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GraphQLParser\GraphQLParser.csproj" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.11.4" />
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.4" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
   </ItemGroup>
 
 </Project>
