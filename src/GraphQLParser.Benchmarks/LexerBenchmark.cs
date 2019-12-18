@@ -1,13 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
-using GraphQLParser.Exceptions;
-using System.IO;
 
 namespace GraphQLParser.Benchmarks
 {
     [MemoryDiagnoser]
     public class LexerBenchmark
     {
-        private static readonly string Binary = File.ReadAllText("BinaryTest.graphql");
         private const string KitchenSink = @"
 query queryName($foo: ComplexType, $site: Site = MOBILE) {
   whoever123is: node(id: [123, 456]) {
@@ -70,19 +67,6 @@ fragment frag on Friend {
             while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
             {
                 resetPosition = token.End;
-            }
-        }
-
-        [Benchmark]
-        public void ParseBinaryFile()
-        {
-            try
-            {
-                var parser = new Parser(new Lexer());
-                parser.Parse(new Source(Binary));
-            }
-            catch (GraphQLSyntaxErrorException)
-            {
             }
         }
     }

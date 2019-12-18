@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
-using System;
+using System.Threading;
 
 namespace GraphQLParser.Benchmarks
 {
@@ -7,11 +7,18 @@ namespace GraphQLParser.Benchmarks
     {
         private static void Main()
         {
-//            var bench = new LexerBenchmark();
-//            bench.LexKitchenSink();
-            BenchmarkRunner.Run<LexerBenchmark>();
-            Console.WriteLine("===DONE===");
-            Console.ReadLine();
+            BenchmarkRunner.Run<ParserBenchmark>();
+        }
+
+        private static void Main1()
+        {
+            var bench = new ParserBenchmark();
+            bench.GlobalSetup();
+            while (true)
+            {
+                bench.Parse();
+                Thread.Sleep(10);
+            }
         }
     }
 }
