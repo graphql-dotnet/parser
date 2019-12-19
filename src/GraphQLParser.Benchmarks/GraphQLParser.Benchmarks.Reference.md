@@ -9,6 +9,8 @@ Frequency=3515629 Hz, Resolution=284.4441 ns, Timer=TSC
 
 
 ```
-| Method |     Mean |     Error |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Allocated |  Commit |
-|------- |---------:|----------:|----------:|-------:|------:|------:|----------:|--------:|
-|  Parse | 2.556 us | 0.0430 us | 0.0402 us | 0.8736 |     - |     - |   3.58 KB | 8fcf2c2 |
+| Method |  query |      Mean |     Error |    StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated | Commit |
+|------- |------- |----------:|----------:|----------:|-------:|-------:|------:|----------:|-------:|
+|  Parse | Params | 13.911 us | 0.2186 us | 0.1937 us | 4.6082 |      - |     - |  18.85 KB | 710e1b7 |
+|  Parse | Schema | 30.629 us | 0.3194 us | 0.2987 us | 8.9111 | 0.0610 |     - |  36.49 KB | 710e1b7 |
+|  Parse | Simple |  2.391 us | 0.0257 us | 0.0241 us | 0.8736 |      - |     - |   3.58 KB | 710e1b7 |
