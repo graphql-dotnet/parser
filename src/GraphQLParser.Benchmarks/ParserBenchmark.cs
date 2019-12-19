@@ -6,9 +6,14 @@ namespace GraphQLParser.Benchmarks
     [MemoryDiagnoser]
     public class ParserBenchmark
     {
+        private ILexemeCache _cacheManaged;
+        private ILexemeCache _cacheUnsafe;
+
         [GlobalSetup]
         public void GlobalSetup()
         {
+            _cacheManaged = new SingleThreadedDictionaryCache();
+            _cacheUnsafe = new SingleThreadedUnsafeDictionaryCache();
         }
 
         [Benchmark]
@@ -16,6 +21,22 @@ namespace GraphQLParser.Benchmarks
         public void Parse(Query query)
         {
             var parser = new Parser(new Lexer());
+            parser.Parse(new Source(query.Text));
+        }
+
+        [Benchmark]
+        [ArgumentsSource(nameof(Queries))]
+        public void ParseCacheManaged(Query query)
+        {
+            var parser = new Parser(new Lexer() { Cache = _cacheManaged });
+            parser.Parse(new Source(query.Text));
+        }
+
+        [Benchmark]
+        [ArgumentsSource(nameof(Queries))]
+        public void ParseCacheUnsafe(Query query)
+        {
+            var parser = new Parser(new Lexer() { Cache = _cacheUnsafe });
             parser.Parse(new Source(query.Text));
         }
 
