@@ -8,7 +8,7 @@
 
         public Token Lex(ISource source, int start)
         {
-            using var context = new LexerContext(source, start, Cache);
+            var context = new LexerContext(source, start, Cache);
             return context.GetToken();
         }
     }

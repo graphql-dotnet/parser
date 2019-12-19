@@ -9,6 +9,9 @@ Frequency=3515629 Hz, Resolution=284.4441 ns, Timer=TSC
 
 
 ```
+
+Baseline:
+
 | Method |  query |      Mean |     Error |    StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated | Commit |
 |------- |------- |----------:|----------:|----------:|-------:|-------:|------:|----------:|-------:|
 |  Parse | Params | 13.911 us | 0.2186 us | 0.1937 us | 4.6082 |      - |     - |  18.85 KB | 710e1b7 |
@@ -28,3 +31,17 @@ Working on cache:
 |             **Parse** | **Simple** |  **2.564 us** | **0.0440 us** | **0.0390 us** |  **1.0109** |      **-** |     **-** |   **4.14 KB** |
 | ParseCacheManaged | Simple |  2.638 us | 0.0319 us | 0.0299 us |  0.8392 |      - |     - |   3.44 KB |
 |  ParseCacheUnsafe | Simple |  2.712 us | 0.0271 us | 0.0253 us |  0.8392 |      - |     - |   3.44 KB |
+
+Make `LexerContext` struct and remove `IDisposable`:
+
+|            Method |  query |      Mean |     Error |    StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
+|------------------ |------- |----------:|----------:|----------:|-------:|-------:|------:|----------:|
+|             **Parse** | **Params** | **12.480 us** | **0.0555 us** | **0.0433 us** | **4.4098** |      **-** |     **-** |  **18.07 KB** |
+| ParseCacheManaged | Params | 12.602 us | 0.0860 us | 0.0805 us | 3.6469 |      - |     - |  14.95 KB |
+|  ParseCacheUnsafe | Params | 12.712 us | 0.0980 us | 0.0917 us | 3.6469 |      - |     - |  14.95 KB |
+|             **Parse** | **Schema** | **28.297 us** | **0.1496 us** | **0.1400 us** | **8.6060** | **0.0305** |     **-** |  **35.23 KB** |
+| ParseCacheManaged | Schema | 30.642 us | 0.6201 us | 0.9469 us | 6.8359 |      - |     - |  28.04 KB |
+|  ParseCacheUnsafe | Schema | 30.130 us | 0.1893 us | 0.1771 us | 6.8359 |      - |     - |  28.04 KB |
+|             **Parse** | **Simple** |  **2.186 us** | **0.0150 us** | **0.0140 us** | **0.8392** |      **-** |     **-** |   **3.44 KB** |
+| ParseCacheManaged | Simple |  2.270 us | 0.0178 us | 0.0158 us | 0.6676 |      - |     - |   2.73 KB |
+|  ParseCacheUnsafe | Simple |  2.237 us | 0.0284 us | 0.0266 us | 0.6676 |      - |     - |   2.73 KB |

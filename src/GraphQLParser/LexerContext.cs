@@ -3,7 +3,7 @@
     using Exceptions;
     using System;
 
-    public class LexerContext : IDisposable
+    public struct LexerContext
     {
         private int currentIndex;
         private readonly ISource source;
@@ -18,10 +18,6 @@
             currentIndex = index;
             this.source = source;
             this.cache = cache ?? new NoCache();
-        }
-
-        public void Dispose()
-        {
         }
 
         public Token GetToken()
