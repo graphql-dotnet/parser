@@ -7,11 +7,17 @@
     {
         private int currentIndex;
         private readonly ISource source;
+        private readonly ILexemeCache cache;
 
-        public LexerContext(ISource source, int index)
+        public LexerContext(ISource source, int index) : this(source, index, new NoCache())
+        {
+        }
+
+        public LexerContext(ISource source, int index, ILexemeCache cache)
         {
             currentIndex = index;
             this.source = source;
+            this.cache = cache ?? new NoCache();
         }
 
         public void Dispose()
@@ -254,7 +260,7 @@
                 Start = start,
                 End = currentIndex,
                 Kind = TokenKind.NAME,
-                Value = source.Body.Substring(start, currentIndex - start)
+                Value = cache.Get(source.Body, start, currentIndex)
             };
         }
 
