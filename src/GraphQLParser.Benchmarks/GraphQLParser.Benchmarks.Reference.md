@@ -45,3 +45,17 @@ Make `LexerContext` struct and remove `IDisposable`:
 |             **Parse** | **Simple** |  **2.186 us** | **0.0150 us** | **0.0140 us** | **0.8392** |      **-** |     **-** |   **3.44 KB** |
 | ParseCacheManaged | Simple |  2.270 us | 0.0178 us | 0.0158 us | 0.6676 |      - |     - |   2.73 KB |
 |  ParseCacheUnsafe | Simple |  2.237 us | 0.0284 us | 0.0266 us | 0.6676 |      - |     - |   2.73 KB |
+
+Make `Stack<GraphQLComment>` allocation lazy:
+
+|            Method |  query |      Mean |     Error |    StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
+|------------------ |------- |----------:|----------:|----------:|-------:|-------:|------:|----------:|
+|             **Parse** | **Params** | **12.511 us** | **0.1122 us** | **0.1050 us** | **4.4098** |      **-** |     **-** |  **18.04 KB** |
+| ParseCacheManaged | Params | 12.579 us | 0.0485 us | 0.0405 us | 3.6469 |      - |     - |  14.92 KB |
+|  ParseCacheUnsafe | Params | 12.513 us | 0.0434 us | 0.0406 us | 3.6469 |      - |     - |  14.92 KB |
+|             **Parse** | **Schema** | **28.169 us** | **0.1233 us** | **0.1093 us** | **8.6060** | **0.0916** |     **-** |   **35.2 KB** |
+| ParseCacheManaged | Schema | 30.041 us | 0.1271 us | 0.1127 us | 6.8359 |      - |     - |  28.01 KB |
+|  ParseCacheUnsafe | Schema | 30.351 us | 0.1308 us | 0.1224 us | 6.8359 |      - |     - |  28.01 KB |
+|             **Parse** | **Simple** |  **2.195 us** | **0.0532 us** | **0.0653 us** | **0.8316** |      **-** |     **-** |   **3.41 KB** |
+| ParseCacheManaged | Simple |  2.282 us | 0.0208 us | 0.0195 us | 0.6599 |      - |     - |    2.7 KB |
+|  ParseCacheUnsafe | Simple |  2.304 us | 0.0164 us | 0.0154 us | 0.6599 |      - |     - |    2.7 KB |

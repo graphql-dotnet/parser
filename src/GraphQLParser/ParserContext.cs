@@ -10,7 +10,7 @@
     {
         private readonly ILexer lexer;
         private readonly ISource source;
-        private readonly Stack<GraphQLComment> comments = new Stack<GraphQLComment>();
+        private Stack<GraphQLComment> comments;
         private Token currentToken;
 
         public ParserContext(ISource source, ILexer lexer)
@@ -23,11 +23,11 @@
 
         public void Dispose()
         {
-            if (comments.Count > 0)
+            if (comments?.Count > 0)
                 throw new ApplicationException($"ParserContext has {comments.Count} not applied comments.");
         }
 
-        public GraphQLComment GetComment() => comments.Count > 0 ? comments.Pop() : null;
+        public GraphQLComment GetComment() => comments?.Count > 0 ? comments.Pop() : null;
 
         public GraphQLDocument Parse() => ParseDocument();
 
@@ -321,6 +321,9 @@
                     End = end
                 }
             };
+
+            if (comments == null)
+                comments = new Stack<GraphQLComment>();
 
             comments.Push(comment);
 
