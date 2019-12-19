@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GraphQLParser\GraphQLParser.csproj" />
     <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
   </ItemGroup>
