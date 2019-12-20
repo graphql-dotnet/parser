@@ -10,13 +10,13 @@ Frequency=3515629 Hz, Resolution=284.4441 ns, Timer=TSC
 
 ```
 
-Baseline:
+Baseline (710e1b7):
 
-| Method |  query |      Mean |     Error |    StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated | Commit |
-|------- |------- |----------:|----------:|----------:|-------:|-------:|------:|----------:|-------:|
-|  Parse | Params | 13.911 us | 0.2186 us | 0.1937 us | 4.6082 |      - |     - |  18.85 KB | 710e1b7 |
-|  Parse | Schema | 30.629 us | 0.3194 us | 0.2987 us | 8.9111 | 0.0610 |     - |  36.49 KB | 710e1b7 |
-|  Parse | Simple |  2.391 us | 0.0257 us | 0.0241 us | 0.8736 |      - |     - |   3.58 KB | 710e1b7 |
+| Method |  query |      Mean |     Error |    StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
+|------- |------- |----------:|----------:|----------:|-------:|-------:|------:|----------:|
+|  Parse | Params | 13.911 us | 0.2186 us | 0.1937 us | 4.6082 |      - |     - |  18.85 KB |
+|  Parse | Schema | 30.629 us | 0.3194 us | 0.2987 us | 8.9111 | 0.0610 |     - |  36.49 KB |
+|  Parse | Simple |  2.391 us | 0.0257 us | 0.0241 us | 0.8736 |      - |     - |   3.58 KB |
 
 Working on cache:
 
@@ -91,3 +91,19 @@ Make `GraphQLLocation` struct:
 |             **Parse** | **Simple** |  **2.062 us** | **0.0275 us** | **0.0244 us** |  **1.00** |    **0.00** | **0.5798** |     **-** |     **-** |   **2.38 KB** |
 | ParseCacheManaged | Simple |  2.125 us | 0.0188 us | 0.0147 us |  1.03 |    0.01 | 0.5112 |     - |     - |   2.09 KB |
 |  ParseCacheUnsafe | Simple |  2.229 us | 0.0446 us | 0.0610 us |  1.09 |    0.03 | 0.5112 |     - |     - |   2.09 KB |
+
+Make `Token` struct:
+
+|            Method |  query |      Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------ |------- |----------:|----------:|----------:|------:|-------:|------:|------:|----------:|
+|             **Parse** | **Params** | **11.358 us** | **0.0581 us** | **0.0515 us** |  **1.00** | **2.1820** |     **-** |     **-** |   **8.97 KB** |
+| ParseCacheManaged | Params | 11.988 us | 0.0729 us | 0.0646 us |  1.06 | 1.9989 |     - |     - |    8.2 KB |
+|  ParseCacheUnsafe | Params | 11.725 us | 0.0633 us | 0.0561 us |  1.03 | 1.9989 |     - |     - |    8.2 KB |
+|                   |        |           |           |           |       |        |       |       |           |
+|             **Parse** | **Schema** | **26.159 us** | **0.0621 us** | **0.0581 us** |  **1.00** | **4.5776** |     **-** |     **-** |   **18.8 KB** |
+| ParseCacheManaged | Schema | 28.185 us | 0.1395 us | 0.1305 us |  1.08 | 3.7537 |     - |     - |  15.38 KB |
+|  ParseCacheUnsafe | Schema | 28.447 us | 0.1315 us | 0.1166 us |  1.09 | 3.7537 |     - |     - |  15.38 KB |
+|                   |        |           |           |           |       |        |       |       |           |
+|             **Parse** | **Simple** |  **1.975 us** | **0.0068 us** | **0.0053 us** |  **1.00** | **0.4120** |     **-** |     **-** |   **1.69 KB** |
+| ParseCacheManaged | Simple |  2.081 us | 0.0172 us | 0.0161 us |  1.05 | 0.3433 |     - |     - |   1.41 KB |
+|  ParseCacheUnsafe | Simple |  2.087 us | 0.0143 us | 0.0127 us |  1.06 | 0.3433 |     - |     - |   1.41 KB |

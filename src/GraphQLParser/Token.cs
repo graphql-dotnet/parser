@@ -20,18 +20,27 @@
         INT = 16,
         FLOAT = 17,
         STRING = 18,
-        COMMENT = 19
+        COMMENT = 19,
+        UNKNOWN = 20
     }
 
-    public class Token
+    public readonly struct Token
     {
-        public int End { get; set; }
+        public Token(TokenKind kind, string value, int start, int end)
+        {
+            Kind = kind;
+            Value = value;
+            Start = start;
+            End = end;
+        }
 
-        public TokenKind Kind { get; set; }
+        public int End { get; }
 
-        public int Start { get; set; }
+        public TokenKind Kind { get; }
 
-        public string Value { get; set; }
+        public int Start { get; }
+
+        public string Value { get; }
 
         public static string GetTokenKindDescription(TokenKind kind) => kind switch
         {

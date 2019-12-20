@@ -35,7 +35,7 @@
             ValidateCharacterCode(code);
 
             var token = CheckForPunctuationTokens(code);
-            if (token != null)
+            if (token.Kind != TokenKind.UNKNOWN)
                 return token;
 
             if (code == '#')
@@ -75,12 +75,12 @@
             value += source.Body.Substring(chunkStart, currentIndex - chunkStart);
 
             return new Token
-            {
-                Kind = TokenKind.COMMENT,
-                Value = value,
-                Start = start,
-                End = currentIndex + 1
-            };
+            (
+                TokenKind.COMMENT,
+                value,
+                start,
+                currentIndex + 1
+            );
         }
 
         public Token ReadNumber()
@@ -130,12 +130,12 @@
             var value = ProcessStringChunks();
 
             return new Token
-            {
-                Kind = TokenKind.STRING,
-                Value = value,
-                Start = start,
-                End = currentIndex + 1
-            };
+            (
+                TokenKind.STRING,
+                value,
+                start,
+                currentIndex + 1
+            );
         }
 
         private static bool IsValidNameCharacter(char code)
@@ -193,7 +193,7 @@
             '{' => CreatePunctuationToken(TokenKind.BRACE_L, 1),
             '|' => CreatePunctuationToken(TokenKind.PIPE, 1),
             '}' => CreatePunctuationToken(TokenKind.BRACE_R, 1),
-            _ => null
+            _ => CreateUnknownToken()
         };
 
         private Token CheckForSpreadOperator()
@@ -206,7 +206,7 @@
                 return CreatePunctuationToken(TokenKind.SPREAD, 3);
             }
 
-            return null;
+            return CreateUnknownToken();
         }
 
         private void CheckStringTermination(char code)
@@ -217,58 +217,70 @@
             }
         }
 
+        private Token CreateUnknownToken()
+        {
+            return new Token
+            (
+                TokenKind.UNKNOWN,
+                null,
+                currentIndex,
+                currentIndex
+            );
+        }
+
         private Token CreateEOFToken()
         {
             return new Token
-            {
-                Start = currentIndex,
-                End = currentIndex,
-                Kind = TokenKind.EOF
-            };
+            (
+                TokenKind.EOF,
+                null,
+                currentIndex,
+                currentIndex
+            );
         }
 
         private Token CreateFloatToken(int start)
         {
             return new Token
-            {
-                Kind = TokenKind.FLOAT,
-                Start = start,
-                End = currentIndex,
-                Value = source.Body.Substring(start, currentIndex - start)
-            };
+            (
+                TokenKind.FLOAT,
+                source.Body.Substring(start, currentIndex - start),
+                start,
+                currentIndex
+            );
         }
 
         private Token CreateIntToken(int start)
         {
             return new Token
-            {
-                Kind = TokenKind.INT,
-                Start = start,
-                End = currentIndex,
-                Value = cache.GetInt(source.Body, start, currentIndex)
-            };
+            (
+                TokenKind.INT,
+                cache.GetInt(source.Body, start, currentIndex),
+                start,
+                currentIndex
+            );
         }
 
         private Token CreateNameToken(int start)
         {
             return new Token
-            {
-                Start = start,
-                End = currentIndex,
-                Kind = TokenKind.NAME,
-                Value = cache.GetName(source.Body, start, currentIndex)
-            };
+            (
+                TokenKind.NAME,
+                cache.GetName(source.Body, start, currentIndex),
+                start,
+                currentIndex
+            );
         }
 
         private Token CreatePunctuationToken(TokenKind kind, int offset)
         {
             return new Token
-            {
-                Start = currentIndex,
-                End = currentIndex + offset,
-                Kind = kind,
-                Value = null
-            };
+            (
+                kind,
+                null,
+                currentIndex,
+                currentIndex + offset
+            );
         }
 
         private char GetCode()
