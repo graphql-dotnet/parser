@@ -89,5 +89,31 @@ namespace GraphQLParser
                 return num1 + num2 * 1566083941;
             }
         }
+
+        public static int ParseInt(string source, int start, int end)
+        {
+            if (end - start > 9)
+                throw new NotSupportedException();
+
+            int current = 0;
+
+            if (source[start] == '-')
+            {
+                ++start;
+                for (int i = end - 1, power = 1; i >= start; --i, power *= 10)
+                {
+                    current += (source[i] - '0') * power;
+                }
+                return -current;
+            }
+            else
+            {
+                for (int i = end - 1, power = 1; i >= start; --i, power *= 10)
+                {
+                    current += (source[i] - '0') * power;
+                }
+                return current;
+            }
+        }
     }
 }

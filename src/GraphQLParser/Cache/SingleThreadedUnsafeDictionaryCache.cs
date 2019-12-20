@@ -9,7 +9,12 @@ namespace GraphQLParser
 
         public void Clear() => _cache.Clear();
 
-        public string Get(string source, int start, int end)
+        public string GetInt(string source, int start, int end)
+        {
+            return source.Substring(start, end - start);
+        }
+
+        public string GetName(string source, int start, int end)
         {
             if (start == end)
                 return string.Empty;

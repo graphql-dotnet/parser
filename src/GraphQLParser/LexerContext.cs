@@ -245,7 +245,7 @@
                 Kind = TokenKind.INT,
                 Start = start,
                 End = currentIndex,
-                Value = source.Body.Substring(start, currentIndex - start)
+                Value = cache.GetInt(source.Body, start, currentIndex)
             };
         }
 
@@ -256,7 +256,7 @@
                 Start = start,
                 End = currentIndex,
                 Kind = TokenKind.NAME,
-                Value = cache.Get(source.Body, start, currentIndex)
+                Value = cache.GetName(source.Body, start, currentIndex)
             };
         }
 

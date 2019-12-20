@@ -6,10 +6,17 @@ namespace GraphQLParser
     public sealed class SingleThreadedDictionaryCache : ILexemeCache
     {
         private readonly Dictionary<int, object> _cache = new Dictionary<int, object>();
+        private readonly Dictionary<int, string> _intCache = new Dictionary<int, string>();
 
-        public void Clear() => _cache.Clear();
+        public void Clear()
+        {
+            _cache.Clear();
+            _intCache.Clear();
+        }
 
-        public string Get(string source, int start, int end)
+        public bool AllowIntCache { get; set; }
+
+        public string GetName(string source, int start, int end)
         {
             if (start == end)
                 return string.Empty;
@@ -53,6 +60,19 @@ namespace GraphQLParser
             }
             else
                 throw new NotSupportedException();
+        }
+
+        public string GetInt(string source, int start, int end)
+        {
+            if (!AllowIntCache || end - start > 9)
+                return source.Substring(start, end - start);
+
+            var hash = StringHelper.ParseInt(source, start, end);
+
+            if (!_intCache.TryGetValue(hash, out var value))
+                _intCache[hash] = value = source.Substring(start, end - start);
+
+            return value;
         }
     }
 }
