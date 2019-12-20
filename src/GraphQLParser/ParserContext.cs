@@ -61,10 +61,10 @@
             return new GraphQLDocument
             {
                 Location = new GraphQLLocation
-                {
-                    Start = start,
-                    End = currentToken.End
-                },
+                (
+                    start,
+                    currentToken.End
+                ),
                 Definitions = definitions
             };
         }
@@ -186,10 +186,10 @@
         private GraphQLLocation GetLocation(int start)
         {
             return new GraphQLLocation
-            {
-                Start = start,
-                End = currentToken.End
-            };
+            (
+                start,
+                currentToken.End
+            );
         }
 
         private GraphQLName GetName() => Peek(TokenKind.NAME) ? ParseName() : null;
@@ -316,10 +316,10 @@
             var comment = new GraphQLComment(string.Join(Environment.NewLine, text))
             {
                 Location = new GraphQLLocation
-                {
-                    Start = start,
-                    End = end
-                }
+                (
+                    start,
+                    end
+                )
             };
 
             if (comments == null)
