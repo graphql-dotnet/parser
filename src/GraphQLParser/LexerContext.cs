@@ -9,7 +9,7 @@
         private readonly ISource source;
         private readonly ILexemeCache cache;
 
-        public LexerContext(ISource source, int index) : this(source, index, new NoCache())
+        public LexerContext(ISource source, int index) : this(source, index, NoCache.Instance)
         {
         }
 
@@ -17,7 +17,7 @@
         {
             currentIndex = index;
             this.source = source;
-            this.cache = cache ?? new NoCache();
+            this.cache = cache ?? NoCache.Instance;
         }
 
         public Token GetToken()
