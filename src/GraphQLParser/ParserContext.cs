@@ -42,7 +42,7 @@
             return ParseType();
         }
 
-        private IEnumerable<T> Any<T>(TokenKind open, Func<T> next, TokenKind close)
+        private IEnumerable<T> Any<T>(TokenKind open, Func<ParserContext, T> next, TokenKind close)
             where T : ASTNode
         {
             Expect(open);
@@ -51,7 +51,7 @@
 
             var nodes = new SmallSizeOptimizedList<T>();
             while (!Skip(close))
-                nodes.Add(next());
+                nodes.Add(next(this));
 
             return nodes;
         }
@@ -206,15 +206,15 @@
             return typeCondition;
         }
 
-        private IEnumerable<T> Many<T>(TokenKind open, Func<T> next, TokenKind close)
+        private IEnumerable<T> Many<T>(TokenKind open, Func<ParserContext, T> next, TokenKind close)
         {
             Expect(open);
 
             ParseComment();
 
-            var nodes = new SmallSizeOptimizedList<T> { next() };
+            var nodes = new SmallSizeOptimizedList<T> { next(this) };
             while (!Skip(close))
-                nodes.Add(next());
+                nodes.Add(next(this));
 
             return nodes;
         }
@@ -240,13 +240,13 @@
                 return Array.Empty<GraphQLInputValueDefinition>();
             }
 
-            return Many(TokenKind.PAREN_L, () => ParseInputValueDef(), TokenKind.PAREN_R);
+            return Many(TokenKind.PAREN_L, context => context.ParseInputValueDef(), TokenKind.PAREN_R);
         }
 
         private IEnumerable<GraphQLArgument> ParseArguments()
         {
             return Peek(TokenKind.PAREN_L) ?
-                Many(TokenKind.PAREN_L, () => ParseArgument(), TokenKind.PAREN_R) :
+                Many(TokenKind.PAREN_L, context => context.ParseArgument(), TokenKind.PAREN_R) :
                 Array.Empty<GraphQLArgument>();
         }
 
@@ -410,7 +410,7 @@
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Values = Many(TokenKind.BRACE_L, ParseEnumValueDefinition, TokenKind.BRACE_R),
+                Values = Many(TokenKind.BRACE_L, context => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -560,7 +560,7 @@
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, () => ParseInputValueDef(), TokenKind.BRACE_R),
+                Fields = Any(TokenKind.BRACE_L, context => context.ParseInputValueDef(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -606,7 +606,7 @@
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, () => ParseFieldDefinition(), TokenKind.BRACE_R),
+                Fields = Any(TokenKind.BRACE_L, context => context.ParseFieldDefinition(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -614,8 +614,9 @@
         private GraphQLValue ParseList(bool isConstant)
         {
             var start = currentToken.Start;
-            Func<GraphQLValue> constant = () => ParseConstantValue();
-            Func<GraphQLValue> value = () => ParseValueValue();
+            // the compiler caches these delegates in the generated code
+            Func<ParserContext, GraphQLValue> constant = context => context.ParseConstantValue();
+            Func<ParserContext, GraphQLValue> value = context => context.ParseValueValue();
 
             return new GraphQLListValue(ASTNodeKind.ListValue)
             {
@@ -750,7 +751,7 @@
                 Name = ParseName(),
                 Interfaces = ParseImplementsInterfaces(),
                 Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, () => ParseFieldDefinition(), TokenKind.BRACE_R),
+                Fields = Any(TokenKind.BRACE_L, context => context.ParseFieldDefinition(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -818,7 +819,7 @@
             var start = currentToken.Start;
             ExpectKeyword("schema");
             var directives = ParseDirectives();
-            var operationTypes = Many(TokenKind.BRACE_L, () => ParseOperationTypeDefinition(), TokenKind.BRACE_R);
+            var operationTypes = Many(TokenKind.BRACE_L, context => context.ParseOperationTypeDefinition(), TokenKind.BRACE_R);
 
             return new GraphQLSchemaDefinition
             {
@@ -841,7 +842,7 @@
             var start = currentToken.Start;
             return new GraphQLSelectionSet
             {
-                Selections = Many(TokenKind.BRACE_L, () => ParseSelection(), TokenKind.BRACE_R),
+                Selections = Many(TokenKind.BRACE_L, context => context.ParseSelection(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -982,7 +983,7 @@
         private IEnumerable<GraphQLVariableDefinition> ParseVariableDefinitions()
         {
             return Peek(TokenKind.PAREN_L) ?
-                Many(TokenKind.PAREN_L, () => ParseVariableDefinition(), TokenKind.PAREN_R) :
+                Many(TokenKind.PAREN_L, context => context.ParseVariableDefinition(), TokenKind.PAREN_R) :
                 Array.Empty<GraphQLVariableDefinition>();
         }
 

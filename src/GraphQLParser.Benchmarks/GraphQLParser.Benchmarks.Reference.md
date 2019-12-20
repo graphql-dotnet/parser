@@ -59,3 +59,19 @@ Make `Stack<GraphQLComment>` allocation lazy:
 |             **Parse** | **Simple** |  **2.195 us** | **0.0532 us** | **0.0653 us** | **0.8316** |      **-** |     **-** |   **3.41 KB** |
 | ParseCacheManaged | Simple |  2.282 us | 0.0208 us | 0.0195 us | 0.6599 |      - |     - |    2.7 KB |
 |  ParseCacheUnsafe | Simple |  2.304 us | 0.0164 us | 0.0154 us | 0.6599 |      - |     - |    2.7 KB |
+
+Avoid `Func<T>` closure allocation:
+
+|            Method |  query |      Mean |     Error |    StdDev | Ratio | RatioSD |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
+|------------------ |------- |----------:|----------:|----------:|------:|--------:|-------:|-------:|------:|----------:|
+|             **Parse** | **Params** | **12.651 us** | **0.0699 us** | **0.0620 us** |  **1.00** |    **0.00** | **4.2267** | **0.0153** |     **-** |  **17.29 KB** |
+| ParseCacheManaged | Params | 12.683 us | 0.0965 us | 0.0754 us |  1.00 |    0.01 | 3.4637 |      - |     - |  14.17 KB |
+|  ParseCacheUnsafe | Params | 12.547 us | 0.0629 us | 0.0525 us |  0.99 |    0.00 | 3.4637 |      - |     - |  14.17 KB |
+|                   |        |           |           |           |       |         |        |        |       |           |
+|             **Parse** | **Schema** | **29.192 us** | **0.3598 us** | **0.3366 us** |  **1.00** |    **0.00** | **8.1482** | **0.0305** |     **-** |  **33.33 KB** |
+| ParseCacheManaged | Schema | 30.558 us | 0.2245 us | 0.1990 us |  1.05 |    0.01 | 6.3782 | 0.0610 |     - |  26.13 KB |
+|  ParseCacheUnsafe | Schema | 31.056 us | 0.2093 us | 0.1958 us |  1.06 |    0.02 | 6.3477 | 0.1221 |     - |  26.13 KB |
+|                   |        |           |           |           |       |         |        |        |       |           |
+|             **Parse** | **Simple** |  **2.201 us** | **0.0306 us** | **0.0286 us** |  **1.00** |    **0.00** | **0.7858** |      **-** |     **-** |   **3.22 KB** |
+| ParseCacheManaged | Simple |  2.302 us | 0.0171 us | 0.0160 us |  1.05 |    0.02 | 0.6142 |      - |     - |   2.52 KB |
+|  ParseCacheUnsafe | Simple |  2.286 us | 0.0368 us | 0.0344 us |  1.04 |    0.01 | 0.6142 |      - |     - |   2.52 KB |
