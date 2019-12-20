@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace GraphQLParser.Benchmarks
 {
     [MemoryDiagnoser]
+    [RPlotExporter, CsvMeasurementsExporter]
     public class ParserBenchmark
     {
         private ILexemeCache _cacheManaged;
@@ -16,7 +17,7 @@ namespace GraphQLParser.Benchmarks
             _cacheUnsafe = new SingleThreadedUnsafeDictionaryCache();
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         [ArgumentsSource(nameof(Queries))]
         public void Parse(Query query)
         {
