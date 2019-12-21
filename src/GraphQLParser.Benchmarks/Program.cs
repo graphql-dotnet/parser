@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
+using System;
 using System.Linq;
 using System.Threading;
 
@@ -6,21 +7,36 @@ namespace GraphQLParser.Benchmarks
 {
     internal static class Program
     {
-        private static void Main()
+        // Call without args for BenchmarkDotNet
+        // Call with some arbitrary args for any memory profiler
+        private static void Main(string[] args)
         {
-            BenchmarkRunner.Run<ParserBenchmark>();
+            if (args.Length == 0)
+                BenchmarkRunner.Run<ParserBenchmark>();
+            else
+                RunMemoryProfilerPayload();
         }
 
-        private static void Main1()
+        private static void RunMemoryProfilerPayload()
         {
             var bench = new ParserBenchmark();
             bench.GlobalSetup();
             var queries = bench.Queries().ToArray();
+            
+            int count = 0;
             while (true)
             {
-                bench.Parse(queries[2]);
+                bench.ParseCacheManaged(queries[2]);
+
                 Thread.Sleep(10);
+
+                ++count;
+                if (count == 500)
+                    break;
             }
+
+            Console.WriteLine("end");
+            Console.ReadLine();
         }
     }
 }
