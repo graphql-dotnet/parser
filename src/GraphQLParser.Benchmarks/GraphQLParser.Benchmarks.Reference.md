@@ -107,3 +107,19 @@ Make `Token` struct:
 |             **Parse** | **Simple** |  **1.975 us** | **0.0068 us** | **0.0053 us** |  **1.00** | **0.4120** |     **-** |     **-** |   **1.69 KB** |
 | ParseCacheManaged | Simple |  2.081 us | 0.0172 us | 0.0161 us |  1.05 | 0.3433 |     - |     - |   1.41 KB |
 |  ParseCacheUnsafe | Simple |  2.087 us | 0.0143 us | 0.0127 us |  1.06 | 0.3433 |     - |     - |   1.41 KB |
+
+Make `ParserContext` struct and avoid closure allocation in `ParseDefinitionsIfNotEOF` (yield):
+
+|            Method |  query |      Mean |     Error |    StdDev | Ratio |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
+|------------------ |------- |----------:|----------:|----------:|------:|-------:|-------:|------:|----------:|
+|             **Parse** | **Params** | **11.378 us** | **0.1056 us** | **0.0936 us** |  **1.00** | **2.1667** | **0.0153** |     **-** |   **8.87 KB** |
+| ParseCacheManaged | Params | 11.619 us | 0.0655 us | 0.0547 us |  1.02 | 1.9684 |      - |     - |   8.09 KB |
+|  ParseCacheUnsafe | Params | 11.732 us | 0.1053 us | 0.0985 us |  1.03 | 1.9684 |      - |     - |   8.09 KB |
+|                   |        |           |           |           |       |        |        |       |           |
+|             **Parse** | **Schema** | **25.675 us** | **0.1323 us** | **0.1238 us** |  **1.00** | **4.5776** |      **-** |     **-** |   **18.7 KB** |
+| ParseCacheManaged | Schema | 27.889 us | 0.1265 us | 0.1121 us |  1.09 | 3.7231 |      - |     - |  15.28 KB |
+|  ParseCacheUnsafe | Schema | 27.885 us | 0.1956 us | 0.1830 us |  1.09 | 3.7231 |      - |     - |  15.28 KB |
+|                   |        |           |           |           |       |        |        |       |           |
+|             **Parse** | **Simple** |  **1.917 us** | **0.0096 us** | **0.0090 us** |  **1.00** | **0.3853** |      **-** |     **-** |   **1.59 KB** |
+| ParseCacheManaged | Simple |  2.024 us | 0.0142 us | 0.0125 us |  1.06 | 0.3166 |      - |     - |    1.3 KB |
+|  ParseCacheUnsafe | Simple |  2.015 us | 0.0199 us | 0.0187 us |  1.05 | 0.3166 |      - |     - |    1.3 KB |

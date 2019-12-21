@@ -286,16 +286,20 @@
                     $"Unexpected {currentToken}", source, currentToken.Start);
         }
 
-        private IEnumerable<ASTNode> ParseDefinitionsIfNotEOF()
+        private List<ASTNode> ParseDefinitionsIfNotEOF()
         {
+            var result = new List<ASTNode>();
+
             if (currentToken.Kind != TokenKind.EOF)
             {
                 do
                 {
-                    yield return ParseDefinition();
+                    result.Add(ParseDefinition());
                 }
                 while (!Skip(TokenKind.EOF));
             }
+
+            return result;
         }
 
         private GraphQLComment ParseComment()
@@ -398,7 +402,7 @@
         private GraphQLDocument ParseDocument()
         {
             int start = currentToken.Start;
-            var definitions = ParseDefinitionsIfNotEOF().ToList();
+            var definitions = ParseDefinitionsIfNotEOF();
 
             return CreateDocument(start, definitions);
         }
