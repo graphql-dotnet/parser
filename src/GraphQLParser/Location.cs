@@ -2,7 +2,7 @@
 {
     using System.Text.RegularExpressions;
 
-    public class Location
+    internal readonly struct Location
     {
         public Location(ISource source, int position)
         {
@@ -21,8 +21,8 @@
             }
         }
 
-        public int Column { get; private set; }
+        public int Column { get; }
 
-        public int Line { get; private set; }
+        public int Line { get; }
     }
 }
