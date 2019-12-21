@@ -6,8 +6,11 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class ParserContext : IDisposable
+    // WARNING: mutable struct, pass it by reference to those methods that will change it
+    internal struct ParserContext : IDisposable
     {
+        private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
+
         private readonly ILexer lexer;
         private readonly ISource source;
         private Stack<GraphQLComment> comments;
@@ -15,6 +18,7 @@
 
         public ParserContext(ISource source, ILexer lexer)
         {
+            comments = null;
             this.source = source;
             this.lexer = lexer;
 
@@ -42,7 +46,7 @@
             return ParseType();
         }
 
-        private IEnumerable<T> Any<T>(TokenKind open, Func<ParserContext, T> next, TokenKind close)
+        private IEnumerable<T> Any<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
             where T : ASTNode
         {
             Expect(open);
@@ -51,7 +55,7 @@
 
             var nodes = new SmallSizeOptimizedList<T>();
             while (!Skip(close))
-                nodes.Add(next(this));
+                nodes.Add(next(ref this));
 
             return nodes;
         }
@@ -206,15 +210,15 @@
             return typeCondition;
         }
 
-        private IEnumerable<T> Many<T>(TokenKind open, Func<ParserContext, T> next, TokenKind close)
+        private IEnumerable<T> Many<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
         {
             Expect(open);
 
             ParseComment();
 
-            var nodes = new SmallSizeOptimizedList<T> { next(this) };
+            var nodes = new SmallSizeOptimizedList<T> { next(ref this) };
             while (!Skip(close))
-                nodes.Add(next(this));
+                nodes.Add(next(ref this));
 
             return nodes;
         }
@@ -240,13 +244,13 @@
                 return Array.Empty<GraphQLInputValueDefinition>();
             }
 
-            return Many(TokenKind.PAREN_L, context => context.ParseInputValueDef(), TokenKind.PAREN_R);
+            return Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
         }
 
         private IEnumerable<GraphQLArgument> ParseArguments()
         {
             return Peek(TokenKind.PAREN_L) ?
-                Many(TokenKind.PAREN_L, context => context.ParseArgument(), TokenKind.PAREN_R) :
+                Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R) :
                 Array.Empty<GraphQLArgument>();
         }
 
@@ -410,7 +414,7 @@
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Values = Many(TokenKind.BRACE_L, context => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
+                Values = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -560,7 +564,7 @@
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, context => context.ParseInputValueDef(), TokenKind.BRACE_R),
+                Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -606,7 +610,7 @@
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, context => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -615,8 +619,8 @@
         {
             var start = currentToken.Start;
             // the compiler caches these delegates in the generated code
-            Func<ParserContext, GraphQLValue> constant = context => context.ParseConstantValue();
-            Func<ParserContext, GraphQLValue> value = context => context.ParseValueValue();
+            ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseConstantValue();
+            ParseCallback<GraphQLValue > value = (ref ParserContext context) => context.ParseValueValue();
 
             return new GraphQLListValue(ASTNodeKind.ListValue)
             {
@@ -751,7 +755,7 @@
                 Name = ParseName(),
                 Interfaces = ParseImplementsInterfaces(),
                 Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, context => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -819,7 +823,7 @@
             var start = currentToken.Start;
             ExpectKeyword("schema");
             var directives = ParseDirectives();
-            var operationTypes = Many(TokenKind.BRACE_L, context => context.ParseOperationTypeDefinition(), TokenKind.BRACE_R);
+            var operationTypes = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseOperationTypeDefinition(), TokenKind.BRACE_R);
 
             return new GraphQLSchemaDefinition
             {
@@ -842,7 +846,7 @@
             var start = currentToken.Start;
             return new GraphQLSelectionSet
             {
-                Selections = Many(TokenKind.BRACE_L, context => context.ParseSelection(), TokenKind.BRACE_R),
+                Selections = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseSelection(), TokenKind.BRACE_R),
                 Location = GetLocation(start)
             };
         }
@@ -983,7 +987,7 @@
         private IEnumerable<GraphQLVariableDefinition> ParseVariableDefinitions()
         {
             return Peek(TokenKind.PAREN_L) ?
-                Many(TokenKind.PAREN_L, context => context.ParseVariableDefinition(), TokenKind.PAREN_R) :
+                Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R) :
                 Array.Empty<GraphQLVariableDefinition>();
         }
 

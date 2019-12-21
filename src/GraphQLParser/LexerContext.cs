@@ -3,15 +3,12 @@
     using Exceptions;
     using System;
 
-    public struct LexerContext
+    // WARNING: mutable struct, pass it by reference to those methods that will change it
+    internal struct LexerContext
     {
         private int currentIndex;
         private readonly ISource source;
         private readonly ILexemeCache cache;
-
-        public LexerContext(ISource source, int index) : this(source, index, NoCache.Instance)
-        {
-        }
 
         public LexerContext(ISource source, int index, ILexemeCache cache)
         {
