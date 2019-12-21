@@ -6,9 +6,9 @@ namespace GraphQLParser.AST
     {
         public GraphQLName Alias { get; set; }
 
-        public IEnumerable<GraphQLArgument> Arguments { get; set; }
+        public List<GraphQLArgument> Arguments { get; set; }
 
-        public IEnumerable<GraphQLDirective> Directives { get; set; }
+        public List<GraphQLDirective> Directives { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.Field;
 

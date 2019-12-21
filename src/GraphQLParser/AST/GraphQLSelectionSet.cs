@@ -6,6 +6,6 @@ namespace GraphQLParser.AST
     {
         public override ASTNodeKind Kind => ASTNodeKind.SelectionSet;
 
-        public IEnumerable<ASTNode> Selections { get; set; }
+        public List<ASTNode> Selections { get; set; }
     }
 }

@@ -4,7 +4,7 @@ namespace GraphQLParser.AST
 {
     public class GraphQLDirective : ASTNode, INamedNode
     {
-        public IEnumerable<GraphQLArgument> Arguments { get; set; }
+        public List<GraphQLArgument> Arguments { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.Directive;
 

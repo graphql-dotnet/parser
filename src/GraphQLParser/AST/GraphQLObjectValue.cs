@@ -4,7 +4,7 @@ namespace GraphQLParser.AST
 {
     public class GraphQLObjectValue : GraphQLValue
     {
-        public IEnumerable<GraphQLObjectField> Fields { get; set; }
+        public List<GraphQLObjectField> Fields { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
     }

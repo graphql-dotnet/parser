@@ -15,7 +15,7 @@
 
         public override ASTNodeKind Kind => kindField;
 
-        public IEnumerable<GraphQLValue> Values { get; set; }
+        public List<GraphQLValue> Values { get; set; }
 
         public override string ToString() => AstValue;
     }

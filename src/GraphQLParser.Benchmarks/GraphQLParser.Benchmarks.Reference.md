@@ -10,6 +10,24 @@ Frequency=3515629 Hz, Resolution=284.4441 ns, Timer=TSC
 
 ```
 
+Baseline (B) to current (C) comparison without cache:
+
+| Method |  query |  Mean (B) |  Mean (C) | Ratio | Allocated (B) | Allocated (C) | Ratio |
+|------- |------- |----------:|----------:|------:|--------------:|--------------:|------:|
+|  Parse | Params | 13.911 us | 10.235 us |  0.74 |      18.85 KB |       8.59 KB |  0.46 |
+|  Parse | Schema | 30.629 us | 23.523 us |  0.77 |      36.49 KB |      19.09 KB |  0.52 |
+|  Parse | Simple |  2.391 us |  1.754 us |  0.73 |       3.58 KB |       1.63 KB |  0.46 |
+
+Baseline (B) to current (C) comparison with cache:
+
+| Method |  query |  Mean (B) |  Mean (C) | Ratio | Allocated (B) | Allocated (C) | Ratio |
+|------- |------- |----------:|----------:|------:|--------------:|--------------:|------:|
+|  Parse | Params | 13.911 us | 10.743 us |  0.77 |      18.85 KB |       7.82 KB |  0.41 |
+|  Parse | Schema | 30.629 us | 26.048 us |  0.85 |      36.49 KB |      15.66 KB |  0.43 |
+|  Parse | Simple |  2.391 us |  1.860 us |  0.78 |       3.58 KB |       1.35 KB |  0.38 |
+
+___
+
 Baseline (710e1b7):
 
 | Method |  query |      Mean |     Error |    StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
@@ -123,3 +141,19 @@ Make `ParserContext` struct and avoid closure allocation in `ParseDefinitionsIfN
 |             **Parse** | **Simple** |  **1.917 us** | **0.0096 us** | **0.0090 us** |  **1.00** | **0.3853** |      **-** |     **-** |   **1.59 KB** |
 | ParseCacheManaged | Simple |  2.024 us | 0.0142 us | 0.0125 us |  1.06 | 0.3166 |      - |     - |    1.3 KB |
 |  ParseCacheUnsafe | Simple |  2.015 us | 0.0199 us | 0.0187 us |  1.05 | 0.3166 |      - |     - |    1.3 KB |
+
+Change all `IEnumerable<T>` to `List<T>` to avoid `List<T>.Enumerator` allocations on caller side:
+
+|            Method |  query |      Mean |     Error |    StdDev | Ratio |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|------------------ |------- |----------:|----------:|----------:|------:|-------:|------:|------:|----------:|
+|             **Parse** | **Params** | **10.235 us** | **0.0286 us** | **0.0267 us** |  **1.00** | **2.0905** |     **-** |     **-** |   **8.59 KB** |
+| ParseCacheManaged | Params | 10.743 us | 0.0397 us | 0.0371 us |  1.05 | 1.9073 |     - |     - |   7.82 KB |
+|  ParseCacheUnsafe | Params | 10.802 us | 0.1091 us | 0.0911 us |  1.06 | 1.9073 |     - |     - |   7.82 KB |
+|                   |        |           |           |           |       |        |       |       |           |
+|             **Parse** | **Schema** | **23.523 us** | **0.1073 us** | **0.0896 us** |  **1.00** | **4.6692** |     **-** |     **-** |  **19.09 KB** |
+| ParseCacheManaged | Schema | 26.048 us | 0.0814 us | 0.0721 us |  1.11 | 3.8147 |     - |     - |  15.66 KB |
+|  ParseCacheUnsafe | Schema | 25.921 us | 0.1116 us | 0.0989 us |  1.10 | 3.8147 |     - |     - |  15.66 KB |
+|                   |        |           |           |           |       |        |       |       |           |
+|             **Parse** | **Simple** |  **1.754 us** | **0.0140 us** | **0.0124 us** |  **1.00** | **0.3986** |     **-** |     **-** |   **1.63 KB** |
+| ParseCacheManaged | Simple |  1.860 us | 0.0086 us | 0.0076 us |  1.06 | 0.3300 |     - |     - |   1.35 KB |
+|  ParseCacheUnsafe | Simple |  1.850 us | 0.0036 us | 0.0030 us |  1.06 | 0.3300 |     - |     - |   1.35 KB |

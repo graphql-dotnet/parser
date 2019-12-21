@@ -46,16 +46,16 @@
             return ParseType();
         }
 
-        private IEnumerable<T> Any<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
+        private List<T> Any<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
             where T : ASTNode
         {
             Expect(open);
 
             ParseComment();
 
-            var nodes = new SmallSizeOptimizedList<T>();
+            List<T> nodes = null;
             while (!Skip(close))
-                nodes.Add(next(ref this));
+                (nodes ?? (nodes = new List<T>())).Add(next(ref this));
 
             return nodes;
         }
@@ -130,7 +130,6 @@
             {
                 Comment = comment,
                 Operation = OperationType.Query,
-                Directives = Array.Empty<GraphQLDirective>(),
                 SelectionSet = ParseSelectionSet(),
                 Location = GetLocation(start)
             };
@@ -210,13 +209,13 @@
             return typeCondition;
         }
 
-        private IEnumerable<T> Many<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
+        private List<T> Many<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
         {
             Expect(open);
 
             ParseComment();
 
-            var nodes = new SmallSizeOptimizedList<T> { next(ref this) };
+            var nodes = new List<T> { next(ref this) };
             while (!Skip(close))
                 nodes.Add(next(ref this));
 
@@ -237,21 +236,21 @@
             };
         }
 
-        private IEnumerable<GraphQLInputValueDefinition> ParseArgumentDefs()
+        private List<GraphQLInputValueDefinition> ParseArgumentDefs()
         {
             if (!Peek(TokenKind.PAREN_L))
             {
-                return Array.Empty<GraphQLInputValueDefinition>();
+                return null;
             }
 
             return Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
         }
 
-        private IEnumerable<GraphQLArgument> ParseArguments()
+        private List<GraphQLArgument> ParseArguments()
         {
             return Peek(TokenKind.PAREN_L) ?
                 Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R) :
-                Array.Empty<GraphQLArgument>();
+                null;
         }
 
         private GraphQLValue ParseBooleanValue(Token token)
@@ -309,7 +308,7 @@
                 return null;
             }
 
-            var text = new SmallSizeOptimizedList<string>();
+            var text = new List<string>();
             var start = currentToken.Start;
             int end;
 
@@ -373,9 +372,9 @@
             };
         }
 
-        private IEnumerable<GraphQLName> ParseDirectiveLocations()
+        private List<GraphQLName> ParseDirectiveLocations()
         {
-            var locations = new SmallSizeOptimizedList<GraphQLName>();
+            var locations = new List<GraphQLName>();
 
             // Directive locations may be defined with an optional leading | character
             // to aid formatting when representing a longer list of possible locations
@@ -387,16 +386,16 @@
             }
             while (Skip(TokenKind.PIPE));
 
-            return locations.AsEnumerable();
+            return locations;
         }
 
-        private IEnumerable<GraphQLDirective> ParseDirectives()
+        private List<GraphQLDirective> ParseDirectives()
         {
-            var directives = new SmallSizeOptimizedList<GraphQLDirective>();
+            List<GraphQLDirective> directives = null;
             while (Peek(TokenKind.AT))
-                directives.Add(ParseDirective());
+                (directives ?? (directives = new List<GraphQLDirective>())).Add(ParseDirective());
 
-            return directives.AsEnumerable();
+            return directives;
         }
 
         private GraphQLDocument ParseDocument()
@@ -540,11 +539,12 @@
             return ParseName();
         }
 
-        private IEnumerable<GraphQLNamedType> ParseImplementsInterfaces()
+        private List<GraphQLNamedType> ParseImplementsInterfaces()
         {
-            var types = new SmallSizeOptimizedList<GraphQLNamedType>();
+            List<GraphQLNamedType> types = null;
             if (currentToken.Value?.Equals("implements") == true)
             {
+                types = new List<GraphQLNamedType>();
                 Advance();
 
                 do
@@ -554,7 +554,7 @@
                 while (Peek(TokenKind.NAME));
             }
 
-            return types.AsEnumerable();
+            return types;
         }
 
         private GraphQLInputObjectTypeDefinition ParseInputObjectTypeDefinition()
@@ -735,15 +735,15 @@
             };
         }
 
-        private IEnumerable<GraphQLObjectField> ParseObjectFields(bool isConstant)
+        private List<GraphQLObjectField> ParseObjectFields(bool isConstant)
         {
-            var fields = new SmallSizeOptimizedList<GraphQLObjectField>();
+            var fields = new List<GraphQLObjectField>();
 
             Expect(TokenKind.BRACE_L);
             while (!Skip(TokenKind.BRACE_R))
                 fields.Add(ParseObjectField(isConstant));
 
-            return fields.AsEnumerable();
+            return fields;
         }
 
         private GraphQLObjectTypeDefinition ParseObjectTypeDefinition()
@@ -913,9 +913,9 @@
             };
         }
 
-        private IEnumerable<GraphQLNamedType> ParseUnionMembers()
+        private List<GraphQLNamedType> ParseUnionMembers()
         {
-            var members = new SmallSizeOptimizedList<GraphQLNamedType>();
+            var members = new List<GraphQLNamedType>();
 
             // Union members may be defined with an optional leading | character
             // to aid formatting when representing a longer list of possible types
@@ -927,7 +927,7 @@
             }
             while (Skip(TokenKind.PIPE));
 
-            return members.AsEnumerable();
+            return members;
         }
 
         private GraphQLUnionTypeDefinition ParseUnionTypeDefinition()
@@ -988,11 +988,11 @@
             };
         }
 
-        private IEnumerable<GraphQLVariableDefinition> ParseVariableDefinitions()
+        private List<GraphQLVariableDefinition> ParseVariableDefinitions()
         {
             return Peek(TokenKind.PAREN_L) ?
                 Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R) :
-                Array.Empty<GraphQLVariableDefinition>();
+                null;
         }
 
         private bool Peek(TokenKind kind) => currentToken.Kind == kind;
