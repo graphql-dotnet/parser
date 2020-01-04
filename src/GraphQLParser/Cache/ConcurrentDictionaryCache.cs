@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace GraphQLParser
 {
-    public sealed class SingleThreadedDictionaryCache : ILexemeCache
+    public sealed class ConcurrentDictionaryCache : ILexemeCache
     {
-        private readonly Dictionary<int, object> _cache = new Dictionary<int, object>();
-        private readonly Dictionary<int, string> _intCache = new Dictionary<int, string>();
+        private readonly ConcurrentDictionary<int, object> _cache = new ConcurrentDictionary<int, object>();
+        private readonly ConcurrentDictionary<int, string> _intCache = new ConcurrentDictionary<int, string>();
+        private readonly object _listLock = new object();
 
         public void Clear()
         {
@@ -48,15 +50,18 @@ namespace GraphQLParser
             }
             else if (value is List<string> list)
             {
-                // comparison by value among all elements of the list
-                foreach (var element in list)
-                    if (StringHelper.Equals(element, source, start, end))
-                        return element; // cache hit!
+                lock (_listLock)
+                {
+                    // comparison by value among all elements of the list
+                    foreach (var element in list)
+                        if (StringHelper.Equals(element, source, start, end))
+                            return element; // cache hit!
 
-                // an even rarer cache miss - repeated hash collision
-                var result = source.Substring(start, end - start);
-                list.Add(result);
-                return result;
+                    // an even rarer cache miss - repeated hash collision
+                    var result = source.Substring(start, end - start);
+                    list.Add(result);
+                    return result;
+                }
             }
             else
                 throw new NotSupportedException();
@@ -70,7 +75,13 @@ namespace GraphQLParser
             var hash = StringHelper.ParseInt(source, start, end);
 
             if (!_intCache.TryGetValue(hash, out var value))
-                _intCache[hash] = value = source.Substring(start, end - start);
+            {
+                // copy into locals to suppress too early closure allocation of Func<int, string>
+                var localSource = source;
+                var localStart = start;
+                var localEnd = end;
+                value = _intCache.GetOrAdd(hash, _ => localSource.Substring(localStart, localEnd - localStart));
+            }
 
             return value;
         }

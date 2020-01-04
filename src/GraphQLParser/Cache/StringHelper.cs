@@ -4,6 +4,15 @@ namespace GraphQLParser
 {
     internal static class StringHelper
     {
+        /// <summary>
+        /// Determines the equivalence of the string <paramref name="str"/> to a substring from <paramref name="source"/>
+        /// defined by the <paramref name="start"/> and <paramref name="end"/> index.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="source"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
         public static bool Equals(string str, string source, int start, int end)
         {
             if (str.Length != end - start)
@@ -16,28 +25,14 @@ namespace GraphQLParser
             return true;
         }
 
-        public static unsafe bool EqualsUnsafe(string str, string source, int start, int end)
-        {
-            if (str.Length != end - start)
-                return false;
-
-            fixed (char* fix1 = str)
-            {
-                fixed (char* fix2 = source)
-                {
-                    char* ptr1 = fix1;
-                    char* ptr2 = fix2 + start;
-                    while (*ptr1 == *ptr2)
-                    {
-                        ++ptr1;
-                        if (*ptr1 == '\0') return true;
-                        ++ptr2;
-                    }
-                    return false;
-                }
-            }
-        }
-
+        /// <summary>
+        /// Determines the hash code of the substring from the <paramref name="source"/> specified by
+        /// the <paramref name="start"/> and <paramref name="end"/> index.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
         public static int GetHashCode(string source, int start, int end)
         {
             if (start > source.Length || end > source.Length || start < 0 || end < 0)
@@ -64,32 +59,14 @@ namespace GraphQLParser
             return num1 + num2 * 1566083941;
         }
 
-        public static unsafe int GetHashCodeUnsafe(string source, int start, int end)
-        {
-            if (start > source.Length || end > source.Length || start < 0 || end < 0)
-                throw new IndexOutOfRangeException();
-
-            fixed (char* chPtr = source)
-            {
-                int num1 = 5381;
-                int num2 = num1;
-                int num3;
-                char* endPtr = chPtr + end - 1;
-                for (char* chPtr2 = chPtr + start; (num3 = *chPtr2) != 0 && chPtr2 <= endPtr; chPtr2 += 2)
-                {
-                    num1 = (num1 << 5) + num1 ^ num3;
-                    if (chPtr2 == endPtr)
-                        break;
-                    int num4 = chPtr2[1];
-                    if (num4 != 0)
-                        num2 = (num2 << 5) + num2 ^ num4;
-                    else
-                        break;
-                }
-                return num1 + num2 * 1566083941;
-            }
-        }
-
+        /// <summary>
+        /// Gets the integer value of the substring from the <paramref name="source"/> specified
+        /// by the <paramref name="start"/> and <paramref name="end"/> index.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
         public static int ParseInt(string source, int start, int end)
         {
             if (end - start > 9)

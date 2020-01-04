@@ -25,6 +25,15 @@ var token = lexer.Lex(new Source("\"str\""));
 Lex method always returns the first token it finds. In this case case the result would look like following.
 ![lexer example](assets/lexer-example.png)
 
+Also lexer can use the [cache](src/GraphQLParser/Cache/ILexemeCache.cs) to save on memory allocations for named tokens in the managed heap:
+```csharp
+var lexer = new Lexer { Cache = new DictionaryCache() };
+var lexer = new Lexer { Cache = new ConcurrentDictionaryCache() };
+```
+By default the cache is not used. You can find some results of testing with and without the cache in [this file](src/GraphQLParser.Benchmarks/GraphQLParser.Benchmarks.Reference.md).
+Keep in mind that the advantages and disadvantages of using the cache appear depending on the specific usage scenario, so it is strongly recommended that you obtain some metrics before
+and after using the cache to ensure that you achieve the desired result.
+
 ## Parser
 Parses provided GraphQL expression into AST (abstract syntax tree).
 ### Usage

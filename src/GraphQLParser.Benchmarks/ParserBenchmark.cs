@@ -7,14 +7,14 @@ namespace GraphQLParser.Benchmarks
     [RPlotExporter, CsvMeasurementsExporter]
     public class ParserBenchmark
     {
-        private ILexemeCache _cacheManaged;
-        private ILexemeCache _cacheUnsafe;
+        private ILexemeCache _serial;
+        private ILexemeCache _concurrent;
 
         [GlobalSetup]
         public void GlobalSetup()
         {
-            _cacheManaged = new SingleThreadedDictionaryCache();
-            _cacheUnsafe = new SingleThreadedUnsafeDictionaryCache();
+            _serial = new DictionaryCache();
+            _concurrent = new ConcurrentDictionaryCache();
         }
 
         [Benchmark(Baseline = true)]
@@ -27,17 +27,17 @@ namespace GraphQLParser.Benchmarks
 
         [Benchmark]
         [ArgumentsSource(nameof(Queries))]
-        public void ParseCacheManaged(Query query)
+        public void Serial(Query query)
         {
-            var parser = new Parser(new Lexer() { Cache = _cacheManaged });
+            var parser = new Parser(new Lexer() { Cache = _serial });
             parser.Parse(new Source(query.Text));
         }
 
         [Benchmark]
         [ArgumentsSource(nameof(Queries))]
-        public void ParseCacheUnsafe(Query query)
+        public void Concurrent(Query query)
         {
-            var parser = new Parser(new Lexer() { Cache = _cacheUnsafe });
+            var parser = new Parser(new Lexer() { Cache = _concurrent });
             parser.Parse(new Source(query.Text));
         }
 

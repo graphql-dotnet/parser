@@ -1,5 +1,8 @@
 ﻿namespace GraphQLParser
 {
+    /// <summary>
+    /// <see cref="ILexemeCache"/> implementation without caching. It is used by default.
+    /// </summary>
     public sealed class NoCache : ILexemeCache
     {
         public static readonly NoCache Instance = new NoCache();

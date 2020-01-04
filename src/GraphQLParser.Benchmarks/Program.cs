@@ -26,7 +26,7 @@ namespace GraphQLParser.Benchmarks
             int count = 0;
             while (true)
             {
-                bench.ParseCacheManaged(queries[2]);
+                bench.Concurrent(queries[2]);
 
                 Thread.Sleep(10);
 

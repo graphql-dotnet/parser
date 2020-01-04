@@ -3,23 +3,25 @@ using System.Collections.Generic;
 
 namespace GraphQLParser
 {
-    public sealed class SingleThreadedUnsafeDictionaryCache : ILexemeCache
+    public sealed class DictionaryCache : ILexemeCache
     {
         private readonly Dictionary<int, object> _cache = new Dictionary<int, object>();
+        private readonly Dictionary<int, string> _intCache = new Dictionary<int, string>();
 
-        public void Clear() => _cache.Clear();
-
-        public string GetInt(string source, int start, int end)
+        public void Clear()
         {
-            return source.Substring(start, end - start);
+            _cache.Clear();
+            _intCache.Clear();
         }
+
+        public bool AllowIntCache { get; set; }
 
         public string GetName(string source, int start, int end)
         {
             if (start == end)
                 return string.Empty;
 
-            var hash = StringHelper.GetHashCodeUnsafe(source, start, end);
+            var hash = StringHelper.GetHashCode(source, start, end);
 
             if (!_cache.TryGetValue(hash, out var value))
             {
@@ -31,7 +33,7 @@ namespace GraphQLParser
             else if (value is string str)
             {
                 // the string is already in cache, we need to compare
-                if (StringHelper.EqualsUnsafe(str, source, start, end))
+                if (StringHelper.Equals(str, source, start, end))
                 {
                     return str; // cache hit!
                 }
@@ -48,7 +50,7 @@ namespace GraphQLParser
             {
                 // comparison by value among all elements of the list
                 foreach (var element in list)
-                    if (StringHelper.EqualsUnsafe(element, source, start, end))
+                    if (StringHelper.Equals(element, source, start, end))
                         return element; // cache hit!
 
                 // an even rarer cache miss - repeated hash collision
@@ -58,6 +60,19 @@ namespace GraphQLParser
             }
             else
                 throw new NotSupportedException();
+        }
+
+        public string GetInt(string source, int start, int end)
+        {
+            if (!AllowIntCache || end - start > 9)
+                return source.Substring(start, end - start);
+
+            var hash = StringHelper.ParseInt(source, start, end);
+
+            if (!_intCache.TryGetValue(hash, out var value))
+                _intCache[hash] = value = source.Substring(start, end - start);
+
+            return value;
         }
     }
 }
