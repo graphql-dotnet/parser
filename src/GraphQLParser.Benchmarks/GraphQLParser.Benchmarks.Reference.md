@@ -30,7 +30,7 @@ Baseline (B) to current (C) comparison with concurrent cache:
 
 | Method |  query |  Mean (B) |  Mean (C) | Ratio | Allocated (B) | Allocated (C) | Ratio |
 |------- |------- |----------:|----------:|------:|--------------:|--------------:|------:|
-|  Parse | Params | 13.911 us | 11.113 us |  0.80 |      18.85 KB |       8.82 KB |  0.41 |
+|  Parse | Params | 13.911 us | 11.113 us |  0.80 |      18.85 KB |       7.82 KB |  0.41 |
 |  Parse | Schema | 30.629 us | 26.607 us |  0.87 |      36.49 KB |      15.66 KB |  0.43 |
 |  Parse | Simple |  2.391 us |  1.989 us |  0.83 |       3.58 KB |       1.35 KB |  0.38 |
 
