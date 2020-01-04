@@ -27,8 +27,9 @@ Lex method always returns the first token it finds. In this case case the result
 
 Also lexer can use the [cache](src/GraphQLParser/Cache/ILexemeCache.cs) to save on memory allocations for named tokens in the managed heap:
 ```csharp
-var lexer = new Lexer { Cache = new DictionaryCache() };
-var lexer = new Lexer { Cache = new ConcurrentDictionaryCache() };
+var cache = new DictionaryCache(); // for single-threaded usage
+var cache = new ConcurrentDictionaryCache(); // for multi-threaded usage
+var lexer = new Lexer { Cache = cache };           
 ```
 By default the cache is not used. You can find some results of testing with and without the cache in [this file](src/GraphQLParser.Benchmarks/GraphQLParser.Benchmarks.Reference.md).
 Keep in mind that the advantages and disadvantages of using the cache appear depending on the specific usage scenario, so it is strongly recommended that you obtain some metrics before
