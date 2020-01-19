@@ -4,6 +4,6 @@ namespace GraphQLParser.AST
 {
     public interface IHasDirectivesNode
     {
-        IEnumerable<GraphQLDirective> Directives { get; set; }
+        List<GraphQLDirective> Directives { get; set; }
     }
 }

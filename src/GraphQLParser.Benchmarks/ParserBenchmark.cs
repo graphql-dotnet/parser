@@ -4,18 +4,40 @@ using System.Collections.Generic;
 namespace GraphQLParser.Benchmarks
 {
     [MemoryDiagnoser]
+    [RPlotExporter, CsvMeasurementsExporter]
     public class ParserBenchmark
     {
+        private ILexemeCache _serial;
+        private ILexemeCache _concurrent;
+
         [GlobalSetup]
         public void GlobalSetup()
         {
+            _serial = new DictionaryCache();
+            _concurrent = new ConcurrentDictionaryCache();
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         [ArgumentsSource(nameof(Queries))]
         public void Parse(Query query)
         {
             var parser = new Parser(new Lexer());
+            parser.Parse(new Source(query.Text));
+        }
+
+        [Benchmark]
+        [ArgumentsSource(nameof(Queries))]
+        public void Serial(Query query)
+        {
+            var parser = new Parser(new Lexer() { Cache = _serial });
+            parser.Parse(new Source(query.Text));
+        }
+
+        [Benchmark]
+        [ArgumentsSource(nameof(Queries))]
+        public void Concurrent(Query query)
+        {
+            var parser = new Parser(new Lexer() { Cache = _concurrent });
             parser.Parse(new Source(query.Text));
         }
 

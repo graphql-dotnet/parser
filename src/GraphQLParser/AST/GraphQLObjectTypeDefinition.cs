@@ -4,11 +4,11 @@ namespace GraphQLParser.AST
 {
     public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
-        public IEnumerable<GraphQLDirective> Directives { get; set; }
+        public List<GraphQLDirective> Directives { get; set; }
 
-        public IEnumerable<GraphQLFieldDefinition> Fields { get; set; }
+        public List<GraphQLFieldDefinition> Fields { get; set; }
 
-        public IEnumerable<GraphQLNamedType> Interfaces { get; set; }
+        public List<GraphQLNamedType> Interfaces { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeDefinition;
     }

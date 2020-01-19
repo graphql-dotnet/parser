@@ -6,7 +6,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLValue DefaultValue { get; set; }
 
-        public IEnumerable<GraphQLDirective> Directives { get; set; }
+        public List<GraphQLDirective> Directives { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.InputValueDefinition;
 

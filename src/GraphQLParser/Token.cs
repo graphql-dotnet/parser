@@ -1,37 +1,22 @@
 ﻿namespace GraphQLParser
 {
-    public enum TokenKind
+    public readonly struct Token
     {
-        EOF = 1,
-        BANG = 2,
-        DOLLAR = 3,
-        PAREN_L = 4,
-        PAREN_R = 5,
-        SPREAD = 6,
-        COLON = 7,
-        EQUALS = 8,
-        AT = 9,
-        BRACKET_L = 10,
-        BRACKET_R = 11,
-        BRACE_L = 12,
-        PIPE = 13,
-        BRACE_R = 14,
-        NAME = 15,
-        INT = 16,
-        FLOAT = 17,
-        STRING = 18,
-        COMMENT = 19
-    }
+        public Token(TokenKind kind, string value, int start, int end)
+        {
+            Kind = kind;
+            Value = value;
+            Start = start;
+            End = end;
+        }
 
-    public class Token
-    {
-        public int End { get; set; }
+        public int End { get; }
 
-        public TokenKind Kind { get; set; }
+        public TokenKind Kind { get; }
 
-        public int Start { get; set; }
+        public int Start { get; }
 
-        public string Value { get; set; }
+        public string Value { get; }
 
         public static string GetTokenKindDescription(TokenKind kind) => kind switch
         {

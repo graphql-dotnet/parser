@@ -4,7 +4,7 @@ namespace GraphQLParser.AST
 {
     public class GraphQLOperationDefinition : ASTNode, IHasDirectivesNode, INamedNode
     {
-        public IEnumerable<GraphQLDirective> Directives { get; set; }
+        public List<GraphQLDirective> Directives { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
 
@@ -14,6 +14,6 @@ namespace GraphQLParser.AST
 
         public GraphQLSelectionSet SelectionSet { get; set; }
 
-        public IEnumerable<GraphQLVariableDefinition> VariableDefinitions { get; set; }
+        public List<GraphQLVariableDefinition> VariableDefinitions { get; set; }
     }
 }
