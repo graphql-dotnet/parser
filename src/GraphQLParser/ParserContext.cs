@@ -349,6 +349,12 @@
             };
         }
 
+        /// <summary>
+        /// http://spec.graphql.org/draft/#DirectiveDefinition
+        /// DirectiveDefinition:
+        ///     Description(opt) directive @ Name ArgumentsDefinition(opt) repeatable(opt) on DirectiveLocations
+        /// </summary>
+        /// <returns></returns>
         private GraphQLDirectiveDefinition ParseDirectiveDefinition()
         {
             var comment = GetComment();
@@ -358,6 +364,7 @@
 
             var name = ParseName();
             var args = ParseArgumentDefs();
+            var repeatable = ParseRepeatable();
 
             ExpectKeyword("on");
             var locations = ParseDirectiveLocations();
@@ -366,10 +373,30 @@
             {
                 Comment = comment,
                 Name = name,
+                Repeatable = repeatable,
                 Arguments = args,
                 Locations = locations,
                 Location = GetLocation(start)
             };
+        }
+
+        private bool ParseRepeatable()
+        {
+            if (Peek(TokenKind.NAME))
+            {
+                switch (currentToken.Value)
+                {
+                    case "repeatable":
+                        Advance();
+                        return true;
+                    case "on":
+                        return false;
+                    default:
+                        throw new GraphQLSyntaxErrorException($"Unexpected {currentToken}", source, currentToken.Start);
+                }
+            }
+
+            return false;
         }
 
         private List<GraphQLName> ParseDirectiveLocations()

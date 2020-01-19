@@ -395,22 +395,39 @@ directive @include(if: Boolean!)
         }
 
         [Theory]
-        [InlineData("directive @dir on FIELD_DEFINITION | ENUM_VALUE")]
-        [InlineData("directive @dir on | FIELD_DEFINITION | ENUM_VALUE")]
+        [InlineData("directive @dir repeatable on FIELD_DEFINITION", true)]
+        [InlineData("directive @dir(a: Int) repeatable on FIELD_DEFINITION", true)]
+        [InlineData("directive @dir on FIELD_DEFINITION | ENUM_VALUE", false)]
+        [InlineData("directive @dir on | FIELD_DEFINITION | ENUM_VALUE", false)]
         [InlineData(@"directive @dir on
-FIELD_DEFINITION | ENUM_VALUE")]
+FIELD_DEFINITION | ENUM_VALUE", false)]
         [InlineData(@"directive @dir on
 FIELD_DEFINITION
-| ENUM_VALUE")]
+| ENUM_VALUE", false)]
         [InlineData(@"directive @dir on
 | FIELD_DEFINITION
-| ENUM_VALUE")]
+| ENUM_VALUE", false)]
         [InlineData(@"directive @dir on   
 |  FIELD_DEFINITION
-|          ENUM_VALUE")]
-        public void Should_Parse_Directives(string text)
+|          ENUM_VALUE", false)]
+        public void Should_Parse_Directives(string text, bool repeatable)
         {
-            new Parser(new Lexer()).Parse(new Source(text)).ShouldNotBeNull();
+            var document = new Parser(new Lexer()).Parse(new Source(text));
+            document.ShouldNotBeNull();
+            document.Definitions.Count.ShouldBe(1);
+            document.Definitions[0].ShouldBeOfType<GraphQLDirectiveDefinition>().Repeatable.ShouldBe(repeatable);
+        }
+
+        [Theory]
+        [InlineData("directive @dir On FIELD_DEFINITION")]
+        [InlineData("directive @dir onn FIELD_DEFINITION")]
+        [InlineData("directive @dir Repeatable on FIELD_DEFINITION")]
+        [InlineData("directive @dir repeatablee on FIELD_DEFINITION")]
+        [InlineData("directive @dir repeatable On FIELD_DEFINITION")]
+        [InlineData("directive @dir repeatable onn FIELD_DEFINITION")]
+        public void Should_Throw_GraphQLSyntaxErrorException(string text)
+        {
+            Should.Throw<GraphQLSyntaxErrorException>(() => new Parser(new Lexer()).Parse(new Source(text)));
         }
 
         [Theory]
