@@ -2,11 +2,12 @@
 {
     using System.Text.RegularExpressions;
 
-    internal readonly struct Location
+    public readonly struct Location
     {
+        private static readonly Regex lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
+
         public Location(ISource source, int position)
         {
-            var lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
             Line = 1;
             Column = position + 1;
 
