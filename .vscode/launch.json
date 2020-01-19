@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/GraphQLParser.Tests/bin/Debug/netcoreapp3.0/GraphQLParser.Tests.dll",
+            "program": "${workspaceFolder}/src/GraphQLParser.Tests/bin/Debug/netcoreapp3.1/GraphQLParser.Tests.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/GraphQLParser.Tests",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
