@@ -6,7 +6,7 @@ export default function compile() {
   const deferred = new Deferred();
 
   const platform = process.platform === 'darwin'
-    ? '-f netcoreapp1.1'
+    ? '-f netcoreapp2.2'
     : '';
   const build = `dotnet build ${platform} -c ${settings.target}`;
 
@@ -15,6 +15,21 @@ export default function compile() {
 
   exec(build, (code, stdout, stderr)=> {
     if(code === 0) {
+      deferred.resolve();
+    } else {
+      deferred.reject(stderr);
+    }
+  });
+
+  popd();
+
+  const testApi = `dotnet build -f netcoreapp3.1 -c Debug`;
+
+  pushd('src/GraphQLParser.ApiTests')
+  console.log(testApi);
+
+  exec(testApi, { async: true }, (code, stdout, stderr) => {
+    if (code === 0) {
       deferred.resolve();
     } else {
       deferred.reject(stderr);
