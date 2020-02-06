@@ -201,6 +201,13 @@ scalar JSON
                 var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
                 var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
                 Assert.Equal($" multiline comments{NL} with very importand description #{NL} # and symbol # and ##", fieldDef.Comment.Text);
+
+                // Schema description
+                // https://github.com/graphql/graphql-spec/pull/466
+                var comment = document.Definitions.OfType<GraphQLSchemaDefinition>().First().Comment;
+                comment.ShouldNotBeNull();
+                comment.Text.ShouldNotBeNull();
+                comment.Text.StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
             }
         }
 
