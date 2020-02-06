@@ -6,6 +6,6 @@
 
         public OperationType Operation { get; set; }
 
-        public GraphQLNamedType Type { get; set; }
+        public GraphQLNamedType? Type { get; set; }
     }
 }

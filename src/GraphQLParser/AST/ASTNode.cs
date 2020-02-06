@@ -6,6 +6,6 @@
 
         public GraphQLLocation Location { get; set; }
 
-        public GraphQLComment Comment { get; set; }
+        public GraphQLComment? Comment { get; set; }
     }
 }

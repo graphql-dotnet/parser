@@ -2,6 +2,6 @@
 {
     public abstract class GraphQLTypeDefinition : ASTNode, INamedNode
     {
-        public GraphQLName Name { get; set; }
+        public GraphQLName? Name { get; set; }
     }
 }

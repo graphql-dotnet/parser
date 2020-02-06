@@ -4,8 +4,8 @@
     {
         public override ASTNodeKind Kind => ASTNodeKind.NamedType;
 
-        public GraphQLName Name { get; set; }
+        public GraphQLName? Name { get; set; }
 
-        public override string ToString() => Name.Value;
+        public override string ToString() => Name?.Value!;
     }
 }

@@ -7,8 +7,8 @@ namespace GraphQLParser.Benchmarks
     [RPlotExporter, CsvMeasurementsExporter]
     public class ParserBenchmark
     {
-        private ILexemeCache _serial;
-        private ILexemeCache _concurrent;
+        private ILexemeCache? _serial;
+        private ILexemeCache? _concurrent;
 
         [GlobalSetup]
         public void GlobalSetup()

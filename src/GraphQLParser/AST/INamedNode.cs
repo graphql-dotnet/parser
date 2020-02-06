@@ -2,6 +2,6 @@
 {
     public interface INamedNode
     {
-        GraphQLName Name { get; set; }
+        GraphQLName? Name { get; set; }
     }
 }

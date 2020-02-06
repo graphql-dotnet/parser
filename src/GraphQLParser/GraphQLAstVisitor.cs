@@ -1,6 +1,7 @@
 ﻿namespace GraphQLParser
 {
     using AST;
+    using System;
     using System.Collections.Generic;
 
     public class GraphQLAstVisitor
@@ -70,7 +71,7 @@
             BeginVisitNode(selection.Name);
 
             if (selection.Alias != null)
-                BeginVisitAlias((GraphQLName)BeginVisitNode(selection.Alias));
+                BeginVisitAlias((GraphQLName)BeginVisitNode(selection.Alias)!);
 
             if (selection.Arguments != null)
                 BeginVisitArguments(selection.Arguments);
@@ -135,7 +136,7 @@
             return typeCondition;
         }
 
-        public virtual ASTNode BeginVisitNode(ASTNode node) => node.Kind switch
+        public virtual ASTNode? BeginVisitNode(ASTNode? node) => node?.Kind switch
         {
             ASTNodeKind.OperationDefinition => BeginVisitOperationDefinition((GraphQLOperationDefinition)node),
             ASTNodeKind.SelectionSet => BeginVisitSelectionSet((GraphQLSelectionSet)node),
@@ -180,8 +181,11 @@
 
         public virtual GraphQLSelectionSet BeginVisitSelectionSet(GraphQLSelectionSet selectionSet)
         {
-            foreach (var selection in selectionSet.Selections)
-                BeginVisitNode(selection);
+            if (selectionSet.Selections != null)
+            {
+                foreach (var selection in selectionSet.Selections)
+                    BeginVisitNode(selection);
+            }
 
             return selectionSet;
         }
@@ -232,18 +236,25 @@
 
         public virtual void Visit(GraphQLDocument ast)
         {
-            foreach (var definition in ast.Definitions)
+            if (ast.Definitions != null)
             {
-                if (definition.Kind == ASTNodeKind.FragmentDefinition)
+                foreach (var definition in ast.Definitions)
                 {
-                    var fragment = (GraphQLFragmentDefinition)definition;
-                    Fragments.Add(fragment.Name.Value, fragment);
-                }
-            }
+                    if (definition.Kind == ASTNodeKind.FragmentDefinition)
+                    {
+                        var fragment = (GraphQLFragmentDefinition)definition;
+                        var name = fragment.Name?.Value;
+                        if (name == null)
+                            throw new InvalidOperationException("Fragment name cannot be null");
 
-            foreach (var definition in ast.Definitions)
-            {
-                BeginVisitNode(definition);
+                        Fragments.Add(name, fragment);
+                    }
+                }
+
+                foreach (var definition in ast.Definitions)
+                {
+                    BeginVisitNode(definition);
+                }
             }
         }
 
@@ -258,8 +269,11 @@
 
         public virtual GraphQLObjectValue BeginVisitObjectValue(GraphQLObjectValue node)
         {
-            foreach (var field in node.Fields)
-                BeginVisitNode(field);
+            if (node.Fields != null)
+            {
+                foreach (var field in node.Fields)
+                    BeginVisitNode(field);
+            }
 
             return EndVisitObjectValue(node);
         }
@@ -276,8 +290,11 @@
 
         private ASTNode BeginVisitListValue(GraphQLListValue node)
         {
-            foreach (var value in node.Values)
-                BeginVisitNode(value);
+            if (node.Values != null)
+            {
+                foreach (var value in node.Values)
+                    BeginVisitNode(value);
+            }
 
             return EndVisitListValue(node);
         }

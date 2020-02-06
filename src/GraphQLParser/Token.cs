@@ -2,7 +2,7 @@
 {
     public readonly struct Token
     {
-        public Token(TokenKind kind, string value, int start, int end)
+        public Token(TokenKind kind, string? value, int start, int end)
         {
             Kind = kind;
             Value = value;
@@ -16,7 +16,7 @@
 
         public int Start { get; }
 
-        public string Value { get; }
+        public string? Value { get; }
 
         public static string GetTokenKindDescription(TokenKind kind) => kind switch
         {

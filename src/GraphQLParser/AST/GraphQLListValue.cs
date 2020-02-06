@@ -11,12 +11,12 @@
             kindField = kind;
         }
 
-        public string AstValue { get; set; }
+        public string? AstValue { get; set; }
 
         public override ASTNodeKind Kind => kindField;
 
-        public List<GraphQLValue> Values { get; set; }
+        public List<GraphQLValue>? Values { get; set; }
 
-        public override string ToString() => AstValue;
+        public override string ToString() => AstValue!;
     }
 }

@@ -7,6 +7,6 @@ namespace GraphQLParser.AST
     {
         public override ASTNodeKind Kind => ASTNodeKind.Name;
 
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

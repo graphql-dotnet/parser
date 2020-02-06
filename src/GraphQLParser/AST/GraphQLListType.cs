@@ -4,7 +4,7 @@
     {
         public override ASTNodeKind Kind => ASTNodeKind.ListType;
 
-        public GraphQLType Type { get; set; }
+        public GraphQLType? Type { get; set; }
 
         public override string ToString() => $"[{Type}]";
     }
