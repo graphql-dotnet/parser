@@ -4,6 +4,6 @@
     {
         public override ASTNodeKind Kind => ASTNodeKind.FragmentDefinition;
 
-        public GraphQLName Name { get; set; }
+        public GraphQLName? Name { get; set; }
     }
 }

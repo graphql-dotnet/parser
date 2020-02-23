@@ -2,7 +2,7 @@
 {
     public class GraphQLTypeExtensionDefinition : GraphQLTypeDefinition
     {
-        public GraphQLObjectTypeDefinition Definition { get; set; }
+        public GraphQLObjectTypeDefinition? Definition { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.TypeExtensionDefinition;
     }

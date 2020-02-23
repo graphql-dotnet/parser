@@ -10,7 +10,7 @@
         private readonly ISource source;
         private readonly ILexemeCache cache;
 
-        public LexerContext(ISource source, int index, ILexemeCache cache)
+        public LexerContext(ISource source, int index, ILexemeCache? cache)
         {
             currentIndex = index;
             this.source = source;
@@ -339,7 +339,7 @@
                 CharToHex(NextCode()));
         }
 
-        private string IfUnicodeGetString()
+        private string? IfUnicodeGetString()
         {
             return source.Body.Length > currentIndex + 5 &&
                 OnlyHexInString(source.Body.Substring(currentIndex + 2, 4))
@@ -434,7 +434,7 @@
             return CreateNameToken(start);
         }
 
-        private string ResolveCharName(char code, string unicodeString = null)
+        private string ResolveCharName(char code, string? unicodeString = null)
         {
             if (code == '\0')
                 return "<EOF>";

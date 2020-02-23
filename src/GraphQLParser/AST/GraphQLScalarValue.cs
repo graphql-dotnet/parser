@@ -11,14 +11,14 @@
 
         public override ASTNodeKind Kind => kindField;
 
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         public override string ToString()
         {
             if (Kind == ASTNodeKind.StringValue)
                 return $"\"{Value}\"";
 
-            return Value;
+            return Value!;
         }
     }
 }

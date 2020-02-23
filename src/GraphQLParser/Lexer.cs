@@ -2,7 +2,7 @@
 {
     public class Lexer : ILexer
     {
-        public ILexemeCache Cache { get; set; }
+        public ILexemeCache? Cache { get; set; }
 
         public Token Lex(ISource source) => Lex(source, 0);
 

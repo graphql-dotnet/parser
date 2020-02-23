@@ -13,7 +13,7 @@
 
         private readonly ILexer lexer;
         private readonly ISource source;
-        private Stack<GraphQLComment> comments;
+        private Stack<GraphQLComment>? comments;
         private Token currentToken;
 
         public ParserContext(ISource source, ILexer lexer)
@@ -31,7 +31,7 @@
                 throw new ApplicationException($"ParserContext has {comments.Count} not applied comments.");
         }
 
-        public GraphQLComment GetComment() => comments?.Count > 0 ? comments.Pop() : null;
+        public GraphQLComment? GetComment() => comments?.Count > 0 ? comments.Pop() : null;
 
         public GraphQLDocument Parse() => ParseDocument();
 
@@ -46,14 +46,14 @@
             return ParseType();
         }
 
-        private List<T> Any<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
+        private List<T>? Any<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
             where T : ASTNode
         {
             Expect(open);
 
             ParseComment();
 
-            List<T> nodes = null;
+            List<T>? nodes = null;
             while (!Skip(close))
                 (nodes ?? (nodes = new List<T>())).Add(next(ref this));
 
@@ -73,7 +73,7 @@
             };
         }
 
-        private GraphQLFieldSelection CreateFieldSelection(int start, GraphQLName name, GraphQLName alias, GraphQLComment comment)
+        private GraphQLFieldSelection CreateFieldSelection(int start, GraphQLName name, GraphQLName? alias, GraphQLComment? comment)
         {
             return new GraphQLFieldSelection
             {
@@ -108,7 +108,7 @@
             };
         }
 
-        private ASTNode CreateOperationDefinition(int start, OperationType operation, GraphQLName name)
+        private ASTNode CreateOperationDefinition(int start, OperationType operation, GraphQLName? name)
         {
             var comment = GetComment();
             return new GraphQLOperationDefinition
@@ -159,7 +159,7 @@
         private void ExpectKeyword(string keyword)
         {
             var token = currentToken;
-            if (token.Kind == TokenKind.NAME && token.Value.Equals(keyword))
+            if (token.Kind == TokenKind.NAME && keyword.Equals(token.Value))
             {
                 Advance();
                 return;
@@ -175,9 +175,9 @@
             return ParseNamedType();
         }
 
-        private GraphQLValue GetDefaultConstantValue()
+        private GraphQLValue? GetDefaultConstantValue()
         {
-            GraphQLValue defaultValue = null;
+            GraphQLValue? defaultValue = null;
             if (Skip(TokenKind.EQUALS))
             {
                 defaultValue = ParseConstantValue();
@@ -195,11 +195,11 @@
             );
         }
 
-        private GraphQLName GetName() => Peek(TokenKind.NAME) ? ParseName() : null;
+        private GraphQLName? GetName() => Peek(TokenKind.NAME) ? ParseName() : null;
 
-        private GraphQLNamedType GetTypeCondition()
+        private GraphQLNamedType? GetTypeCondition()
         {
-            GraphQLNamedType typeCondition = null;
+            GraphQLNamedType? typeCondition = null;
             if (currentToken.Value != null && currentToken.Value.Equals("on"))
             {
                 Advance();
@@ -236,7 +236,7 @@
             };
         }
 
-        private List<GraphQLInputValueDefinition> ParseArgumentDefs()
+        private List<GraphQLInputValueDefinition>? ParseArgumentDefs()
         {
             if (!Peek(TokenKind.PAREN_L))
             {
@@ -246,7 +246,7 @@
             return Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
         }
 
-        private List<GraphQLArgument> ParseArguments()
+        private List<GraphQLArgument>? ParseArguments()
         {
             return Peek(TokenKind.PAREN_L) ?
                 Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R) :
@@ -276,7 +276,7 @@
 
             if (Peek(TokenKind.NAME))
             {
-                ASTNode definition;
+                ASTNode? definition;
                 if ((definition = ParseNamedDefinition()) != null)
                     return definition;
             }
@@ -301,14 +301,14 @@
             return result;
         }
 
-        private GraphQLComment ParseComment()
+        private GraphQLComment? ParseComment()
         {
             if (!Peek(TokenKind.COMMENT))
             {
                 return null;
             }
 
-            var text = new List<string>();
+            var text = new List<string?>();
             var start = currentToken.Start;
             int end;
 
@@ -416,9 +416,9 @@
             return locations;
         }
 
-        private List<GraphQLDirective> ParseDirectives()
+        private List<GraphQLDirective>? ParseDirectives()
         {
-            List<GraphQLDirective> directives = null;
+            List<GraphQLDirective>? directives = null;
             while (Peek(TokenKind.AT))
                 (directives ?? (directives = new List<GraphQLDirective>())).Add(ParseDirective());
 
@@ -498,7 +498,7 @@
             var start = currentToken.Start;
             var nameOrAlias = ParseName();
             GraphQLName name;
-            GraphQLName alias;
+            GraphQLName? alias;
 
             if (Skip(TokenKind.COLON))
             {
@@ -530,7 +530,7 @@
             var start = currentToken.Start;
             Expect(TokenKind.SPREAD);
 
-            if (Peek(TokenKind.NAME) && !currentToken.Value.Equals("on"))
+            if (Peek(TokenKind.NAME) && !"on".Equals(currentToken.Value))
             {
                 return CreateGraphQLFragmentSpread(start);
             }
@@ -557,7 +557,7 @@
 
         private GraphQLName ParseFragmentName()
         {
-            if (currentToken.Value.Equals("on"))
+            if ("on".Equals(currentToken.Value))
             {
                 throw new GraphQLSyntaxErrorException(
                     $"Unexpected {currentToken}", source, currentToken.Start);
@@ -566,9 +566,9 @@
             return ParseName();
         }
 
-        private List<GraphQLNamedType> ParseImplementsInterfaces()
+        private List<GraphQLNamedType>? ParseImplementsInterfaces()
         {
-            List<GraphQLNamedType> types = null;
+            List<GraphQLNamedType>? types = null;
             if (currentToken.Value?.Equals("implements") == true)
             {
                 types = new List<GraphQLNamedType>();
@@ -675,7 +675,7 @@
             };
         }
 
-        private ASTNode ParseNamedDefinition()
+        private ASTNode? ParseNamedDefinition()
         {
             return currentToken.Value switch
             {
@@ -710,7 +710,7 @@
         {
             var token = currentToken;
 
-            if (token.Value.Equals("true") || token.Value.Equals("false"))
+            if ("true".Equals(token.Value) || "false".Equals(token.Value))
             {
                 return ParseBooleanValue(token);
             }
@@ -1015,7 +1015,7 @@
             };
         }
 
-        private List<GraphQLVariableDefinition> ParseVariableDefinitions()
+        private List<GraphQLVariableDefinition>? ParseVariableDefinitions()
         {
             return Peek(TokenKind.PAREN_L) ?
                 Many(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R) :
@@ -1038,7 +1038,7 @@
             return isCurrentTokenMatching;
         }
 
-        private object SkipEqualsAndParseValueLiteral()
+        private object? SkipEqualsAndParseValueLiteral()
         {
             return Skip(TokenKind.EQUALS) ? ParseValueLiteral(true) : null;
         }
