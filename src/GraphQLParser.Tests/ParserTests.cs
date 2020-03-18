@@ -13,6 +13,80 @@
         private static readonly string NL = Environment.NewLine;
 
         [Fact]
+        public void Comments_on_FragmentSpread_Should_Read_Correclty()
+        {
+            const string query = @"
+query _ {
+    person {
+        #comment
+        ...human
+    }
+}
+
+fragment human on person {
+        name
+}";
+
+            var parser = new Parser(new Lexer());
+            var document = parser.Parse(new Source(query));
+            document.Definitions.Count().ShouldBe(2);
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count().ShouldBe(1);
+            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            field.SelectionSet.Selections.Count().ShouldBe(1);
+            var fragment = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
+            fragment.Comment.Text.ShouldBe("comment");
+        }
+
+        [Fact]
+        public void Comments_on_FragmentInline_Should_Read_Correclty()
+        {
+            const string query = @"
+query _ {
+    person {
+        #comment
+        ... on human {
+            name
+        }
+    }
+}";
+
+            var parser = new Parser(new Lexer());
+            var document = parser.Parse(new Source(query));
+            document.Definitions.Count().ShouldBe(1);
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count().ShouldBe(1);
+            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            field.SelectionSet.Selections.Count().ShouldBe(1);
+            var fragment = field.SelectionSet.Selections.First() as GraphQLInlineFragment;
+            fragment.Comment.Text.ShouldBe("comment");
+        }
+
+        [Fact]
+        public void Comments_on_Variable_Should_Read_Correclty()
+        {
+            const string query = @"
+query _(
+    #comment1
+    $id: ID,
+    $id2: String!,
+    #comment3
+    $id3: String) {
+    person {
+        name
+    }
+}";
+
+            var parser = new Parser(new Lexer());
+            var document = parser.Parse(new Source(query));
+            document.Definitions.Count().ShouldBe(1);
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.VariableDefinitions.Count().ShouldBe(3);
+            def.VariableDefinitions.First().Comment.Text.ShouldBe("comment1");
+            def.VariableDefinitions.Skip(2).First().Comment.Text.ShouldBe("comment3");
+        }
+
+        [Fact]
         public void Comments_On_SelectionSet_Should_Read_Correctly()
         {
             var parser = new Parser(new Lexer());
