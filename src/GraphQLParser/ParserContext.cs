@@ -87,20 +87,22 @@
             };
         }
 
-        private ASTNode CreateGraphQLFragmentSpread(int start)
+        private ASTNode CreateGraphQLFragmentSpread(int start, GraphQLComment? comment)
         {
             return new GraphQLFragmentSpread
             {
+                Comment = comment,
                 Name = ParseFragmentName(),
                 Directives = ParseDirectives(),
                 Location = GetLocation(start)
             };
         }
 
-        private ASTNode CreateInlineFragment(int start)
+        private ASTNode CreateInlineFragment(int start, GraphQLComment? comment)
         {
             return new GraphQLInlineFragment
             {
+                Comment = comment,
                 TypeCondition = GetTypeCondition(),
                 Directives = ParseDirectives(),
                 SelectionSet = ParseSelectionSet(),
@@ -527,15 +529,16 @@
 
         private ASTNode ParseFragment()
         {
+            var comment = GetComment();
             var start = currentToken.Start;
             Expect(TokenKind.SPREAD);
 
             if (Peek(TokenKind.NAME) && !"on".Equals(currentToken.Value))
             {
-                return CreateGraphQLFragmentSpread(start);
+                return CreateGraphQLFragmentSpread(start, comment);
             }
 
-            return CreateInlineFragment(start);
+            return CreateInlineFragment(start, comment);
         }
 
         private GraphQLFragmentDefinition ParseFragmentDefinition()
@@ -1005,9 +1008,12 @@
 
         private GraphQLVariableDefinition ParseVariableDefinition()
         {
+            var comment = GetComment();
             int start = currentToken.Start;
+
             return new GraphQLVariableDefinition
             {
+                Comment = comment,
                 Variable = ParseVariable(),
                 Type = AdvanceThroughColonAndParseType(),
                 DefaultValue = SkipEqualsAndParseValueLiteral(),
