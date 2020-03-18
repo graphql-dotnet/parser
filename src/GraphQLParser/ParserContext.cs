@@ -91,8 +91,8 @@
         {
             return new GraphQLFragmentSpread
             {
-                Name = ParseFragmentName(),
                 Comment = comment,
+                Name = ParseFragmentName(),
                 Directives = ParseDirectives(),
                 Location = GetLocation(start)
             };
@@ -1008,10 +1008,12 @@
 
         private GraphQLVariableDefinition ParseVariableDefinition()
         {
+            var comment = GetComment();
             int start = currentToken.Start;
+
             return new GraphQLVariableDefinition
             {
-                Comment = GetComment(),
+                Comment = comment,
                 Variable = ParseVariable(),
                 Type = AdvanceThroughColonAndParseType(),
                 DefaultValue = SkipEqualsAndParseValueLiteral(),
