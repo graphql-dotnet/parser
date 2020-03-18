@@ -91,8 +91,8 @@
         {
             return new GraphQLFragmentSpread
             {
-                Name = ParseFragmentName(),
                 Comment = comment,
+                Name = ParseFragmentName(),
                 Directives = ParseDirectives(),
                 Location = GetLocation(start)
             };
