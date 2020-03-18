@@ -83,6 +83,7 @@ query _(
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.VariableDefinitions.Count().ShouldBe(3);
             def.VariableDefinitions.First().Comment.Text.ShouldBe("comment1");
+            def.VariableDefinitions.Skip(1).First().Comment.ShouldBeNull();
             def.VariableDefinitions.Skip(2).First().Comment.Text.ShouldBe("comment3");
         }
 
