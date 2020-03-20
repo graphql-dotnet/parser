@@ -1,9 +1,9 @@
-﻿namespace GraphQLParser.Exceptions
-{
-    using System;
-    using System.Linq;
-    using System.Text;
+using System;
+using System.Linq;
+using System.Text;
 
+namespace GraphQLParser.Exceptions
+{
     public class GraphQLSyntaxErrorException : Exception
     {
         public GraphQLSyntaxErrorException(string description, ISource source, int location)
@@ -21,12 +21,12 @@
 
         private static string HighlightSourceAtLocation(ISource source, Location location)
         {
-            var line = location.Line;
-            var prevLineNum = (line - 1).ToString();
-            var lineNum = line.ToString();
-            var nextLineNum = (line + 1).ToString();
-            var padLen = nextLineNum.Length;
-            var lines = source.Body
+            int line = location.Line;
+            string prevLineNum = (line - 1).ToString();
+            string lineNum = line.ToString();
+            string nextLineNum = (line + 1).ToString();
+            int padLen = nextLineNum.Length;
+            string[] lines = source.Body
                 .Split(new string[] { "\n" }, StringSplitOptions.None)
                 .Select(e => ReplaceWithUnicodeRepresentation(e))
                 .ToArray();
@@ -42,7 +42,7 @@
         {
             string pad = string.Empty;
 
-            for (var i = 0; i < length - str.Length; i++)
+            for (int i = 0; i < length - str.Length; i++)
                 pad += " ";
 
             return pad + str;
@@ -55,7 +55,7 @@
 
             var buffer = new StringBuilder(str.Length);
 
-            foreach (var code in str)
+            foreach (char code in str)
             {
                 if (IsReplacementCharacter(code))
                 {
@@ -72,7 +72,7 @@
 
         private static bool HasReplacementCharacter(string str)
         {
-            foreach (var code in str)
+            foreach (char code in str)
             {
                 if (IsReplacementCharacter(code))
                     return true;

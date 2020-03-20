@@ -1,19 +1,19 @@
-﻿namespace GraphQLParser
-{
-    using GraphQLParser.AST;
+using GraphQLParser.AST;
 
+namespace GraphQLParser
+{
     public class Parser
     {
-        private readonly ILexer lexer;
+        private readonly ILexer _lexer;
 
         public Parser(ILexer lexer)
         {
-            this.lexer = lexer;
+            _lexer = lexer;
         }
 
         public GraphQLDocument Parse(ISource source)
         {
-            using var context = new ParserContext(source, lexer);
+            using var context = new ParserContext(source, _lexer);
             return context.Parse();
         }
     }

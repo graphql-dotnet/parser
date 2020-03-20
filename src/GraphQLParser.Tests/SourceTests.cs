@@ -1,9 +1,8 @@
-﻿using Xunit;
+using Xunit;
+using GraphQLParser;
 
 namespace GraphQLParser.Tests
 {
-    using GraphQLParser;
-
     public class SourceTests
     {
         [Fact]

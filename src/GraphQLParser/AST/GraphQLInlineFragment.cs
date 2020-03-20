@@ -1,7 +1,7 @@
-﻿namespace GraphQLParser.AST
-{
-    using System.Collections.Generic;
+using System.Collections.Generic;
 
+namespace GraphQLParser.AST
+{
     public class GraphQLInlineFragment : ASTNode, IHasDirectivesNode
     {
         public List<GraphQLDirective>? Directives { get; set; }

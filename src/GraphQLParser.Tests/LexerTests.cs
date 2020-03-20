@@ -1,9 +1,9 @@
-﻿namespace GraphQLParser.Tests
-{
-    using GraphQLParser;
-    using System;
-    using Xunit;
+using System;
+using Xunit;
 
+namespace GraphQLParser.Tests
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "Tests")]
     public class LexerTests
     {
         private static readonly string NL = Environment.NewLine;

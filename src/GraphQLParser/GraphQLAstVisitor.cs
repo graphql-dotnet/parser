@@ -1,9 +1,9 @@
-﻿namespace GraphQLParser
-{
-    using AST;
-    using System;
-    using System.Collections.Generic;
+using GraphQLParser.AST;
+using System;
+using System.Collections.Generic;
 
+namespace GraphQLParser
+{
     public class GraphQLAstVisitor
     {
         protected IDictionary<string, GraphQLFragmentDefinition> Fragments { get; private set; }
@@ -13,10 +13,7 @@
             Fragments = new Dictionary<string, GraphQLFragmentDefinition>();
         }
 
-        public virtual GraphQLName BeginVisitAlias(GraphQLName alias)
-        {
-            return alias;
-        }
+        public virtual GraphQLName BeginVisitAlias(GraphQLName alias) => alias;
 
         public virtual GraphQLArgument BeginVisitArgument(GraphQLArgument argument)
         {
@@ -37,10 +34,7 @@
             return arguments;
         }
 
-        public virtual GraphQLScalarValue BeginVisitBooleanValue(GraphQLScalarValue value)
-        {
-            return value;
-        }
+        public virtual GraphQLScalarValue BeginVisitBooleanValue(GraphQLScalarValue value) => value;
 
         public virtual GraphQLDirective BeginVisitDirective(GraphQLDirective directive)
         {
@@ -61,10 +55,7 @@
             return directives;
         }
 
-        public virtual GraphQLScalarValue BeginVisitEnumValue(GraphQLScalarValue value)
-        {
-            return value;
-        }
+        public virtual GraphQLScalarValue BeginVisitEnumValue(GraphQLScalarValue value) => value;
 
         public virtual GraphQLFieldSelection BeginVisitFieldSelection(GraphQLFieldSelection selection)
         {
@@ -85,10 +76,7 @@
             return EndVisitFieldSelection(selection);
         }
 
-        public virtual GraphQLScalarValue BeginVisitFloatValue(GraphQLScalarValue value)
-        {
-            return value;
-        }
+        public virtual GraphQLScalarValue BeginVisitFloatValue(GraphQLScalarValue value) => value;
 
         public virtual GraphQLFragmentDefinition BeginVisitFragmentDefinition(GraphQLFragmentDefinition node)
         {
@@ -121,20 +109,11 @@
             return inlineFragment;
         }
 
-        public virtual GraphQLScalarValue BeginVisitIntValue(GraphQLScalarValue value)
-        {
-            return value;
-        }
+        public virtual GraphQLScalarValue BeginVisitIntValue(GraphQLScalarValue value) => value;
 
-        public virtual GraphQLName BeginVisitName(GraphQLName name)
-        {
-            return name;
-        }
+        public virtual GraphQLName BeginVisitName(GraphQLName name) => name;
 
-        public virtual GraphQLNamedType BeginVisitNamedType(GraphQLNamedType typeCondition)
-        {
-            return typeCondition;
-        }
+        public virtual GraphQLNamedType BeginVisitNamedType(GraphQLNamedType typeCondition) => typeCondition;
 
         public virtual ASTNode? BeginVisitNode(ASTNode? node) => node?.Kind switch
         {
@@ -174,10 +153,7 @@
             return EndVisitOperationDefinition(definition);
         }
 
-        public virtual GraphQLOperationDefinition EndVisitOperationDefinition(GraphQLOperationDefinition definition)
-        {
-            return definition;
-        }
+        public virtual GraphQLOperationDefinition EndVisitOperationDefinition(GraphQLOperationDefinition definition) => definition;
 
         public virtual GraphQLSelectionSet BeginVisitSelectionSet(GraphQLSelectionSet selectionSet)
         {
@@ -190,10 +166,7 @@
             return selectionSet;
         }
 
-        public virtual GraphQLScalarValue BeginVisitStringValue(GraphQLScalarValue value)
-        {
-            return value;
-        }
+        public virtual GraphQLScalarValue BeginVisitStringValue(GraphQLScalarValue value) => value;
 
         public virtual GraphQLVariable BeginVisitVariable(GraphQLVariable variable)
         {
@@ -210,8 +183,7 @@
             return node;
         }
 
-        public virtual IEnumerable<GraphQLVariableDefinition> BeginVisitVariableDefinitions(
-            IEnumerable<GraphQLVariableDefinition> variableDefinitions)
+        public virtual IEnumerable<GraphQLVariableDefinition> BeginVisitVariableDefinitions(IEnumerable<GraphQLVariableDefinition> variableDefinitions)
         {
             foreach (var definition in variableDefinitions)
                 BeginVisitNode(definition);
@@ -219,20 +191,11 @@
             return variableDefinitions;
         }
 
-        public virtual GraphQLArgument EndVisitArgument(GraphQLArgument argument)
-        {
-            return argument;
-        }
+        public virtual GraphQLArgument EndVisitArgument(GraphQLArgument argument) => argument;
 
-        public virtual GraphQLFieldSelection EndVisitFieldSelection(GraphQLFieldSelection selection)
-        {
-            return selection;
-        }
+        public virtual GraphQLFieldSelection EndVisitFieldSelection(GraphQLFieldSelection selection) => selection;
 
-        public virtual GraphQLVariable EndVisitVariable(GraphQLVariable variable)
-        {
-            return variable;
-        }
+        public virtual GraphQLVariable EndVisitVariable(GraphQLVariable variable) => variable;
 
         public virtual void Visit(GraphQLDocument ast)
         {
@@ -243,7 +206,7 @@
                     if (definition.Kind == ASTNodeKind.FragmentDefinition)
                     {
                         var fragment = (GraphQLFragmentDefinition)definition;
-                        var name = fragment.Name?.Value;
+                        string? name = fragment.Name?.Value;
                         if (name == null)
                             throw new InvalidOperationException("Fragment name cannot be null");
 
@@ -278,15 +241,9 @@
             return EndVisitObjectValue(node);
         }
 
-        public virtual GraphQLObjectValue EndVisitObjectValue(GraphQLObjectValue node)
-        {
-            return node;
-        }
+        public virtual GraphQLObjectValue EndVisitObjectValue(GraphQLObjectValue node) => node;
 
-        public virtual GraphQLListValue EndVisitListValue(GraphQLListValue node)
-        {
-            return node;
-        }
+        public virtual GraphQLListValue EndVisitListValue(GraphQLListValue node) => node;
 
         private ASTNode BeginVisitListValue(GraphQLListValue node)
         {
