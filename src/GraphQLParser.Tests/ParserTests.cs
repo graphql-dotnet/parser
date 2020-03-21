@@ -1,13 +1,13 @@
-﻿namespace GraphQLParser.Tests
-{
-    using GraphQLParser;
-    using GraphQLParser.AST;
-    using GraphQLParser.Exceptions;
-    using Shouldly;
-    using System;
-    using System.Linq;
-    using Xunit;
+using System;
+using System.Linq;
+using GraphQLParser.AST;
+using GraphQLParser.Exceptions;
+using Shouldly;
+using Xunit;
 
+namespace GraphQLParser.Tests
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "Tests")]
     public class ParserTests
     {
         private static readonly string NL = Environment.NewLine;

@@ -1,33 +1,33 @@
-﻿namespace GraphQLParser
-{
-    using Exceptions;
-    using System;
+using GraphQLParser.Exceptions;
+using System;
 
+namespace GraphQLParser
+{
     // WARNING: mutable struct, pass it by reference to those methods that will change it
     internal struct LexerContext
     {
-        private int currentIndex;
-        private readonly ISource source;
-        private readonly ILexemeCache cache;
+        private int _currentIndex;
+        private readonly ISource _source;
+        private readonly ILexemeCache _cache;
 
         public LexerContext(ISource source, int index, ILexemeCache? cache)
         {
-            currentIndex = index;
-            this.source = source;
-            this.cache = cache ?? NoCache.Instance;
+            _currentIndex = index;
+            _source = source;
+            _cache = cache ?? NoCache.Instance;
         }
 
         public Token GetToken()
         {
-            if (source.Body == null)
+            if (_source.Body == null)
                 return CreateEOFToken();
 
-            currentIndex = GetPositionAfterWhitespace(source.Body, currentIndex);
+            _currentIndex = GetPositionAfterWhitespace(_source.Body, _currentIndex);
 
-            if (currentIndex >= source.Body.Length)
+            if (_currentIndex >= _source.Body.Length)
                 return CreateEOFToken();
 
-            var code = source.Body[currentIndex];
+            char code = _source.Body[_currentIndex];
 
             ValidateCharacterCode(code);
 
@@ -48,55 +48,52 @@
                 return ReadString();
 
             throw new GraphQLSyntaxErrorException(
-                $"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", source, currentIndex);
+                $"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", _source, _currentIndex);
         }
 
-        public bool OnlyHexInString(string test)
-        {
-            return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
-        }
+        public bool OnlyHexInString(string test) => System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
 
         public Token ReadComment()
         {
-            var start = currentIndex;
+            int start = _currentIndex;
 
-            var chunkStart = ++currentIndex;
-            var code = GetCode();
-            var value = string.Empty;
+            int chunkStart = ++_currentIndex;
+            char code = GetCode();
+            string value = string.Empty;
 
             while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D)
             {
                 code = ProcessCharacter(ref value, ref chunkStart);
             }
 
-            value += source.Body.Substring(chunkStart, currentIndex - chunkStart);
+            value += _source.Body.Substring(chunkStart, _currentIndex - chunkStart);
 
             return new Token
             (
                 TokenKind.COMMENT,
                 value,
                 start,
-                currentIndex + 1
+                _currentIndex + 1
             );
         }
 
         public Token ReadNumber()
         {
-            var isFloat = false;
-            var start = currentIndex;
-            var code = source.Body[start];
+            bool isFloat = false;
+            int start = _currentIndex;
+            char code = _source.Body[start];
 
             if (code == '-')
                 code = NextCode();
 
-            var nextCode = code == '0'
+            char nextCode = code == '0'
                 ? NextCode()
                 : ReadDigitsFromOwnSource(code);
 
             if (nextCode >= 48 && nextCode <= 57)
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid number, unexpected digit after {code}: \"{nextCode}\"", source, currentIndex);
+                    $"Invalid number, unexpected digit after {code}: \"{nextCode}\"", _source, _currentIndex);
             }
 
             code = nextCode;
@@ -123,26 +120,23 @@
 
         public Token ReadString()
         {
-            var start = currentIndex;
-            var value = ProcessStringChunks();
+            int start = _currentIndex;
+            string value = ProcessStringChunks();
 
             return new Token
             (
                 TokenKind.STRING,
                 value,
                 start,
-                currentIndex + 1
+                _currentIndex + 1
             );
         }
 
-        private static bool IsValidNameCharacter(char code)
-        {
-            return code == '_' || char.IsLetterOrDigit(code);
-        }
+        private static bool IsValidNameCharacter(char code) => code == '_' || char.IsLetterOrDigit(code);
 
         private string AppendCharactersFromLastChunk(string value, int chunkStart)
         {
-            return value + source.Body.Substring(chunkStart, currentIndex - chunkStart - 1);
+            return value + _source.Body.Substring(chunkStart, _currentIndex - chunkStart - 1);
         }
 
         private string AppendToValueByCode(string value, char code)
@@ -158,7 +152,7 @@
                 'r' => '\r',
                 't' => '\t',
                 'u' => GetUnicodeChar(),
-                _ => throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{code}.", source, currentIndex),
+                _ => throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{code}.", _source, _currentIndex),
             };
 
             return value;
@@ -171,7 +165,7 @@
             if (code < 0x0020 && code != 0x0009)
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid character within String: \\u{((int)code).ToString("D4")}.", source, currentIndex);
+                    $"Invalid character within String: \\u{((int)code).ToString("D4")}.", _source, _currentIndex);
             }
         }
 
@@ -195,22 +189,19 @@
 
         private Token CheckForSpreadOperator()
         {
-            var char1 = source.Body.Length > currentIndex + 1 ? source.Body[currentIndex + 1] : 0;
-            var char2 = source.Body.Length > currentIndex + 2 ? source.Body[currentIndex + 2] : 0;
+            int char1 = _source.Body.Length > _currentIndex + 1 ? _source.Body[_currentIndex + 1] : 0;
+            int char2 = _source.Body.Length > _currentIndex + 2 ? _source.Body[_currentIndex + 2] : 0;
 
-            if (char1 == '.' && char2 == '.')
-            {
-                return CreatePunctuationToken(TokenKind.SPREAD, 3);
-            }
-
-            return CreateUnknownToken();
+            return char1 == '.' && char2 == '.'
+                ? CreatePunctuationToken(TokenKind.SPREAD, 3)
+                : CreateUnknownToken();
         }
 
         private void CheckStringTermination(char code)
         {
             if (code != '"')
             {
-                throw new GraphQLSyntaxErrorException("Unterminated string.", source, currentIndex);
+                throw new GraphQLSyntaxErrorException("Unterminated string.", _source, _currentIndex);
             }
         }
 
@@ -220,8 +211,8 @@
             (
                 TokenKind.UNKNOWN,
                 null,
-                currentIndex,
-                currentIndex
+                _currentIndex,
+                _currentIndex
             );
         }
 
@@ -231,8 +222,8 @@
             (
                 TokenKind.EOF,
                 null,
-                currentIndex,
-                currentIndex
+                _currentIndex,
+                _currentIndex
             );
         }
 
@@ -241,9 +232,9 @@
             return new Token
             (
                 TokenKind.FLOAT,
-                source.Body.Substring(start, currentIndex - start),
+                _source.Body.Substring(start, _currentIndex - start),
                 start,
-                currentIndex
+                _currentIndex
             );
         }
 
@@ -252,9 +243,9 @@
             return new Token
             (
                 TokenKind.INT,
-                cache.GetInt(source.Body, start, currentIndex),
+                _cache.GetInt(_source.Body, start, _currentIndex),
                 start,
-                currentIndex
+                _currentIndex
             );
         }
 
@@ -263,9 +254,9 @@
             return new Token
             (
                 TokenKind.NAME,
-                cache.GetName(source.Body, start, currentIndex),
+                _cache.GetName(_source.Body, start, _currentIndex),
                 start,
-                currentIndex
+                _currentIndex
             );
         }
 
@@ -275,25 +266,25 @@
             (
                 kind,
                 null,
-                currentIndex,
-                currentIndex + offset
+                _currentIndex,
+                _currentIndex + offset
             );
         }
 
         private char GetCode()
         {
             return IsNotAtTheEndOfQuery()
-                ? source.Body[currentIndex]
+                ? _source.Body[_currentIndex]
                 : (char)0;
         }
 
         private int GetPositionAfterWhitespace(string body, int start)
         {
-            var position = start;
+            int position = start;
 
             while (position < body.Length)
             {
-                var code = body[position];
+                char code = body[position];
                 switch (code)
                 {
                     case '\xFEFF': // BOM
@@ -319,17 +310,17 @@
 
         private char GetUnicodeChar()
         {
-            if (currentIndex + 5 > source.Body.Length)
+            if (_currentIndex + 5 > _source.Body.Length)
             {
-                var truncatedExpression = source.Body.Substring(currentIndex);
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", source, currentIndex);
+                string truncatedExpression = _source.Body.Substring(_currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", _source, _currentIndex);
             }
 
-            var expression = source.Body.Substring(currentIndex, 5);
+            string expression = _source.Body.Substring(_currentIndex, 5);
 
             if (!OnlyHexInString(expression.Substring(1)))
             {
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{expression}.", source, currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{expression}.", _source, _currentIndex);
             }
 
             return (char)(
@@ -341,33 +332,33 @@
 
         private string? IfUnicodeGetString()
         {
-            return source.Body.Length > currentIndex + 5 &&
-                OnlyHexInString(source.Body.Substring(currentIndex + 2, 4))
-                ? source.Body.Substring(currentIndex, 6)
+            return _source.Body.Length > _currentIndex + 5 &&
+                OnlyHexInString(_source.Body.Substring(_currentIndex + 2, 4))
+                ? _source.Body.Substring(_currentIndex, 6)
                 : null;
         }
 
-        private bool IsNotAtTheEndOfQuery() => currentIndex < source.Body.Length;
+        private bool IsNotAtTheEndOfQuery() => _currentIndex < _source.Body.Length;
 
         private char NextCode()
         {
-            currentIndex++;
+            _currentIndex++;
             return IsNotAtTheEndOfQuery()
-                ? source.Body[currentIndex]
+                ? _source.Body[_currentIndex]
                 : (char)0;
         }
 
         private char ProcessCharacter(ref string value, ref int chunkStart)
         {
-            var code = GetCode();
-            ++currentIndex;
+            char code = GetCode();
+            ++_currentIndex;
 
             if (code == '\\')
             {
                 value = AppendToValueByCode(AppendCharactersFromLastChunk(value, chunkStart), GetCode());
 
-                ++currentIndex;
-                chunkStart = currentIndex;
+                ++_currentIndex;
+                chunkStart = _currentIndex;
             }
 
             return GetCode();
@@ -375,9 +366,9 @@
 
         private string ProcessStringChunks()
         {
-            var chunkStart = ++currentIndex;
-            var code = GetCode();
-            var value = string.Empty;
+            int chunkStart = ++_currentIndex;
+            char code = GetCode();
+            string value = string.Empty;
 
             while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D && code != '"')
             {
@@ -386,20 +377,20 @@
             }
 
             CheckStringTermination(code);
-            value += source.Body.Substring(chunkStart, currentIndex - chunkStart);
+            value += _source.Body.Substring(chunkStart, _currentIndex - chunkStart);
             return value;
         }
 
         private int ReadDigits(ISource source, int start, char firstCode)
         {
-            var body = source.Body;
-            var position = start;
-            var code = firstCode;
+            string body = source.Body;
+            int position = start;
+            char code = firstCode;
 
             if (!char.IsNumber(code))
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid number, expected digit but got: {ResolveCharName(code)}", source, currentIndex);
+                    $"Invalid number, expected digit but got: {ResolveCharName(code)}", source, _currentIndex);
             }
 
             do
@@ -415,18 +406,18 @@
 
         private char ReadDigitsFromOwnSource(char code)
         {
-            currentIndex = ReadDigits(source, currentIndex, code);
+            _currentIndex = ReadDigits(_source, _currentIndex, code);
             return GetCode();
         }
 
         private Token ReadName()
         {
-            var start = currentIndex;
+            int start = _currentIndex;
             char code;
 
             do
             {
-                currentIndex++;
+                _currentIndex++;
                 code = GetCode();
             }
             while (IsNotAtTheEndOfQuery() && IsValidNameCharacter(code));
@@ -439,10 +430,9 @@
             if (code == '\0')
                 return "<EOF>";
 
-            if (!string.IsNullOrWhiteSpace(unicodeString))
-                return $"\"{unicodeString}\"";
-
-            return $"\"{code}\"";
+            return string.IsNullOrWhiteSpace(unicodeString)
+                ? $"\"{code}\""
+                : $"\"{unicodeString}\"";
         }
 
         private void ValidateCharacterCode(int code)
@@ -450,7 +440,7 @@
             if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid character \"\\u{code.ToString("D4")}\".", source, currentIndex);
+                    $"Invalid character \"\\u{code.ToString("D4")}\".", _source, _currentIndex);
             }
         }
 

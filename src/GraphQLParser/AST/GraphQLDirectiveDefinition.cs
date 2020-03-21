@@ -1,7 +1,7 @@
-﻿namespace GraphQLParser.AST
-{
-    using System.Collections.Generic;
+using System.Collections.Generic;
 
+namespace GraphQLParser.AST
+{
     public class GraphQLDirectiveDefinition : GraphQLTypeDefinition
     {
         public List<GraphQLInputValueDefinition>? Arguments { get; set; }

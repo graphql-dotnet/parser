@@ -1,19 +1,19 @@
-﻿namespace GraphQLParser.AST
-{
-    using System.Collections.Generic;
+using System.Collections.Generic;
 
+namespace GraphQLParser.AST
+{
     public class GraphQLListValue : GraphQLValue
     {
-        private readonly ASTNodeKind kindField;
+        private readonly ASTNodeKind _kind;
 
         public GraphQLListValue(ASTNodeKind kind)
         {
-            kindField = kind;
+            _kind = kind;
         }
 
         public string? AstValue { get; set; }
 
-        public override ASTNodeKind Kind => kindField;
+        public override ASTNodeKind Kind => _kind;
 
         public List<GraphQLValue>? Values { get; set; }
 

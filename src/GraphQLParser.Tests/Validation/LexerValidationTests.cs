@@ -1,10 +1,10 @@
-﻿namespace GraphQLParser.Tests.Validation
-{
-    using Exceptions;
-    using GraphQLParser;
-    using System;
-    using Xunit;
+using GraphQLParser.Exceptions;
+using GraphQLParser;
+using System;
+using Xunit;
 
+namespace GraphQLParser.Tests.Validation
+{
     public class LexerValidationTests
     {
         [Fact]

@@ -1,4 +1,4 @@
-﻿namespace GraphQLParser
+namespace GraphQLParser
 {
     /// <summary>
     /// <see cref="ILexemeCache"/> implementation without caching. It is used by default.
@@ -7,15 +7,9 @@
     {
         public static readonly NoCache Instance = new NoCache();
 
-        public string GetName(string source, int start, int end)
-        {
-            return source.Substring(start, end - start);
-        }
+        public string GetName(string source, int start, int end) => source.Substring(start, end - start);
 
-        public string GetInt(string source, int start, int end)
-        {
-            return source.Substring(start, end - start);
-        }
+        public string GetInt(string source, int start, int end) => source.Substring(start, end - start);
 
         public void Clear() { }
     }

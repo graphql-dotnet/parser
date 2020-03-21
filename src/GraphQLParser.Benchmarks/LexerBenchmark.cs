@@ -1,11 +1,11 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 
 namespace GraphQLParser.Benchmarks
 {
     [MemoryDiagnoser]
     public class LexerBenchmark
     {
-        private const string KitchenSink = @"
+        private const string KITCHEN_SINK = @"
 query queryName($foo: ComplexType, $site: Site = MOBILE) {
   whoever123is: node(id: [123, 456]) {
     id ,
@@ -61,7 +61,7 @@ fragment frag on Friend {
         public void LexKitchenSink()
         {
             var lexer = new Lexer();
-            var source = new Source(KitchenSink);
+            var source = new Source(KITCHEN_SINK);
             var resetPosition = 0;
             Token token;
             while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
