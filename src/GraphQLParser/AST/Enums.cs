@@ -40,6 +40,7 @@
         TypeExtensionDefinition,
         DirectiveDefinition,
         Comment,
+        Description
     }
 
     public enum OperationType

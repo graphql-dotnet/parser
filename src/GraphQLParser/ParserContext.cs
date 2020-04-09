@@ -268,20 +268,14 @@ namespace GraphQLParser
         {
             ParseComment();
 
-            if (Peek(TokenKind.BRACE_L))
+            return _currentToken.Kind switch
             {
-                return ParseOperationDefinition();
-            }
-
-            if (Peek(TokenKind.NAME))
-            {
-                ASTNode? definition;
-                if ((definition = ParseNamedDefinition()) != null)
-                    return definition;
-            }
-
-            throw new GraphQLSyntaxErrorException(
-                    $"Unexpected {_currentToken}", _source, _currentToken.Start);
+                TokenKind.BRACE_L => ParseOperationDefinition(),
+                TokenKind.STRING => ParseNamedDocumentedDefinition(throwOnMissing: true)!,
+                TokenKind.NAME => ParseNamedDefinition(),
+                _ => throw new GraphQLSyntaxErrorException(
+                    $"Unexpected {_currentToken}", _source, _currentToken.Start)
+            };
         }
 
         private List<ASTNode> ParseDefinitionsIfNotEOF()
@@ -336,6 +330,21 @@ namespace GraphQLParser
             return comment;
         }
 
+        private GraphQLDescription? ParseDescription()
+        {
+            if (!Peek(TokenKind.STRING))
+                return null;
+
+            var documentation = new GraphQLDescription(_currentToken.Value!)
+            {
+                Location = GetLocation(_currentToken.Start)
+            };
+
+            Advance();
+
+            return documentation;
+        }
+
         private GraphQLDirective ParseDirective()
         {
             int start = _currentToken.Start;
@@ -353,11 +362,12 @@ namespace GraphQLParser
         /// DirectiveDefinition:
         ///     Description(opt) directive @ Name ArgumentsDefinition(opt) repeatable(opt) on DirectiveLocations
         /// </summary>
+        /// <param name="description"></param>
         /// <returns></returns>
-        private GraphQLDirectiveDefinition ParseDirectiveDefinition()
+        private GraphQLDirectiveDefinition ParseDirectiveDefinition(GraphQLDescription? description)
         {
             var comment = GetComment();
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("directive");
             Expect(TokenKind.AT);
 
@@ -370,6 +380,7 @@ namespace GraphQLParser
 
             return new GraphQLDirectiveDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = name,
                 Repeatable = repeatable,
@@ -432,14 +443,15 @@ namespace GraphQLParser
             return CreateDocument(start, definitions);
         }
 
-        private GraphQLEnumTypeDefinition ParseEnumTypeDefinition()
+        private GraphQLEnumTypeDefinition ParseEnumTypeDefinition(GraphQLDescription? description)
         {
             var comment = GetComment();
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("enum");
 
             return new GraphQLEnumTypeDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
@@ -462,9 +474,11 @@ namespace GraphQLParser
         {
             var comment = GetComment();
             int start = _currentToken.Start;
+            var description = ParseDescription();
 
             return new GraphQLEnumValueDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
@@ -476,12 +490,14 @@ namespace GraphQLParser
         {
             var comment = GetComment();
             int start = _currentToken.Start;
+            var description = ParseDescription();
             var name = ParseName();
             var args = ParseArgumentDefs();
             Expect(TokenKind.COLON);
 
             return new GraphQLFieldDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = name,
                 Arguments = args,
@@ -581,14 +597,15 @@ namespace GraphQLParser
             return types;
         }
 
-        private GraphQLInputObjectTypeDefinition ParseInputObjectTypeDefinition()
+        private GraphQLInputObjectTypeDefinition ParseInputObjectTypeDefinition(GraphQLDescription? description)
         {
             var comment = GetComment();
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("input");
 
             return new GraphQLInputObjectTypeDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
@@ -601,11 +618,13 @@ namespace GraphQLParser
         {
             var comment = GetComment();
             int start = _currentToken.Start;
+            var description = ParseDescription();
             var name = ParseName();
             Expect(TokenKind.COLON);
 
             return new GraphQLInputValueDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = name,
                 Type = ParseType(),
@@ -627,14 +646,15 @@ namespace GraphQLParser
             };
         }
 
-        private GraphQLInterfaceTypeDefinition ParseInterfaceTypeDefinition()
+        private GraphQLInterfaceTypeDefinition ParseInterfaceTypeDefinition(GraphQLDescription? description)
         {
             var comment = GetComment();
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("interface");
 
             return new GraphQLInterfaceTypeDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
@@ -672,24 +692,36 @@ namespace GraphQLParser
             };
         }
 
-        private ASTNode? ParseNamedDefinition()
-        {
-            return _currentToken.Value switch
+        private ASTNode ParseNamedDefinition() =>
+            _currentToken.Value switch
             {
                 "query" => ParseOperationDefinition(),
                 "mutation" => ParseOperationDefinition(),
                 "subscription" => ParseOperationDefinition(),
                 "fragment" => ParseFragmentDefinition(),
-                "schema" => ParseSchemaDefinition(),
-                "scalar" => ParseScalarTypeDefinition(),
-                "type" => ParseObjectTypeDefinition(),
-                "interface" => ParseInterfaceTypeDefinition(),
-                "union" => ParseUnionTypeDefinition(),
-                "enum" => ParseEnumTypeDefinition(),
-                "input" => ParseInputObjectTypeDefinition(),
                 "extend" => ParseTypeExtensionDefinition(),
-                "directive" => ParseDirectiveDefinition(),
-                _ => null
+                _ => ParseNamedDocumentedDefinition()
+                     ?? throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start)
+            };
+
+        private ASTNode? ParseNamedDocumentedDefinition(bool throwOnMissing = false)
+        {
+            var description = ParseDescription();
+
+            return _currentToken.Value switch
+            {
+                "schema" => ParseSchemaDefinition(description),
+                "scalar" => ParseScalarTypeDefinition(description),
+                "type" => ParseObjectTypeDefinition(description),
+                "interface" => ParseInterfaceTypeDefinition(description),
+                "union" => ParseUnionTypeDefinition(description),
+                "enum" => ParseEnumTypeDefinition(description),
+                "input" => ParseInputObjectTypeDefinition(description),
+                "directive" => ParseDirectiveDefinition(description),
+                _ => throwOnMissing
+                    ? throw new GraphQLSyntaxErrorException(
+                    $"Unexpected {_currentToken}. Expecting schema, scalar, type, interface, union, enum, input or directive.", _source, _currentToken.Start)
+                    : (ASTNode?)null
             };
         }
 
@@ -769,15 +801,16 @@ namespace GraphQLParser
             return fields;
         }
 
-        private GraphQLObjectTypeDefinition ParseObjectTypeDefinition()
+        private GraphQLObjectTypeDefinition ParseObjectTypeDefinition(GraphQLDescription? description = null)
         {
             var comment = GetComment();
 
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("type");
 
             return new GraphQLObjectTypeDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = ParseName(),
                 Interfaces = ParseImplementsInterfaces(),
@@ -824,16 +857,17 @@ namespace GraphQLParser
             };
         }
 
-        private GraphQLScalarTypeDefinition ParseScalarTypeDefinition()
+        private GraphQLScalarTypeDefinition ParseScalarTypeDefinition(GraphQLDescription? description)
         {
             var comment = GetComment();
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("scalar");
             var name = ParseName();
             var directives = ParseDirectives();
 
             return new GraphQLScalarTypeDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = name,
                 Directives = directives,
@@ -841,16 +875,17 @@ namespace GraphQLParser
             };
         }
 
-        private GraphQLSchemaDefinition ParseSchemaDefinition()
+        private GraphQLSchemaDefinition ParseSchemaDefinition(GraphQLDescription? description)
         {
             var comment = GetComment();
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("schema");
             var directives = ParseDirectives();
             var operationTypes = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseOperationTypeDefinition(), TokenKind.BRACE_R);
 
             return new GraphQLSchemaDefinition
             {
+                Description = description,
                 Comment = comment,
                 Directives = directives,
                 OperationTypes = operationTypes,
@@ -947,10 +982,10 @@ namespace GraphQLParser
             return members;
         }
 
-        private GraphQLUnionTypeDefinition ParseUnionTypeDefinition()
+        private GraphQLUnionTypeDefinition ParseUnionTypeDefinition(GraphQLDescription? description)
         {
             var comment = GetComment();
-            int start = _currentToken.Start;
+            int start = description?.Location.Start ?? _currentToken.Start;
             ExpectKeyword("union");
             var name = ParseName();
             var directives = ParseDirectives();
@@ -959,6 +994,7 @@ namespace GraphQLParser
 
             return new GraphQLUnionTypeDefinition
             {
+                Description = description,
                 Comment = comment,
                 Name = name,
                 Directives = directives,

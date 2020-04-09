@@ -2,7 +2,7 @@
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
+    public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHaveDescription
     {
         public List<GraphQLDirective>? Directives { get; set; }
 

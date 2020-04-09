@@ -530,5 +530,51 @@ Cat
         {
             new Parser(new Lexer()).Parse(new Source(text)).ShouldNotBeNull();
         }
+
+        [Theory]
+        [InlineData("\"schema description\" schema { query : Query }", "schema description")]
+        [InlineData("\"scalar description\" scalar DateTiem", "scalar description")]
+        [InlineData("\"type description\" type Query { name : String }", "type description")]
+        [InlineData("\"interface description\" interface Person { name : String }", "interface description")]
+        [InlineData("\"union description\" union Person = He | She", "union description")]
+        [InlineData("\"enum description\" enum Currency { EUR USD }", "enum description")]
+        [InlineData("\"input description\" input PersonInput { name : String }", "input description")]
+        [InlineData("\"directive description\" directive @example on FIELD", "directive description")]
+        public void Should_Parse_TypeDefinition_Description(string text, string expectedDescription)
+        {
+            var document = new Parser(new Lexer()).Parse(new Source(text));
+            ((IHaveDescription)document.Definitions[0]).Description.Value.ShouldBe(expectedDescription);
+        }
+
+        [Fact]
+        public void Should_Parse_FieldDefinition_Description()
+        {
+            var text = "type Query { \"field description\" name : String }";
+            var document = new Parser(new Lexer()).Parse(new Source(text));
+            var objectTypeDefinition = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First();
+            objectTypeDefinition.Fields[0].Description.Value.ShouldBe("field description");
+        }
+
+        [Fact]
+        public void Should_Parse_InputValueDefinition_Description()
+        {
+            var text = "type Query { name(\"input value description\" inputValue: Int) : String }";
+            var document = new Parser(new Lexer()).Parse(new Source(text));
+            var objectTypeDefinition = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First();
+            objectTypeDefinition.Fields[0]
+                .Arguments[0].Description.Value.ShouldBe("input value description");
+        }
+
+        [Fact]
+        public void Should_Parse_EnumValueDefinition_Description()
+        {
+            var text = "enum Currency { \"EUR value description\" EUR \"USD value description\" USD }";
+            var document = new Parser(new Lexer()).Parse(new Source(text));
+            var enumTypeDefinition = document.Definitions.OfType<GraphQLEnumTypeDefinition>().First();
+            enumTypeDefinition.Values
+                .Select(v=>v.Description.Value)
+                .ShouldBe(new []{"EUR value description", "USD value description"});
+        }
+
     }
 }
