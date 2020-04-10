@@ -355,6 +355,7 @@ namespace GraphQLParser
                 Arguments = ParseArguments(),
                 Location = GetLocation(start)
             };
+        /// <param name="description"></param>
         }
 
         /// <summary>
@@ -362,7 +363,6 @@ namespace GraphQLParser
         /// DirectiveDefinition:
         ///     Description(opt) directive @ Name ArgumentsDefinition(opt) repeatable(opt) on DirectiveLocations
         /// </summary>
-        /// <param name="description"></param>
         /// <returns></returns>
         private GraphQLDirectiveDefinition ParseDirectiveDefinition(GraphQLDescription? description)
         {
