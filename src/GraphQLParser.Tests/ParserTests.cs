@@ -533,7 +533,7 @@ Cat
 
         [Theory]
         [InlineData("\"schema description\" schema { query : Query }", "schema description")]
-        [InlineData("\"scalar description\" scalar DateTiem", "scalar description")]
+        [InlineData("\"scalar description\" scalar DateTime", "scalar description")]
         [InlineData("\"type description\" type Query { name : String }", "type description")]
         [InlineData("\"interface description\" interface Person { name : String }", "interface description")]
         [InlineData("\"union description\" union Person = He | She", "union description")]
