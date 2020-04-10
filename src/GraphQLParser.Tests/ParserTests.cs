@@ -575,6 +575,5 @@ Cat
                 .Select(v=>v.Description.Value)
                 .ShouldBe(new []{"EUR value description", "USD value description"});
         }
-
     }
 }
