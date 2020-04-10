@@ -261,7 +261,7 @@ namespace GraphQLParser.AST
     public class GraphQLSchemaDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHaveDescription
     {
         public GraphQLSchemaDefinition() { }
-        public GraphQLParser.AST.GraphQLDescription Description { get; set; }
+        public GraphQLParser.AST.GraphQLDescription? Description { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLOperationTypeDefinition>? OperationTypes { get; set; }
