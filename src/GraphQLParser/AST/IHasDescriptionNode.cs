@@ -1,6 +1,6 @@
 namespace GraphQLParser.AST
 {
-    public interface IHaveDescription
+    public interface IHasDescriptionNode
     {
         GraphQLDescription? Description { get; set; }
     }

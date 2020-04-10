@@ -1,6 +1,6 @@
 ﻿namespace GraphQLParser.AST
 {
-    public abstract class GraphQLTypeDefinition : ASTNode, INamedNode, IHaveDescription
+    public abstract class GraphQLTypeDefinition : ASTNode, INamedNode, IHasDescriptionNode
     {
         public GraphQLName? Name { get; set; }
 

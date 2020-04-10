@@ -214,7 +214,7 @@ namespace GraphQLParser.AST
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
         public GraphQLParser.AST.GraphQLValue? Value { get; set; }
     }
-    public class GraphQLObjectTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHaveDescription
+    public class GraphQLObjectTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDescriptionNode, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLObjectTypeDefinition() { }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
@@ -258,7 +258,7 @@ namespace GraphQLParser.AST
         public string? Value { get; set; }
         public override string? ToString() { }
     }
-    public class GraphQLSchemaDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHaveDescription
+    public class GraphQLSchemaDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDescriptionNode, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLSchemaDefinition() { }
         public GraphQLParser.AST.GraphQLDescription? Description { get; set; }
@@ -276,7 +276,7 @@ namespace GraphQLParser.AST
     {
         protected GraphQLType() { }
     }
-    public abstract class GraphQLTypeDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHaveDescription, GraphQLParser.AST.INamedNode
+    public abstract class GraphQLTypeDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDescriptionNode, GraphQLParser.AST.INamedNode
     {
         protected GraphQLTypeDefinition() { }
         public GraphQLParser.AST.GraphQLDescription? Description { get; set; }
@@ -313,13 +313,13 @@ namespace GraphQLParser.AST
         public GraphQLParser.AST.GraphQLType? Type { get; set; }
         public GraphQLParser.AST.GraphQLVariable? Variable { get; set; }
     }
+    public interface IHasDescriptionNode
+    {
+        GraphQLParser.AST.GraphQLDescription? Description { get; set; }
+    }
     public interface IHasDirectivesNode
     {
         System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
-    }
-    public interface IHaveDescription
-    {
-        GraphQLParser.AST.GraphQLDescription? Description { get; set; }
     }
     public interface INamedNode
     {

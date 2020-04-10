@@ -2,7 +2,7 @@
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHaveDescription
+    public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHasDescriptionNode
     {
         public List<GraphQLDirective>? Directives { get; set; }
 

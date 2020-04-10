@@ -543,7 +543,7 @@ Cat
         public void Should_Parse_TypeDefinition_Description(string text, string expectedDescription)
         {
             var document = new Parser(new Lexer()).Parse(new Source(text));
-            ((IHaveDescription)document.Definitions[0]).Description.Value.ShouldBe(expectedDescription);
+            ((IHasDescriptionNode)document.Definitions[0]).Description.Value.ShouldBe(expectedDescription);
         }
 
         [Fact]
