@@ -10,6 +10,6 @@ namespace GraphQLParser.AST
 
         public List<GraphQLOperationTypeDefinition>? OperationTypes { get; set; }
 
-        public GraphQLDescription Description { get; set; }
+        public GraphQLDescription? Description { get; set; }
     }
 }
