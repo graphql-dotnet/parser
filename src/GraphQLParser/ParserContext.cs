@@ -271,7 +271,7 @@ namespace GraphQLParser
             return _currentToken.Kind switch
             {
                 TokenKind.BRACE_L => ParseOperationDefinition(),
-                TokenKind.STRING => ParseNamedDocumentedDefinition(throwOnMissing: true)!,
+                TokenKind.STRING => ParseNamedDocumentedDefinition(hasDescription: true)!,
                 TokenKind.NAME => ParseNamedDefinition(),
                 _ => throw new GraphQLSyntaxErrorException(
                     $"Unexpected {_currentToken}", _source, _currentToken.Start)
@@ -700,13 +700,18 @@ namespace GraphQLParser
                 "subscription" => ParseOperationDefinition(),
                 "fragment" => ParseFragmentDefinition(),
                 "extend" => ParseTypeExtensionDefinition(),
-                _ => ParseNamedDocumentedDefinition()
+                _ => ParseNamedDocumentedDefinition(hasDescription: false)
                      ?? throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start)
             };
 
-        private ASTNode? ParseNamedDocumentedDefinition(bool throwOnMissing = false)
+        /// <summary>
+        /// Parses the named definitions which may contain a description.
+        /// </summary>
+        /// <param name="hasDescription">Specifies whether the current position is at the string literal which should be parsed as a description.</param>
+        /// <returns>Parsed node.</returns>
+        private ASTNode? ParseNamedDocumentedDefinition(bool hasDescription)
         {
-            var description = ParseDescription();
+            var description = hasDescription ? ParseDescription() : null;
 
             return _currentToken.Value switch
             {
@@ -718,7 +723,7 @@ namespace GraphQLParser
                 "enum" => ParseEnumTypeDefinition(description),
                 "input" => ParseInputObjectTypeDefinition(description),
                 "directive" => ParseDirectiveDefinition(description),
-                _ => throwOnMissing
+                _ => hasDescription
                     ? throw new GraphQLSyntaxErrorException(
                     $"Unexpected {_currentToken}. Expecting schema, scalar, type, interface, union, enum, input or directive.", _source, _currentToken.Start)
                     : (ASTNode?)null
