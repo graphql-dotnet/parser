@@ -295,9 +295,39 @@ scalar JSON
         }
 
         [Fact]
+        public void Parse_Fields_Object_LocationCorrect()
+        {
+            var document = ParseGraphQLFieldsSource();
+            var query = GetSingleOperationDefinition(document);
+            var field = GetSingleFieldSelection(query.SelectionSet, "object");
+
+            Assert.Equal(2, field.Location.Start);
+            Assert.Equal(22, field.Location.End);
+        }
+
+        [Fact]
+        public void Parse_Fields_Scalar_LocationCorrect()
+        {
+            var document = ParseGraphQLFieldsSource();
+            var query = GetSingleOperationDefinition(document);
+            var field = GetSingleFieldSelection(query.SelectionSet, "scalar");
+
+            Assert.Equal(22, field.Location.Start);
+            Assert.Equal(29, field.Location.End);
+        }
+
+        [Fact]
         public void Parse_VariableInlineValues_DoesNotThrowError()
         {
             new Parser(new Lexer()).Parse(new Source("{ field(complex: { a: { b: [ $var ] } }) }"));
+        }
+
+        private static GraphQLFieldSelection GetSingleFieldSelection(GraphQLSelectionSet selectionSet, string name)
+        {
+            return selectionSet
+                .Selections
+                .OfType<GraphQLFieldSelection>()
+                .First(x => x.Name?.Value == name);
         }
 
         private static GraphQLOperationDefinition GetSingleOperationDefinition(GraphQLDocument document)
@@ -469,6 +499,11 @@ directive @include(if: Boolean!)
         private static GraphQLDocument ParseGraphQLFieldSource()
         {
             return new Parser(new Lexer()).Parse(new Source("{ field }"));
+        }
+
+        private static GraphQLDocument ParseGraphQLFieldsSource()
+        {
+            return new Parser(new Lexer()).Parse(new Source("{ object { subfield } scalar }"));
         }
 
         private static GraphQLDocument ParseGraphQLFieldWithOperationTypeAndNameSource()

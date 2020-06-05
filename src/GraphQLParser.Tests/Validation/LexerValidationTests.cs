@@ -13,11 +13,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"multi\rline\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Unterminated string.
-1: " + "\"multi" + @"
-         ^
-2: line" + "\"" + @"
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Unterminated string.\n" +
+                "1: \"multi\rline\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -33,10 +33,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("a-b"), token.End));
 
-            Assert.Equal(("Syntax Error GraphQL (1:3) Invalid number, expected digit but got: \"b\"" + @"
-1: a-b
-     ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:3) Invalid number, expected digit but got: \"b\"\n" +
+                "1: a-b\n" +
+                "     ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -45,10 +46,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("..")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:1) Unexpected character \".\"" + @"
-1: ..
-   ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:1) Unexpected character \".\"\n" +
+                "1: ..\n" +
+                "   ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -57,10 +59,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\u0007")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:1) Invalid character " + "\"\\u0007\"" + @".
-1: \u0007
-   ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:1) Invalid character \"\\u0007\".\n" +
+                "1: \\u0007\n" +
+                "   ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -69,10 +72,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"bad \\x esc\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Invalid character escape sequence: \x.
-1: " + "\"bad \\x esc\"" + @"
-         ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\x.\n" +
+                "1: \"bad \\x esc\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -81,10 +85,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"bad \\z esc\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Invalid character escape sequence: \z.
-1: " + "\"bad \\z esc\"" + @"
-         ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\z.\n" +
+                "1: \"bad \\z esc\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -93,10 +98,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"bad \\u1 esc\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Invalid character escape sequence: \u1 es.
-1: " + "\"bad \\u1 esc\"" + @"
-         ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\u1 es.\n" +
+                "1: \"bad \\u1 esc\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -105,10 +111,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"bad \\u0XX1 esc\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Invalid character escape sequence: \u0XX1.
-1: " + "\"bad \\u0XX1 esc\"" + @"
-         ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\u0XX1.\n" +
+                "1: \"bad \\u0XX1 esc\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -117,10 +124,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"bad \\uFXXX esc\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Invalid character escape sequence: \uFXXX.
-1: " + "\"bad \\uFXXX esc\"" + @"
-         ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\uFXXX.\n" +
+                "1: \"bad \\uFXXX esc\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -129,10 +137,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"bad \\uXXXX esc\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Invalid character escape sequence: \uXXXX.
-1: " + "\"bad \\uXXXX esc\"" + @"
-         ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\uXXXX.\n" +
+                "1: \"bad \\uXXXX esc\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -141,10 +150,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"bad \\uXXXF esc\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Invalid character escape sequence: \uXXXF.
-1: " + "\"bad \\uXXXF esc\"" + @"
-         ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\uXXXF.\n" +
+                "1: \"bad \\uXXXF esc\"\n" +
+                "         ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -153,11 +163,12 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"multi\nline\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:7) Unterminated string.
-1: " + "\"multi" + @"
-         ^
-2: line" + "\"" + @"
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:7) Unterminated string.\n" +
+                "1: \"multi\n" +
+                "         ^\n" +
+                "2: line\"\n",
+                exception.Message);
         }
 
         [Fact]
@@ -166,10 +177,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("?")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:1) Unexpected character \"?\"" + @"
-1: ?
-   ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:1) Unexpected character \"?\"\n" +
+                "1: ?\n" +
+                "   ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -178,10 +190,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("1.0e")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:5) Invalid number, expected digit but got: <EOF>" + @"
-1: 1.0e
-       ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:5) Invalid number, expected digit but got: <EOF>\n" +
+                "1: 1.0e\n" +
+                "       ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -190,10 +203,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("1.0eA")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:5) Invalid number, expected digit but got: \"A\"" + @"
-1: 1.0eA
-       ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:5) Invalid number, expected digit but got: \"A\"\n" +
+                "1: 1.0eA\n" +
+                "       ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -202,10 +216,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("1.A")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:3) Invalid number, expected digit but got: \"A\"" + @"
-1: 1.A
-     ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:3) Invalid number, expected digit but got: \"A\"\n" +
+                "1: 1.A\n" +
+                "     ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -214,10 +229,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("-A")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:2) Invalid number, expected digit but got: \"A\"" + @"
-1: -A
-    ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:2) Invalid number, expected digit but got: \"A\"\n" +
+                "1: -A\n" +
+                "    ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -226,10 +242,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\\u203B")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:1) Unexpected character \"\\u203B\"" + @"
-1: \u203B
-   ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:1) Unexpected character \"\\u203B\"\n" +
+                "1: \\u203B\n" +
+                "   ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -238,10 +255,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\\u200b")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:1) Unexpected character \"\\u200b\"" + @"
-1: \u200b
-   ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:1) Unexpected character \"\\u200b\"\n" +
+                "1: \\u200b\n" +
+                "   ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -250,10 +268,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"null-byte is not \u0000 end of file")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:19) Invalid character within String: \u0000.
-1: " + "\"null-byte is not \\u0000 end of file" + @"
-                     ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:19) Invalid character within String: \\u0000.\n" +
+                "1: \"null-byte is not \\u0000 end of file\n" +
+                "                     ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -262,10 +281,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("00")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:2) Invalid number, unexpected digit after 0: " + "\"0\"" + @"
-1: 00
-    ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:2) Invalid number, unexpected digit after 0: \"0\"\n" +
+                "1: 00\n" +
+                "    ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -274,10 +294,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("1.")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:3) Invalid number, expected digit but got: <EOF>" + @"
-1: 1.
-     ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:3) Invalid number, expected digit but got: <EOF>\n" +
+                "1: 1.\n" +
+                "     ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -286,10 +307,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("+1")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:1) Unexpected character \"+\"" + @"
-1: +1
-   ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:1) Unexpected character \"+\"\n" +
+                "1: +1\n" +
+                "   ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -298,10 +320,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source(".123")));
 
-            Assert.Equal(("Syntax Error GraphQL (1:1) Unexpected character \".\"" + @"
-1: .123
-   ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:1) Unexpected character \".\"\n" +
+                "1: .123\n" +
+                "   ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -310,10 +333,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"contains unescaped \u0007 control char")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:21) Invalid character within String: \u0007.
-1: " + "\"contains unescaped \\u0007 control char" + @"
-                       ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:21) Invalid character within String: \\u0007.\n" +
+                "1: \"contains unescaped \\u0007 control char\n" +
+                "                       ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -322,10 +346,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:2) Unterminated string.
-1: " + "\"" + @"
-    ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:2) Unterminated string.\n" +
+                "1: \"\n" +
+                "    ^\n",
+                exception.Message);
         }
 
         [Fact]
@@ -334,10 +359,11 @@ namespace GraphQLParser.Tests.Validation
             var exception = Assert.Throws<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"no end quote")));
 
-            Assert.Equal((@"Syntax Error GraphQL (1:14) Unterminated string.
-1: " + "\"no end quote" + @"
-                ^
-").Replace(Environment.NewLine, "\n"), exception.Message);
+            Assert.Equal(
+                "Syntax Error GraphQL (1:14) Unterminated string.\n" +
+                "1: \"no end quote\n" +
+                "                ^\n",
+                exception.Message);
         }
     }
 }

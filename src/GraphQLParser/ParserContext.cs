@@ -190,10 +190,12 @@ namespace GraphQLParser
 
         private GraphQLLocation GetLocation(int start)
         {
+            // The "_currentToken" represents the next token after the one for which the location should be evaluated, so the value
+            // for "end" needs to be the "_currentToken.Start".
             return new GraphQLLocation
             (
                 start,
-                _currentToken.End
+                _currentToken.Start
             );
         }
 
