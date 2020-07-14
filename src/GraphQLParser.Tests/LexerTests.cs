@@ -585,6 +585,34 @@ namespace GraphQLParser.Tests
         }
 
         [Fact]
+        public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectEnd()
+        {
+            var token = GetSingleFloatWithZeroTokenLexer();
+            Assert.Equal(5, token.End);
+        }
+
+        [Fact]
+        public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectKind()
+        {
+            var token = GetSingleFloatWithZeroTokenLexer();
+            Assert.Equal(TokenKind.FLOAT, token.Kind);
+        }
+
+        [Fact]
+        public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectStart()
+        {
+            var token = GetSingleFloatWithZeroTokenLexer();
+            Assert.Equal(0, token.Start);
+        }
+
+        [Fact]
+        public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectValue()
+        {
+            var token = GetSingleFloatWithZeroTokenLexer();
+            Assert.Equal("12.10", token.Value);
+        }
+
+        [Fact]
         public void Lex_SingleFloatWithExplicitlyPositiveExponentTokenLexer_HasCorrectEnd()
         {
             var token = GetSingleFloatWithExplicitlyPositiveExponentTokenLexer();
@@ -1036,6 +1064,11 @@ namespace GraphQLParser.Tests
         private static Token GetSingleFloatTokenLexer()
         {
             return new Lexer().Lex(new Source("4.123"));
+        }
+
+        private static Token GetSingleFloatWithZeroTokenLexer()
+        {
+            return new Lexer().Lex(new Source("12.10"));
         }
 
         private static Token GetSingleFloatWithExplicitlyPositiveExponentTokenLexer()
