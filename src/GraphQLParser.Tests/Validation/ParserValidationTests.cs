@@ -2,6 +2,7 @@ using GraphQLParser.Exceptions;
 using GraphQLParser;
 using System;
 using Xunit;
+using Shouldly;
 
 namespace GraphQLParser.Tests.Validation
 {
@@ -17,6 +18,9 @@ namespace GraphQLParser.Tests.Validation
 1: fragment on on on { on }
             ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected Name " + "\"on\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(10);
         }
 
         [Fact]
@@ -29,6 +33,9 @@ namespace GraphQLParser.Tests.Validation
 1: query Foo($x: Complex = { a: { b: [ $var ] } }) { field }
                                        ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected $");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(37);
         }
 
         [Fact]
@@ -41,6 +48,9 @@ namespace GraphQLParser.Tests.Validation
 1: { ...on }
            ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected Name, found }");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(9);
         }
 
         [Fact]
@@ -53,6 +63,9 @@ namespace GraphQLParser.Tests.Validation
 1: ...
    ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected ...");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -65,6 +78,9 @@ namespace GraphQLParser.Tests.Validation
 1: {
     ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Expected Name, found EOF");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(2);
         }
 
         [Fact]
@@ -77,6 +93,9 @@ namespace GraphQLParser.Tests.Validation
 1: { field: {} }
             ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Expected Name, found {");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(10);
         }
 
         [Fact]
@@ -91,6 +110,9 @@ fragment MissingOn Type")));
 2: fragment MissingOn Type
                       ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Expected \"on\", found Name \"Type\"");
+            exception.Line.ShouldBe(2);
+            exception.Column.ShouldBe(20);
         }
 
         [Fact]
@@ -103,6 +125,9 @@ fragment MissingOn Type")));
 1: notanoperation Foo { field }
    ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected Name \"notanoperation\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
     }
 }
