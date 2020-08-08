@@ -6,9 +6,17 @@ namespace GraphQLParser.Exceptions
 {
     public class GraphQLSyntaxErrorException : Exception
     {
+        public string Description { get; private set; }
+        public int Line { get; private set; }
+        public int Column { get; private set; }
+
         public GraphQLSyntaxErrorException(string description, ISource source, int location)
             : base(ComposeMessage(description, source, location))
         {
+            Description = description;
+            var locationInfo = new Location(source, location);
+            Line = locationInfo.Line;
+            Column = locationInfo.Column;
         }
 
         private static string ComposeMessage(string description, ISource source, int loc)
