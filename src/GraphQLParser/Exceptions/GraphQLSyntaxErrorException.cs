@@ -6,15 +6,25 @@ namespace GraphQLParser.Exceptions
 {
     public class GraphQLSyntaxErrorException : Exception
     {
+        public string Description { get; private set; }
+        public int Line { get; private set; }
+        public int Column { get; private set; }
+
         public GraphQLSyntaxErrorException(string description, ISource source, int location)
-            : base(ComposeMessage(description, source, location))
+            : this(description, source, new Location(source, location))
         {
         }
 
-        private static string ComposeMessage(string description, ISource source, int loc)
+        private GraphQLSyntaxErrorException(string description, ISource source, Location location)
+            : base(ComposeMessage(description, source, location))
         {
-            var location = new Location(source, loc);
+            Description = description;
+            Line = location.Line;
+            Column = location.Column;
+        }
 
+        private static string ComposeMessage(string description, ISource source, Location location)
+        {
             return $"Syntax Error GraphQL ({location.Line}:{location.Column}) {description}" +
                 "\n" + HighlightSourceAtLocation(source, location);
         }

@@ -2,6 +2,7 @@ using GraphQLParser.Exceptions;
 using GraphQLParser;
 using System;
 using Xunit;
+using Shouldly;
 
 namespace GraphQLParser.Tests.Validation
 {
@@ -18,6 +19,9 @@ namespace GraphQLParser.Tests.Validation
          ^
 2: line" + "\"" + @"
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -37,6 +41,9 @@ namespace GraphQLParser.Tests.Validation
 1: a-b
      ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid number, expected digit but got: \"b\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(3);
         }
 
         [Fact]
@@ -49,6 +56,9 @@ namespace GraphQLParser.Tests.Validation
 1: ..
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected character \".\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -61,6 +71,9 @@ namespace GraphQLParser.Tests.Validation
 1: \u0007
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character \"\\u0007\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -73,6 +86,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"bad \\x esc\"" + @"
          ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character escape sequence: \\x.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -85,6 +101,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"bad \\z esc\"" + @"
          ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character escape sequence: \\z.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -97,6 +116,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"bad \\u1 esc\"" + @"
          ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character escape sequence: \\u1 es.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -109,6 +131,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"bad \\u0XX1 esc\"" + @"
          ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character escape sequence: \\u0XX1.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -121,6 +146,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"bad \\uFXXX esc\"" + @"
          ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character escape sequence: \\uFXXX.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -133,6 +161,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"bad \\uXXXX esc\"" + @"
          ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character escape sequence: \\uXXXX.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -145,6 +176,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"bad \\uXXXF esc\"" + @"
          ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character escape sequence: \\uXXXF.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -158,6 +192,9 @@ namespace GraphQLParser.Tests.Validation
          ^
 2: line" + "\"" + @"
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(7);
         }
 
         [Fact]
@@ -170,6 +207,9 @@ namespace GraphQLParser.Tests.Validation
 1: ?
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected character \"?\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -182,6 +222,9 @@ namespace GraphQLParser.Tests.Validation
 1: 1.0e
        ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid number, expected digit but got: <EOF>");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(5);
         }
 
         [Fact]
@@ -194,6 +237,9 @@ namespace GraphQLParser.Tests.Validation
 1: 1.0eA
        ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid number, expected digit but got: \"A\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(5);
         }
 
         [Fact]
@@ -206,6 +252,9 @@ namespace GraphQLParser.Tests.Validation
 1: 1.A
      ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid number, expected digit but got: \"A\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(3);
         }
 
         [Fact]
@@ -218,6 +267,9 @@ namespace GraphQLParser.Tests.Validation
 1: -A
     ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid number, expected digit but got: \"A\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(2);
         }
 
         [Fact]
@@ -230,6 +282,9 @@ namespace GraphQLParser.Tests.Validation
 1: \u203B
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected character \"\\u203B\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -242,6 +297,9 @@ namespace GraphQLParser.Tests.Validation
 1: \u200b
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected character \"\\u200b\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -254,6 +312,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"null-byte is not \\u0000 end of file" + @"
                      ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character within String: \\u0000.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(19);
         }
 
         [Fact]
@@ -266,6 +327,9 @@ namespace GraphQLParser.Tests.Validation
 1: 00
     ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid number, unexpected digit after 0: " + "\"0\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(2);
         }
 
         [Fact]
@@ -278,6 +342,9 @@ namespace GraphQLParser.Tests.Validation
 1: 1.
      ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid number, expected digit but got: <EOF>");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(3);
         }
 
         [Fact]
@@ -290,6 +357,9 @@ namespace GraphQLParser.Tests.Validation
 1: +1
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected character \"+\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -302,6 +372,9 @@ namespace GraphQLParser.Tests.Validation
 1: .123
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unexpected character \".\"");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(1);
         }
 
         [Fact]
@@ -314,6 +387,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"contains unescaped \\u0007 control char" + @"
                        ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Invalid character within String: \\u0007.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(21);
         }
 
         [Fact]
@@ -326,6 +402,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"" + @"
     ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(2);
         }
 
         [Fact]
@@ -338,6 +417,9 @@ namespace GraphQLParser.Tests.Validation
 1: " + "\"no end quote" + @"
                 ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(14);
         }
     }
 }

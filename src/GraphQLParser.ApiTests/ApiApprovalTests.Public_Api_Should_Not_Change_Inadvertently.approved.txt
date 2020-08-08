@@ -461,5 +461,8 @@ namespace GraphQLParser.Exceptions
     public class GraphQLSyntaxErrorException : System.Exception
     {
         public GraphQLSyntaxErrorException(string description, GraphQLParser.ISource source, int location) { }
+        public int Column { get; }
+        public string Description { get; }
+        public int Line { get; }
     }
 }
