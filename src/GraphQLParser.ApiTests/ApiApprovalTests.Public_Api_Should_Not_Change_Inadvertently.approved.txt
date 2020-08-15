@@ -173,11 +173,15 @@ namespace GraphQLParser.AST
         public override string ToString() { }
     }
     [System.Diagnostics.DebuggerDisplay("(Start={Start}, End={End})")]
-    public readonly struct GraphQLLocation
+    public readonly struct GraphQLLocation : System.IEquatable<GraphQLParser.AST.GraphQLLocation>
     {
         public GraphQLLocation(int start, int end) { }
         public int End { get; }
         public int Start { get; }
+        public bool Equals(GraphQLParser.AST.GraphQLLocation other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public override string ToString() { }
     }
     [System.Diagnostics.DebuggerDisplay("{Value}")]
     public class GraphQLName : GraphQLParser.AST.ASTNode

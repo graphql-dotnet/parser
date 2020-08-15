@@ -156,19 +156,15 @@ scalar JSON
         }
 
         [Fact]
-        public void Parse_FieldInput_HasCorrectEndLocationAttribute()
+        public void Parse_FieldInput_HasCorrectLocations()
         {
+            // { field }
             var document = ParseGraphQLFieldSource();
 
-            document.Location.End.ShouldBe(9);
-        }
-
-        [Fact]
-        public void Parse_FieldInput_HasCorrectStartLocationAttribute()
-        {
-            var document = ParseGraphQLFieldSource();
-
-            document.Location.Start.ShouldBe(0);
+            document.Location.ShouldBe(new GraphQLLocation(0, 9)); // { field }
+            document.Definitions.First().Location.ShouldBe(new GraphQLLocation(0, 9)); // { field }
+            (document.Definitions.First() as GraphQLOperationDefinition).SelectionSet.Location.ShouldBe(new GraphQLLocation(0, 9)); // { field }
+            (document.Definitions.First() as GraphQLOperationDefinition).SelectionSet.Selections.First().Location.ShouldBe(new GraphQLLocation(2, 7)); // field
         }
 
         [Fact]
@@ -212,19 +208,16 @@ scalar JSON
         }
 
         [Fact]
-        public void Parse_FieldWithOperationTypeAndNameInput_HasCorrectEndLocationAttribute()
+        public void Parse_FieldWithOperationTypeAndNameInput_HasCorrectLocations()
         {
+            // mutation Foo { field }
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            document.Location.End.ShouldBe(22);
-        }
-
-        [Fact]
-        public void Parse_FieldWithOperationTypeAndNameInput_HasCorrectStartLocationAttribute()
-        {
-            var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
-
-            document.Location.Start.ShouldBe(0);
+            document.Location.ShouldBe(new GraphQLLocation(0, 22));
+            document.Definitions.First().Location.ShouldBe(new GraphQLLocation(0, 22));
+            (document.Definitions.First() as GraphQLOperationDefinition).Name.Location.ShouldBe(new GraphQLLocation(9, 12)); // Foo
+            (document.Definitions.First() as GraphQLOperationDefinition).SelectionSet.Location.ShouldBe(new GraphQLLocation(13, 22)); // { field }
+            (document.Definitions.First() as GraphQLOperationDefinition).SelectionSet.Selections.First().Location.ShouldBe(new GraphQLLocation(15, 20)); // field
         }
 
         [Fact]
