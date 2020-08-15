@@ -71,7 +71,7 @@ namespace GraphQLParser.Tests.Validation
 1: \u0007
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
-            exception.Description.ShouldBe("TEST FAILURE");
+            exception.Description.ShouldBe("TEST FAILURE2");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(1);
         }
