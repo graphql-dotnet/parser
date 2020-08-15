@@ -1,5 +1,6 @@
 using Xunit;
 using GraphQLParser;
+using Shouldly;
 
 namespace GraphQLParser.Tests
 {
@@ -10,7 +11,7 @@ namespace GraphQLParser.Tests
         {
             var source = new Source("somesrc");
 
-            Assert.Equal("somesrc", source.Body);
+            source.Body.ShouldBe("somesrc");
         }
 
         [Fact]
@@ -18,7 +19,7 @@ namespace GraphQLParser.Tests
         {
             var source = new Source("somesrc");
 
-            Assert.Equal("GraphQL", source.Name);
+            source.Name.ShouldBe("GraphQL");
         }
 
         [Fact]
@@ -26,7 +27,7 @@ namespace GraphQLParser.Tests
         {
             var source = new Source("somesrc", "somename");
 
-            Assert.Equal("somename", source.Name);
+            source.Name.ShouldBe("somename");
         }
     }
 }
