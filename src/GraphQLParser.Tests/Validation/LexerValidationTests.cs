@@ -71,7 +71,7 @@ namespace GraphQLParser.Tests.Validation
 1: \u0007
    ^
 ").Replace(Environment.NewLine, "\n"), exception.Message);
-            exception.Description.ShouldBe("Invalid character \"\\u0007\"");
+            exception.Description.ShouldBe("Invalid character \"\\u0007\".");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(1);
         }
