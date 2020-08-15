@@ -1,10 +1,9 @@
-using GraphQLParser;
-using GraphQLParser.AST;
-using NSubstitute;
-using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GraphQLParser.AST;
+using NSubstitute;
+using Shouldly;
 using Xunit;
 
 namespace GraphQLParser.Tests

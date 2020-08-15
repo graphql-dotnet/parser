@@ -1,6 +1,5 @@
-using Xunit;
-using GraphQLParser;
 using Shouldly;
+using Xunit;
 
 namespace GraphQLParser.Tests
 {

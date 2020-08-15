@@ -1,8 +1,7 @@
-using GraphQLParser.Exceptions;
-using GraphQLParser;
 using System;
-using Xunit;
+using GraphQLParser.Exceptions;
 using Shouldly;
+using Xunit;
 
 namespace GraphQLParser.Tests.Validation
 {
