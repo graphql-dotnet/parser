@@ -48,7 +48,7 @@ namespace GraphQLParser.Tests.Validation
 1: { ...on }
            ^
 ".Replace(Environment.NewLine, "\n"), exception.Message);
-            exception.Description.ShouldBe("Unexpected Name, found }");
+            exception.Description.ShouldBe("Expected Name, found }");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(9);
         }
