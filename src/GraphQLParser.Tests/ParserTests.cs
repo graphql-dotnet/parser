@@ -152,7 +152,7 @@ scalar JSON
         public void Parse_Unicode_Char_At_EOF_Should_Throw()
         {
             var parser = new Parser(new Lexer());
-            Assert.Throws<GraphQLSyntaxErrorException>(() => parser.Parse(new Source("{\"\\ue }")));
+            Should.Throw<GraphQLSyntaxErrorException>(() => parser.Parse(new Source("{\"\\ue }")));
         }
 
         [Fact]
@@ -160,7 +160,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldSource();
 
-            Assert.Equal(9, document.Location.End);
+            document.Location.End.ShouldBe(9);
         }
 
         [Fact]
@@ -168,7 +168,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldSource();
 
-            Assert.Equal(0, document.Location.Start);
+            document.Location.Start.ShouldBe(0);
         }
 
         [Fact]
@@ -176,7 +176,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldSource();
 
-            Assert.Equal(ASTNodeKind.OperationDefinition, document.Definitions.First().Kind);
+            document.Definitions.First().Kind.ShouldBe(ASTNodeKind.OperationDefinition);
         }
 
         [Fact]
@@ -184,7 +184,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldSource();
 
-            Assert.Null(GetSingleOperationDefinition(document).Name);
+            GetSingleOperationDefinition(document).Name.ShouldBeNull();
         }
 
         [Fact]
@@ -192,7 +192,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldSource();
 
-            Assert.Equal(OperationType.Query, GetSingleOperationDefinition(document).Operation);
+            GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Query);
         }
 
         [Fact]
@@ -200,7 +200,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldSource();
 
-            Assert.Equal(ASTNodeKind.Document, document.Kind);
+            document.Kind.ShouldBe(ASTNodeKind.Document);
         }
 
         [Fact]
@@ -208,7 +208,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldSource();
 
-            Assert.Equal(ASTNodeKind.Field, GetSingleSelection(document).Kind);
+            GetSingleSelection(document).Kind.ShouldBe(ASTNodeKind.Field);
         }
 
         [Fact]
@@ -216,7 +216,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            Assert.Equal(22, document.Location.End);
+            document.Location.End.ShouldBe(22);
         }
 
         [Fact]
@@ -224,7 +224,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            Assert.Equal(0, document.Location.Start);
+            document.Location.Start.ShouldBe(0);
         }
 
         [Fact]
@@ -232,7 +232,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            Assert.Equal(ASTNodeKind.OperationDefinition, document.Definitions.First().Kind);
+            document.Definitions.First().Kind.ShouldBe(ASTNodeKind.OperationDefinition);
         }
 
         [Fact]
@@ -240,7 +240,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            Assert.Equal("Foo", GetSingleOperationDefinition(document).Name.Value);
+            GetSingleOperationDefinition(document).Name.Value.ShouldBe("Foo");
         }
 
         [Fact]
@@ -248,7 +248,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            Assert.Equal(OperationType.Mutation, GetSingleOperationDefinition(document).Operation);
+            GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Mutation);
         }
 
         [Fact]
@@ -256,7 +256,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            Assert.Equal(ASTNodeKind.Document, document.Kind);
+            document.Kind.ShouldBe(ASTNodeKind.Document);
         }
 
         [Fact]
@@ -264,7 +264,7 @@ scalar JSON
         {
             var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            Assert.Equal(ASTNodeKind.Field, GetSingleSelection(document).Kind);
+            GetSingleSelection(document).Kind.ShouldBe(ASTNodeKind.Field);
         }
 
         [Fact]
@@ -275,7 +275,7 @@ scalar JSON
             {
                 var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
                 var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
-                Assert.Equal($" multiline comments{NL} with very importand description #{NL} # and symbol # and ##", fieldDef.Comment.Text);
+                fieldDef.Comment.Text.ShouldBe($" multiline comments{NL} with very importand description #{NL} # and symbol # and ##");
 
                 // Schema description
                 // https://github.com/graphql/graphql-spec/pull/466
@@ -291,7 +291,7 @@ scalar JSON
         {
             var document = new Parser(new Lexer()).Parse(new Source(null));
 
-            Assert.Empty(document.Definitions);
+            document.Definitions.ShouldBeEmpty();
         }
 
         [Fact]
