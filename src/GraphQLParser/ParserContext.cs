@@ -15,6 +15,7 @@ namespace GraphQLParser
         private readonly ISource _source;
         private Stack<GraphQLComment>? _comments;
         private Token _currentToken;
+        private Token _prevToken;
 
         public ParserContext(ISource source, ILexer lexer)
         {
@@ -23,6 +24,13 @@ namespace GraphQLParser
             _lexer = lexer;
 
             _currentToken = _lexer.Lex(source);
+            _prevToken = new Token
+            (
+                TokenKind.UNKNOWN,
+                null,
+                0,
+                0
+            );
         }
 
         public void Dispose()
@@ -37,7 +45,12 @@ namespace GraphQLParser
 
         private void Advance()
         {
-            _currentToken = _lexer.Lex(_source, _currentToken.End);
+            // We should not advance further if we have already reached the EOF.
+            if (_currentToken.Kind != TokenKind.EOF)
+            {
+                _prevToken = _currentToken;
+                _currentToken = _lexer.Lex(_source, _currentToken.End);
+            }
         }
 
         private GraphQLType AdvanceThroughColonAndParseType()
@@ -67,7 +80,10 @@ namespace GraphQLParser
                 Location = new GraphQLLocation
                 (
                     start,
-                    _currentToken.End
+                    // Formally, to denote the end of the document, it is better to use _prevToken.End,
+                    // since _prevToken represents some real meaningful token; _currentToken here is always EOF.
+                    // EOF is a technical token with length = 0, _prevToken.End and _currentToken.End have the same value here.
+                    _prevToken.End // equals to _currentToken.End (EOF) 
                 ),
                 Definitions = definitions
             };
@@ -193,7 +209,7 @@ namespace GraphQLParser
             return new GraphQLLocation
             (
                 start,
-                _currentToken.End
+                _prevToken.End
             );
         }
 
