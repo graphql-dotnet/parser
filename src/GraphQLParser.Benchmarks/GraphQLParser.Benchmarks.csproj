@@ -20,4 +20,10 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="query_with_many_escape_symbols.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,3 +1,4 @@
+using System.IO;
 using BenchmarkDotNet.Attributes;
 
 namespace GraphQLParser.Benchmarks
@@ -5,6 +6,7 @@ namespace GraphQLParser.Benchmarks
     [MemoryDiagnoser]
     public class LexerBenchmark
     {
+        private string query; 
         private const string KITCHEN_SINK = @"
 query queryName($foo: ComplexType, $site: Site = MOBILE) {
   whoever123is: node(id: [123, 456]) {
@@ -57,11 +59,30 @@ fragment frag on Friend {
   query
 }";
 
-        [Benchmark]
+        [GlobalSetup]
+        public void GlobalSetup()
+        {
+            query = File.ReadAllText("query_with_many_escape_symbols.txt");
+        }
+
+       // [Benchmark]
         public void LexKitchenSink()
         {
             var lexer = new Lexer();
             var source = new Source(KITCHEN_SINK);
+            var resetPosition = 0;
+            Token token;
+            while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
+            {
+                resetPosition = token.End;
+            }
+        }
+
+        [Benchmark]
+        public void LexQueryWithManyEscapeSymbols()
+        {
+            var lexer = new Lexer();
+            var source = new Source(query);
             var resetPosition = 0;
             Token token;
             while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
