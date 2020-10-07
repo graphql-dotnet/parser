@@ -1,7 +1,7 @@
 <Project>
   
   <PropertyGroup>
-    <VersionPrefix>5.3.0</VersionPrefix>
+    <VersionPrefix>5.3.1</VersionPrefix>
     <Authors>Marek Magdziak</Authors>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <Copyright>Copyright 2016-2020 Marek Magdziak et al. All rights reserved.</Copyright>
