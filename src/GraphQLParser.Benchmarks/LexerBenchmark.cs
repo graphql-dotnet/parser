@@ -65,7 +65,7 @@ fragment frag on Friend {
             query = File.ReadAllText("query_with_many_escape_symbols.txt");
         }
 
-       // [Benchmark]
+        [Benchmark]
         public void LexKitchenSink()
         {
             var lexer = new Lexer();
