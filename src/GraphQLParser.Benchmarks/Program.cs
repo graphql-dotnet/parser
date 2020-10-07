@@ -1,4 +1,4 @@
-﻿using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Running;
 using System;
 using System.Linq;
 using System.Threading;
@@ -12,12 +12,12 @@ namespace GraphQLParser.Benchmarks
         private static void Main(string[] args)
         {
             if (args.Length == 0)
-                BenchmarkRunner.Run<ParserBenchmark>();
+                BenchmarkRunner.Run<LexerBenchmark>();
             else
-                RunMemoryProfilerPayload();
+                RunMemoryProfilerPayload1();
         }
 
-        private static void RunMemoryProfilerPayload()
+        private static void RunMemoryProfilerPayload1()
         {
             var bench = new ParserBenchmark();
             bench.GlobalSetup();
@@ -37,6 +37,20 @@ namespace GraphQLParser.Benchmarks
 
             Console.WriteLine("end");
             Console.ReadLine();
+        }
+
+        private static void RunMemoryProfilerPayload2()
+        {
+            var bench = new LexerBenchmark();
+            bench.GlobalSetup();
+
+            while (true)
+            {
+                bench.LexQueryWithManyEscapeSymbols();
+
+                Console.WriteLine("press key");
+                Console.ReadLine();
+            }
         }
     }
 }
