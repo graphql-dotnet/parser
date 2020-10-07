@@ -7,8 +7,11 @@
 
   <ItemGroup>
     <Content Include="*.graphql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Update="query_with_many_escape_symbols.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -18,12 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\GraphQLParser\GraphQLParser.csproj" />
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="query_with_many_escape_symbols.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
