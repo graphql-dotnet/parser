@@ -1,11 +1,12 @@
 <Project>
   
   <PropertyGroup>
-    <VersionPrefix>5.3.1</VersionPrefix>
+    <VersionPrefix>5.3.2</VersionPrefix>
     <Authors>Marek Magdziak</Authors>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <Copyright>Copyright 2016-2020 Marek Magdziak et al. All rights reserved.</Copyright>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
