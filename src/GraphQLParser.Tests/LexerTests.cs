@@ -7,7 +7,9 @@ namespace GraphQLParser.Tests
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "Tests")]
     public class LexerTests
     {
-        private static readonly string NL = Environment.NewLine;
+        // Use a constant newline instead of Environment.NewLine to make sure the tests are
+        // consistently executed between Windows and *nix.
+        private static readonly string NL = "\n";
 
         [Fact]
         public void Lex_ATPunctuation_HasCorrectEnd()

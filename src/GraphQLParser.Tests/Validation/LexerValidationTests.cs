@@ -13,11 +13,10 @@ namespace GraphQLParser.Tests.Validation
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
                 () => new Lexer().Lex(new Source("\"multi\rline\"")));
 
-            exception.Message.ShouldBe((@"Syntax Error GraphQL (1:7) Unterminated string.
-1: " + "\"multi" + @"
-         ^
-2: line" + "\"" + @"
-").Replace(Environment.NewLine, "\n"));
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (1:7) Unterminated string.\n" +
+                "1: \"multi\rline\"\n" +
+                "         ^\n");
             exception.Description.ShouldBe("Unterminated string.");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(7);

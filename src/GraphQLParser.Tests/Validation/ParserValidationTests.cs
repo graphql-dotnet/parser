@@ -101,14 +101,13 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_MissingFragmentType_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source(@"{ ...MissingOn }
-fragment MissingOn Type")));
+                () => new Parser(new Lexer()).Parse(new Source("{ ...MissingOn }\nfragment MissingOn Type")));
 
-            exception.Message.ShouldBe(@"Syntax Error GraphQL (2:20) Expected " + "\"on\"" + @", found Name " + "\"Type\"" + @"
-1: { ...MissingOn }
-2: fragment MissingOn Type
-                      ^
-".Replace(Environment.NewLine, "\n"));
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (2:20) Expected \"on\", found Name \"Type\"\n" +
+                "1: { ...MissingOn }\n" +
+                "2: fragment MissingOn Type\n" +
+                "                      ^\n");
             exception.Description.ShouldBe("Expected \"on\", found Name \"Type\"");
             exception.Line.ShouldBe(2);
             exception.Column.ShouldBe(20);
