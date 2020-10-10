@@ -68,7 +68,7 @@ namespace GraphQLParser
 
             List<T>? nodes = null;
             while (!Skip(close))
-                (nodes ?? (nodes = new List<T>())).Add(next(ref this));
+                (nodes ??= new List<T>()).Add(next(ref this));
 
             return nodes;
         }
@@ -435,7 +435,7 @@ namespace GraphQLParser
         {
             List<GraphQLDirective>? directives = null;
             while (Peek(TokenKind.AT))
-                (directives ?? (directives = new List<GraphQLDirective>())).Add(ParseDirective());
+                (directives ??= new List<GraphQLDirective>()).Add(ParseDirective());
 
             return directives;
         }

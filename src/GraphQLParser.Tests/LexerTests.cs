@@ -7,10 +7,6 @@ namespace GraphQLParser.Tests
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "Tests")]
     public class LexerTests
     {
-        // Use a constant newline instead of Environment.NewLine to make sure the tests are
-        // consistently executed between Windows and *nix.
-        private static readonly string NL = "\n";
-
         [Fact]
         public void Lex_ATPunctuation_HasCorrectEnd()
         {
@@ -1101,12 +1097,12 @@ namespace GraphQLParser.Tests
 
         private static Token GetSingleNameTokenLexerSurroundedWithWhitespaces()
         {
-            return new Lexer().Lex(new Source($"{NL}        foo{NL}{NL}    "));
+            return new Lexer().Lex(new Source($"\n        foo\n\n    "));
         }
 
         private static Token GetSingleNameTokenLexerWithComments()
         {
-            return new Lexer().Lex(new Source($"{NL}#comment{NL}foo#comment"));
+            return new Lexer().Lex(new Source($"\n#comment\nfoo#comment"));
         }
 
         private static Token GetSingleNameWithBOMHeaderTokenLexer()
