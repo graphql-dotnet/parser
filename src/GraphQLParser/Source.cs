@@ -1,4 +1,4 @@
-﻿namespace GraphQLParser
+namespace GraphQLParser
 {
     public class Source : ISource
     {
@@ -9,18 +9,11 @@
         public Source(string body, string name)
         {
             Name = name;
-            Body = MonetizeLineBreaks(body);
+            Body = body ?? string.Empty;
         }
 
         public string Body { get; set; }
 
         public string Name { get; set; }
-
-        private static string MonetizeLineBreaks(string input)
-        {
-            return (input ?? string.Empty)
-                .Replace("\r\n", "\n")
-                .Replace("\r", "\n");
-        }
     }
 }
