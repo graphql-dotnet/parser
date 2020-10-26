@@ -1,14 +1,33 @@
 <Project>
-  
+
   <PropertyGroup>
-    <VersionPrefix>5.3.3</VersionPrefix>
-    <Authors>Marek Magdziak</Authors>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-    <Copyright>Copyright 2016-2020 Marek Magdziak et al. All rights reserved.</Copyright>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <VersionPrefix>5.3.5-preview</VersionPrefix>
     <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
+    <Authors>Marek Magdziak</Authors>
+    <Copyright>Copyright 2016-$(CurrentYear) $(Authors) et al. All rights reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageIcon>logo.64x64.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <DebugType>embedded</DebugType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
+    <NoWarn>$(NoWarn);1591</NoWarn>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  
+
+  <ItemGroup>
+    <None Include="..\..\assets\logo.64x64.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" Condition="'$(IsPackable)' == 'true'"/>
+  </ItemGroup>
+
 </Project>

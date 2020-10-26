@@ -7,14 +7,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>GraphQL-Parser</AssemblyName>
     <PackageTags>GraphQL;json;api;parser</PackageTags>
-    <PackageProjectUrl>https://github.com/graphql-dotnet/parser</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>logo.64x64.png</PackageIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\..\assets\logo.64x64.png" Pack="true" PackagePath="" />
-  </ItemGroup>
   
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

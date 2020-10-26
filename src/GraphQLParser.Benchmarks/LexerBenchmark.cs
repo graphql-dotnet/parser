@@ -6,7 +6,7 @@ namespace GraphQLParser.Benchmarks
     [MemoryDiagnoser]
     public class LexerBenchmark
     {
-        private string query; 
+        private string _query = null!; 
         private const string KITCHEN_SINK = @"
 query queryName($foo: ComplexType, $site: Site = MOBILE) {
   whoever123is: node(id: [123, 456]) {
@@ -62,7 +62,7 @@ fragment frag on Friend {
         [GlobalSetup]
         public void GlobalSetup()
         {
-            query = File.ReadAllText("query_with_many_escape_symbols.txt");
+            _query = File.ReadAllText("query_with_many_escape_symbols.txt");
         }
 
         [Benchmark]
@@ -70,7 +70,7 @@ fragment frag on Friend {
         {
             var lexer = new Lexer();
             var source = new Source(KITCHEN_SINK);
-            var resetPosition = 0;
+            int resetPosition = 0;
             Token token;
             while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
             {
@@ -82,8 +82,8 @@ fragment frag on Friend {
         public void LexQueryWithManyEscapeSymbols()
         {
             var lexer = new Lexer();
-            var source = new Source(query);
-            var resetPosition = 0;
+            var source = new Source(_query);
+            int resetPosition = 0;
             Token token;
             while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
             {
