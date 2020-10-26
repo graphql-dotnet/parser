@@ -28,7 +28,6 @@ jobs:
         with:
           dotnet-version: '3.1.x'
           source-url: https://api.nuget.org/v3/index.json
-        # Error: The NUGET_AUTH_TOKEN environment variable was not provided. In this step, add the following: 
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN}}
       - name: Install dependencies
