@@ -22,8 +22,9 @@ namespace GraphQLParser.ApiTests
             var approved = File.ReadAllText(Path.Combine(a, "../../../ApiApprovalTests.Public_Api_Should_Not_Change_Inadvertently.approved.txt"));
 
             api.ShouldBe(approved);
+            Console.WriteLine("OOOOOOOKKKKKKKKKKKK")
 
-            api.ShouldMatchApproved();
+            //api.ShouldMatchApproved(opt => opt.);
         }
     }
 }
