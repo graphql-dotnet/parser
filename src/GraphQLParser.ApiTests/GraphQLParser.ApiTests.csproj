@@ -16,4 +16,10 @@
     <ProjectReference Include="..\GraphQLParser\GraphQLParser.csproj" />
   </ItemGroup>
   
+  <ItemGroup>
+    <None Update="ApiApprovalTests.Public_Api_Should_Not_Change_Inadvertently.approved.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>

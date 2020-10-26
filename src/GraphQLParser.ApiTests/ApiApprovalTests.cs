@@ -24,7 +24,7 @@ namespace GraphQLParser.ApiTests
             api.ShouldBe(approved);
             Console.WriteLine("OOOOOOOKKKKKKKKKKKK");
 
-            //api.ShouldMatchApproved(opt => opt.);
+            api.ShouldMatchApproved();
         }
     }
 }
