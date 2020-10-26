@@ -1,0 +1,15 @@
+"test":
+  - src/GraphQLParser.ApiTests/**/*
+  - src/GraphQLParser.Tests/**/*
+
+"CI":
+  - .github/workflows/**/*
+
+"code style":
+  - .editorconfig
+
+"documentation":
+  - README.md
+
+"performance":
+  - src/GraphQLParser.Benchmarks/**/*

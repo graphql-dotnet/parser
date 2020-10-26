@@ -10,7 +10,7 @@ namespace GraphQLParser.Tests
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "Tests")]
     public class ParserTests
     {
-        private static readonly string NL = Environment.NewLine;
+        private static readonly string _nl = Environment.NewLine;
 
         [Fact]
         public void Comments_on_FragmentSpread_Should_Read_Correclty()
@@ -268,7 +268,7 @@ scalar JSON
             {
                 var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
                 var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
-                fieldDef.Comment.Text.ShouldBe($" multiline comments{NL} with very importand description #{NL} # and symbol # and ##");
+                fieldDef.Comment.Text.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
 
                 // Schema description
                 // https://github.com/graphql/graphql-spec/pull/466
