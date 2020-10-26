@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="Shouldly" Version="4.0.0-beta0004" />
@@ -11,15 +11,9 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Include="PublicApiGenerator" Version="10.2.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\GraphQLParser\GraphQLParser.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <None Update="ApiApprovalTests.Public_Api_Should_Not_Change_Inadvertently.approved.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  
+
 </Project>
