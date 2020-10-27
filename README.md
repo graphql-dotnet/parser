@@ -1,8 +1,6 @@
 # GraphQL Dotnet Parser
-[![AppVeyor](https://img.shields.io/appveyor/ci/graphql-dotnet-ci/parser.svg)](https://ci.appveyor.com/project/graphql-dotnet-ci/parser)
-[![Coverage Status](https://coveralls.io/repos/github/graphql-dotnet/parser/badge.svg?branch=master)](https://coveralls.io/github/graphql-dotnet/parser?branch=master)
+
 [![NuGet](https://img.shields.io/nuget/v/GraphQL-Parser.svg)](https://www.nuget.org/packages/GraphQL-Parser)
-[![MyGet Pre Release](https://img.shields.io/myget/graphql-dotnet/vpre/GraphQL-Parser?label=myget)](https://www.myget.org/F/graphql-dotnet/api/v3/index.json)
 [![Nuget](https://img.shields.io/nuget/dt/GraphQL-Parser)](https://www.nuget.org/packages/GraphQL-Parser)
 
 ![Activity](https://img.shields.io/github/commit-activity/w/graphql-dotnet/parser)
@@ -11,9 +9,14 @@
 
 ![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
 
+[![Build status](https://github.com/graphql-dotnet/parser/workflows/Publish%20preview%20to%20GitHub%20registry/badge.svg)](https://github.com/graphql-dotnet/parser/actions)
+[![Build status](https://github.com/graphql-dotnet/parser/workflows/Publish%20release%20to%20Nuget%20registry/badge.svg)](https://github.com/graphql-dotnet/parser/actions)
+
 This library contains a lexer and parser classes as well as the complete GraphQL AST model.
 
 The parser from this library is used in [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet).
+
+Preview versions of this package are available on [GitHub Packages](https://github.com/orgs/graphql-dotnet/packages?repo_name=parser).
 
 ## Lexer
 Generates token based on input text.

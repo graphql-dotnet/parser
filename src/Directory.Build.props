@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>5.3.5-preview</VersionPrefix>
+    <VersionPrefix>5.3.4-preview</VersionPrefix>
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -17,6 +17,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables -->
+    <!-- https://github.com/clairernovotny/DeterministicBuilds -->
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <Nullable>enable</Nullable>

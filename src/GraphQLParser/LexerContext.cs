@@ -429,13 +429,13 @@ namespace GraphQLParser
             }
         }
 
-        private int WaitForEndOfComment(string body, int position, char code)
-        {
-            while (++position < body.Length && (code = body[position]) != 0 && (code > 0x001F || code == 0x0009) && code != 0x000A && code != 0x000D)
-            {
-            }
+        //private int WaitForEndOfComment(string body, int position, char code)
+        //{
+        //    while (++position < body.Length && (code = body[position]) != 0 && (code > 0x001F || code == 0x0009) && code != 0x000A && code != 0x000D)
+        //    {
+        //    }
 
-            return position;
-        }
+        //    return position;
+        //}
     }
 }

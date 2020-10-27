@@ -529,7 +529,7 @@ namespace GraphQLParser
             return CreateFieldSelection(start, name, alias, comment);
         }
 
-        private GraphQLValue ParseFloat(bool isConstant)
+        private GraphQLValue ParseFloat(/*bool isConstant*/)
         {
             var token = _currentToken;
             Advance();
@@ -631,7 +631,7 @@ namespace GraphQLParser
             };
         }
 
-        private GraphQLValue ParseInt(bool isConstant)
+        private GraphQLValue ParseInt(/*bool isConstant*/)
         {
             var token = _currentToken;
             Advance();
@@ -719,7 +719,7 @@ namespace GraphQLParser
             };
         }
 
-        private GraphQLValue ParseNameValue(bool isConstant)
+        private GraphQLValue ParseNameValue(/*bool isConstant*/)
         {
             var token = _currentToken;
 
@@ -891,7 +891,7 @@ namespace GraphQLParser
             };
         }
 
-        private GraphQLValue ParseString(bool isConstant)
+        private GraphQLValue ParseString(/*bool isConstant*/)
         {
             var token = _currentToken;
             Advance();
@@ -987,10 +987,10 @@ namespace GraphQLParser
         {
             TokenKind.BRACKET_L => ParseList(isConstant),
             TokenKind.BRACE_L => ParseObject(isConstant),
-            TokenKind.INT => ParseInt(isConstant),
-            TokenKind.FLOAT => ParseFloat(isConstant),
-            TokenKind.STRING => ParseString(isConstant),
-            TokenKind.NAME => ParseNameValue(isConstant),
+            TokenKind.INT => ParseInt(/*isConstant*/),
+            TokenKind.FLOAT => ParseFloat(/*isConstant*/),
+            TokenKind.STRING => ParseString(/*isConstant*/),
+            TokenKind.NAME => ParseNameValue(/*isConstant*/),
             TokenKind.DOLLAR when !isConstant => ParseVariable(),
             _ => throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start)
         };
