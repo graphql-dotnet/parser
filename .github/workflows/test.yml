@@ -44,7 +44,7 @@ jobs:
           reports: '${{ matrix.os }}.lcov.info'
           targetdir: '.'
           reporttypes: 'Clover'
-          tag: '${{ github.run_number }}_${{ github.run_id }}'
+          tag: 'test_${{ github.run_number }}'
       - name: Monitor coverage
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: slavcodev/coverage-monitor-action@1.2.0
