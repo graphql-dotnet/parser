@@ -1,4 +1,4 @@
-﻿namespace GraphQLParser.AST
+namespace GraphQLParser.AST
 {
     public class GraphQLNamedType : GraphQLType, INamedNode
     {
@@ -6,6 +6,7 @@
 
         public GraphQLName? Name { get; set; }
 
+        /// <inheritdoc/>
         public override string ToString() => Name?.Value!;
     }
 }
