@@ -390,8 +390,8 @@ namespace GraphQLParser
     }
     public interface ISource
     {
-        string Body { get; set; }
-        string Name { get; set; }
+        string Body { get; }
+        string Name { get; }
     }
     public class Lexer : GraphQLParser.ILexer
     {
@@ -403,6 +403,7 @@ namespace GraphQLParser
     public readonly struct Location
     {
         public Location(GraphQLParser.ISource source, int position) { }
+        public Location(string source, int position) { }
         public int Column { get; }
         public int Line { get; }
     }
@@ -423,8 +424,8 @@ namespace GraphQLParser
     {
         public Source(string body) { }
         public Source(string body, string name) { }
-        public string Body { get; set; }
-        public string Name { get; set; }
+        public string Body { get; }
+        public string Name { get; }
     }
     public readonly struct Token
     {
