@@ -20,8 +20,8 @@
     <!-- https://github.com/clairernovotny/DeterministicBuilds -->
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-    <Nullable>enable</Nullable> <!--TODO: temporary solution-->
+    <NoWarn>$(NoWarn);1591</NoWarn> <!--TODO: temporary solution-->
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
