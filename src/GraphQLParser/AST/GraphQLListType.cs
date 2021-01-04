@@ -1,4 +1,4 @@
-﻿namespace GraphQLParser.AST
+namespace GraphQLParser.AST
 {
     public class GraphQLListType : GraphQLType
     {
@@ -6,6 +6,7 @@
 
         public GraphQLType? Type { get; set; }
 
+        /// <inheritdoc/>
         public override string ToString() => $"[{Type}]";
     }
 }
