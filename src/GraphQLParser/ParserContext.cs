@@ -1,8 +1,7 @@
-using GraphQLParser.AST;
-using GraphQLParser.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using GraphQLParser.AST;
+using GraphQLParser.Exceptions;
 
 namespace GraphQLParser
 {

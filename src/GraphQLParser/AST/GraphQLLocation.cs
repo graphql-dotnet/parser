@@ -30,11 +30,9 @@ namespace GraphQLParser.AST
         /// </summary>
         public int End { get; }
 
-
-
         public bool Equals(GraphQLLocation other) => Start == other.Start && End == other.End;
 
-        public override bool Equals(object obj) => obj is GraphQLLocation l ? Equals(l) : false;
+        public override bool Equals(object obj) => obj is GraphQLLocation l && Equals(l);
 
         public override int GetHashCode() => (Start, End).GetHashCode();
 
