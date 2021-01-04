@@ -19,8 +19,9 @@
     <!-- https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables -->
     <!-- https://github.com/clairernovotny/DeterministicBuilds -->
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <Nullable>enable</Nullable>
+    <Nullable>enable</Nullable> <!--TODO: temporary solution-->
   </PropertyGroup>
 
   <ItemGroup>

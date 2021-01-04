@@ -17,7 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 		..\LICENSE.md = ..\LICENSE.md
 		..\assets\logo.64x64.png = ..\assets\logo.64x64.png
-		NuGet.config = NuGet.config
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
@@ -37,6 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEM
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1EBB930E-951D-4857-A5A3-DED7FFE4FBD4}"
 	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\codeql-analysis.yml = ..\.github\workflows\codeql-analysis.yml
 		..\.github\workflows\label.yml = ..\.github\workflows\label.yml
 		..\.github\workflows\publish-preview.yml = ..\.github\workflows\publish-preview.yml
 		..\.github\workflows\publish-release.yml = ..\.github\workflows\publish-release.yml
