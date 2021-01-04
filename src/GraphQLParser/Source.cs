@@ -12,8 +12,8 @@ namespace GraphQLParser
             Body = body ?? string.Empty;
         }
 
-        public string Body { get; set; }
+        public string Body { get; }
 
-        public string Name { get; set; }
+        public string Name { get; }
     }
 }

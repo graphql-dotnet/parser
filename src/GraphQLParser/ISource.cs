@@ -1,9 +1,9 @@
-﻿namespace GraphQLParser
+namespace GraphQLParser
 {
     public interface ISource
     {
-        string Body { get; set; }
+        string Body { get; }
 
-        string Name { get; set; }
+        string Name { get; }
     }
 }
