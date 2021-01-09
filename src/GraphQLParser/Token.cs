@@ -1,4 +1,4 @@
-﻿namespace GraphQLParser
+namespace GraphQLParser
 {
     public readonly struct Token
     {
@@ -42,6 +42,7 @@
             _ => string.Empty
         };
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return Value != null
