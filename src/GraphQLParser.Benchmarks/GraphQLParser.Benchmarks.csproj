@@ -7,16 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="*.graphql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Update="query_with_many_escape_symbols.txt">
+    <None Update="Files\*.graphql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="**\*.md" />
   </ItemGroup>
 
   <ItemGroup>
