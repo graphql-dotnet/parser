@@ -6,8 +6,10 @@ namespace GraphQLParser.Benchmarks
     [MemoryDiagnoser]
     public class LexerBenchmark : IBenchmark
     {
+        private readonly string _hero = "{ hero { id name } }";
         private string _escapes = null!;
         private string _kitchen = null!;
+        private string _introspection = null!;
         private string _github = null!;
 
         [GlobalSetup]
@@ -15,15 +17,16 @@ namespace GraphQLParser.Benchmarks
         {
             _escapes = "query_with_many_escape_symbols".ReadGraphQLFile();
             _kitchen = "kitchenSink".ReadGraphQLFile();
+            _introspection = "introspectionQuery".ReadGraphQLFile();
             _github = "github".ReadGraphQLFile();
         }
 
         [Benchmark]
-        [ArgumentsSource(nameof(Queries))]
-        public void Lex(string query)
+        [ArgumentsSource(nameof(Names))]
+        public void Lex(string name)
         {
             var lexer = new Lexer();
-            var source = new Source(query);
+            var source = GetQueryByName(name);
             int resetPosition = 0;
             Token token;
             while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
@@ -32,13 +35,28 @@ namespace GraphQLParser.Benchmarks
             }
         }
 
-        public IEnumerable<string> Queries()
+        private string GetQueryByName(string name)
         {
-            yield return _escapes;
-            yield return _kitchen;
-            yield return _github;
+            return name switch
+            {
+                "hero" => _hero,
+                "escapes" => _escapes,
+                "kitchen" => _kitchen,
+                "introspection" => _introspection,
+                "github" => _github,
+                _ => throw new System.Exception(name)
+            };
         }
 
-        void IBenchmark.Run() => Lex(_github);
+        public IEnumerable<string> Names()
+        {
+            yield return "hero";
+            yield return "escapes";
+            yield return "kitchen";
+            yield return "introspection";
+            yield return "github";
+        }
+
+        void IBenchmark.Run() => Lex("github");
     }
 }
