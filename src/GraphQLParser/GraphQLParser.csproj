@@ -4,10 +4,15 @@
     <Description>Library containing lexer and parser for GraphQL syntax</Description>
     <Product>GraphQL Parser</Product>
     <AssemblyTitle>GraphQL Parser for .NET</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyName>GraphQL-Parser</AssemblyName>
     <PackageTags>GraphQL;json;api;parser</PackageTags>
+    <NoWarn Condition="'$(TargetFramework)' == 'netstandard2.1'">$(NoWarn);IDE0057</NoWarn> <!--Slice can be simplified-->
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.4" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

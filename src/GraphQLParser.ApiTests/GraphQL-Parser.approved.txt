@@ -167,12 +167,11 @@ namespace GraphQLParser.AST
     public class GraphQLListValue : GraphQLParser.AST.GraphQLValue
     {
         public GraphQLListValue(GraphQLParser.AST.ASTNodeKind kind) { }
-        public string? AstValue { get; set; }
+        public System.ReadOnlyMemory<char> AstValue { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLValue>? Values { get; set; }
         public override string ToString() { }
     }
-    [System.Diagnostics.DebuggerDisplay("(Start={Start}, End={End})")]
     public readonly struct GraphQLLocation : System.IEquatable<GraphQLParser.AST.GraphQLLocation>
     {
         public GraphQLLocation(int start, int end) { }
@@ -182,13 +181,14 @@ namespace GraphQLParser.AST
         public override bool Equals(object obj) { }
         public override int GetHashCode() { }
         public override string ToString() { }
+        public static bool operator !=(GraphQLParser.AST.GraphQLLocation left, GraphQLParser.AST.GraphQLLocation right) { }
+        public static bool operator ==(GraphQLParser.AST.GraphQLLocation left, GraphQLParser.AST.GraphQLLocation right) { }
     }
-    [System.Diagnostics.DebuggerDisplay("{Value}")]
     public class GraphQLName : GraphQLParser.AST.ASTNode
     {
         public GraphQLName() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public string? Value { get; set; }
+        public System.ReadOnlyMemory<char> Value { get; set; }
     }
     public class GraphQLNamedType : GraphQLParser.AST.GraphQLType, GraphQLParser.AST.INamedNode
     {
@@ -252,7 +252,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLScalarValue(GraphQLParser.AST.ASTNodeKind kind) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public string? Value { get; set; }
+        public System.ReadOnlyMemory<char> Value { get; set; }
         public override string? ToString() { }
     }
     public class GraphQLSchemaDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode
@@ -323,24 +323,18 @@ namespace GraphQLParser.AST
         Subscription = 2,
     }
 }
+namespace GraphQLParser.Exceptions
+{
+    public class GraphQLSyntaxErrorException : System.Exception
+    {
+        public GraphQLSyntaxErrorException(string description, System.ReadOnlyMemory<char> source, int location) { }
+        public int Column { get; }
+        public string Description { get; }
+        public int Line { get; }
+    }
+}
 namespace GraphQLParser
 {
-    public sealed class ConcurrentDictionaryCache : GraphQLParser.ILexemeCache
-    {
-        public ConcurrentDictionaryCache() { }
-        public bool AllowIntCache { get; set; }
-        public void Clear() { }
-        public string GetInt(string source, int start, int end) { }
-        public string GetName(string source, int start, int end) { }
-    }
-    public sealed class DictionaryCache : GraphQLParser.ILexemeCache
-    {
-        public DictionaryCache() { }
-        public bool AllowIntCache { get; set; }
-        public void Clear() { }
-        public string GetInt(string source, int start, int end) { }
-        public string GetName(string source, int start, int end) { }
-    }
     public class GraphQLAstVisitor
     {
         public GraphQLAstVisitor() { }
@@ -377,65 +371,30 @@ namespace GraphQLParser
         public virtual GraphQLParser.AST.GraphQLVariable EndVisitVariable(GraphQLParser.AST.GraphQLVariable variable) { }
         public virtual void Visit(GraphQLParser.AST.GraphQLDocument ast) { }
     }
-    public interface ILexemeCache
+    public struct Lexer
     {
-        void Clear();
-        string GetInt(string source, int start, int end);
-        string GetName(string source, int start, int end);
-    }
-    public interface ILexer
-    {
-        GraphQLParser.Token Lex(GraphQLParser.ISource source);
-        GraphQLParser.Token Lex(GraphQLParser.ISource source, int start);
-    }
-    public interface ISource
-    {
-        string Body { get; }
-        string Name { get; }
-    }
-    public class Lexer : GraphQLParser.ILexer
-    {
-        public Lexer() { }
-        public GraphQLParser.ILexemeCache? Cache { get; set; }
-        public GraphQLParser.Token Lex(GraphQLParser.ISource source) { }
-        public GraphQLParser.Token Lex(GraphQLParser.ISource source, int start) { }
+        public int? BufferSize { get; set; }
+        public GraphQLParser.Token Lex(System.ReadOnlyMemory<char> source, int start = 0) { }
     }
     public readonly struct Location
     {
-        public Location(GraphQLParser.ISource source, int position) { }
-        public Location(string source, int position) { }
+        public Location(System.ReadOnlyMemory<char> source, int position) { }
         public int Column { get; }
         public int Line { get; }
     }
-    public sealed class NoCache : GraphQLParser.ILexemeCache
+    public struct Parser
     {
-        public static readonly GraphQLParser.NoCache Instance;
-        public NoCache() { }
-        public void Clear() { }
-        public string GetInt(string source, int start, int end) { }
-        public string GetName(string source, int start, int end) { }
-    }
-    public class Parser
-    {
-        public Parser(GraphQLParser.ILexer lexer) { }
-        public GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ISource source) { }
-    }
-    public class Source : GraphQLParser.ISource
-    {
-        public Source(string body) { }
-        public Source(string body, string name) { }
-        public string Body { get; }
-        public string Name { get; }
+        public Parser(GraphQLParser.Lexer lexer) { }
+        public GraphQLParser.AST.GraphQLDocument Parse(System.ReadOnlyMemory<char> source) { }
     }
     public readonly struct Token
     {
-        public Token(GraphQLParser.TokenKind kind, string? value, int start, int end) { }
+        public Token(GraphQLParser.TokenKind kind, System.ReadOnlyMemory<char> value, int start, int end) { }
         public int End { get; }
         public GraphQLParser.TokenKind Kind { get; }
         public int Start { get; }
-        public string? Value { get; }
+        public System.ReadOnlyMemory<char> Value { get; }
         public override string ToString() { }
-        public static string GetTokenKindDescription(GraphQLParser.TokenKind kind) { }
     }
     public enum TokenKind
     {
@@ -459,15 +418,5 @@ namespace GraphQLParser
         STRING = 18,
         COMMENT = 19,
         UNKNOWN = 20,
-    }
-}
-namespace GraphQLParser.Exceptions
-{
-    public class GraphQLSyntaxErrorException : System.Exception
-    {
-        public GraphQLSyntaxErrorException(string description, GraphQLParser.ISource source, int location) { }
-        public int Column { get; }
-        public string Description { get; }
-        public int Line { get; }
     }
 }

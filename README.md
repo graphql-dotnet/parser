@@ -20,7 +20,7 @@ Generates token based on input text.
 ### Usage
 ```csharp
 var lexer = new Lexer();
-var token = lexer.Lex(new Source("\"str\""));
+var token = lexer.Lex("\"str\"".AsMemory());
 ```
 Lex method always returns the first token it finds. In this case case the result would look like following.
 ![lexer example](assets/lexer-example.png)
@@ -41,10 +41,10 @@ Parses provided GraphQL expression into AST (abstract syntax tree).
 ```csharp
 var lexer = new Lexer();
 var parser = new Parser(lexer);
-var ast = parser.Parse(new Source(@"
+var ast = parser.Parse(@"
 {
   field
-}"));
+}".AsMemory());
 ```
 Json representation of the resulting AST would be:
 ```json

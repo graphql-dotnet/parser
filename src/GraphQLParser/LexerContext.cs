@@ -8,27 +8,27 @@ namespace GraphQLParser
     internal struct LexerContext
     {
         private int _currentIndex;
-        private readonly ISource _source;
-        private readonly ILexemeCache _cache;
+        private readonly ReadOnlyMemory<char> _source;
+        private readonly int _bufferSize;
 
-        public LexerContext(ISource source, int index, ILexemeCache? cache)
+        public LexerContext(ReadOnlyMemory<char> source, int index, int? bufferSize)
         {
             _currentIndex = index;
             _source = source;
-            _cache = cache ?? NoCache.Instance;
+            _bufferSize = bufferSize == null ? 4096 : bufferSize.Value;
         }
 
         public Token GetToken()
         {
-            if (_source.Body == null)
+            if (_source.IsEmpty)
                 return CreateEOFToken();
 
-            _currentIndex = GetPositionAfterWhitespace(_source.Body, _currentIndex);
+            _currentIndex = GetPositionAfterWhitespace(_source, _currentIndex);
 
-            if (_currentIndex >= _source.Body.Length)
+            if (_currentIndex >= _source.Length)
                 return CreateEOFToken();
 
-            char code = _source.Body[_currentIndex];
+            char code = _source.Span[_currentIndex];
 
             ValidateCharacterCode(code);
 
@@ -52,34 +52,23 @@ namespace GraphQLParser
                 $"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", _source, _currentIndex);
         }
 
-        public bool OnlyHexInString(string test) => System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
-
-        public Token ReadComment()
+        public static bool OnlyHexInString(ReadOnlySpan<char> test)
         {
-            int start = _currentIndex;
-            char code = NextCode();
-            var sb = new StringBuilder(); // TODO: buffer allocation; it can be pooled later
-
-            while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D)
+            for (int i=0; i<test.Length; ++i)
             {
-                ReadCharacterFromString(sb, code);
-                code = NextCode();
+                char ch = test[i];
+                if (!('0' <= ch && ch <= '9' || 'a' <= ch && ch <= 'f' || 'A' <= ch && ch <= 'F'))
+                    return false;
             }
 
-            return new Token
-            (
-                TokenKind.COMMENT,
-                sb.ToString(),
-                start,
-                _currentIndex + 1
-            );
+            return true;
         }
 
         public Token ReadNumber()
         {
             bool isFloat = false;
             int start = _currentIndex;
-            char code = _source.Body[start];
+            char code = _source.Span[start];
 
             if (code == '-')
                 code = NextCode();
@@ -116,19 +105,95 @@ namespace GraphQLParser
             return isFloat ? CreateFloatToken(start) : CreateIntToken(start);
         }
 
+        public Token ReadComment()
+        {
+            int start = _currentIndex;
+            char code = NextCode();
+
+            Span<char> buffer = stackalloc char[_bufferSize];
+            StringBuilder? sb = null;
+
+            int index = 0;
+            bool escaped = false;
+
+            while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D)
+            {
+                char ch = ReadCharacterFromString(code, ref escaped);
+
+                try
+                {
+                    buffer[index++] = ch;
+                }
+                catch (IndexOutOfRangeException) // fallback to StringBuilder in case of buffer overflow
+                {
+                    if (sb == null)
+                        sb = new StringBuilder(buffer.Length * 2);
+
+                    for (int i = 0; i < buffer.Length; ++i)
+                        sb.Append(buffer[i]);
+
+                    sb.Append(ch);
+                    index = 0;
+                }
+
+                code = NextCode();
+            }
+
+            if (sb != null)
+            {
+                for (int i = 0; i < index; ++i)
+                    sb.Append(buffer[i]);
+            }
+
+            var value = escaped
+                ? (sb == null ? buffer.Slice(0, index).ToString() : sb.ToString()).AsMemory() // allocate string from either buffer on stack or heap
+                : _source.Slice(start + 1, _currentIndex - start - 1); // the best case, no escaping so no need to allocate
+
+            return new Token
+            (
+                TokenKind.COMMENT,
+                value,
+                start,
+                _currentIndex + 1
+            );
+        }
+
         public Token ReadString()
         {
             int start = _currentIndex;
             char code = NextCode();
-            var sb = new StringBuilder(); // TODO: buffer allocation; it can be pooled later
+
+            Span<char> buffer = stackalloc char[_bufferSize];
+            StringBuilder? sb = null;
+
+            int index = 0;
+            bool escaped = false;
 
             while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D && code != '"')
             {
                 if (code < 0x0020 && code != 0x0009)
                 {
-                    throw new GraphQLSyntaxErrorException($"Invalid character within String: \\u{((int)code).ToString("D4")}.", _source, _currentIndex);
+                    throw new GraphQLSyntaxErrorException($"Invalid character within String: \\u{(int)code:D4}.", _source, _currentIndex);
                 }
-                ReadCharacterFromString(sb, code);
+
+                char ch = ReadCharacterFromString(code, ref escaped);
+
+                try
+                {
+                    buffer[index++] = ch;
+                }
+                catch (IndexOutOfRangeException) // fallback to StringBuilder in case of buffer overflow
+                {
+                    if (sb == null)
+                        sb = new StringBuilder(buffer.Length * 2);
+
+                    for (int i = 0; i < buffer.Length; ++i)
+                        sb.Append(buffer[i]);
+
+                    sb.Append(ch);
+                    index = 0;
+                }
+
                 code = NextCode();
             }
 
@@ -137,73 +202,66 @@ namespace GraphQLParser
                 throw new GraphQLSyntaxErrorException("Unterminated string.", _source, _currentIndex);
             }
 
+            if (sb != null)
+            {
+                for (int i = 0; i < index; ++i)
+                    sb.Append(buffer[i]);
+            }
+
+            var value = escaped
+                ? (sb == null ? buffer.Slice(0, index).ToString() : sb.ToString()).AsMemory() // allocate string from either buffer on stack or heap
+                : _source.Slice(start + 1, _currentIndex - start - 1); // the best case, no escaping so no need to allocate
+
             return new Token
             (
                 TokenKind.STRING,
-                sb.ToString(),
+                value,
                 start,
                 _currentIndex + 1
             );
         }
 
-        private void ReadCharacterFromString(StringBuilder sb, char currentCharacter)
+        // sets escaped only to true
+        private char ReadCharacterFromString(char currentCharacter, ref bool escaped)
         {
             if (currentCharacter == '\\')
             {
+                escaped = true;
                 char escapedChar = NextCode();
 
-                switch (escapedChar)
+                return escapedChar switch
                 {
-                    case '"':
-                        sb.Append('"');
-                        break;
-                    case '/':
-                        sb.Append('/');
-                        break;
-                    case '\\':
-                        sb.Append('\\');
-                        break;
-                    case 'b':
-                        sb.Append('\b');
-                        break;
-                    case 'f':
-                        sb.Append('\f');
-                        break;
-                    case 'n':
-                        sb.Append('\n');
-                        break;
-                    case 'r':
-                        sb.Append('\r');
-                        break;
-                    case 't':
-                        sb.Append('\t');
-                        break;
-                    case 'u':
-                        sb.Append(GetUnicodeChar());
-                        break;
-                    default:
-                        throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{escapedChar}.", _source, _currentIndex);
+                    '"' => '"',
+                    '/' => '/',
+                    '\\' => '\\',
+                    'b' => '\b',
+                    'f' => '\f',
+                    'n' => '\n',
+                    'r' => '\r',
+                    't' => '\t',
+                    'u' => GetUnicodeChar(),
+                    _ => throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{escapedChar}.", _source, _currentIndex),
                 };
             }
             else
             {
-                sb.Append(currentCharacter);
+                return currentCharacter;
             }
         }
 
         private char GetUnicodeChar()
         {
-            if (_currentIndex + 5 > _source.Body.Length)
+            if (_currentIndex + 5 > _source.Length)
             {
-                string truncatedExpression = _source.Body.Substring(_currentIndex);
+                string truncatedExpression = _source.Span.Slice(_currentIndex).ToString();
                 throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", _source, _currentIndex);
             }
 
-            string expression = _source.Body.Substring(_currentIndex + 1, 4); // TODO: allocation
+            var expression = _source.Span.Slice(_currentIndex + 1, 4);
 
             if (!OnlyHexInString(expression))
             {
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\u{expression}.", _source, _currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\u{expression.ToString()}.", _source, _currentIndex);
             }
 
             return (char)(
@@ -230,15 +288,15 @@ namespace GraphQLParser
             '[' => CreatePunctuationToken(TokenKind.BRACKET_L, 1),
             ']' => CreatePunctuationToken(TokenKind.BRACKET_R, 1),
             '{' => CreatePunctuationToken(TokenKind.BRACE_L, 1),
-            '|' => CreatePunctuationToken(TokenKind.PIPE, 1),
             '}' => CreatePunctuationToken(TokenKind.BRACE_R, 1),
+            '|' => CreatePunctuationToken(TokenKind.PIPE, 1),
             _ => CreateUnknownToken()
         };
 
         private Token CheckForSpreadOperator()
         {
-            int char1 = _source.Body.Length > _currentIndex + 1 ? _source.Body[_currentIndex + 1] : 0;
-            int char2 = _source.Body.Length > _currentIndex + 2 ? _source.Body[_currentIndex + 2] : 0;
+            int char1 = _source.Length > _currentIndex + 1 ? _source.Span[_currentIndex + 1] : 0;
+            int char2 = _source.Length > _currentIndex + 2 ? _source.Span[_currentIndex + 2] : 0;
 
             return char1 == '.' && char2 == '.'
                 ? CreatePunctuationToken(TokenKind.SPREAD, 3)
@@ -272,7 +330,7 @@ namespace GraphQLParser
             return new Token
             (
                 TokenKind.FLOAT,
-                _source.Body.Substring(start, _currentIndex - start),
+                _source.Slice(start, _currentIndex - start),
                 start,
                 _currentIndex
             );
@@ -283,7 +341,7 @@ namespace GraphQLParser
             return new Token
             (
                 TokenKind.INT,
-                _cache.GetInt(_source.Body, start, _currentIndex),
+                _source.Slice(start, _currentIndex - start),
                 start,
                 _currentIndex
             );
@@ -294,7 +352,7 @@ namespace GraphQLParser
             return new Token
             (
                 TokenKind.NAME,
-                _cache.GetName(_source.Body, start, _currentIndex),
+                _source.Slice(start, _currentIndex - start),
                 start,
                 _currentIndex
             );
@@ -305,19 +363,20 @@ namespace GraphQLParser
             return new Token
             (
                 kind,
-                null,
+                _source.Slice(_currentIndex, offset),
                 _currentIndex,
                 _currentIndex + offset
             );
         }
 
-        private int GetPositionAfterWhitespace(string body, int start)
+        private static int GetPositionAfterWhitespace(ReadOnlyMemory<char> body, int start)
         {
             int position = start;
 
+            var span = body.Span;
             while (position < body.Length)
             {
-                char code = body[position];
+                char code = span[position];
                 switch (code)
                 {
                     case '\xFEFF': // BOM
@@ -343,18 +402,17 @@ namespace GraphQLParser
 
         private string? IfUnicodeGetString()
         {
-            return _source.Body.Length > _currentIndex + 5 &&
-                OnlyHexInString(_source.Body.Substring(_currentIndex + 2, 4))
-                ? _source.Body.Substring(_currentIndex, 6)
+            return _source.Length > _currentIndex + 5 && OnlyHexInString(_source.Span.Slice(_currentIndex + 2, 4))
+                ? _source.Span.Slice(_currentIndex, 6).ToString()
                 : null;
         }
 
-        private bool IsNotAtTheEndOfQuery() => _currentIndex < _source.Body.Length;
+        private bool IsNotAtTheEndOfQuery() => _currentIndex < _source.Length;
 
         private char GetCode()
         {
             return IsNotAtTheEndOfQuery()
-                ? _source.Body[_currentIndex]
+                ? _source.Span[_currentIndex]
                 : (char)0;
         }
 
@@ -362,13 +420,12 @@ namespace GraphQLParser
         {
             _currentIndex++;
             return IsNotAtTheEndOfQuery()
-                ? _source.Body[_currentIndex]
+                ? _source.Span[_currentIndex]
                 : (char)0;
         }
 
-        private int ReadDigits(ISource source, int start, char firstCode)
+        private int ReadDigits(ReadOnlyMemory<char> source, int start, char firstCode)
         {
-            string body = source.Body;
             int position = start;
             char code = firstCode;
 
@@ -378,10 +435,12 @@ namespace GraphQLParser
                     $"Invalid number, expected digit but got: {ResolveCharName(code)}", source, _currentIndex);
             }
 
+            var s = source.Span;
+
             do
             {
-                code = ++position < body.Length
-                    ? body[position]
+                code = ++position < source.Length
+                    ? s[position]
                     : (char)0;
             }
             while (char.IsNumber(code));
@@ -425,17 +484,17 @@ namespace GraphQLParser
             if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
             {
                 throw new GraphQLSyntaxErrorException(
-                    $"Invalid character \"\\u{code.ToString("D4")}\".", _source, _currentIndex);
+                    $"Invalid character \"\\u{code:D4}\".", _source, _currentIndex);
             }
         }
 
-        private int WaitForEndOfComment(string body, int position, char code)
-        {
-            while (++position < body.Length && (code = body[position]) != 0 && (code > 0x001F || code == 0x0009) && code != 0x000A && code != 0x000D)
-            {
-            }
+        //private int WaitForEndOfComment(string body, int position, char code)
+        //{
+        //    while (++position < body.Length && (code = body[position]) != 0 && (code > 0x001F || code == 0x0009) && code != 0x000A && code != 0x000D)
+        //    {
+        //    }
 
-            return position;
-        }
+        //    return position;
+        //}
     }
 }

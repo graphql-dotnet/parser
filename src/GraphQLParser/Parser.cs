@@ -1,17 +1,21 @@
+using System;
 using GraphQLParser.AST;
 
 namespace GraphQLParser
 {
-    public class Parser
+    public struct Parser
     {
-        private readonly ILexer _lexer;
+        private readonly Lexer _lexer;
 
-        public Parser(ILexer lexer)
+        public Parser(Lexer lexer)
         {
             _lexer = lexer;
         }
 
-        public GraphQLDocument Parse(ISource source)
+        // only for tests
+        internal GraphQLDocument Parse(string source) => Parse(source.AsMemory());
+
+        public GraphQLDocument Parse(ReadOnlyMemory<char> source)
         {
             using var context = new ParserContext(source, _lexer);
             return context.Parse();

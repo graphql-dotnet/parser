@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace GraphQLParser
 {
@@ -13,7 +13,7 @@ namespace GraphQLParser
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public static bool Equals(string str, string source, int start, int end)
+        public static bool Equals(string str, ReadOnlySpan<char> source, int start, int end)
         {
             if (str.Length != end - start)
                 return false;
@@ -33,7 +33,7 @@ namespace GraphQLParser
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public static int GetHashCode(string source, int start, int end)
+        public static int GetHashCode(ReadOnlySpan<char> source, int start, int end)
         {
             if (start > source.Length || end > source.Length || start < 0 || end < 0)
                 throw new IndexOutOfRangeException();
@@ -67,7 +67,7 @@ namespace GraphQLParser
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public static int ParseInt(string source, int start, int end)
+        public static int ParseInt(ReadOnlySpan<char> source, int start, int end)
         {
             if (end - start > 9)
                 throw new NotSupportedException();

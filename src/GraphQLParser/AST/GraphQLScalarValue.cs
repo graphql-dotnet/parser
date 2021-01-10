@@ -1,3 +1,5 @@
+using System;
+
 namespace GraphQLParser.AST
 {
     public class GraphQLScalarValue : GraphQLValue
@@ -11,8 +13,8 @@ namespace GraphQLParser.AST
 
         public override ASTNodeKind Kind => _kind;
 
-        public string? Value { get; set; }
+        public ReadOnlyMemory<char> Value { get; set; }
 
-        public override string? ToString() => Kind == ASTNodeKind.StringValue ? $"\"{Value}\"" : Value;
+        public override string? ToString() => Kind == ASTNodeKind.StringValue ? $"\"{Value.Span.ToString()}\"" : Value.Span.ToString();
     }
 }

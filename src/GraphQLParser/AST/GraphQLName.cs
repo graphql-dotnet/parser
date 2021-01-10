@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+using System;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST
 {
@@ -7,6 +8,6 @@ namespace GraphQLParser.AST
     {
         public override ASTNodeKind Kind => ASTNodeKind.Name;
 
-        public string? Value { get; set; }
+        public ReadOnlyMemory<char> Value { get; set; }
     }
 }

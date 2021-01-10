@@ -1,14 +1,17 @@
-﻿namespace GraphQLParser
+using System;
+
+namespace GraphQLParser
 {
-    public class Lexer : ILexer
+    public struct Lexer
     {
-        public ILexemeCache? Cache { get; set; }
+        public int? BufferSize { get; set; }
 
-        public Token Lex(ISource source) => Lex(source, 0);
+        // only for tests
+        internal Token Lex(string source, int start = 0) => Lex(source.AsMemory(), start);
 
-        public Token Lex(ISource source, int start)
+        public Token Lex(ReadOnlyMemory<char> source, int start = 0)
         {
-            var context = new LexerContext(source, start, Cache);
+            var context = new LexerContext(source, start, BufferSize);
             return context.GetToken();
         }
     }

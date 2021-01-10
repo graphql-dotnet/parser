@@ -31,7 +31,7 @@ namespace GraphQLParser.Tests
         public void Lex_ATPunctuation_HasCorrectValue()
         {
             var token = GetATPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("@");
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace GraphQLParser.Tests
         public void Lex_BangPunctuation_HasCorrectValue()
         {
             var token = GetBangPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("!");
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace GraphQLParser.Tests
         public void Lex_ColonPunctuation_HasCorrectValue()
         {
             var token = GetColonPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe(":");
         }
 
         [Fact]
@@ -115,13 +115,13 @@ namespace GraphQLParser.Tests
         public void Lex_DollarPunctuation_HasCorrectValue()
         {
             var token = GetDollarPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("$");
         }
 
         [Fact]
         public void Lex_EmptySource_ReturnsEOF()
         {
-            var token = new Lexer().Lex(new Source(""));
+            var token = new Lexer().Lex("");
 
             token.Kind.ShouldBe(TokenKind.EOF);
         }
@@ -151,7 +151,7 @@ namespace GraphQLParser.Tests
         public void Lex_EqualsPunctuation_HasCorrectValue()
         {
             var token = GetEqualsPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("=");
         }
 
         [Fact]
@@ -172,7 +172,7 @@ namespace GraphQLParser.Tests
         public void Lex_EscapedStringToken_HasCorrectValue()
         {
             var token = GetEscapedStringTokenLexer();
-            token.Value.ShouldBe("escaped \n\r\b\t\f");
+            token.Value.ToString().ShouldBe("escaped \n\r\b\t\f");
         }
 
         [Fact]
@@ -207,7 +207,7 @@ namespace GraphQLParser.Tests
         public void Lex_LeftBracePunctuation_HasCorrectValue()
         {
             var token = GetLeftBracePunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("{");
         }
 
         [Fact]
@@ -235,7 +235,7 @@ namespace GraphQLParser.Tests
         public void Lex_LeftBracketPunctuation_HasCorrectValue()
         {
             var token = GetLeftBracketPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("[");
         }
 
         [Fact]
@@ -263,7 +263,7 @@ namespace GraphQLParser.Tests
         public void Lex_LeftParenthesisPunctuation_HasCorrectValue()
         {
             var token = GetLeftParenthesisPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("(");
         }
 
         [Fact]
@@ -284,7 +284,7 @@ namespace GraphQLParser.Tests
         public void Lex_MultipleDecimalsIntToken_HasCorrectValue()
         {
             var token = GetMultipleDecimalsIntTokenLexer();
-            token.Value.ShouldBe("123");
+            token.Value.ToString().ShouldBe("123");
         }
 
         [Fact]
@@ -312,7 +312,7 @@ namespace GraphQLParser.Tests
         public void Lex_NameTokenWithComments_HasCorrectValue()
         {
             var token = GetSingleNameTokenLexerWithComments();
-            token.Value.ShouldBe("comment");
+            token.Value.ToString().ShouldBe("comment");
         }
 
         [Fact]
@@ -340,7 +340,7 @@ namespace GraphQLParser.Tests
         public void Lex_NameTokenWithWhitespaces_HasCorrectValue()
         {
             var token = GetSingleNameTokenLexerSurroundedWithWhitespaces();
-            token.Value.ShouldBe("foo");
+            token.Value.ToString().ShouldBe("foo");
         }
 
         [Fact]
@@ -353,7 +353,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Lex_NullInput_ReturnsEOF()
         {
-            var token = new Lexer().Lex(new Source(null));
+            var token = new Lexer().Lex((string)null);
 
             token.Kind.ShouldBe(TokenKind.EOF);
         }
@@ -383,7 +383,7 @@ namespace GraphQLParser.Tests
         public void Lex_PipePunctuation_HasCorrectValue()
         {
             var token = GetPipePunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("|");
         }
 
         [Fact]
@@ -404,7 +404,7 @@ namespace GraphQLParser.Tests
         public void Lex_QuoteStringToken_HasCorrectValue()
         {
             var token = GetQuoteStringTokenLexer();
-            token.Value.ShouldBe("quote \"");
+            token.Value.ToString().ShouldBe("quote \"");
         }
 
         [Fact]
@@ -439,7 +439,7 @@ namespace GraphQLParser.Tests
         public void Lex_RightBracePunctuation_HasCorrectValue()
         {
             var token = GetRightBracePunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("}");
         }
 
         [Fact]
@@ -467,7 +467,7 @@ namespace GraphQLParser.Tests
         public void Lex_RightBracketPunctuation_HasCorrectValue()
         {
             var token = GetRightBracketPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("]");
         }
 
         [Fact]
@@ -495,7 +495,7 @@ namespace GraphQLParser.Tests
         public void Lex_RightParenthesisPunctuation_HasCorrectValue()
         {
             var token = GetRightParenthesisPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe(")");
         }
 
         [Fact]
@@ -516,7 +516,7 @@ namespace GraphQLParser.Tests
         public void Lex_SimpleStringToken_HasCorrectValue()
         {
             var token = GetSimpleStringTokenLexer();
-            token.Value.ShouldBe("str");
+            token.Value.ToString().ShouldBe("str");
         }
 
         [Fact]
@@ -544,7 +544,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleDecimalIntToken_HasCorrectValue()
         {
             var token = GetSingleDecimalIntTokenLexer();
-            token.Value.ShouldBe("0");
+            token.Value.ToString().ShouldBe("0");
         }
 
         [Fact]
@@ -579,7 +579,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleFloatTokenLexer_HasCorrectValue()
         {
             var token = GetSingleFloatTokenLexer();
-            token.Value.ShouldBe("4.123");
+            token.Value.ToString().ShouldBe("4.123");
         }
 
         [Fact]
@@ -607,7 +607,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectValue()
         {
             var token = GetSingleFloatWithZeroTokenLexer();
-            token.Value.ShouldBe("12.10");
+            token.Value.ToString().ShouldBe("12.10");
         }
 
         [Fact]
@@ -635,7 +635,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleFloatWithExplicitlyPositiveExponentTokenLexer_HasCorrectValue()
         {
             var token = GetSingleFloatWithExplicitlyPositiveExponentTokenLexer();
-            token.Value.ShouldBe("123e+4");
+            token.Value.ToString().ShouldBe("123e+4");
         }
 
         [Fact]
@@ -663,7 +663,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleFloatWithExponentCapitalLetterTokenLexer_HasCorrectValue()
         {
             var token = GetSingleFloatWithExponentCapitalLetterTokenLexer();
-            token.Value.ShouldBe("123E4");
+            token.Value.ToString().ShouldBe("123E4");
         }
 
         [Fact]
@@ -691,7 +691,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleFloatWithExponentTokenLexer_HasCorrectValue()
         {
             var token = GetSingleFloatWithExponentTokenLexer();
-            token.Value.ShouldBe("123e4");
+            token.Value.ToString().ShouldBe("123e4");
         }
 
         [Fact]
@@ -719,7 +719,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleFloatWithNegativeExponentTokenLexer_HasCorrectValue()
         {
             var token = GetSingleFloatWithNegativeExponentTokenLexer();
-            token.Value.ShouldBe("123e-4");
+            token.Value.ToString().ShouldBe("123e-4");
         }
 
         [Fact]
@@ -747,7 +747,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleNameSurroundedByCommasTokenLexer_HasCorrectValue()
         {
             var token = GetSingleNameSurroundedByCommasTokenLexer();
-            token.Value.ShouldBe("foo");
+            token.Value.ToString().ShouldBe("foo");
         }
 
         [Fact]
@@ -775,7 +775,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleNameWithBOMHeaderTokenLexer_HasCorrectValue()
         {
             var token = GetSingleNameWithBOMHeaderTokenLexer();
-            token.Value.ShouldBe("foo");
+            token.Value.ToString().ShouldBe("foo");
         }
 
         [Fact]
@@ -803,7 +803,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleNegativeFloatTokenLexer_HasCorrectValue()
         {
             var token = GetSingleNegativeFloatTokenLexer();
-            token.Value.ShouldBe("-0.123");
+            token.Value.ToString().ShouldBe("-0.123");
         }
 
         [Fact]
@@ -831,7 +831,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleNegativeFloatWithExponentTokenLexer_HasCorrectValue()
         {
             var token = GetSingleNegativeFloatWithExponentTokenLexer();
-            token.Value.ShouldBe("-123e4");
+            token.Value.ToString().ShouldBe("-123e4");
         }
 
         [Fact]
@@ -859,7 +859,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleNegativeIntTokenLexer_HasCorrectValue()
         {
             var token = GetSingleNegativeIntTokenLexer();
-            token.Value.ShouldBe("-3");
+            token.Value.ToString().ShouldBe("-3");
         }
 
         [Fact]
@@ -887,7 +887,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleStringWithSlashesTokenLexer_HasCorrectValue()
         {
             var token = GetSingleStringWithSlashesTokenLexer();
-            token.Value.ShouldBe("slashes \\ /");
+            token.Value.ToString().ShouldBe("slashes \\ /");
         }
 
         [Fact]
@@ -915,7 +915,7 @@ namespace GraphQLParser.Tests
         public void Lex_SingleStringWithUnicodeCharactersTokenLexer_HasCorrectValue()
         {
             var token = GetSingleStringWithUnicodeCharactersTokenLexer();
-            token.Value.ShouldBe("unicode \u1234\u5678\u90AB\uCDEF");
+            token.Value.ToString().ShouldBe("unicode \u1234\u5678\u90AB\uCDEF");
         }
 
         [Fact]
@@ -943,7 +943,7 @@ namespace GraphQLParser.Tests
         public void Lex_SpreadPunctuation_HasCorrectValue()
         {
             var token = GetSpreadPunctuationTokenLexer();
-            token.Value.ShouldBeNull();
+            token.Value.ToString().ShouldBe("...");
         }
 
         [Fact]
@@ -964,7 +964,7 @@ namespace GraphQLParser.Tests
         public void Lex_WhiteSpaceStringToken_HasCorrectValue()
         {
             var token = GetWhiteSpaceStringTokenLexer();
-            token.Value.ShouldBe(" white space ");
+            token.Value.ToString().ShouldBe(" white space ");
         }
 
         [Fact]
@@ -976,172 +976,172 @@ namespace GraphQLParser.Tests
 
         private static Token GetATPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("@"));
+            return new Lexer().Lex("@");
         }
 
         private static Token GetBangPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("!"));
+            return new Lexer().Lex("!");
         }
 
         private static Token GetColonPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source(":"));
+            return new Lexer().Lex(":");
         }
 
         private static Token GetDollarPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("$"));
+            return new Lexer().Lex("$");
         }
 
         private static Token GetEqualsPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("="));
+            return new Lexer().Lex("=");
         }
 
         private static Token GetEscapedStringTokenLexer()
         {
-            return new Lexer().Lex(new Source("\"escaped \\n\\r\\b\\t\\f\""));
+            return new Lexer().Lex("\"escaped \\n\\r\\b\\t\\f\"");
         }
 
         private static Token GetLeftBracePunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("{"));
+            return new Lexer().Lex("{");
         }
 
         private static Token GetLeftBracketPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("["));
+            return new Lexer().Lex("[");
         }
 
         private static Token GetLeftParenthesisPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("("));
+            return new Lexer().Lex("(");
         }
 
         private static Token GetMultipleDecimalsIntTokenLexer()
         {
-            return new Lexer().Lex(new Source("123"));
+            return new Lexer().Lex("123");
         }
 
         private static Token GetPipePunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("|"));
+            return new Lexer().Lex("|");
         }
 
         private static Token GetQuoteStringTokenLexer()
         {
-            return new Lexer().Lex(new Source("\"quote \\\"\""));
+            return new Lexer().Lex("\"quote \\\"\"");
         }
 
         private static Token GetRightBracePunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("}"));
+            return new Lexer().Lex("}");
         }
 
         private static Token GetRightBracketPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("]"));
+            return new Lexer().Lex("]");
         }
 
         private static Token GetRightParenthesisPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source(")"));
+            return new Lexer().Lex(")");
         }
 
         private static Token GetSimpleStringTokenLexer()
         {
-            return new Lexer().Lex(new Source("\"str\""));
+            return new Lexer().Lex("\"str\"");
         }
 
         private static Token GetSingleDecimalIntTokenLexer()
         {
-            return new Lexer().Lex(new Source("0"));
+            return new Lexer().Lex("0");
         }
 
         private static Token GetSingleFloatTokenLexer()
         {
-            return new Lexer().Lex(new Source("4.123"));
+            return new Lexer().Lex("4.123");
         }
 
         private static Token GetSingleFloatWithZeroTokenLexer()
         {
-            return new Lexer().Lex(new Source("12.10"));
+            return new Lexer().Lex("12.10");
         }
 
         private static Token GetSingleFloatWithExplicitlyPositiveExponentTokenLexer()
         {
-            return new Lexer().Lex(new Source("123e+4"));
+            return new Lexer().Lex("123e+4");
         }
 
         private static Token GetSingleFloatWithExponentCapitalLetterTokenLexer()
         {
-            return new Lexer().Lex(new Source("123E4"));
+            return new Lexer().Lex("123E4");
         }
 
         private static Token GetSingleFloatWithExponentTokenLexer()
         {
-            return new Lexer().Lex(new Source("123e4"));
+            return new Lexer().Lex("123e4");
         }
 
         private static Token GetSingleFloatWithNegativeExponentTokenLexer()
         {
-            return new Lexer().Lex(new Source("123e-4"));
+            return new Lexer().Lex("123e-4");
         }
 
         private static Token GetSingleNameSurroundedByCommasTokenLexer()
         {
-            return new Lexer().Lex(new Source(",,,foo,,,"));
+            return new Lexer().Lex(",,,foo,,,");
         }
 
         private static Token GetSingleNameTokenLexerSurroundedWithWhitespaces()
         {
-            return new Lexer().Lex(new Source($"\n        foo\n\n    "));
+            return new Lexer().Lex($"\n        foo\n\n    ");
         }
 
         private static Token GetSingleNameTokenLexerWithComments()
         {
-            return new Lexer().Lex(new Source($"\n#comment\nfoo#comment"));
+            return new Lexer().Lex($"\n#comment\nfoo#comment");
         }
 
         private static Token GetSingleNameWithBOMHeaderTokenLexer()
         {
-            return new Lexer().Lex(new Source("\uFEFF foo\\"));
+            return new Lexer().Lex("\uFEFF foo\\");
         }
 
         private static Token GetSingleNegativeFloatTokenLexer()
         {
-            return new Lexer().Lex(new Source("-0.123"));
+            return new Lexer().Lex("-0.123");
         }
 
         private static Token GetSingleNegativeFloatWithExponentTokenLexer()
         {
-            return new Lexer().Lex(new Source("-123e4"));
+            return new Lexer().Lex("-123e4");
         }
 
         private static Token GetSingleNegativeIntTokenLexer()
         {
-            return new Lexer().Lex(new Source("-3"));
+            return new Lexer().Lex("-3");
         }
 
         private static Token GetSingleStringWithSlashesTokenLexer()
         {
-            return new Lexer().Lex(new Source("\"slashes \\\\ \\/\""));
+            return new Lexer().Lex("\"slashes \\\\ \\/\"");
         }
 
         private static Token GetSingleStringWithUnicodeCharactersTokenLexer()
         {
-            return new Lexer().Lex(new Source("\"unicode \\u1234\\u5678\\u90AB\\uCDEF\""));
+            return new Lexer().Lex("\"unicode \\u1234\\u5678\\u90AB\\uCDEF\"");
         }
 
         private static Token GetSpreadPunctuationTokenLexer()
         {
-            return new Lexer().Lex(new Source("..."));
+            return new Lexer().Lex("...");
         }
 
         private static Token GetWhiteSpaceStringTokenLexer()
         {
-            return new Lexer().Lex(new Source("\" white space \""));
+            return new Lexer().Lex("\" white space \"");
         }
     }
 }

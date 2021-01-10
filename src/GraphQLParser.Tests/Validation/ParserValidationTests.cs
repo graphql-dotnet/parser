@@ -11,7 +11,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_FragmentInvalidOnName_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("fragment on on on { on }")));
+                () => new Parser(new Lexer()).Parse("fragment on on on { on }"));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:10) Unexpected Name \"on\"\n" +
@@ -26,7 +26,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_InvalidDefaultValue_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("query Foo($x: Complex = { a: { b: [ $var ] } }) { field }")));
+                () => new Parser(new Lexer()).Parse("query Foo($x: Complex = { a: { b: [ $var ] } }) { field }"));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:37) Unexpected $\n" +
@@ -41,7 +41,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_InvalidFragmentNameInSpread_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("{ ...on }")));
+                () => new Parser(new Lexer()).Parse("{ ...on }"));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:9) Expected Name, found }\n" +
@@ -56,7 +56,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_LonelySpread_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("...")));
+                () => new Parser(new Lexer()).Parse("..."));
 
             exception.Message.ShouldBe(
                     "Syntax Error GraphQL (1:1) Unexpected ...\n" +
@@ -71,7 +71,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_MissingEndingBrace_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("{")));
+                () => new Parser(new Lexer()).Parse("{"));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:2) Expected Name, found EOF\n" +
@@ -86,7 +86,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_MissingFieldNameWhenAliasing_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("{ field: {} }")));
+                () => new Parser(new Lexer()).Parse("{ field: {} }"));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:10) Expected Name, found {\n" +
@@ -101,7 +101,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_MissingFragmentType_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("{ ...MissingOn }\nfragment MissingOn Type")));
+                () => new Parser(new Lexer()).Parse("{ ...MissingOn }\nfragment MissingOn Type"));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (2:20) Expected \"on\", found Name \"Type\"\n" +
@@ -117,7 +117,7 @@ namespace GraphQLParser.Tests.Validation
         public void Parse_UnknownOperation_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => new Parser(new Lexer()).Parse(new Source("notanoperation Foo { field }")));
+                () => new Parser(new Lexer()).Parse("notanoperation Foo { field }"));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Unexpected Name " + "\"notanoperation\"\n" +

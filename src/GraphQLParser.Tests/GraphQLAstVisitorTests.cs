@@ -288,6 +288,6 @@ namespace GraphQLParser.Tests
             return collection;
         }
 
-        private GraphQLDocument Parse(string expression) => _parser.Parse(new Source(expression));
+        private GraphQLDocument Parse(string expression) => _parser.Parse(expression);
     }
 }
