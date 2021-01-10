@@ -15,6 +15,6 @@ namespace GraphQLParser.AST
 
         public ReadOnlyMemory<char> Value { get; set; }
 
-        public override string? ToString() => Kind == ASTNodeKind.StringValue ? $"\"{Value.Span.ToString()}\"" : Value.Span.ToString();
+        public override string? ToString() => Kind == ASTNodeKind.StringValue ? $"\"{Value}\"" : Value.ToString();
     }
 }

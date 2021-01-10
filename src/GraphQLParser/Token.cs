@@ -55,7 +55,7 @@ namespace GraphQLParser
 
         /// <inheritdoc/>
         public override string ToString() => HasUniqueValue
-            ? $"{GetTokenKindDescription(Kind)} \"{Value.Span.ToString()}\""
+            ? $"{GetTokenKindDescription(Kind)} \"{Value}\""
             : GetTokenKindDescription(Kind);
     }
 }
