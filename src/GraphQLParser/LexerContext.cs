@@ -74,7 +74,7 @@ namespace GraphQLParser
                 ? NextCode()
                 : ReadDigitsFromOwnSource(code);
 
-            if (nextCode >= 48 && nextCode <= 57)
+            if ('0' <= nextCode && nextCode <= '9')
             {
                 throw new GraphQLSyntaxErrorException($"Invalid number, unexpected digit after {code}: \"{nextCode}\"", _source.Span, _currentIndex);
             }
