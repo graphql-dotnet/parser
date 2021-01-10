@@ -387,6 +387,11 @@ namespace GraphQLParser
     {
         public static GraphQLParser.AST.GraphQLDocument Parse(System.ReadOnlyMemory<char> source) { }
     }
+    public static class ParserExtensions
+    {
+        public static GraphQLParser.Token Lex(this string source) { }
+        public static GraphQLParser.AST.GraphQLDocument Parse(this string source) { }
+    }
     public readonly struct Token
     {
         public Token(GraphQLParser.TokenKind kind, System.ReadOnlyMemory<char> value, int start, int end) { }

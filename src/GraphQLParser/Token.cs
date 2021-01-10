@@ -10,7 +10,6 @@ namespace GraphQLParser
             Value = value;
             Start = start;
             End = end;
-
         }
 
         public TokenKind Kind { get; }

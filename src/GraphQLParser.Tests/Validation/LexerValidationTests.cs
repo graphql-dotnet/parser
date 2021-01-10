@@ -10,8 +10,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_CarriageReturnInMiddleOfString_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"multi\rline\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"multi\rline\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Unterminated string.\n" +
@@ -25,15 +24,14 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_DashesInName_ThrowsExceptionWithCorrectMessage()
         {
-            var token = Lexer.Lex("a-b");
+            var token = "a-b".Lex();
 
             token.Kind.ShouldBe(TokenKind.NAME);
             token.Start.ShouldBe(0);
             token.End.ShouldBe(1);
             token.Value.ToString().ShouldBe("a");
 
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("a-b", token.End));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => Lexer.Lex("a-b".AsMemory(), token.End));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:3) Invalid number, expected digit but got: \"b\"\n" +
@@ -47,8 +45,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_IncompleteSpread_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex(".."));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "..".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Unexpected character \".\"\n" +
@@ -62,8 +59,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidCharacter_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\u0007"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\u0007".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Invalid character \"\\u0007\".\n" +
@@ -77,8 +73,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidEscapeSequenceXCharacter_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"bad \\x esc\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"bad \\x esc\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\x.\n" +
@@ -92,8 +87,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidEscapeSequenceZetCharacter_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"bad \\z esc\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"bad \\z esc\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\z.\n" +
@@ -107,8 +101,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidUnicode_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"bad \\u1 esc\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"bad \\u1 esc\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\u1 es.\n" +
@@ -122,8 +115,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidUnicode2_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"bad \\u0XX1 esc\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"bad \\u0XX1 esc\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\u0XX1.\n" +
@@ -137,8 +129,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidUnicode3_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"bad \\uFXXX esc\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"bad \\uFXXX esc\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\uFXXX.\n" +
@@ -152,8 +143,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidUnicode4_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"bad \\uXXXX esc\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"bad \\uXXXX esc\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\uXXXX.\n" +
@@ -167,8 +157,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_InvalidUnicode5_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"bad \\uXXXF esc\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"bad \\uXXXF esc\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Invalid character escape sequence: \\uXXXF.\n" +
@@ -182,8 +171,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_LineBreakInMiddleOfString_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"multi\nline\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"multi\nline\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:7) Unterminated string.\n" +
@@ -198,8 +186,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_LonelyQuestionMark_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("?"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "?".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Unexpected character \"?\"\n" +
@@ -213,8 +200,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_MissingExponentInNumber_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("1.0e"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "1.0e".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:5) Invalid number, expected digit but got: <EOF>\n" +
@@ -228,8 +214,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NonNumericCharacterInNumberExponent_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("1.0eA"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "1.0eA".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:5) Invalid number, expected digit but got: \"A\"\n" +
@@ -243,8 +228,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NonNumericCharInNumber_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("1.A"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "1.A".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:3) Invalid number, expected digit but got: \"A\"\n" +
@@ -258,8 +242,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NonNumericCharInNumber2_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("-A"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "-A".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:2) Invalid number, expected digit but got: \"A\"\n" +
@@ -273,8 +256,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NotAllowedUnicode_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\\u203B"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\\u203B".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Unexpected character \"\\u203B\"\n" +
@@ -288,8 +270,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NotAllowedUnicode1_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\\u200b"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\\u200b".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Unexpected character \"\\u200b\"\n" +
@@ -303,8 +284,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NullByteInString_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"null-byte is not \u0000 end of file"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"null-byte is not \u0000 end of file".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:19) Invalid character within String: \\u0000.\n" +
@@ -318,8 +298,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NumberDoubleZeros_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("00"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "00".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:2) Invalid number, unexpected digit after 0: \"0\"\n" +
@@ -333,8 +312,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NumberNoDecimalPartEOFInstead_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("1."));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "1.".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:3) Invalid number, expected digit but got: <EOF>\n" +
@@ -348,8 +326,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NumberPlusOne_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("+1"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "+1".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Unexpected character \"+\"\n" +
@@ -363,8 +340,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_NumberStartingWithDot_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex(".123"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => ".123".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:1) Unexpected character \".\"\n" +
@@ -378,8 +354,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_UnescapedControlChar_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"contains unescaped \u0007 control char"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"contains unescaped \u0007 control char".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:21) Invalid character within String: \\u0007.\n" +
@@ -393,8 +368,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_UnterminatedString_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\""));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:2) Unterminated string.\n" +
@@ -408,8 +382,7 @@ namespace GraphQLParser.Tests.Validation
         [Fact]
         public void Lex_UnterminatedStringWithText_ThrowsExceptionWithCorrectMessage()
         {
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(
-                () => Lexer.Lex("\"no end quote"));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"no end quote".Lex());
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:14) Unterminated string.\n" +

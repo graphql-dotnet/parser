@@ -21,7 +21,7 @@ namespace GraphQLParser
             if (_source.IsEmpty)
                 return CreateEOFToken();
 
-            _currentIndex = GetPositionAfterWhitespace(_source.Span, _currentIndex);
+            _currentIndex = GetPositionAfterWhitespace();
 
             if (_currentIndex >= _source.Length)
                 return CreateEOFToken();
@@ -49,7 +49,7 @@ namespace GraphQLParser
             throw new GraphQLSyntaxErrorException($"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", _source.Span, _currentIndex);
         }
 
-        public static bool OnlyHexInString(ReadOnlySpan<char> test)
+        private static bool OnlyHexInString(ReadOnlySpan<char> test)
         {
             for (int i=0; i<test.Length; ++i)
             {
@@ -61,7 +61,7 @@ namespace GraphQLParser
             return true;
         }
 
-        public Token ReadNumber()
+        private Token ReadNumber()
         {
             bool isFloat = false;
             int start = _currentIndex;
@@ -101,7 +101,7 @@ namespace GraphQLParser
             return isFloat ? CreateFloatToken(start) : CreateIntToken(start);
         }
 
-        public Token ReadComment()
+        private Token ReadComment()
         {
             int start = _currentIndex;
             char code = NextCode();
@@ -154,7 +154,7 @@ namespace GraphQLParser
             );
         }
 
-        public Token ReadString()
+        private Token ReadString()
         {
             int start = _currentIndex;
             char code = NextCode();
@@ -302,7 +302,7 @@ namespace GraphQLParser
             return new Token
             (
                 TokenKind.UNKNOWN,
-                null,
+                default,
                 _currentIndex,
                 _currentIndex
             );
@@ -313,7 +313,7 @@ namespace GraphQLParser
             return new Token
             (
                 TokenKind.EOF,
-                null,
+                default,
                 _currentIndex,
                 _currentIndex
             );
@@ -363,11 +363,12 @@ namespace GraphQLParser
             );
         }
 
-        private static int GetPositionAfterWhitespace(ReadOnlySpan<char> body, int start)
+        private int GetPositionAfterWhitespace()
         {
-            int position = start;
+            int position = _currentIndex;
+            var body = _source.Span;
 
-            while (position < body.Length)
+            while (position < _source.Length)
             {
                 char code = body[position];
                 switch (code)
@@ -398,13 +399,6 @@ namespace GraphQLParser
             return _source.Length > _currentIndex + 5 && OnlyHexInString(_source.Span.Slice(_currentIndex + 2, 4))
                 ? _source.Span.Slice(_currentIndex, 6).ToString()
                 : null;
-        }
-
-        private char GetCode()
-        {
-            return _currentIndex < _source.Length
-                ? _source.Span[_currentIndex]
-                : (char)0;
         }
 
         private char NextCode()
@@ -441,7 +435,9 @@ namespace GraphQLParser
         private char ReadDigitsFromOwnSource(char code)
         {
             _currentIndex = ReadDigits(_currentIndex, code);
-            return GetCode();
+            return _currentIndex < _source.Length
+                ? _source.Span[_currentIndex]
+                : (char)0;
         }
 
         private Token ReadName()
@@ -451,10 +447,12 @@ namespace GraphQLParser
 
             do
             {
-                ++_currentIndex;
-                code = GetCode();
+                if (++_currentIndex < _source.Length)
+                    code = _source.Span[_currentIndex];
+                else
+                    break;
             }
-            while (_currentIndex < _source.Length && (code == '_' || char.IsLetterOrDigit(code)));
+            while (code == '_' || char.IsLetterOrDigit(code));
 
             return CreateNameToken(start);
         }
@@ -476,14 +474,5 @@ namespace GraphQLParser
                 throw new GraphQLSyntaxErrorException($"Invalid character \"\\u{code:D4}\".", _source.Span, _currentIndex);
             }
         }
-
-        //private int WaitForEndOfComment(string body, int position, char code)
-        //{
-        //    while (++position < body.Length && (code = body[position]) != 0 && (code > 0x001F || code == 0x0009) && code != 0x000A && code != 0x000D)
-        //    {
-        //    }
-
-        //    return position;
-        //}
     }
 }

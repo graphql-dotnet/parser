@@ -1,12 +1,17 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using GraphQLParser.AST;
 
 namespace GraphQLParser
 {
-    internal static class MemoryExtensions
+    public static class ParserExtensions
     {
-        public static (IMemoryOwner<char> owner, ReadOnlyMemory<char> result) Concat(this List<ReadOnlyMemory<char>> parts)
+        public static Token Lex(this string source) => Lexer.Lex(source.AsMemory(), 0);
+
+        public static GraphQLDocument Parse(this string source) => Parser.Parse(source.AsMemory());
+
+        internal static (IMemoryOwner<char> owner, ReadOnlyMemory<char> result) Concat(this List<ReadOnlyMemory<char>> parts)
         {
             var newLine = Environment.NewLine.AsSpan();
 

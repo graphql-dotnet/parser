@@ -1,3 +1,4 @@
+using System;
 using BenchmarkDotNet.Attributes;
 
 namespace GraphQLParser.Benchmarks
@@ -9,7 +10,7 @@ namespace GraphQLParser.Benchmarks
         [ArgumentsSource(nameof(Names))]
         public void Lex(string name)
         {
-            var source = GetQueryByName(name);
+            var source = GetQueryByName(name).AsMemory();
             int resetPosition = 0;
             Token token;
             while ((token = Lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)

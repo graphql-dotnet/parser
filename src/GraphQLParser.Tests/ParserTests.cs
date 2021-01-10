@@ -27,7 +27,7 @@ fragment human on person {
         name
 }";
 
-            using var document = Parser.Parse(query);
+            using var document = query.Parse();
             document.Definitions.Count.ShouldBe(2);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
@@ -50,7 +50,7 @@ query _ {
     }
 }";
 
-            using var document = Parser.Parse(query);
+            using var document = query.Parse();
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
@@ -75,7 +75,7 @@ query _(
     }
 }";
 
-            using var document = Parser.Parse(query);
+            using var document = query.Parse();
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.VariableDefinitions.Count.ShouldBe(3);
@@ -87,7 +87,7 @@ query _(
         [Fact]
         public void Comments_On_SelectionSet_Should_Read_Correctly()
         {
-            using var document = Parser.Parse(@"
+            using var document = @"
 query {
     # a comment below query
     field1
@@ -95,7 +95,7 @@ query {
     #second comment
     field3
 }
-");
+".Parse();
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(3);
@@ -107,7 +107,7 @@ query {
         [Fact]
         public void Comments_On_Enums_Should_Read_Correctly()
         {
-            using var document = Parser.Parse(@"
+            using var document = @"
 # different animals
 enum Animal {
     #a cat
@@ -125,7 +125,7 @@ input Parameter {
 }
 
 scalar JSON
-");
+".Parse();
             document.Definitions.Count.ShouldBe(3);
             var d1 = document.Definitions.First() as GraphQLEnumTypeDefinition;
             d1.Name.Value.ToString().ShouldBe("Animal");
@@ -146,7 +146,7 @@ scalar JSON
         [Fact]
         public void Parse_Unicode_Char_At_EOF_Should_Throw()
         {
-            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse("{\"\\ue }"));
+            Should.Throw<GraphQLSyntaxErrorException>(() => "{\"\\ue }".Parse());
         }
 
         [Fact]
@@ -257,7 +257,7 @@ scalar JSON
         [Fact]
         public void Parse_KitchenSink_DoesNotThrowError()
         {
-            using var document = Parser.Parse(LoadKitchenSink());
+            using var document = LoadKitchenSink().Parse();
             var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value.ToString() == "Foo");
             var fieldDef = typeDef.Fields.First(d => d.Name.Value.ToString() == "three");
             fieldDef.Comment.Text.ToString().ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
@@ -273,7 +273,7 @@ scalar JSON
         [Fact]
         public void Parse_NullInput_EmptyDocument()
         {
-            using var document = Parser.Parse((string)null);
+            using var document = ((string)null).Parse();
 
             document.Definitions.ShouldBeEmpty();
         }
@@ -281,7 +281,7 @@ scalar JSON
         [Fact]
         public void Parse_VariableInlineValues_DoesNotThrowError()
         {
-            using (Parser.Parse("{ field(complex: { a: { b: [ $var ] } }) }"))
+            using ("{ field(complex: { a: { b: [ $var ] } }) }".Parse())
             {
             }
         }
@@ -452,15 +452,9 @@ directive @include(if: Boolean!)
    | INLINE_FRAGMENT";
         }
 
-        private static GraphQLDocument ParseGraphQLFieldSource()
-        {
-            return Parser.Parse("{ field }");
-        }
+        private static GraphQLDocument ParseGraphQLFieldSource() => "{ field }".Parse();
 
-        private static GraphQLDocument ParseGraphQLFieldWithOperationTypeAndNameSource()
-        {
-            return Parser.Parse("mutation Foo { field }");
-        }
+        private static GraphQLDocument ParseGraphQLFieldWithOperationTypeAndNameSource() => "mutation Foo { field }".Parse();
 
         [Theory]
         [InlineData("directive @dir repeatable on FIELD_DEFINITION", true)]
@@ -480,7 +474,7 @@ FIELD_DEFINITION
 |          ENUM_VALUE", false)]
         public void Should_Parse_Directives(string text, bool repeatable)
         {
-            using var document = Parser.Parse(text);
+            using var document = text.Parse();
             document.ShouldNotBeNull();
             document.Definitions.Count.ShouldBe(1);
             document.Definitions[0].ShouldBeOfType<GraphQLDirectiveDefinition>().Repeatable.ShouldBe(repeatable);
@@ -495,7 +489,7 @@ FIELD_DEFINITION
         [InlineData("directive @dir repeatable onn FIELD_DEFINITION")]
         public void Should_Throw_GraphQLSyntaxErrorException(string text)
         {
-            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(text));
+            Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
         }
 
         [Theory]
@@ -514,7 +508,7 @@ Cat
 |       Dog")]
         public void Should_Parse_Unions(string text)
         {
-            using var document = Parser.Parse(text);
+            using var document = text.Parse();
             document.ShouldNotBeNull();
         }
     }

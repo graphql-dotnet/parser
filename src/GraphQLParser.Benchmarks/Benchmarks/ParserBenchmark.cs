@@ -11,9 +11,9 @@ namespace GraphQLParser.Benchmarks
         public void Parse(string name)
         {
             var source = GetQueryByName(name);
-            Parser.Parse(source).Dispose();
+            source.Parse().Dispose();
         }
 
-        public override void Run() => Parse("github");
+        public override void Run() => Parse("params");
     }
 }

@@ -26,7 +26,7 @@ namespace GraphQLParser
             _prevToken = new Token
             (
                 TokenKind.UNKNOWN,
-                null,
+                default,
                 0,
                 0
             );
@@ -38,7 +38,7 @@ namespace GraphQLParser
                 throw new ApplicationException($"ParserContext has {_comments.Count} not applied comments.");
         }
 
-        public GraphQLComment? GetComment() => _comments?.Count > 0 ? _comments.Pop() : null;
+        private GraphQLComment? GetComment() => _comments?.Count > 0 ? _comments.Pop() : null;
 
         public GraphQLDocument Parse() => ParseDocument();
 
