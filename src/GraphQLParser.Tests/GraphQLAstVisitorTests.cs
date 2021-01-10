@@ -57,7 +57,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_BooleanValueArgument_VisitsOneBooleanValue()
         {
-            _visitor.Visit(Parse("{ stuff(id : true) }"));
+            using var d = Parse("{ stuff(id : true) }");
+            _visitor.Visit(d);
 
             _visitedBooleanValues.ShouldHaveSingleItem();
         }
@@ -65,7 +66,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_DefinitionWithSingleFragmentSpread_VisitsFragmentSpreadOneTime()
         {
-            _visitor.Visit(Parse("{ foo { ...fragment } }"));
+            using var d = Parse("{ foo { ...fragment } }");
+            _visitor.Visit(d);
 
             _visitedFragmentSpreads.ShouldHaveSingleItem();
         }
@@ -73,7 +75,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_DefinitionWithSingleFragmentSpread_VisitsNameOfPropertyAndFragmentSpread()
         {
-            _visitor.Visit(Parse("{ foo { ...fragment } }"));
+            using var d = Parse("{ foo { ...fragment } }");
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(2);
         }
@@ -81,7 +84,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_DirectiveWithVariable_VisitsVariableOnce()
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = Parse("{ ... @include(if : $stuff) { field } }");
+            _visitor.Visit(d);
 
             _visitedVariables.ShouldHaveSingleItem();
         }
@@ -89,7 +93,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_EnumValueArgument_VisitsOneEnumValue()
         {
-            _visitor.Visit(Parse("{ stuff(id : TEST_ENUM) }"));
+            using var d = Parse("{ stuff(id : TEST_ENUM) }");
+            _visitor.Visit(d);
 
             _visitedEnumValues.ShouldHaveSingleItem();
         }
@@ -97,7 +102,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_FloatValueArgument_VisitsOneFloatValue()
         {
-            _visitor.Visit(Parse("{ stuff(id : 1.2) }"));
+            using var d = Parse("{ stuff(id : 1.2) }");
+            _visitor.Visit(d);
 
             _visitedFloatValues.ShouldHaveSingleItem();
         }
@@ -105,7 +111,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_FragmentWithTypeCondition_VisitsFragmentDefinitionOnce()
         {
-            _visitor.Visit(Parse("fragment testFragment on Stuff { field }"));
+            using var d = Parse("fragment testFragment on Stuff { field }");
+            _visitor.Visit(d);
 
             _visitedFragmentDefinitions.ShouldHaveSingleItem();
         }
@@ -113,7 +120,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_FragmentWithTypeCondition_VisitsTypeConditionOnce()
         {
-            _visitor.Visit(Parse("fragment testFragment on Stuff { field }"));
+            using var d = Parse("fragment testFragment on Stuff { field }");
+            _visitor.Visit(d);
 
             _visitedFragmentTypeConditions.ShouldHaveSingleItem();
         }
@@ -121,7 +129,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsArgumentsOnce()
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = Parse("{ ... @include(if : $stuff) { field } }");
+            _visitor.Visit(d);
 
             _visitedArguments.ShouldHaveSingleItem();
         }
@@ -129,7 +138,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsDirectiveOnce()
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = Parse("{ ... @include(if : $stuff) { field } }");
+            _visitor.Visit(d);
 
             _visitedDirectives.ShouldHaveSingleItem();
         }
@@ -137,7 +147,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsNameThreeTimes()
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = Parse("{ ... @include(if : $stuff) { field } }");
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(4);
         }
@@ -145,7 +156,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_InlineFragmentWithOneField_VisitsOneField()
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = Parse("{ ... @include(if : $stuff) { field } }");
+            _visitor.Visit(d);
 
             _visitedFieldSelections.ShouldHaveSingleItem();
         }
@@ -153,7 +165,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_InlineFragmentWithTypeCondition_VisitsInlineFragmentOnce()
         {
-            _visitor.Visit(Parse("{ ... on Stuff { field } }"));
+            using var d = Parse("{ ... on Stuff { field } }");
+            _visitor.Visit(d);
 
             _visitedInlineFragments.ShouldHaveSingleItem();
         }
@@ -161,7 +174,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_InlineFragmentWithTypeCondition_VisitsTypeConditionOnce()
         {
-            _visitor.Visit(Parse("{ ... on Stuff { field } }"));
+            using var d = Parse("{ ... on Stuff { field } }");
+            _visitor.Visit(d);
 
             _visitedFragmentTypeConditions.ShouldHaveSingleItem();
         }
@@ -169,7 +183,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_IntValueArgument_VisitsOneIntValue()
         {
-            _visitor.Visit(Parse("{ stuff(id : 1) }"));
+            using var d = Parse("{ stuff(id : 1) }");
+            _visitor.Visit(d);
 
             _visitedIntValues.ShouldHaveSingleItem();
         }
@@ -177,7 +192,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_OneDefinition_CallsVisitDefinitionOnce()
         {
-            _visitor.Visit(Parse("{ a }"));
+            using var d = Parse("{ a }");
+            _visitor.Visit(d);
 
             _visitedDefinitions.ShouldHaveSingleItem();
         }
@@ -185,16 +201,17 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_OneDefinition_ProvidesCorrectDefinitionAsParameter()
         {
-            var ast = Parse("{ a }");
-            _visitor.Visit(ast);
+            using var d = Parse("{ a }");
+            _visitor.Visit(d);
 
-            _visitedDefinitions.Single().ShouldBe(ast.Definitions.Single());
+            _visitedDefinitions.Single().ShouldBe(d.Definitions.Single());
         }
 
         [Fact]
         public void Visit_OneDefinition_VisitsOneSelectionSet()
         {
-            _visitor.Visit(Parse("{ a, b }"));
+            using var d = Parse("{ a, b }");
+            _visitor.Visit(d);
 
             _visitedSelectionSets.ShouldHaveSingleItem();
         }
@@ -202,7 +219,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_OneDefinitionWithOneAliasedField_VisitsOneAlias()
         {
-            _visitor.Visit(Parse("{ foo, foo : bar }"));
+            using var d = Parse("{ foo, foo : bar }");
+            _visitor.Visit(d);
 
             _visitedAliases.ShouldHaveSingleItem();
         }
@@ -210,7 +228,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_OneDefinitionWithOneArgument_VisitsOneArgument()
         {
-            _visitor.Visit(Parse("{ foo(id : 1) { name } }"));
+            using var d = Parse("{ foo(id : 1) { name } }");
+            _visitor.Visit(d);
 
             _visitedArguments.ShouldHaveSingleItem();
         }
@@ -218,7 +237,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_OneDefinitionWithOneNestedArgument_VisitsOneArgument()
         {
-            _visitor.Visit(Parse("{ foo{ names(size: 10) } }"));
+            using var d = Parse("{ foo{ names(size: 10) } }");
+            _visitor.Visit(d);
 
             _visitedArguments.ShouldHaveSingleItem();
         }
@@ -226,7 +246,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_StringValueArgument_VisitsOneStringValue()
         {
-            _visitor.Visit(Parse("{ stuff(id : \"abc\") }"));
+            using var d = Parse("{ stuff(id : \"abc\") }");
+            _visitor.Visit(d);
 
             _visitedStringValues.ShouldHaveSingleItem();
         }
@@ -234,7 +255,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_TwoDefinitions_CallsVisitDefinitionTwice()
         {
-            _visitor.Visit(Parse("{ a }\n{ b }"));
+            using var d = Parse("{ a }\n{ b }");
+            _visitor.Visit(d);
 
             _visitedDefinitions.Count.ShouldBe(2);
         }
@@ -242,7 +264,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_TwoFieldSelections_VisitsFieldSelectionTwice()
         {
-            _visitor.Visit(Parse("{ a, b }"));
+            using var d = Parse("{ a, b }");
+            _visitor.Visit(d);
 
             _visitedFieldSelections.Count.ShouldBe(2);
         }
@@ -250,7 +273,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_TwoFieldSelections_VisitsTwoFieldNames()
         {
-            _visitor.Visit(Parse("{ a, b }"));
+            using var d = Parse("{ a, b }");
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(2);
         }
@@ -258,7 +282,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_TwoFieldSelections_VisitsTwoFieldNamesAndDefinitionName()
         {
-            _visitor.Visit(Parse("query foo { a, b }"));
+            using var d = Parse("query foo { a, b }");
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(3);
         }
@@ -266,7 +291,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveFieldSelections()
         {
-            _visitor.Visit(Parse("{a, nested { x,  y }, b}"));
+            using var d = Parse("{a, nested { x,  y }, b}");
+            _visitor.Visit(d);
 
             _visitedFieldSelections.Count.ShouldBe(5);
         }
@@ -274,7 +300,8 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveNames()
         {
-            _visitor.Visit(Parse("{a, nested { x,  y }, b}"));
+            using var d = Parse("{a, nested { x,  y }, b}");
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(5);
         }

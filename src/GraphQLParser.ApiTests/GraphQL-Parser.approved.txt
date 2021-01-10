@@ -57,9 +57,9 @@ namespace GraphQLParser.AST
     }
     public class GraphQLComment : GraphQLParser.AST.ASTNode
     {
-        public GraphQLComment(string text) { }
+        public GraphQLComment() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public string Text { get; set; }
+        public System.ReadOnlyMemory<char> Text { get; set; }
     }
     public class GraphQLDirective : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -77,11 +77,13 @@ namespace GraphQLParser.AST
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLName>? Locations { get; set; }
         public bool Repeatable { get; set; }
     }
-    public class GraphQLDocument : GraphQLParser.AST.ASTNode
+    public class GraphQLDocument : GraphQLParser.AST.ASTNode, System.IDisposable
     {
         public GraphQLDocument() { }
         public System.Collections.Generic.List<GraphQLParser.AST.ASTNode>? Definitions { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
     }
     public class GraphQLEnumTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
@@ -327,7 +329,7 @@ namespace GraphQLParser.Exceptions
 {
     public class GraphQLSyntaxErrorException : System.Exception
     {
-        public GraphQLSyntaxErrorException(string description, System.ReadOnlyMemory<char> source, int location) { }
+        public GraphQLSyntaxErrorException(string description, System.ReadOnlySpan<char> source, int location) { }
         public int Column { get; }
         public string Description { get; }
         public int Line { get; }
@@ -378,7 +380,7 @@ namespace GraphQLParser
     }
     public readonly struct Location
     {
-        public Location(System.ReadOnlyMemory<char> source, int position) { }
+        public Location(System.ReadOnlySpan<char> source, int position) { }
         public int Column { get; }
         public int Line { get; }
     }

@@ -7,7 +7,7 @@ namespace GraphQLParser
     {
         private static readonly Regex _lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
 
-        public Location(ReadOnlyMemory<char> source, int position)
+        public Location(ReadOnlySpan<char> source, int position)
         {
             Line = 1;
             Column = position + 1;
@@ -20,7 +20,7 @@ namespace GraphQLParser
                     if (match.Index >= position)
                         break;
 
-                    Line++;
+                    ++Line;
                     Column = position + 1 - (match.Index + matches[0].Length);
                 }
             }

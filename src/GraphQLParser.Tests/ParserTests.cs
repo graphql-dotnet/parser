@@ -28,14 +28,14 @@ fragment human on person {
 }";
 
             var parser = new Parser(new Lexer());
-            var document = parser.Parse(query);
+            using var document = parser.Parse(query);
             document.Definitions.Count.ShouldBe(2);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
             var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             var fragment = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
-            fragment.Comment.Text.ShouldBe("comment");
+            fragment.Comment.Text.ToString().ShouldBe("comment");
         }
 
         [Fact]
@@ -52,14 +52,14 @@ query _ {
 }";
 
             var parser = new Parser(new Lexer());
-            var document = parser.Parse(query);
+            using var document = parser.Parse(query);
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
             var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             var fragment = field.SelectionSet.Selections.First() as GraphQLInlineFragment;
-            fragment.Comment.Text.ShouldBe("comment");
+            fragment.Comment.Text.ToString().ShouldBe("comment");
         }
 
         [Fact]
@@ -78,20 +78,20 @@ query _(
 }";
 
             var parser = new Parser(new Lexer());
-            var document = parser.Parse(query);
+            using var document = parser.Parse(query);
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.VariableDefinitions.Count.ShouldBe(3);
-            def.VariableDefinitions.First().Comment.Text.ShouldBe("comment1");
+            def.VariableDefinitions.First().Comment.Text.ToString().ShouldBe("comment1");
             def.VariableDefinitions.Skip(1).First().Comment.ShouldBeNull();
-            def.VariableDefinitions.Skip(2).First().Comment.Text.ShouldBe("comment3");
+            def.VariableDefinitions.Skip(2).First().Comment.Text.ToString().ShouldBe("comment3");
         }
 
         [Fact]
         public void Comments_On_SelectionSet_Should_Read_Correctly()
         {
             var parser = new Parser(new Lexer());
-            var document = parser.Parse(@"
+            using var document = parser.Parse(@"
 query {
     # a comment below query
     field1
@@ -103,16 +103,16 @@ query {
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(3);
-            def.SelectionSet.Selections.First().Comment.Text.ShouldBe(" a comment below query");
+            def.SelectionSet.Selections.First().Comment.Text.ToString().ShouldBe(" a comment below query");
             def.SelectionSet.Selections.Skip(1).First().Comment.ShouldBe(null);
-            def.SelectionSet.Selections.Skip(2).First().Comment.Text.ShouldBe("second comment");
+            def.SelectionSet.Selections.Skip(2).First().Comment.Text.ToString().ShouldBe("second comment");
         }
 
         [Fact]
         public void Comments_On_Enums_Should_Read_Correctly()
         {
             var parser = new Parser(new Lexer());
-            var document = parser.Parse(@"
+            using var document = parser.Parse(@"
 # different animals
 enum Animal {
     #a cat
@@ -134,10 +134,10 @@ scalar JSON
             document.Definitions.Count.ShouldBe(3);
             var d1 = document.Definitions.First() as GraphQLEnumTypeDefinition;
             d1.Name.Value.ToString().ShouldBe("Animal");
-            d1.Comment.Text.ShouldBe(" different animals");
+            d1.Comment.Text.ToString().ShouldBe(" different animals");
             d1.Values.First().Name.Value.ToString().ShouldBe("Cat");
             d1.Values.First().Comment.ShouldNotBeNull();
-            d1.Values.First().Comment.Text.ShouldBe("a cat");
+            d1.Values.First().Comment.Text.ToString().ShouldBe("a cat");
             d1.Values.Skip(2).First().Name.Value.ToString().ShouldBe("Octopus");
             d1.Values.Skip(2).First().Comment.ShouldBeNull();
 
@@ -145,7 +145,7 @@ scalar JSON
             d2.Name.Value.ToString().ShouldBe("Parameter");
             d2.Comment.ShouldBeNull();
             d2.Fields.Count.ShouldBe(1);
-            d2.Fields.First().Comment.Text.ShouldBe("any value");
+            d2.Fields.First().Comment.Text.ToString().ShouldBe("any value");
         }
 
         [Fact]
@@ -159,7 +159,7 @@ scalar JSON
         public void Parse_FieldInput_HasCorrectLocations()
         {
             // { field }
-            var document = ParseGraphQLFieldSource();
+            using var document = ParseGraphQLFieldSource();
 
             document.Location.ShouldBe(new GraphQLLocation(0, 9)); // { field }
             document.Definitions.First().Location.ShouldBe(new GraphQLLocation(0, 9)); // { field }
@@ -170,7 +170,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldInput_HasOneOperationDefinition()
         {
-            var document = ParseGraphQLFieldSource();
+            using var document = ParseGraphQLFieldSource();
 
             document.Definitions.First().Kind.ShouldBe(ASTNodeKind.OperationDefinition);
         }
@@ -178,7 +178,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldInput_NameIsNull()
         {
-            var document = ParseGraphQLFieldSource();
+            using var document = ParseGraphQLFieldSource();
 
             GetSingleOperationDefinition(document).Name.ShouldBeNull();
         }
@@ -186,7 +186,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldInput_OperationIsQuery()
         {
-            var document = ParseGraphQLFieldSource();
+            using var document = ParseGraphQLFieldSource();
 
             GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Query);
         }
@@ -194,7 +194,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldInput_ReturnsDocumentNode()
         {
-            var document = ParseGraphQLFieldSource();
+            using var document = ParseGraphQLFieldSource();
 
             document.Kind.ShouldBe(ASTNodeKind.Document);
         }
@@ -202,7 +202,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldInput_SelectionSetContainsSingleFieldSelection()
         {
-            var document = ParseGraphQLFieldSource();
+            using var document = ParseGraphQLFieldSource();
 
             GetSingleSelection(document).Kind.ShouldBe(ASTNodeKind.Field);
         }
@@ -211,7 +211,7 @@ scalar JSON
         public void Parse_FieldWithOperationTypeAndNameInput_HasCorrectLocations()
         {
             // mutation Foo { field }
-            var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
+            using var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
             document.Location.ShouldBe(new GraphQLLocation(0, 22));
             document.Definitions.First().Location.ShouldBe(new GraphQLLocation(0, 22));
@@ -223,7 +223,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldWithOperationTypeAndNameInput_HasOneOperationDefinition()
         {
-            var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
+            using var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
             document.Definitions.First().Kind.ShouldBe(ASTNodeKind.OperationDefinition);
         }
@@ -231,7 +231,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldWithOperationTypeAndNameInput_NameIsNull()
         {
-            var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
+            using var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
             GetSingleOperationDefinition(document).Name.Value.ToString().ShouldBe("Foo");
         }
@@ -239,7 +239,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldWithOperationTypeAndNameInput_OperationIsQuery()
         {
-            var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
+            using var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
             GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Mutation);
         }
@@ -247,7 +247,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldWithOperationTypeAndNameInput_ReturnsDocumentNode()
         {
-            var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
+            using var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
             document.Kind.ShouldBe(ASTNodeKind.Document);
         }
@@ -255,7 +255,7 @@ scalar JSON
         [Fact]
         public void Parse_FieldWithOperationTypeAndNameInput_SelectionSetContainsSingleFieldWithOperationTypeAndNameSelection()
         {
-            var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
+            using var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
             GetSingleSelection(document).Kind.ShouldBe(ASTNodeKind.Field);
         }
@@ -263,26 +263,23 @@ scalar JSON
         [Fact]
         public void Parse_KitchenSink_DoesNotThrowError()
         {
-            var document = new Parser(new Lexer()).Parse(LoadKitchenSink());
-            if (document != null)
-            {
-                var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value.ToString() == "Foo");
-                var fieldDef = typeDef.Fields.First(d => d.Name.Value.ToString() == "three");
-                fieldDef.Comment.Text.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
+            using var document = new Parser(new Lexer()).Parse(LoadKitchenSink());
+            var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value.ToString() == "Foo");
+            var fieldDef = typeDef.Fields.First(d => d.Name.Value.ToString() == "three");
+            fieldDef.Comment.Text.ToString().ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
 
-                // Schema description
-                // https://github.com/graphql/graphql-spec/pull/466
-                var comment = document.Definitions.OfType<GraphQLSchemaDefinition>().First().Comment;
-                comment.ShouldNotBeNull();
-                comment.Text.ShouldNotBeNull();
-                comment.Text.StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
-            }
+            // Schema description
+            // https://github.com/graphql/graphql-spec/pull/466
+            var comment = document.Definitions.OfType<GraphQLSchemaDefinition>().First().Comment;
+            comment.ShouldNotBeNull();
+            comment.Text.ToString().ShouldNotBeNull();
+            comment.Text.ToString().StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
         }
 
         [Fact]
         public void Parse_NullInput_EmptyDocument()
         {
-            var document = new Parser(new Lexer()).Parse((string)null);
+            using var document = new Parser(new Lexer()).Parse((string)null);
 
             document.Definitions.ShouldBeEmpty();
         }
@@ -290,7 +287,9 @@ scalar JSON
         [Fact]
         public void Parse_VariableInlineValues_DoesNotThrowError()
         {
-            new Parser(new Lexer()).Parse("{ field(complex: { a: { b: [ $var ] } }) }");
+            using (new Parser(new Lexer()).Parse("{ field(complex: { a: { b: [ $var ] } }) }"))
+            {
+            }
         }
 
         private static GraphQLOperationDefinition GetSingleOperationDefinition(GraphQLDocument document)
@@ -487,7 +486,7 @@ FIELD_DEFINITION
 |          ENUM_VALUE", false)]
         public void Should_Parse_Directives(string text, bool repeatable)
         {
-            var document = new Parser(new Lexer()).Parse(text);
+            using var document = new Parser(new Lexer()).Parse(text);
             document.ShouldNotBeNull();
             document.Definitions.Count.ShouldBe(1);
             document.Definitions[0].ShouldBeOfType<GraphQLDirectiveDefinition>().Repeatable.ShouldBe(repeatable);
@@ -521,7 +520,8 @@ Cat
 |       Dog")]
         public void Should_Parse_Unions(string text)
         {
-            new Parser(new Lexer()).Parse(text).ShouldNotBeNull();
+            using var document = new Parser(new Lexer()).Parse(text);
+            document.ShouldNotBeNull();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace GraphQLParser
             if (_source.IsEmpty)
                 return CreateEOFToken();
 
-            _currentIndex = GetPositionAfterWhitespace(_source, _currentIndex);
+            _currentIndex = GetPositionAfterWhitespace(_source.Span, _currentIndex);
 
             if (_currentIndex >= _source.Length)
                 return CreateEOFToken();
@@ -48,8 +48,7 @@ namespace GraphQLParser
             if (code == '"')
                 return ReadString();
 
-            throw new GraphQLSyntaxErrorException(
-                $"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", _source, _currentIndex);
+            throw new GraphQLSyntaxErrorException($"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", _source.Span, _currentIndex);
         }
 
         public static bool OnlyHexInString(ReadOnlySpan<char> test)
@@ -79,8 +78,7 @@ namespace GraphQLParser
 
             if (nextCode >= 48 && nextCode <= 57)
             {
-                throw new GraphQLSyntaxErrorException(
-                    $"Invalid number, unexpected digit after {code}: \"{nextCode}\"", _source, _currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid number, unexpected digit after {code}: \"{nextCode}\"", _source.Span, _currentIndex);
             }
 
             code = nextCode;
@@ -116,7 +114,7 @@ namespace GraphQLParser
             int index = 0;
             bool escaped = false;
 
-            while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D)
+            while (_currentIndex < _source.Length && code != 0x000A && code != 0x000D)
             {
                 char ch = ReadCharacterFromString(code, ref escaped);
 
@@ -169,11 +167,11 @@ namespace GraphQLParser
             int index = 0;
             bool escaped = false;
 
-            while (IsNotAtTheEndOfQuery() && code != 0x000A && code != 0x000D && code != '"')
+            while (_currentIndex < _source.Length && code != 0x000A && code != 0x000D && code != '"')
             {
                 if (code < 0x0020 && code != 0x0009)
                 {
-                    throw new GraphQLSyntaxErrorException($"Invalid character within String: \\u{(int)code:D4}.", _source, _currentIndex);
+                    throw new GraphQLSyntaxErrorException($"Invalid character within String: \\u{(int)code:D4}.", _source.Span, _currentIndex);
                 }
 
                 char ch = ReadCharacterFromString(code, ref escaped);
@@ -199,7 +197,7 @@ namespace GraphQLParser
 
             if (code != '"')
             {
-                throw new GraphQLSyntaxErrorException("Unterminated string.", _source, _currentIndex);
+                throw new GraphQLSyntaxErrorException("Unterminated string.", _source.Span, _currentIndex);
             }
 
             if (sb != null)
@@ -240,7 +238,7 @@ namespace GraphQLParser
                     'r' => '\r',
                     't' => '\t',
                     'u' => GetUnicodeChar(),
-                    _ => throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{escapedChar}.", _source, _currentIndex),
+                    _ => throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{escapedChar}.", _source.Span, _currentIndex),
                 };
             }
             else
@@ -254,14 +252,14 @@ namespace GraphQLParser
             if (_currentIndex + 5 > _source.Length)
             {
                 string truncatedExpression = _source.Span.Slice(_currentIndex).ToString();
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", _source, _currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", _source.Span, _currentIndex);
             }
 
             var expression = _source.Span.Slice(_currentIndex + 1, 4);
 
             if (!OnlyHexInString(expression))
             {
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\u{expression.ToString()}.", _source, _currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\u{expression.ToString()}.", _source.Span, _currentIndex);
             }
 
             return (char)(
@@ -270,8 +268,6 @@ namespace GraphQLParser
                 CharToHex(NextCode()) << 4 |
                 CharToHex(NextCode()));
         }
-
-        private static bool IsValidNameCharacter(char code) => code == '_' || char.IsLetterOrDigit(code);
 
         private static int CharToHex(char code) => Convert.ToByte(code.ToString(), 16);
 
@@ -369,14 +365,13 @@ namespace GraphQLParser
             );
         }
 
-        private static int GetPositionAfterWhitespace(ReadOnlyMemory<char> body, int start)
+        private static int GetPositionAfterWhitespace(ReadOnlySpan<char> body, int start)
         {
             int position = start;
 
-            var span = body.Span;
             while (position < body.Length)
             {
-                char code = span[position];
+                char code = body[position];
                 switch (code)
                 {
                     case '\xFEFF': // BOM
@@ -407,40 +402,37 @@ namespace GraphQLParser
                 : null;
         }
 
-        private bool IsNotAtTheEndOfQuery() => _currentIndex < _source.Length;
-
         private char GetCode()
         {
-            return IsNotAtTheEndOfQuery()
+            return _currentIndex < _source.Length
                 ? _source.Span[_currentIndex]
                 : (char)0;
         }
 
         private char NextCode()
         {
-            _currentIndex++;
-            return IsNotAtTheEndOfQuery()
+            ++_currentIndex;
+            return _currentIndex < _source.Length
                 ? _source.Span[_currentIndex]
                 : (char)0;
         }
 
-        private int ReadDigits(ReadOnlyMemory<char> source, int start, char firstCode)
+        private int ReadDigits(int start, char firstCode)
         {
             int position = start;
             char code = firstCode;
 
+            var body = _source.Span;
+
             if (!char.IsNumber(code))
             {
-                throw new GraphQLSyntaxErrorException(
-                    $"Invalid number, expected digit but got: {ResolveCharName(code)}", source, _currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid number, expected digit but got: {ResolveCharName(code)}", body, _currentIndex);
             }
-
-            var s = source.Span;
 
             do
             {
-                code = ++position < source.Length
-                    ? s[position]
+                code = ++position < body.Length
+                    ? body[position]
                     : (char)0;
             }
             while (char.IsNumber(code));
@@ -450,7 +442,7 @@ namespace GraphQLParser
 
         private char ReadDigitsFromOwnSource(char code)
         {
-            _currentIndex = ReadDigits(_source, _currentIndex, code);
+            _currentIndex = ReadDigits(_currentIndex, code);
             return GetCode();
         }
 
@@ -461,10 +453,10 @@ namespace GraphQLParser
 
             do
             {
-                _currentIndex++;
+                ++_currentIndex;
                 code = GetCode();
             }
-            while (IsNotAtTheEndOfQuery() && IsValidNameCharacter(code));
+            while (_currentIndex < _source.Length && (code == '_' || char.IsLetterOrDigit(code)));
 
             return CreateNameToken(start);
         }
@@ -483,8 +475,7 @@ namespace GraphQLParser
         {
             if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
             {
-                throw new GraphQLSyntaxErrorException(
-                    $"Invalid character \"\\u{code:D4}\".", _source, _currentIndex);
+                throw new GraphQLSyntaxErrorException($"Invalid character \"\\u{code:D4}\".", _source.Span, _currentIndex);
             }
         }
 
