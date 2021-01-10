@@ -16,8 +16,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Parse_Named_And_Literal_Variables()
         {
-            var parser = new Parser(new Lexer());
-            using var document = parser.Parse(_query);
+            using var document = Parser.Parse(_query);
 
             var def = document.Definitions[0] as GraphQLOperationDefinition;
             def.VariableDefinitions.Count.ShouldBe(1);

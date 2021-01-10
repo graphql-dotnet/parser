@@ -373,10 +373,9 @@ namespace GraphQLParser
         public virtual GraphQLParser.AST.GraphQLVariable EndVisitVariable(GraphQLParser.AST.GraphQLVariable variable) { }
         public virtual void Visit(GraphQLParser.AST.GraphQLDocument ast) { }
     }
-    public struct Lexer
+    public static class Lexer
     {
-        public int? BufferSize { get; set; }
-        public GraphQLParser.Token Lex(System.ReadOnlyMemory<char> source, int start = 0) { }
+        public static GraphQLParser.Token Lex(System.ReadOnlyMemory<char> source, int start = 0) { }
     }
     public readonly struct Location
     {
@@ -384,10 +383,9 @@ namespace GraphQLParser
         public int Column { get; }
         public int Line { get; }
     }
-    public struct Parser
+    public static class Parser
     {
-        public Parser(GraphQLParser.Lexer lexer) { }
-        public GraphQLParser.AST.GraphQLDocument Parse(System.ReadOnlyMemory<char> source) { }
+        public static GraphQLParser.AST.GraphQLDocument Parse(System.ReadOnlyMemory<char> source) { }
     }
     public readonly struct Token
     {

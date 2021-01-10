@@ -9,13 +9,11 @@ namespace GraphQLParser
     {
         private int _currentIndex;
         private readonly ReadOnlyMemory<char> _source;
-        private readonly int _bufferSize;
 
-        public LexerContext(ReadOnlyMemory<char> source, int index, int? bufferSize)
+        public LexerContext(ReadOnlyMemory<char> source, int index)
         {
             _currentIndex = index;
             _source = source;
-            _bufferSize = bufferSize == null ? 4096 : bufferSize.Value;
         }
 
         public Token GetToken()
@@ -108,7 +106,7 @@ namespace GraphQLParser
             int start = _currentIndex;
             char code = NextCode();
 
-            Span<char> buffer = stackalloc char[_bufferSize];
+            Span<char> buffer = stackalloc char[4096];
             StringBuilder? sb = null;
 
             int index = 0;
@@ -161,7 +159,7 @@ namespace GraphQLParser
             int start = _currentIndex;
             char code = NextCode();
 
-            Span<char> buffer = stackalloc char[_bufferSize];
+            Span<char> buffer = stackalloc char[4096];
             StringBuilder? sb = null;
 
             int index = 0;

@@ -10,9 +10,8 @@ namespace GraphQLParser.Benchmarks
         [ArgumentsSource(nameof(Names))]
         public void Parse(string name)
         {
-            var parser = new Parser(new Lexer());
             var source = GetQueryByName(name);
-            parser.Parse(source).Dispose();
+            Parser.Parse(source).Dispose();
         }
 
         public override void Run() => Parse("github");

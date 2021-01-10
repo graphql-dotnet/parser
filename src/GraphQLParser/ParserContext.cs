@@ -10,21 +10,19 @@ namespace GraphQLParser
     {
         private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
-        private readonly Lexer _lexer;
         private readonly ReadOnlyMemory<char> _source;
         private Stack<GraphQLComment>? _comments;
         private Token _currentToken;
         private Token _prevToken;
         private GraphQLDocument? _document;
 
-        public ParserContext(ReadOnlyMemory<char> source, Lexer lexer)
+        public ParserContext(ReadOnlyMemory<char> source)
         {
             _document = null;
             _comments = null;
             _source = source;
-            _lexer = lexer;
 
-            _currentToken = _lexer.Lex(source);
+            _currentToken = Lexer.Lex(source);
             _prevToken = new Token
             (
                 TokenKind.UNKNOWN,
@@ -50,7 +48,7 @@ namespace GraphQLParser
             if (_currentToken.Kind != TokenKind.EOF)
             {
                 _prevToken = _currentToken;
-                _currentToken = _lexer.Lex(_source, _currentToken.End);
+                _currentToken = Lexer.Lex(_source, _currentToken.End);
             }
         }
 

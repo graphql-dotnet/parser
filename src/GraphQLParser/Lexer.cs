@@ -2,16 +2,14 @@ using System;
 
 namespace GraphQLParser
 {
-    public struct Lexer
+    public static class Lexer
     {
-        public int? BufferSize { get; set; }
-
         // only for tests
-        internal Token Lex(string source, int start = 0) => Lex(source.AsMemory(), start);
+        internal static Token Lex(string source, int start = 0) => Lex(source.AsMemory(), start);
 
-        public Token Lex(ReadOnlyMemory<char> source, int start = 0)
+        public static Token Lex(ReadOnlyMemory<char> source, int start = 0)
         {
-            var context = new LexerContext(source, start, BufferSize);
+            var context = new LexerContext(source, start);
             return context.GetToken();
         }
     }
