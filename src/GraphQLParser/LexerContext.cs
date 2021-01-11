@@ -51,7 +51,7 @@ namespace GraphQLParser
 
         private static bool OnlyHexInString(ReadOnlySpan<char> test)
         {
-            for (int i=0; i<test.Length; ++i)
+            for (int i = 0; i < test.Length; ++i)
             {
                 char ch = test[i];
                 if (!('0' <= ch && ch <= '9' || 'a' <= ch && ch <= 'f' || 'A' <= ch && ch <= 'F'))
