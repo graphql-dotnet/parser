@@ -28,7 +28,10 @@ namespace GraphQLParser
 
             char code = _source.Span[_currentIndex];
 
-            ValidateCharacterCode(code);
+            if (code < ' ' && code != '\t' && code != '\n' && code != '\r')
+            {
+                Throw_From_GetToken1(code);
+            }
 
             var token = CheckForPunctuationTokens(code);
             if (token.Kind != TokenKind.UNKNOWN)
@@ -37,15 +40,25 @@ namespace GraphQLParser
             if (code == '#')
                 return ReadComment();
 
-            if (char.IsLetter(code) || code == '_')
+            if ('a' <= code && code <= 'z' || 'A' <= code && code <= 'Z' || code == '_')
                 return ReadName();
 
-            if (char.IsNumber(code) || code == '-')
+            if ('0' <= code && code <= '9' || code == '-')
                 return ReadNumber();
 
             if (code == '"')
                 return ReadString();
 
+            return Throw_From_GetToken2(code);
+        }
+
+        private void Throw_From_GetToken1(int code)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid character \"\\u{code:D4}\".", _source.Span, _currentIndex);
+        }
+
+        private Token Throw_From_GetToken2(char code)
+        {
             throw new GraphQLSyntaxErrorException($"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", _source.Span, _currentIndex);
         }
 
@@ -76,7 +89,7 @@ namespace GraphQLParser
 
             if ('0' <= nextCode && nextCode <= '9')
             {
-                throw new GraphQLSyntaxErrorException($"Invalid number, unexpected digit after {code}: \"{nextCode}\"", _source.Span, _currentIndex);
+                Throw_From_ReadNumber(code, nextCode);
             }
 
             code = nextCode;
@@ -99,6 +112,11 @@ namespace GraphQLParser
             }
 
             return isFloat ? CreateFloatToken(start) : CreateIntToken(start);
+        }
+
+        private void Throw_From_ReadNumber(char code, char nextCode)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid number, unexpected digit after {code}: \"{nextCode}\"", _source.Span, _currentIndex);
         }
 
         private Token ReadComment()
@@ -169,7 +187,7 @@ namespace GraphQLParser
             {
                 if (code < 0x0020 && code != 0x0009)
                 {
-                    throw new GraphQLSyntaxErrorException($"Invalid character within String: \\u{(int)code:D4}.", _source.Span, _currentIndex);
+                    Throw_From_ReadString1(code);
                 }
 
                 char ch = ReadCharacterFromString(code, ref escaped);
@@ -195,7 +213,7 @@ namespace GraphQLParser
 
             if (code != '"')
             {
-                throw new GraphQLSyntaxErrorException("Unterminated string.", _source.Span, _currentIndex);
+                Throw_From_ReadString2();
             }
 
             if (sb != null)
@@ -217,6 +235,16 @@ namespace GraphQLParser
             );
         }
 
+        private void Throw_From_ReadString1(char code)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid character within String: \\u{(int)code:D4}.", _source.Span, _currentIndex);
+        }
+
+        private void Throw_From_ReadString2()
+        {
+            throw new GraphQLSyntaxErrorException("Unterminated string.", _source.Span, _currentIndex);
+        }
+
         // sets escaped only to true
         private char ReadCharacterFromString(char currentCharacter, ref bool escaped)
         {
@@ -236,7 +264,7 @@ namespace GraphQLParser
                     'r' => '\r',
                     't' => '\t',
                     'u' => GetUnicodeChar(),
-                    _ => throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{escapedChar}.", _source.Span, _currentIndex),
+                    _ => Throw_From_ReadCharacterFromString(escapedChar)
                 };
             }
             else
@@ -245,19 +273,24 @@ namespace GraphQLParser
             }
         }
 
+        private char Throw_From_ReadCharacterFromString(char escapedChar)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{escapedChar}.", _source.Span, _currentIndex);
+        }
+
         private char GetUnicodeChar()
         {
             if (_currentIndex + 5 > _source.Length)
             {
                 string truncatedExpression = _source.Span.Slice(_currentIndex).ToString();
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", _source.Span, _currentIndex);
+                Throw_From_GetUnicodeChar1(truncatedExpression);
             }
 
             var expression = _source.Span.Slice(_currentIndex + 1, 4);
 
             if (!OnlyHexInString(expression))
             {
-                throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\u{expression.ToString()}.", _source.Span, _currentIndex);
+                Throw_From_GetUnicodeChar2(expression);
             }
 
             return (char)(
@@ -265,6 +298,16 @@ namespace GraphQLParser
                 CharToHex(NextCode()) << 8 |
                 CharToHex(NextCode()) << 4 |
                 CharToHex(NextCode()));
+        }
+
+        private void Throw_From_GetUnicodeChar1(string truncatedExpression)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", _source.Span, _currentIndex);
+        }
+
+        private void Throw_From_GetUnicodeChar2(ReadOnlySpan<char> expression)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\u{expression.ToString()}.", _source.Span, _currentIndex);
         }
 
         private static int CharToHex(char code) => Convert.ToByte(code.ToString(), 16);
@@ -416,9 +459,9 @@ namespace GraphQLParser
 
             var body = _source.Span;
 
-            if (!char.IsNumber(code))
+            if (code < '0' || '9' < code)
             {
-                throw new GraphQLSyntaxErrorException($"Invalid number, expected digit but got: {ResolveCharName(code)}", body, _currentIndex);
+                Throw_From_ReadDigits(code, body);
             }
 
             do
@@ -427,9 +470,14 @@ namespace GraphQLParser
                     ? body[position]
                     : (char)0;
             }
-            while (char.IsNumber(code));
+            while ('0' <= code && code <= '9');
 
             return position;
+        }
+
+        private void Throw_From_ReadDigits(char code, ReadOnlySpan<char> body)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid number, expected digit but got: {ResolveCharName(code)}", body, _currentIndex);
         }
 
         private char ReadDigitsFromOwnSource(char code)
@@ -452,7 +500,7 @@ namespace GraphQLParser
                 else
                     break;
             }
-            while (code == '_' || ('a' <= code && code <= 'z') || ('A' <= code && code <= 'Z') || ('0' <= code & code <= '9'));
+            while (code == '_' || 'a' <= code && code <= 'z' || 'A' <= code && code <= 'Z' || '0' <= code && code <= '9');
 
             return CreateNameToken(start);
         }
@@ -465,14 +513,6 @@ namespace GraphQLParser
             return string.IsNullOrWhiteSpace(unicodeString)
                 ? $"\"{code}\""
                 : $"\"{unicodeString}\"";
-        }
-
-        private void ValidateCharacterCode(int code)
-        {
-            if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
-            {
-                throw new GraphQLSyntaxErrorException($"Invalid character \"\\u{code:D4}\".", _source.Span, _currentIndex);
-            }
         }
     }
 }
