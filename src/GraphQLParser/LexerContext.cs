@@ -452,7 +452,7 @@ namespace GraphQLParser
                 else
                     break;
             }
-            while (code == '_' || char.IsLetterOrDigit(code));
+            while (code == '_' || ('a' <= code && code <= 'z') || ('A' <= code && code <= 'Z') || ('0' <= code & code <= '9'));
 
             return CreateNameToken(start);
         }
