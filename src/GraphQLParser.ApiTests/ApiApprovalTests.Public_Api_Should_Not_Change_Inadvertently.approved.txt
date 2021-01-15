@@ -419,6 +419,7 @@ namespace GraphQLParser
     {
         public Parser(GraphQLParser.ILexer lexer) { }
         public GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ISource source) { }
+        public GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ISource source, bool ignoreComments) { }
     }
     public class Source : GraphQLParser.ISource
     {

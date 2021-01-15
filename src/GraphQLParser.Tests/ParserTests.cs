@@ -13,6 +13,25 @@ namespace GraphQLParser.Tests
         private static readonly string _nl = Environment.NewLine;
 
         [Fact]
+        public void Comments_Can_Be_Ignored()
+        {
+            const string query = @"
+{
+    #comment
+    person
+}";
+
+            var parser = new Parser(new Lexer());
+            var document = parser.Parse(new Source(query), true);
+            document.Definitions.Count().ShouldBe(1);
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count().ShouldBe(1);
+            def.Comment.ShouldBeNull();
+            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            field.Comment.ShouldBeNull();
+        }
+
+        [Fact]
         public void Comments_on_FragmentSpread_Should_Read_Correclty()
         {
             const string query = @"
