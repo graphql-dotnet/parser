@@ -13,7 +13,7 @@ namespace GraphQLParser
 
         public GraphQLDocument Parse(ISource source)
         {
-            using var context = new ParserContext(source, _lexer);
+            var context = new ParserContext(source, _lexer);
             return context.Parse();
         }
     }
