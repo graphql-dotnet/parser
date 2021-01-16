@@ -13,7 +13,7 @@ namespace GraphQLParser.Tests
         private static readonly string _nl = Environment.NewLine;
 
         [Fact]
-        public void Extra_Comments_Should_Read_Correclty()
+        public void Extra_Comments_Should_Read_Correctly()
         {
             const string query = @"
 query _ {
