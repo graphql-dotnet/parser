@@ -63,6 +63,7 @@ query _ {
 {
     #comment
     person
+    # comment2
 }";
 
             var parser = new Parser(new Lexer());
