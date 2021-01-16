@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
@@ -7,5 +7,6 @@ namespace GraphQLParser.AST
         public List<ASTNode>? Definitions { get; set; }
 
         public override ASTNodeKind Kind => ASTNodeKind.Document;
+        public List<GraphQLComment>? UnattachedComments { get; set; }
     }
 }

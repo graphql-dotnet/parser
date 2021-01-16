@@ -82,6 +82,7 @@ namespace GraphQLParser.AST
         public GraphQLDocument() { }
         public System.Collections.Generic.List<GraphQLParser.AST.ASTNode>? Definitions { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLComment>? UnattachedComments { get; set; }
     }
     public class GraphQLEnumTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
@@ -172,7 +173,6 @@ namespace GraphQLParser.AST
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLValue>? Values { get; set; }
         public override string ToString() { }
     }
-    [System.Diagnostics.DebuggerDisplay("(Start={Start}, End={End})")]
     public readonly struct GraphQLLocation : System.IEquatable<GraphQLParser.AST.GraphQLLocation>
     {
         public GraphQLLocation(int start, int end) { }
@@ -183,7 +183,6 @@ namespace GraphQLParser.AST
         public override int GetHashCode() { }
         public override string ToString() { }
     }
-    [System.Diagnostics.DebuggerDisplay("{Value}")]
     public class GraphQLName : GraphQLParser.AST.ASTNode
     {
         public GraphQLName() { }
