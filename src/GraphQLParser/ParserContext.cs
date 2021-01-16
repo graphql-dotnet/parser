@@ -12,17 +12,19 @@ namespace GraphQLParser
 
         private readonly ILexer _lexer;
         private readonly ISource _source;
+        private readonly bool _ignoreComments;
         private GraphQLComment? _comment;
         private List<GraphQLComment>? _comments;
         private Token _currentToken;
         private Token _prevToken;
 
-        public ParserContext(ISource source, ILexer lexer)
+        public ParserContext(ISource source, ILexer lexer, bool ignoreComments)
         {
             _comment = null;
             _comments = null;
             _source = source;
             _lexer = lexer;
+            _ignoreComments = ignoreComments;
 
             _currentToken = _lexer.Lex(source);
             _prevToken = new Token
@@ -319,6 +321,15 @@ namespace GraphQLParser
 
         private GraphQLComment? ParseComment()
         {
+            if (_ignoreComments)
+            {
+                while (Peek(TokenKind.COMMENT))
+                {
+                    Advance();
+                }
+                return null;
+            }
+
             if (!Peek(TokenKind.COMMENT))
             {
                 return null;

@@ -13,7 +13,7 @@ namespace GraphQLParser.Tests
         private static readonly string _nl = Environment.NewLine;
 
         [Fact]
-        public void Extra_Comments_Should_Read_Correclty()
+        public void Extra_Comments_Should_Read_Correctly()
         {
             const string query = @"
 query _ {
@@ -54,6 +54,27 @@ query _ {
             document.UnattachedComments[0].Text.ShouldBe("comment1");
             document.UnattachedComments[1].Text.ShouldBe("comment3");
             document.UnattachedComments[2].Text.ShouldBe("comment4");
+        }
+
+        [Fact]
+        public void Comments_Can_Be_Ignored()
+        {
+            const string query = @"
+{
+    #comment
+    person
+    # comment2
+}";
+
+            var parser = new Parser(new Lexer());
+            var document = parser.Parse(new Source(query), true);
+            document.UnattachedComments.ShouldBeNull();
+            document.Definitions.Count().ShouldBe(1);
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count().ShouldBe(1);
+            def.Comment.ShouldBeNull();
+            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            field.Comment.ShouldBeNull();
         }
 
         [Fact]

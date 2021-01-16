@@ -11,9 +11,11 @@ namespace GraphQLParser
             _lexer = lexer;
         }
 
-        public GraphQLDocument Parse(ISource source)
+        public GraphQLDocument Parse(ISource source) => Parse(source, false);
+
+        public GraphQLDocument Parse(ISource source, bool ignoreComments)
         {
-            var context = new ParserContext(source, _lexer);
+            var context = new ParserContext(source, _lexer, ignoreComments);
             return context.Parse();
         }
     }
