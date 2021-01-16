@@ -6,18 +6,20 @@ using GraphQLParser.Exceptions;
 namespace GraphQLParser
 {
     // WARNING: mutable struct, pass it by reference to those methods that will change it
-    internal struct ParserContext : IDisposable
+    internal struct ParserContext
     {
         private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
         private readonly ILexer _lexer;
         private readonly ISource _source;
-        private Stack<GraphQLComment>? _comments;
+        private GraphQLComment? _comment;
+        private List<GraphQLComment>? _comments;
         private Token _currentToken;
         private Token _prevToken;
 
         public ParserContext(ISource source, ILexer lexer)
         {
+            _comment = null;
             _comments = null;
             _source = source;
             _lexer = lexer;
@@ -32,13 +34,12 @@ namespace GraphQLParser
             );
         }
 
-        public void Dispose()
+        public GraphQLComment? GetComment()
         {
-            if (_comments?.Count > 0)
-                throw new ApplicationException($"ParserContext has {_comments.Count} not applied comments.");
+            var ret = _comment;
+            _comment = null;
+            return ret;
         }
-
-        public GraphQLComment? GetComment() => _comments?.Count > 0 ? _comments.Pop() : null;
 
         public GraphQLDocument Parse() => ParseDocument();
 
@@ -72,7 +73,7 @@ namespace GraphQLParser
             return nodes;
         }
 
-        private GraphQLDocument CreateDocument(int start, List<ASTNode> definitions)
+        private GraphQLDocument CreateDocument(int start, List<ASTNode> definitions, List<GraphQLComment>? comments)
         {
             return new GraphQLDocument
             {
@@ -84,7 +85,8 @@ namespace GraphQLParser
                     // EOF is a technical token with length = 0, _prevToken.End and _currentToken.End have the same value here.
                     _prevToken.End // equals to _currentToken.End (EOF) 
                 ),
-                Definitions = definitions
+                Definitions = definitions,
+                UnattachedComments = comments,
             };
         }
 
@@ -343,10 +345,14 @@ namespace GraphQLParser
                 )
             };
 
-            if (_comments == null)
-                _comments = new Stack<GraphQLComment>();
+            if (_comment != null)
+            {
+                if (_comments == null)
+                    _comments = new List<GraphQLComment>();
+                _comments.Add(_comment);
+            }
 
-            _comments.Push(comment);
+            _comment = comment;
 
             return comment;
         }
@@ -443,8 +449,14 @@ namespace GraphQLParser
         {
             int start = _currentToken.Start;
             var definitions = ParseDefinitionsIfNotEOF();
+            if (_comment != null)
+            {
+                if (_comments == null)
+                    _comments = new List<GraphQLComment>();
+                _comments.Add(_comment);
+            }
 
-            return CreateDocument(start, definitions);
+            return CreateDocument(start, definitions, _comments);
         }
 
         private GraphQLEnumTypeDefinition ParseEnumTypeDefinition()
@@ -663,7 +675,7 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             // the compiler caches these delegates in the generated code
             ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseConstantValue();
-            ParseCallback<GraphQLValue > value = (ref ParserContext context) => context.ParseValueValue();
+            ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueValue();
 
             return new GraphQLListValue(ASTNodeKind.ListValue)
             {
