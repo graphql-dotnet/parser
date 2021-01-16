@@ -67,6 +67,7 @@ query _ {
 
             var parser = new Parser(new Lexer());
             var document = parser.Parse(new Source(query), true);
+            document .UnattachedComments.ShouldBeNull();
             document.Definitions.Count().ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count().ShouldBe(1);
