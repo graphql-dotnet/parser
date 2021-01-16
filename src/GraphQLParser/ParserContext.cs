@@ -11,18 +11,20 @@ namespace GraphQLParser
         private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
         private readonly ReadOnlyMemory<char> _source;
+        private readonly bool _ignoreComments;
         private GraphQLComment? _currentComment;
         private List<GraphQLComment>? _unattachedComments;
         private Token _currentToken;
         private Token _prevToken;
         private GraphQLDocument? _document;
 
-        public ParserContext(ReadOnlyMemory<char> source)
+        public ParserContext(ReadOnlyMemory<char> source, bool ignoreComments)
         {
             _document = null;
             _currentComment = null;
             _unattachedComments = null;
             _source = source;
+            _ignoreComments = ignoreComments;
 
             _currentToken = Lexer.Lex(source);
             _prevToken = new Token
@@ -308,6 +310,15 @@ namespace GraphQLParser
 
         private GraphQLComment? ParseComment()
         {
+            if (_ignoreComments)
+            {
+                while (Peek(TokenKind.COMMENT))
+                {
+                    Advance();
+                }
+                return null;
+            }
+
             if (!Peek(TokenKind.COMMENT))
             {
                 return null;

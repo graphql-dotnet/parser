@@ -386,12 +386,12 @@ namespace GraphQLParser
     }
     public static class Parser
     {
-        public static GraphQLParser.AST.GraphQLDocument Parse(System.ReadOnlyMemory<char> source) { }
+        public static GraphQLParser.AST.GraphQLDocument Parse(System.ReadOnlyMemory<char> source, bool ignoreComments = true) { }
     }
     public static class ParserExtensions
     {
         public static GraphQLParser.Token Lex(this string source) { }
-        public static GraphQLParser.AST.GraphQLDocument Parse(this string source) { }
+        public static GraphQLParser.AST.GraphQLDocument Parse(this string source, bool ignoreComments = true) { }
     }
     public readonly struct Token
     {

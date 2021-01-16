@@ -5,6 +5,6 @@ namespace GraphQLParser
 {
     public static class Parser
     {
-        public static GraphQLDocument Parse(ReadOnlyMemory<char> source) => new ParserContext(source).Parse();
+        public static GraphQLDocument Parse(ReadOnlyMemory<char> source, bool ignoreComments = true) => new ParserContext(source, ignoreComments).Parse();
     }
 }

@@ -10,7 +10,7 @@ namespace GraphQLParser.Benchmarks
         internal static string ReadGraphQLFile(this string name) => File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "Files", name + ".graphql"));
 
         // Call without args for BenchmarkDotNet
-        // Call with some arbitrary args for any memory profiler
+        // Call with some arbitrary args for any profiler
         private static void Main(string[] args) => Run<ParserBenchmark>(args);
 
         private static void Run<TBenchmark>(string[] args)
