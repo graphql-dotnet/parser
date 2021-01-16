@@ -1,4 +1,3 @@
-using System;
 using GraphQLParser.Exceptions;
 using Shouldly;
 using Xunit;
