@@ -675,7 +675,7 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             // the compiler caches these delegates in the generated code
             ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseConstantValue();
-            ParseCallback<GraphQLValue > value = (ref ParserContext context) => context.ParseValueValue();
+            ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueValue();
 
             return new GraphQLListValue(ASTNodeKind.ListValue)
             {
