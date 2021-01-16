@@ -13,6 +13,8 @@ namespace GraphQLParser.AST
 
         public List<ASTNode>? Definitions { get; set; }
 
+        public List<GraphQLComment>? UnattachedComments { get; set; }
+
         public override ASTNodeKind Kind => ASTNodeKind.Document;
 
         protected virtual void Dispose(bool disposing)

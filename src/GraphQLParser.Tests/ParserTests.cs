@@ -13,6 +13,49 @@ namespace GraphQLParser.Tests
         private static readonly string _nl = Environment.NewLine;
 
         [Fact]
+        public void Extra_Comments_Should_Read_Correclty()
+        {
+            const string query = @"
+query _ {
+    person {
+        name
+        #comment1
+    }
+    #comment2
+    test {
+        alt
+    }
+    #comment3
+}
+#comment4
+";
+
+            using var document = query.Parse();
+            document.Definitions.Count().ShouldBe(1);
+            // query
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count().ShouldBe(2);
+            // person
+            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            field.SelectionSet.Selections.Count().ShouldBe(1);
+            // name
+            var subField = field.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            subField.Comment.ShouldBeNull();
+            // test
+            field = def.SelectionSet.Selections.Last() as GraphQLFieldSelection;
+            field.SelectionSet.Selections.Count().ShouldBe(1);
+            field.Comment.Text.ToString().ShouldBe("comment2");
+            // alt
+            subField = field.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            subField.Comment.ShouldBeNull();
+            // extra document comments
+            document.UnattachedComments.Count().ShouldBe(3);
+            document.UnattachedComments[0].Text.ToString().ShouldBe("comment1");
+            document.UnattachedComments[1].Text.ToString().ShouldBe("comment3");
+            document.UnattachedComments[2].Text.ToString().ShouldBe("comment4");
+        }
+
+        [Fact]
         public void Comments_on_FragmentSpread_Should_Read_Correclty()
         {
             const string query = @"

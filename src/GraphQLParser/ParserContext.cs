@@ -6,12 +6,13 @@ using GraphQLParser.Exceptions;
 namespace GraphQLParser
 {
     // WARNING: mutable struct, pass it by reference to those methods that will change it
-    internal struct ParserContext : IDisposable
+    internal struct ParserContext
     {
         private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
         private readonly ReadOnlyMemory<char> _source;
-        private Stack<GraphQLComment>? _comments;
+        private GraphQLComment? _currentComment;
+        private List<GraphQLComment>? _unattachedComments;
         private Token _currentToken;
         private Token _prevToken;
         private GraphQLDocument? _document;
@@ -19,7 +20,8 @@ namespace GraphQLParser
         public ParserContext(ReadOnlyMemory<char> source)
         {
             _document = null;
-            _comments = null;
+            _currentComment = null;
+            _unattachedComments = null;
             _source = source;
 
             _currentToken = Lexer.Lex(source);
@@ -32,13 +34,12 @@ namespace GraphQLParser
             );
         }
 
-        public void Dispose()
+        public GraphQLComment? GetComment()
         {
-            if (_comments?.Count > 0)
-                throw new ApplicationException($"ParserContext has {_comments.Count} not applied comments.");
+            var ret = _currentComment;
+            _currentComment = null;
+            return ret;
         }
-
-        private GraphQLComment? GetComment() => _comments?.Count > 0 ? _comments.Pop() : null;
 
         public GraphQLDocument Parse() => ParseDocument();
 
@@ -344,12 +345,17 @@ namespace GraphQLParser
                 (_document!.RentedMemoryTracker ??= new List<(System.Buffers.IMemoryOwner<char>, ASTNode)>()).Add((owner, comment));
             }
 
-            if (_comments == null)
-                _comments = new Stack<GraphQLComment>();
-
-            _comments.Push(comment);
+            SetCurrentComment(comment);
 
             return comment;
+        }
+
+        private void SetCurrentComment(GraphQLComment? comment)
+        {
+            if (_currentComment != null)
+                (_unattachedComments ??= new List<GraphQLComment>()).Add(_currentComment);
+
+            _currentComment = comment;
         }
 
         private GraphQLDirective ParseDirective()
@@ -454,6 +460,8 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             var definitions = ParseDefinitionsIfNotEOF();
 
+            SetCurrentComment(null);
+
             _document.Location = new GraphQLLocation
             (
                 start,
@@ -463,7 +471,7 @@ namespace GraphQLParser
                 _prevToken.End // equals to _currentToken.End (EOF) 
             );
             _document.Definitions = definitions;
-
+            _document.UnattachedComments = _unattachedComments;
             return _document;
         }
 
@@ -687,7 +695,7 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             // the compiler caches these delegates in the generated code
             ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseConstantValue();
-            ParseCallback<GraphQLValue > value = (ref ParserContext context) => context.ParseValueValue();
+            ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueValue();
 
             return new GraphQLListValue(ASTNodeKind.ListValue)
             {
