@@ -29,9 +29,9 @@ namespace GraphQLParser.Tests.Validation
             token.Kind.ShouldBe(TokenKind.NAME);
             token.Start.ShouldBe(0);
             token.End.ShouldBe(1);
-            token.Value.ToString().ShouldBe("a");
+            token.Value.ShouldBe("a");
 
-            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => Lexer.Lex("a-b".AsMemory(), token.End));
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => Lexer.Lex("a-b", token.End));
 
             exception.Message.ShouldBe(
                 "Syntax Error GraphQL (1:3) Invalid number, expected digit but got: \"b\"\n" +

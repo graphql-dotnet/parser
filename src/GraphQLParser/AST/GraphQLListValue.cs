@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace GraphQLParser.AST
@@ -12,7 +11,7 @@ namespace GraphQLParser.AST
             _kind = kind;
         }
 
-        public ReadOnlyMemory<char> AstValue { get; set; }
+        public ROM AstValue { get; set; }
 
         public override ASTNodeKind Kind => _kind;
 

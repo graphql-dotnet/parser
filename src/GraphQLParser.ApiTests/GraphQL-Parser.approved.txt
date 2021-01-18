@@ -59,7 +59,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLComment() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.ReadOnlyMemory<char> Text { get; set; }
+        public GraphQLParser.ROM Text { get; set; }
     }
     public class GraphQLDirective : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -170,7 +170,7 @@ namespace GraphQLParser.AST
     public class GraphQLListValue : GraphQLParser.AST.GraphQLValue
     {
         public GraphQLListValue(GraphQLParser.AST.ASTNodeKind kind) { }
-        public System.ReadOnlyMemory<char> AstValue { get; set; }
+        public GraphQLParser.ROM AstValue { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLValue>? Values { get; set; }
         public override string ToString() { }
@@ -191,7 +191,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLName() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.ReadOnlyMemory<char> Value { get; set; }
+        public GraphQLParser.ROM Value { get; set; }
     }
     public class GraphQLNamedType : GraphQLParser.AST.GraphQLType, GraphQLParser.AST.INamedNode
     {
@@ -255,7 +255,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLScalarValue(GraphQLParser.AST.ASTNodeKind kind) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.ReadOnlyMemory<char> Value { get; set; }
+        public GraphQLParser.ROM Value { get; set; }
         public override string? ToString() { }
     }
     public class GraphQLSchemaDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode
@@ -376,7 +376,7 @@ namespace GraphQLParser
     }
     public static class Lexer
     {
-        public static GraphQLParser.Token Lex(System.ReadOnlyMemory<char> source, int start = 0) { }
+        public static GraphQLParser.Token Lex(GraphQLParser.ROM source, int start = 0) { }
     }
     public readonly struct Location
     {
@@ -386,20 +386,43 @@ namespace GraphQLParser
     }
     public static class Parser
     {
-        public static GraphQLParser.AST.GraphQLDocument Parse(System.ReadOnlyMemory<char> source, bool ignoreComments = true) { }
+        public static GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ROM source, bool ignoreComments = true) { }
     }
     public static class ParserExtensions
     {
         public static GraphQLParser.Token Lex(this string source) { }
         public static GraphQLParser.AST.GraphQLDocument Parse(this string source, bool ignoreComments = true) { }
     }
+    public readonly struct ROM : System.IEquatable<GraphQLParser.ROM>
+    {
+        public ROM(System.ReadOnlyMemory<char> memory) { }
+        public bool IsEmpty { get; }
+        public int Length { get; }
+        public System.ReadOnlySpan<char> Span { get; }
+        public bool Equals(GraphQLParser.ROM other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
+        public GraphQLParser.ROM Slice(int start) { }
+        public GraphQLParser.ROM Slice(int start, int length) { }
+        public override string ToString() { }
+        public static string op_Explicit(GraphQLParser.ROM rom) { }
+        public static System.ReadOnlyMemory<char> op_Implicit(GraphQLParser.ROM rom) { }
+        public static GraphQLParser.ROM op_Implicit(char[] array) { }
+        public static GraphQLParser.ROM op_Implicit(System.Memory<char> memory) { }
+        public static GraphQLParser.ROM op_Implicit(System.ReadOnlyMemory<char> memory) { }
+        public static GraphQLParser.ROM op_Implicit(string s) { }
+        public static bool operator !=(GraphQLParser.ROM rom, string s) { }
+        public static bool operator !=(string s, GraphQLParser.ROM rom) { }
+        public static bool operator ==(GraphQLParser.ROM rom, string s) { }
+        public static bool operator ==(string s, GraphQLParser.ROM rom) { }
+    }
     public readonly struct Token
     {
-        public Token(GraphQLParser.TokenKind kind, System.ReadOnlyMemory<char> value, int start, int end) { }
+        public Token(GraphQLParser.TokenKind kind, GraphQLParser.ROM value, int start, int end) { }
         public int End { get; }
         public GraphQLParser.TokenKind Kind { get; }
         public int Start { get; }
-        public System.ReadOnlyMemory<char> Value { get; }
+        public GraphQLParser.ROM Value { get; }
         public override string ToString() { }
     }
     public enum TokenKind

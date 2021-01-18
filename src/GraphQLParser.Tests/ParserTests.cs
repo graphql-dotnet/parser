@@ -44,15 +44,15 @@ query _ {
             // test
             field = def.SelectionSet.Selections.Last() as GraphQLFieldSelection;
             field.SelectionSet.Selections.Count().ShouldBe(1);
-            field.Comment.ShouldNotBeNull().Text.ToString().ShouldBe("comment2");
+            field.Comment.ShouldNotBeNull().Text.ShouldBe("comment2");
             // alt
             subField = field.SelectionSet.Selections.First() as GraphQLFieldSelection;
             subField.Comment.ShouldBeNull();
             // extra document comments
             document.UnattachedComments.Count().ShouldBe(3);
-            document.UnattachedComments[0].Text.ToString().ShouldBe("comment1");
-            document.UnattachedComments[1].Text.ToString().ShouldBe("comment3");
-            document.UnattachedComments[2].Text.ToString().ShouldBe("comment4");
+            document.UnattachedComments[0].Text.ShouldBe("comment1");
+            document.UnattachedComments[1].Text.ShouldBe("comment3");
+            document.UnattachedComments[2].Text.ShouldBe("comment4");
         }
 
         [Fact]
@@ -97,7 +97,7 @@ fragment human on person {
             var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             var fragment = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
-            fragment.Comment.ShouldNotBeNull().Text.ToString().ShouldBe("comment");
+            fragment.Comment.ShouldNotBeNull().Text.ShouldBe("comment");
         }
 
         [Fact]
@@ -120,7 +120,7 @@ query _ {
             var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             var fragment = field.SelectionSet.Selections.First() as GraphQLInlineFragment;
-            fragment.Comment.ShouldNotBeNull().Text.ToString().ShouldBe("comment");
+            fragment.Comment.ShouldNotBeNull().Text.ShouldBe("comment");
         }
 
         [Fact]
@@ -142,9 +142,9 @@ query _(
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.VariableDefinitions.Count.ShouldBe(3);
-            def.VariableDefinitions.First().Comment.ShouldNotBeNull().Text.ToString().ShouldBe("comment1");
+            def.VariableDefinitions.First().Comment.ShouldNotBeNull().Text.ShouldBe("comment1");
             def.VariableDefinitions.Skip(1).First().Comment.ShouldBeNull();
-            def.VariableDefinitions.Skip(2).First().Comment.ShouldNotBeNull().Text.ToString().ShouldBe("comment3");
+            def.VariableDefinitions.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("comment3");
         }
 
         [Fact]
@@ -162,9 +162,9 @@ query {
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(3);
-            def.SelectionSet.Selections.First().Comment.ShouldNotBeNull().Text.ToString().ShouldBe(" a comment below query");
+            def.SelectionSet.Selections.First().Comment.ShouldNotBeNull().Text.ShouldBe(" a comment below query");
             def.SelectionSet.Selections.Skip(1).First().Comment.ShouldBe(null);
-            def.SelectionSet.Selections.Skip(2).First().Comment.ShouldNotBeNull().Text.ToString().ShouldBe("second comment");
+            def.SelectionSet.Selections.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("second comment");
         }
 
         [Fact]
@@ -191,19 +191,19 @@ scalar JSON
 ".Parse(false);
             document.Definitions.Count.ShouldBe(3);
             var d1 = document.Definitions.First() as GraphQLEnumTypeDefinition;
-            d1.Name.Value.ToString().ShouldBe("Animal");
-            d1.Comment.ShouldNotBeNull().Text.ToString().ShouldBe(" different animals");
-            d1.Values.First().Name.Value.ToString().ShouldBe("Cat");
+            d1.Name.Value.ShouldBe("Animal");
+            d1.Comment.ShouldNotBeNull().Text.ShouldBe(" different animals");
+            d1.Values.First().Name.Value.ShouldBe("Cat");
             d1.Values.First().Comment.ShouldNotBeNull();
-            d1.Values.First().Comment.Text.ToString().ShouldBe("a cat");
-            d1.Values.Skip(2).First().Name.Value.ToString().ShouldBe("Octopus");
+            d1.Values.First().Comment.Text.ShouldBe("a cat");
+            d1.Values.Skip(2).First().Name.Value.ShouldBe("Octopus");
             d1.Values.Skip(2).First().Comment.ShouldBeNull();
 
             var d2 = document.Definitions.Skip(1).First() as GraphQLInputObjectTypeDefinition;
-            d2.Name.Value.ToString().ShouldBe("Parameter");
+            d2.Name.Value.ShouldBe("Parameter");
             d2.Comment.ShouldBeNull();
             d2.Fields.Count.ShouldBe(1);
-            d2.Fields.First().Comment.Text.ToString().ShouldBe("any value");
+            d2.Fields.First().Comment.Text.ShouldBe("any value");
         }
 
         [Fact]
@@ -290,7 +290,7 @@ scalar JSON
         {
             using var document = ParseGraphQLFieldWithOperationTypeAndNameSource();
 
-            GetSingleOperationDefinition(document).Name.Value.ToString().ShouldBe("Foo");
+            GetSingleOperationDefinition(document).Name.Value.ShouldBe("Foo");
         }
 
         [Fact]
@@ -321,16 +321,15 @@ scalar JSON
         public void Parse_KitchenSink_DoesNotThrowError()
         {
             using var document = LoadKitchenSink().Parse(false);
-            var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value.ToString() == "Foo");
-            var fieldDef = typeDef.Fields.First(d => d.Name.Value.ToString() == "three");
-            fieldDef.Comment.ShouldNotBeNull().Text.ToString().ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
+            var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
+            var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
+            fieldDef.Comment.ShouldNotBeNull().Text.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
 
             // Schema description
             // https://github.com/graphql/graphql-spec/pull/466
             var comment = document.Definitions.OfType<GraphQLSchemaDefinition>().First().Comment;
             comment.ShouldNotBeNull();
-            comment.Text.ToString().ShouldNotBeNull();
-            comment.Text.ToString().StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
+            ((string)comment.Text).StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
         }
 
         [Fact]

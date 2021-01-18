@@ -8,9 +8,9 @@ namespace GraphQLParser
     internal struct LexerContext
     {
         private int _currentIndex;
-        private readonly ReadOnlyMemory<char> _source;
+        private readonly ROM _source;
 
-        public LexerContext(ReadOnlyMemory<char> source, int index)
+        public LexerContext(ROM source, int index)
         {
             _currentIndex = index;
             _source = source;
@@ -160,7 +160,7 @@ namespace GraphQLParser
             }
 
             var value = escaped
-                ? (sb == null ? buffer.Slice(0, index).ToString() : sb.ToString()).AsMemory() // allocate string from either buffer on stack or heap
+                ? (sb == null ? buffer.Slice(0, index).ToString() : sb.ToString()) // allocate string from either buffer on stack or heap
                 : _source.Slice(start + 1, _currentIndex - start - 1); // the best case, no escaping so no need to allocate
 
             return new Token
@@ -223,7 +223,7 @@ namespace GraphQLParser
             }
 
             var value = escaped
-                ? (sb == null ? buffer.Slice(0, index).ToString() : sb.ToString()).AsMemory() // allocate string from either buffer on stack or heap
+                ? (sb == null ? buffer.Slice(0, index).ToString() : sb.ToString()) // allocate string from either buffer on stack or heap
                 : _source.Slice(start + 1, _currentIndex - start - 1); // the best case, no escaping so no need to allocate
 
             return new Token

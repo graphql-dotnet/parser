@@ -7,11 +7,11 @@ namespace GraphQLParser
 {
     public static class ParserExtensions
     {
-        public static Token Lex(this string source) => Lexer.Lex(source.AsMemory(), 0);
+        public static Token Lex(this string source) => Lexer.Lex(source, 0);
 
-        public static GraphQLDocument Parse(this string source, bool ignoreComments = true) => Parser.Parse(source.AsMemory(), ignoreComments);
+        public static GraphQLDocument Parse(this string source, bool ignoreComments = true) => Parser.Parse(source, ignoreComments);
 
-        internal static (IMemoryOwner<char> owner, ReadOnlyMemory<char> result) Concat(this List<ReadOnlyMemory<char>> parts)
+        internal static (IMemoryOwner<char> owner, ROM result) Concat(this List<ROM> parts)
         {
             var newLine = Environment.NewLine.AsSpan();
 

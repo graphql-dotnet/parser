@@ -1,10 +1,14 @@
-using System;
-
 namespace GraphQLParser
 {
+    /// <summary>
+    /// Represents a lexical token within GraphQL document.
+    /// </summary>
     public readonly struct Token
     {
-        public Token(TokenKind kind, ReadOnlyMemory<char> value, int start, int end)
+        /// <summary>
+        /// Initializes a new instance with the specified properties.
+        /// </summary>
+        public Token(TokenKind kind, ROM value, int start, int end)
         {
             Kind = kind;
             Value = value;
@@ -12,13 +16,25 @@ namespace GraphQLParser
             End = end;
         }
 
+        /// <summary>
+        /// Kind of token. 
+        /// </summary>
         public TokenKind Kind { get; }
 
+        /// <summary>
+        /// Starting position of the token in the document.
+        /// </summary>
         public int Start { get; }
 
+        /// <summary>
+        /// Ending position of the token in the document.
+        /// </summary>
         public int End { get; }
 
-        public ReadOnlyMemory<char> Value { get; }
+        /// <summary>
+        /// Token value represented as a contiguous region of memory.
+        /// </summary>
+        public ROM Value { get; }
 
         internal static string GetTokenKindDescription(TokenKind kind) => kind switch
         {

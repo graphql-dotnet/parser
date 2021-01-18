@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
@@ -10,7 +9,7 @@ namespace GraphQLParser
     {
         private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
-        private readonly ReadOnlyMemory<char> _source;
+        private readonly ROM _source;
         private readonly bool _ignoreComments;
         private GraphQLComment? _currentComment;
         private List<GraphQLComment>? _unattachedComments;
@@ -18,7 +17,7 @@ namespace GraphQLParser
         private Token _prevToken;
         private GraphQLDocument? _document;
 
-        public ParserContext(ReadOnlyMemory<char> source, bool ignoreComments)
+        public ParserContext(ROM source, bool ignoreComments)
         {
             _document = null;
             _currentComment = null;
@@ -164,7 +163,7 @@ namespace GraphQLParser
 
         private void ExpectKeyword(string keyword)
         {
-            if (_currentToken.Kind == TokenKind.NAME && _currentToken.Value.Span.SequenceEqual(keyword.AsSpan()))
+            if (_currentToken.Kind == TokenKind.NAME && _currentToken.Value == keyword)
                 Advance();
             else
                 Throw_From_ExpectKeyword(keyword);
@@ -206,7 +205,7 @@ namespace GraphQLParser
         private GraphQLNamedType? GetTypeCondition()
         {
             GraphQLNamedType? typeCondition = null;
-            if (_currentToken.Value.Span.SequenceEqual("on".AsSpan()))
+            if (_currentToken.Value == "on")
             {
                 Advance();
                 typeCondition = ParseNamedType();
@@ -324,7 +323,7 @@ namespace GraphQLParser
                 return null;
             }
 
-            var text = new List<ReadOnlyMemory<char>>();
+            var text = new List<ROM>();
             int start = _currentToken.Start;
             int end;
 
@@ -416,12 +415,10 @@ namespace GraphQLParser
         {
             if (Peek(TokenKind.NAME))
             {
-                var span = _currentToken.Value.Span;
-
-                if (span.SequenceEqual("on".AsSpan()))
+                if (_currentToken.Value == "on")
                     return false;
 
-                if (span.SequenceEqual("repeatable".AsSpan()))
+                if (_currentToken.Value == "repeatable")
                 {
                     Advance();
                     return true;
@@ -584,7 +581,7 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             Expect(TokenKind.SPREAD);
 
-            return Peek(TokenKind.NAME) && !_currentToken.Value.Span.SequenceEqual("on".AsSpan())
+            return Peek(TokenKind.NAME) && _currentToken.Value != "on"
                 ? CreateGraphQLFragmentSpread(start, comment)
                 : CreateInlineFragment(start, comment);
         }
@@ -608,7 +605,7 @@ namespace GraphQLParser
 
         private GraphQLName ParseFragmentName()
         {
-            if (_currentToken.Value.Span.SequenceEqual("on".AsSpan()))
+            if (_currentToken.Value == "on")
             {
                 Throw_From_ParseFragmentName();
             }
@@ -624,7 +621,7 @@ namespace GraphQLParser
         private List<GraphQLNamedType>? ParseImplementsInterfaces()
         {
             List<GraphQLNamedType>? types = null;
-            if (_currentToken.Value.Span.SequenceEqual("implements".AsSpan()))
+            if (_currentToken.Value == "implements")
             {
                 types = new List<GraphQLNamedType>();
                 Advance();
@@ -732,45 +729,45 @@ namespace GraphQLParser
 
         private ASTNode? ParseNamedDefinition()
         {
-            var s = _currentToken.Value.Span;
+            var value = _currentToken.Value;
 
-            if (s.SequenceEqual("query".AsSpan()))
+            if (value == "query")
                 return ParseOperationDefinition();
 
-            if (s.SequenceEqual("mutation".AsSpan()))
+            if (value == "mutation")
                 return ParseOperationDefinition();
 
-            if (s.SequenceEqual("subscription".AsSpan()))
+            if (value == "subscription")
                 return ParseOperationDefinition();
 
-            if (s.SequenceEqual("fragment".AsSpan()))
+            if (value == "fragment")
                 return ParseFragmentDefinition();
 
-            if (s.SequenceEqual("schema".AsSpan()))
+            if (value == "schema")
                 return ParseSchemaDefinition();
 
-            if (s.SequenceEqual("scalar".AsSpan()))
+            if (value == "scalar")
                 return ParseScalarTypeDefinition();
 
-            if (s.SequenceEqual("type".AsSpan()))
+            if (value == "type")
                 return ParseObjectTypeDefinition();
 
-            if (s.SequenceEqual("interface".AsSpan()))
+            if (value == "interface")
                 return ParseInterfaceTypeDefinition();
 
-            if (s.SequenceEqual("union".AsSpan()))
+            if (value == "union")
                 return ParseUnionTypeDefinition();
 
-            if (s.SequenceEqual("enum".AsSpan()))
+            if (value == "enum")
                 return ParseEnumTypeDefinition();
 
-            if (s.SequenceEqual("input".AsSpan()))
+            if (value == "input")
                 return ParseInputObjectTypeDefinition();
 
-            if (s.SequenceEqual("extend".AsSpan()))
+            if (value == "extend")
                 return ParseTypeExtensionDefinition();
 
-            if (s.SequenceEqual("directive".AsSpan()))
+            if (value == "directive")
                 return ParseDirectiveDefinition();
 
             return null;
@@ -790,13 +787,13 @@ namespace GraphQLParser
         {
             var token = _currentToken;
 
-            if (token.Value.Span.SequenceEqual("true".AsSpan()) || token.Value.Span.SequenceEqual("false".AsSpan()))
+            if (token.Value == "true" || token.Value == "false")
             {
                 return ParseBooleanValue(token);
             }
             else if (!token.Value.IsEmpty)
             {
-                return token.Value.Span.SequenceEqual("null".AsSpan())
+                return token.Value == "null"
                     ? ParseNullValue(token)
                     : ParseEnumValue(token);
             }
@@ -827,7 +824,7 @@ namespace GraphQLParser
             Advance();
             return new GraphQLScalarValue(ASTNodeKind.NullValue)
             {
-                Value = null,
+                Value = default,
                 Location = GetLocation(token.Start)
             };
         }
@@ -888,10 +885,10 @@ namespace GraphQLParser
             var token = _currentToken;
             Expect(TokenKind.NAME);
 
-            if (token.Value.Span.SequenceEqual("mutation".AsSpan()))
+            if (token.Value == "mutation")
                 return OperationType.Mutation;
 
-            if (token.Value.Span.SequenceEqual("subscription".AsSpan()))
+            if (token.Value == "subscription")
                 return OperationType.Subscription;
 
             return OperationType.Query;
