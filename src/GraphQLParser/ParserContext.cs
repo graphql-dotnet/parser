@@ -152,7 +152,7 @@ namespace GraphQLParser
 
         private void Throw_From_Expect(TokenKind kind)
         {
-            throw new GraphQLSyntaxErrorException($"Expected {Token.GetTokenKindDescription(kind)}, found {_currentToken}", _source.Span, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Expected {Token.GetTokenKindDescription(kind)}, found {_currentToken}", _source, _currentToken.Start);
         }
 
         private GraphQLValue ExpectColonAndParseValueLiteral(bool isConstant)
@@ -171,7 +171,7 @@ namespace GraphQLParser
 
         private void Throw_From_ExpectKeyword(string keyword)
         {
-            throw new GraphQLSyntaxErrorException($"Expected \"{keyword}\", found Name \"{_currentToken.Value}\"", _source.Span, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Expected \"{keyword}\", found Name \"{_currentToken.Value}\"", _source, _currentToken.Start);
         }
 
         private GraphQLNamedType ExpectOnKeywordAndParseNamedType()
@@ -288,7 +288,7 @@ namespace GraphQLParser
 
         private ASTNode Throw_From_ParseDefinition()
         {
-            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source.Span, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
         private List<ASTNode> ParseDefinitionsIfNotEOF()
@@ -432,7 +432,7 @@ namespace GraphQLParser
 
         private void Throw_From_ParseRepeatable()
         {
-            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source.Span, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
         private List<GraphQLName> ParseDirectiveLocations()
@@ -615,7 +615,7 @@ namespace GraphQLParser
 
         private void Throw_From_ParseFragmentName()
         {
-            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source.Span, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
         private List<GraphQLNamedType>? ParseImplementsInterfaces()
@@ -803,7 +803,7 @@ namespace GraphQLParser
 
         private GraphQLValue Throw_From_ParseNameValue()
         {
-            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source.Span, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
         private GraphQLValue ParseObject(bool isConstant)
@@ -1066,7 +1066,7 @@ namespace GraphQLParser
 
         private GraphQLValue Throw_From_ParseValueLiteral()
         {
-            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source.Span, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
         private GraphQLValue ParseValueValue() => ParseValueLiteral(false);

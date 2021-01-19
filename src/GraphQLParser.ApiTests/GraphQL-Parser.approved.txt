@@ -60,6 +60,7 @@ namespace GraphQLParser.AST
         public GraphQLComment() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Text { get; set; }
+        public string TextString { get; }
     }
     public class GraphQLDirective : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -192,6 +193,7 @@ namespace GraphQLParser.AST
         public GraphQLName() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
+        public string ValueString { get; }
     }
     public class GraphQLNamedType : GraphQLParser.AST.GraphQLType, GraphQLParser.AST.INamedNode
     {
@@ -256,6 +258,7 @@ namespace GraphQLParser.AST
         public GraphQLScalarValue(GraphQLParser.AST.ASTNodeKind kind) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
+        public string ValueString { get; }
         public override string? ToString() { }
     }
     public class GraphQLSchemaDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode
@@ -330,7 +333,7 @@ namespace GraphQLParser.Exceptions
 {
     public class GraphQLSyntaxErrorException : System.Exception
     {
-        public GraphQLSyntaxErrorException(string description, System.ReadOnlySpan<char> source, int location) { }
+        public GraphQLSyntaxErrorException(string description, GraphQLParser.ROM source, int location) { }
         public int Column { get; }
         public string Description { get; }
         public int Line { get; }
@@ -380,7 +383,7 @@ namespace GraphQLParser
     }
     public readonly struct Location
     {
-        public Location(System.ReadOnlySpan<char> source, int position) { }
+        public Location(GraphQLParser.ROM source, int position) { }
         public int Column { get; }
         public int Line { get; }
     }
@@ -407,6 +410,7 @@ namespace GraphQLParser
         public override string ToString() { }
         public static string op_Explicit(GraphQLParser.ROM rom) { }
         public static System.ReadOnlyMemory<char> op_Implicit(GraphQLParser.ROM rom) { }
+        public static System.ReadOnlySpan<char> op_Implicit(GraphQLParser.ROM rom) { }
         public static GraphQLParser.ROM op_Implicit(char[] array) { }
         public static GraphQLParser.ROM op_Implicit(System.Memory<char> memory) { }
         public static GraphQLParser.ROM op_Implicit(System.ReadOnlyMemory<char> memory) { }

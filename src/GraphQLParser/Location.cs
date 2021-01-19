@@ -1,4 +1,3 @@
-using System;
 using System.Text.RegularExpressions;
 
 namespace GraphQLParser
@@ -7,14 +6,14 @@ namespace GraphQLParser
     {
         private static readonly Regex _lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
 
-        public Location(ReadOnlySpan<char> source, int position)
+        public Location(ROM source, int position)
         {
             Line = 1;
             Column = position + 1;
 
             if (position > 0)
             {
-                var matches = _lineRegex.Matches(source.ToString()); // TODO: heap allocation
+                var matches = _lineRegex.Matches((string)source); // TODO: heap allocation
                 foreach (Match match in matches)
                 {
                     if (match.Index >= position)

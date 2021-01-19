@@ -12,7 +12,7 @@ namespace GraphQLParser.Exceptions
 
         public int Column { get; private set; }
 
-        public GraphQLSyntaxErrorException(string description, ReadOnlySpan<char> source, int location)
+        public GraphQLSyntaxErrorException(string description, ROM source, int location)
             : this(description, source, new Location(source, location))
         {
         }

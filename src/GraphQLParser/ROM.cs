@@ -81,6 +81,8 @@ namespace GraphQLParser
 
         public static implicit operator ReadOnlyMemory<char>(ROM rom) => rom._memory;
 
+        public static implicit operator ReadOnlySpan<char>(ROM rom) => rom._memory.Span;
+
         public static implicit operator ROM(Memory<char> memory) => new ROM(memory);
 
         public static implicit operator ROM(string s) => s.AsMemory();
