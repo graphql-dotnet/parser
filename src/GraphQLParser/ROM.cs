@@ -98,5 +98,9 @@ namespace GraphQLParser
         public static bool operator ==(string s, ROM rom) => rom == s;
 
         public static bool operator !=(string s, ROM rom) => rom != s;
+
+        public static bool operator ==(ROM rom1, ROM rom2) => rom1.Equals(rom2);
+
+        public static bool operator !=(ROM rom1, ROM rom2) => !rom1.Equals(rom2);
     }
 }
