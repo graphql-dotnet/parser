@@ -8,6 +8,7 @@ namespace GraphQLParser.AST
 
         public List<GraphQLInputValueDefinition>? Definitions { get; set; }
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.DirectiveDefinition;
 
         public List<GraphQLName>? Locations { get; set; }

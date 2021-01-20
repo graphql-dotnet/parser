@@ -2,10 +2,18 @@ using System.Text.RegularExpressions;
 
 namespace GraphQLParser
 {
+    /// <summary>
+    /// Provides the ability to decode a linear character position into a line and column number.
+    /// </summary>
     public readonly struct Location
     {
         private static readonly Regex _lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
 
+        /// <summary>
+        /// Creates location from a given sequence of characters and a linear character position.
+        /// </summary>
+        /// <param name="source">Input data as a sequence of characters.</param>
+        /// <param name="position">Linear character position in the <paramref name="source"/>.</param>
         public Location(ROM source, int position)
         {
             Line = 1;
@@ -25,8 +33,14 @@ namespace GraphQLParser
             }
         }
 
+        /// <summary>
+        /// The column number on which the character is located.
+        /// </summary>
         public int Column { get; }
 
+        /// <summary>
+        /// The line number on which the character is located.
+        /// </summary>
         public int Line { get; }
     }
 }

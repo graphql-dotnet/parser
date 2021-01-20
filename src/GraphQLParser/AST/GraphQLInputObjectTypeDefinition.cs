@@ -8,6 +8,7 @@ namespace GraphQLParser.AST
 
         public List<GraphQLInputValueDefinition>? Fields { get; set; }
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeDefinition;
     }
 }

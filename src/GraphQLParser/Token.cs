@@ -22,12 +22,26 @@ namespace GraphQLParser
         public TokenKind Kind { get; }
 
         /// <summary>
-        /// Starting position of the token in the document.
+        /// The index for the start of the token in the source (i.e. it's inclusive).
+        /// <br/>
+        /// For example:
+        /// <code>
+        /// { field { subfield } }
+        /// <br/>
+        /// --^ Start = 2
+        /// </code>
         /// </summary>
         public int Start { get; }
 
         /// <summary>
-        /// Ending position of the token in the document.
+        /// The index for the character immediately after the token in the source (i.e. it's exclusive).
+        /// <br/>
+        /// For example:
+        /// <code>
+        /// { field { subfield } }
+        /// <br/>
+        /// --------------------^ End = 20
+        /// </code>
         /// </summary>
         public int End { get; }
 

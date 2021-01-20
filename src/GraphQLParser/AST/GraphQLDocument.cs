@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// Represents the root of AST (Abstract Syntax Tree) for GraphQL document.
+    /// </summary>
     public class GraphQLDocument : ASTNode, IDisposable
     {
         // In some cases, the parser is forced to change the text (escape symbols, comments),
@@ -15,6 +18,7 @@ namespace GraphQLParser.AST
 
         public List<GraphQLComment>? UnattachedComments { get; set; }
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Document;
 
         protected virtual void Dispose(bool disposing)

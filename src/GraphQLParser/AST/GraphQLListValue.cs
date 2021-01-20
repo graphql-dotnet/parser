@@ -13,6 +13,7 @@ namespace GraphQLParser.AST
 
         public ROM AstValue { get; set; }
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => _kind;
 
         public List<GraphQLValue>? Values { get; set; }
