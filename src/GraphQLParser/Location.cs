@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 namespace GraphQLParser
 {
     /// <summary>
-    /// Provides the ability to decode a linear character position into a row and column number.
+    /// Provides the ability to decode a linear character position into a line and column number.
     /// </summary>
     public readonly struct Location
     {
