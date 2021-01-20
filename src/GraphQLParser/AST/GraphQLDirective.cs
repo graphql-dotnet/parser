@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
@@ -6,6 +6,7 @@ namespace GraphQLParser.AST
     {
         public List<GraphQLArgument>? Arguments { get; set; }
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Directive;
 
         public GraphQLName? Name { get; set; }

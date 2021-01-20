@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// Provides information regarding the location of a node within a document's original query text.
+    /// Provides information regarding the location of a node within a document's original text.
     /// </summary>
     [DebuggerDisplay("(Start={Start}, End={End})")]
     public readonly struct GraphQLLocation : IEquatable<GraphQLLocation>

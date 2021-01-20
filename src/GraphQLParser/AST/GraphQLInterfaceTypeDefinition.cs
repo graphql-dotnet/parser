@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
@@ -8,6 +8,7 @@ namespace GraphQLParser.AST
 
         public List<GraphQLFieldDefinition>? Fields { get; set; }
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InterfaceTypeDefinition;
     }
 }

@@ -6,6 +6,7 @@ namespace GraphQLParser.AST
     {
         public List<GraphQLDirective>? Directives { get; set; }
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InlineFragment;
 
         public GraphQLSelectionSet? SelectionSet { get; set; }

@@ -4,14 +4,29 @@ using System.Text;
 
 namespace GraphQLParser.Exceptions
 {
+    /// <summary>
+    /// An exception representing a GraphQL document syntax error.
+    /// </summary>
     public class GraphQLSyntaxErrorException : Exception
     {
+        /// <summary>
+        /// Error description.
+        /// </summary>
         public string Description { get; private set; }
 
+        /// <summary>
+        /// The line number on which the symbol that caused the error is located.
+        /// </summary>
         public int Line { get; private set; }
 
+        /// <summary>
+        /// The column number on which the symbol that caused the error is located.
+        /// </summary>
         public int Column { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance with the specified parameters.
+        /// </summary>
         public GraphQLSyntaxErrorException(string description, ROM source, int location)
             : this(description, source, new Location(source, location))
         {
