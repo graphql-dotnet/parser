@@ -393,7 +393,7 @@ namespace GraphQLParser
     }
     public static class ParserExtensions
     {
-        public static GraphQLParser.Token Lex(this string source) { }
+        public static GraphQLParser.Token Lex(this string source, int start = 0) { }
         public static GraphQLParser.AST.GraphQLDocument Parse(this string source, bool ignoreComments = true) { }
     }
     public readonly struct ROM : System.IEquatable<GraphQLParser.ROM>
@@ -416,8 +416,10 @@ namespace GraphQLParser
         public static GraphQLParser.ROM op_Implicit(System.ReadOnlyMemory<char> memory) { }
         public static GraphQLParser.ROM op_Implicit(string s) { }
         public static bool operator !=(GraphQLParser.ROM rom, string s) { }
+        public static bool operator !=(GraphQLParser.ROM rom1, GraphQLParser.ROM rom2) { }
         public static bool operator !=(string s, GraphQLParser.ROM rom) { }
         public static bool operator ==(GraphQLParser.ROM rom, string s) { }
+        public static bool operator ==(GraphQLParser.ROM rom1, GraphQLParser.ROM rom2) { }
         public static bool operator ==(string s, GraphQLParser.ROM rom) { }
     }
     public readonly struct Token
