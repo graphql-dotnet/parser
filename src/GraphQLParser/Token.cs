@@ -1,8 +1,14 @@
 namespace GraphQLParser
 {
+    /// <summary>
+    /// Represents a lexical token within GraphQL document.
+    /// </summary>
     public readonly struct Token
     {
-        public Token(TokenKind kind, string? value, int start, int end)
+        /// <summary>
+        /// Initializes a new instance with the specified properties.
+        /// </summary>
+        public Token(TokenKind kind, ROM value, int start, int end)
         {
             Kind = kind;
             Value = value;
@@ -10,15 +16,27 @@ namespace GraphQLParser
             End = end;
         }
 
-        public int End { get; }
-
+        /// <summary>
+        /// Kind of token. 
+        /// </summary>
         public TokenKind Kind { get; }
 
+        /// <summary>
+        /// Starting position of the token in the document.
+        /// </summary>
         public int Start { get; }
 
-        public string? Value { get; }
+        /// <summary>
+        /// Ending position of the token in the document.
+        /// </summary>
+        public int End { get; }
 
-        public static string GetTokenKindDescription(TokenKind kind) => kind switch
+        /// <summary>
+        /// Token value represented as a contiguous region of memory.
+        /// </summary>
+        public ROM Value { get; }
+
+        internal static string GetTokenKindDescription(TokenKind kind) => kind switch
         {
             TokenKind.EOF => "EOF",
             TokenKind.BANG => "!",
@@ -42,12 +60,17 @@ namespace GraphQLParser
             _ => string.Empty
         };
 
+        private bool HasUniqueValue =>
+            Kind == TokenKind.NAME ||
+            Kind == TokenKind.INT ||
+            Kind == TokenKind.FLOAT ||
+            Kind == TokenKind.STRING ||
+            Kind == TokenKind.COMMENT ||
+            Kind == TokenKind.UNKNOWN;
+
         /// <inheritdoc/>
-        public override string ToString()
-        {
-            return Value != null
-                ? $"{GetTokenKindDescription(Kind)} \"{Value}\""
-                : GetTokenKindDescription(Kind);
-        }
+        public override string ToString() => HasUniqueValue
+            ? $"{GetTokenKindDescription(Kind)} \"{Value}\""
+            : GetTokenKindDescription(Kind);
     }
 }

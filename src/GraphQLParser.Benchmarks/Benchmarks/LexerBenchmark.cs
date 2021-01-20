@@ -9,11 +9,10 @@ namespace GraphQLParser.Benchmarks
         [ArgumentsSource(nameof(Names))]
         public void Lex(string name)
         {
-            var lexer = new Lexer();
-            var source = new Source(GetQueryByName(name));
+            var source = GetQueryByName(name);
             int resetPosition = 0;
             Token token;
-            while ((token = lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
+            while ((token = Lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
             {
                 resetPosition = token.End;
             }

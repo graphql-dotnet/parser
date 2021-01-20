@@ -53,5 +53,15 @@ namespace GraphQLParser.AST
 
         /// <inheritdoc/>
         public override string ToString() => $"({Start},{End})";
+
+        /// <summary>
+        /// Indicates whether one object is equal to another object of the same type.
+        /// </summary>
+        public static bool operator ==(GraphQLLocation left, GraphQLLocation right) => left.Equals(right);
+
+        /// <summary>
+        /// Indicates whether one object is not equal to another object of the same type.
+        /// </summary>
+        public static bool operator !=(GraphQLLocation left, GraphQLLocation right) => !(left == right);
     }
 }

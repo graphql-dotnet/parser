@@ -19,8 +19,7 @@ namespace GraphQLParser.Benchmarks
         {
             try
             {
-                var parser = new Parser(new Lexer());
-                parser.Parse(new Source(_binaryTest));
+                _binaryTest.Parse().Dispose();
             }
             catch (GraphQLSyntaxErrorException)
             {

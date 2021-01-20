@@ -1,15 +1,7 @@
-﻿namespace GraphQLParser
+namespace GraphQLParser
 {
-    public class Lexer : ILexer
+    public static class Lexer
     {
-        public ILexemeCache? Cache { get; set; }
-
-        public Token Lex(ISource source) => Lex(source, 0);
-
-        public Token Lex(ISource source, int start)
-        {
-            var context = new LexerContext(source, start, Cache);
-            return context.GetToken();
-        }
+        public static Token Lex(ROM source, int start = 0) => new LexerContext(source, start).GetToken();
     }
 }

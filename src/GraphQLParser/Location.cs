@@ -6,26 +6,20 @@ namespace GraphQLParser
     {
         private static readonly Regex _lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
 
-        public Location(ISource source, int position)
-            : this(source.Body, position)
-        {
-           
-        }
-
-        public Location(string source, int position)
+        public Location(ROM source, int position)
         {
             Line = 1;
             Column = position + 1;
 
             if (position > 0)
             {
-                var matches = _lineRegex.Matches(source);
+                var matches = _lineRegex.Matches((string)source); // TODO: heap allocation
                 foreach (Match match in matches)
                 {
                     if (match.Index >= position)
                         break;
 
-                    Line++;
+                    ++Line;
                     Column = position + 1 - (match.Index + matches[0].Length);
                 }
             }

@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Attributes;
-using GraphQLParser.AST;
 
 namespace GraphQLParser.Benchmarks
 {
@@ -9,13 +8,12 @@ namespace GraphQLParser.Benchmarks
     {
         [Benchmark]
         [ArgumentsSource(nameof(Names))]
-        public GraphQLDocument Parse(string name)
+        public void Parse(string name)
         {
-            var parser = new Parser(new Lexer());
-            var source = new Source(GetQueryByName(name));
-            return parser.Parse(source);
+            var source = GetQueryByName(name);
+            source.Parse().Dispose();
         }
 
-        public override void Run() => _ = Parse("github");
+        public override void Run() => Parse("params");
     }
 }

@@ -7,6 +7,6 @@ namespace GraphQLParser.AST
         public GraphQLName? Name { get; set; }
 
         /// <inheritdoc/>
-        public override string ToString() => Name?.Value!;
+        public override string ToString() => Name?.Value.ToString()!;
     }
 }

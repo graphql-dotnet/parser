@@ -12,12 +12,12 @@ namespace GraphQLParser.Exceptions
 
         public int Column { get; private set; }
 
-        public GraphQLSyntaxErrorException(string description, ISource source, int location)
+        public GraphQLSyntaxErrorException(string description, ROM source, int location)
             : this(description, source, new Location(source, location))
         {
         }
 
-        private GraphQLSyntaxErrorException(string description, ISource source, Location location)
+        private GraphQLSyntaxErrorException(string description, ReadOnlySpan<char> source, Location location)
             : base(ComposeMessage(description, source, location))
         {
             Description = description;
@@ -25,20 +25,21 @@ namespace GraphQLParser.Exceptions
             Column = location.Column;
         }
 
-        private static string ComposeMessage(string description, ISource source, Location location)
+        private static string ComposeMessage(string description, ReadOnlySpan<char> source, Location location)
         {
             return $"Syntax Error GraphQL ({location.Line}:{location.Column}) {description}" +
                 "\n" + HighlightSourceAtLocation(source, location);
         }
 
-        private static string HighlightSourceAtLocation(ISource source, Location location)
+        private static string HighlightSourceAtLocation(ReadOnlySpan<char> source, Location location)
         {
             int line = location.Line;
             string prevLineNum = (line - 1).ToString();
             string lineNum = line.ToString();
             string nextLineNum = (line + 1).ToString();
             int padLen = nextLineNum.Length;
-            string[] lines = source.Body
+            string[] lines = source
+                .ToString() // TODO: heap allocation
                 .Split(new string[] { "\n" }, StringSplitOptions.None)
                 .Select(e => ReplaceWithUnicodeRepresentation(e))
                 .ToArray();
@@ -54,7 +55,7 @@ namespace GraphQLParser.Exceptions
         {
             string pad = string.Empty;
 
-            for (int i = 0; i < length - str.Length; i++)
+            for (int i = 0; i < length - str.Length; ++i)
                 pad += " ";
 
             return pad + str;

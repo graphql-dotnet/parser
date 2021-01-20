@@ -11,13 +11,13 @@ namespace GraphQLParser.AST
             _kind = kind;
         }
 
-        public string? AstValue { get; set; }
+        public ROM AstValue { get; set; }
 
         public override ASTNodeKind Kind => _kind;
 
         public List<GraphQLValue>? Values { get; set; }
 
         /// <inheritdoc/>
-        public override string ToString() => AstValue!;
+        public override string ToString() => AstValue.ToString();
     }
 }
