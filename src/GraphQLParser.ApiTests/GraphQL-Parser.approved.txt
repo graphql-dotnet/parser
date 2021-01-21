@@ -60,7 +60,6 @@ namespace GraphQLParser.AST
         public GraphQLComment() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Text { get; set; }
-        public string TextString { get; }
     }
     public class GraphQLDirective : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -193,7 +192,6 @@ namespace GraphQLParser.AST
         public GraphQLName() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public string ValueString { get; }
     }
     public class GraphQLNamedType : GraphQLParser.AST.GraphQLType, GraphQLParser.AST.INamedNode
     {
@@ -258,7 +256,6 @@ namespace GraphQLParser.AST
         public GraphQLScalarValue(GraphQLParser.AST.ASTNodeKind kind) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public string ValueString { get; }
         public override string? ToString() { }
     }
     public class GraphQLSchemaDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode
