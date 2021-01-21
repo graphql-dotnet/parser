@@ -7,7 +7,6 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyName>GraphQL-Parser</AssemblyName>
     <PackageTags>GraphQL;json;api;parser</PackageTags>
-    <NoWarn Condition="'$(TargetFramework)' == 'netstandard2.1'">$(NoWarn);IDE0057</NoWarn> <!--Slice can be simplified-->
   </PropertyGroup>
 
   <ItemGroup>
