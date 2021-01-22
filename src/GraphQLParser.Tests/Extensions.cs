@@ -4,7 +4,6 @@ namespace GraphQLParser.Tests
 {
     internal static class ParserTestExtensions
     {
-
         /// <summary>
         /// Generates token based on input text.
         /// </summary>
@@ -20,6 +19,5 @@ namespace GraphQLParser.Tests
         /// <param name="options">Parser options.</param>
         /// <returns>AST (Abstract Syntax Tree) for GraphQL document.</returns>
         public static GraphQLDocument Parse(this string source, ParserOptions options = default) => Parser.Parse(source, options);
-
     }
 }
