@@ -1,4 +1,4 @@
-﻿namespace GraphQLParser
+namespace GraphQLParser
 {
     /// <summary>
     /// Options to selectively ignore some information when parsing GraphQL document.
