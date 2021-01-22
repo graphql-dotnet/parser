@@ -23,16 +23,8 @@ does not allocate memory on the managed heap at all.
 
 ### Usage
 
-Directly:
-
 ```c#
 var token = Lexer.Lex("\"str\"");
-```
-
-Or via extension method:
-
-```c#
-var token = "\"str\"".Lex();
 ```
 
 Lex method always returns the first token it finds. In this case case the result would look like following.
@@ -45,8 +37,6 @@ Parses provided GraphQL expression into AST (abstract syntax tree). Parser also 
 
 ### Usage
 
-Directly:
-
 ```c#
 var ast1 = Parser.Parse(@"
 {
@@ -57,20 +47,6 @@ var ast2 = Parser.Parse(@"
 {
   field
 }", new ParserOptions { Ignore = IgnoreOptions.IgnoreComments });
-```
-
-Or via extension method:
-
-```c#
-var ast = @"
-{
-  field
-}".Parse();
-
-var ast = @"
-{
-  field
-}".Parse(new ParserOptions { Ignore = IgnoreOptions.IgnoreCommentsAndLocations });
 ```
 
 By default `ParserOptions.Ignore` is `IgnoreOptions.IgnoreComments` to improve performance.

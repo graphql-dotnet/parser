@@ -56,7 +56,7 @@ namespace GraphQLParser.Benchmarks
         public void Parse(string name, IgnoreOptions options)
         {
             var source = GetQueryByName(name);
-            source.Parse(new ParserOptions { Ignore = options }).Dispose();
+            Parser.Parse(source, new ParserOptions { Ignore = options }).Dispose();
         }
 
         public IEnumerable<object[]> NamesAndOptions()
