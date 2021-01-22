@@ -44,4 +44,28 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override string? ToString() => Kind == ASTNodeKind.StringValue ? $"\"{Value}\"" : Value.ToString();
     }
+
+    internal sealed class GraphQLScalarValueFull : GraphQLScalarValue
+    {
+        private GraphQLLocation _location;
+        //private GraphQLComment? _comment;
+
+        public GraphQLScalarValueFull(ASTNodeKind kind)
+            :base(kind)
+        {
+        }
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+
+        // TODO: this property is not set anywhere (yet), so it makes no sense to create a field for it
+        //public override GraphQLComment? Comment
+        //{
+        //    get => _comment;
+        //    set => _comment = value;
+        //}
+    }
 }

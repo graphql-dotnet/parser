@@ -13,11 +13,11 @@ namespace GraphQLParser.AST
         /// <summary>
         /// Location of a node within a document's original text.
         /// </summary>
-        public GraphQLLocation Location { get; set; }
+        public virtual GraphQLLocation Location { get => default; set { } }
 
         /// <summary>
         /// Comments for this node if any.
         /// </summary>
-        public GraphQLComment? Comment { get; set; }
+        public virtual GraphQLComment? Comment { get => default; set { } }
     }
 }

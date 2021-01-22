@@ -10,20 +10,20 @@ namespace GraphQLParser
         private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
         private readonly ROM _source;
-        private readonly bool _ignoreComments;
+        private readonly IgnoreOptions _ignoreOptions;
         private GraphQLComment? _currentComment;
         private List<GraphQLComment>? _unattachedComments;
         private Token _currentToken;
         private Token _prevToken;
         private GraphQLDocument? _document;
 
-        public ParserContext(ROM source, bool ignoreComments)
+        public ParserContext(ROM source, ParserOptions options)
         {
             _document = null;
             _currentComment = null;
             _unattachedComments = null;
             _source = source;
-            _ignoreComments = ignoreComments;
+            _ignoreOptions = options.Ignore;
 
             _currentToken = Lexer.Lex(source);
             _prevToken = new Token
@@ -76,66 +76,103 @@ namespace GraphQLParser
 
         private GraphQLFieldSelection CreateFieldSelection(int start, GraphQLName name, GraphQLName? alias, GraphQLComment? comment)
         {
-            return new GraphQLFieldSelection
-            {
-                Comment = comment,
-                Alias = alias,
-                Name = name,
-                Arguments = ParseArguments(),
-                Directives = ParseDirectives(),
-                SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null,
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLFieldSelection
+                {
+                    Alias = alias,
+                    Name = name,
+                    Arguments = ParseArguments(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null,
+                }
+                : new GraphQLFieldSelectionFull
+                {
+                    Comment = comment,
+                    Alias = alias,
+                    Name = name,
+                    Arguments = ParseArguments(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null,
+                    Location = GetLocation(start)
+                };
         }
 
         private ASTNode CreateGraphQLFragmentSpread(int start, GraphQLComment? comment)
         {
-            return new GraphQLFragmentSpread
-            {
-                Comment = comment,
-                Name = ParseFragmentName(),
-                Directives = ParseDirectives(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLFragmentSpread
+                {
+                    Name = ParseFragmentName(),
+                    Directives = ParseDirectives(),
+                }
+                : new GraphQLFragmentSpreadFull
+                {
+                    Comment = comment,
+                    Name = ParseFragmentName(),
+                    Directives = ParseDirectives(),
+                    Location = GetLocation(start)
+                };
         }
 
         private ASTNode CreateInlineFragment(int start, GraphQLComment? comment)
         {
-            return new GraphQLInlineFragment
-            {
-                Comment = comment,
-                TypeCondition = GetTypeCondition(),
-                Directives = ParseDirectives(),
-                SelectionSet = ParseSelectionSet(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLInlineFragment
+                {
+                    TypeCondition = GetTypeCondition(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = ParseSelectionSet(),
+                }
+                : new GraphQLInlineFragmentFull
+                {
+                    Comment = comment,
+                    TypeCondition = GetTypeCondition(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = ParseSelectionSet(),
+                    Location = GetLocation(start)
+                };
         }
 
         private ASTNode CreateOperationDefinition(int start, OperationType operation, GraphQLName? name)
         {
             var comment = GetComment();
-            return new GraphQLOperationDefinition
-            {
-                Comment = comment,
-                Operation = operation,
-                Name = name,
-                VariableDefinitions = ParseVariableDefinitions(),
-                Directives = ParseDirectives(),
-                SelectionSet = ParseSelectionSet(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLOperationDefinition
+                {
+                    Operation = operation,
+                    Name = name,
+                    VariableDefinitions = ParseVariableDefinitions(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = ParseSelectionSet(),
+                }
+                : new GraphQLOperationDefinitionFull
+                {
+                    Comment = comment,
+                    Operation = operation,
+                    Name = name,
+                    VariableDefinitions = ParseVariableDefinitions(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = ParseSelectionSet(),
+                    Location = GetLocation(start)
+                };
         }
 
         private ASTNode CreateOperationDefinition(int start)
         {
             var comment = GetComment();
-            return new GraphQLOperationDefinition
-            {
-                Comment = comment,
-                Operation = OperationType.Query,
-                SelectionSet = ParseSelectionSet(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLOperationDefinition
+                {
+                    Operation = OperationType.Query,
+                    SelectionSet = ParseSelectionSet(),
+                }
+                : new GraphQLOperationDefinitionFull
+                {
+                    Comment = comment,
+                    Operation = OperationType.Query,
+                    SelectionSet = ParseSelectionSet(),
+                    Location = GetLocation(start)
+                };
         }
 
         private void Expect(TokenKind kind)
@@ -232,13 +269,19 @@ namespace GraphQLParser
             var comment = GetComment();
             int start = _currentToken.Start;
 
-            return new GraphQLArgument
-            {
-                Comment = comment,
-                Name = ParseName(),
-                Value = ExpectColonAndParseValueLiteral(false),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLArgument
+                {
+                    Name = ParseName(),
+                    Value = ExpectColonAndParseValueLiteral(false),
+                }
+                : new GraphQLArgumentFull
+                {
+                    Comment = comment,
+                    Name = ParseName(),
+                    Value = ExpectColonAndParseValueLiteral(false),
+                    Location = GetLocation(start)
+                };
         }
 
         private List<GraphQLInputValueDefinition>? ParseArgumentDefs()
@@ -258,11 +301,16 @@ namespace GraphQLParser
         private GraphQLValue ParseBooleanValue(Token token)
         {
             Advance();
-            return new GraphQLScalarValue(ASTNodeKind.BooleanValue)
-            {
-                Value = token.Value,
-                Location = GetLocation(token.Start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLScalarValue(ASTNodeKind.BooleanValue)
+                {
+                    Value = token.Value,
+                }
+                : new GraphQLScalarValueFull(ASTNodeKind.BooleanValue)
+                {
+                    Value = token.Value,
+                    Location = GetLocation(token.Start)
+                };
         }
 
         private GraphQLValue ParseConstantValue() => ParseValueLiteral(true);
@@ -309,7 +357,7 @@ namespace GraphQLParser
 
         private GraphQLComment? ParseComment()
         {
-            if (_ignoreComments)
+            if (_ignoreOptions != IgnoreOptions.None)
             {
                 while (Peek(TokenKind.COMMENT))
                 {
@@ -372,12 +420,18 @@ namespace GraphQLParser
         {
             int start = _currentToken.Start;
             Expect(TokenKind.AT);
-            return new GraphQLDirective
-            {
-                Name = ParseName(),
-                Arguments = ParseArguments(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLDirective
+                {
+                    Name = ParseName(),
+                    Arguments = ParseArguments(),
+                }
+                : new GraphQLDirectiveFull
+                {
+                    Name = ParseName(),
+                    Arguments = ParseArguments(),
+                    Location = GetLocation(start)
+                };
         }
 
         /// <summary>
@@ -400,15 +454,23 @@ namespace GraphQLParser
             ExpectKeyword("on");
             var locations = ParseDirectiveLocations();
 
-            return new GraphQLDirectiveDefinition
-            {
-                Comment = comment,
-                Name = name,
-                Repeatable = repeatable,
-                Arguments = args,
-                Locations = locations,
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLDirectiveDefinition
+                {
+                    Name = name,
+                    Repeatable = repeatable,
+                    Arguments = args,
+                    Locations = locations,
+                }
+                : new GraphQLDirectiveDefinitionFull
+                {
+                    Comment = comment,
+                    Name = name,
+                    Repeatable = repeatable,
+                    Arguments = args,
+                    Locations = locations,
+                    Location = GetLocation(start)
+                };
         }
 
         private bool ParseRepeatable()
@@ -463,21 +525,24 @@ namespace GraphQLParser
 
         private GraphQLDocument ParseDocument()
         {
-            _document = new GraphQLDocument();
+            _document = _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations ? new GraphQLDocument() : new GraphQLDocumentFull();
 
             int start = _currentToken.Start;
             var definitions = ParseDefinitionsIfNotEOF();
 
             SetCurrentComment(null);
 
-            _document.Location = new GraphQLLocation
-            (
-                start,
-                // Formally, to denote the end of the document, it is better to use _prevToken.End,
-                // since _prevToken represents some real meaningful token; _currentToken here is always EOF.
-                // EOF is a technical token with length = 0, _prevToken.End and _currentToken.End have the same value here.
-                _prevToken.End // equals to _currentToken.End (EOF) 
-            );
+            if (_ignoreOptions != IgnoreOptions.IgnoreCommentsAndLocations)
+            {
+                _document.Location = new GraphQLLocation
+                (
+                    start,
+                    // Formally, to denote the end of the document, it is better to use _prevToken.End,
+                    // since _prevToken represents some real meaningful token; _currentToken here is always EOF.
+                    // EOF is a technical token with length = 0, _prevToken.End and _currentToken.End have the same value here.
+                    _prevToken.End // equals to _currentToken.End (EOF) 
+                );
+            }
             _document.Definitions = definitions;
             _document.UnattachedComments = _unattachedComments;
             return _document;
@@ -489,24 +554,36 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             ExpectKeyword("enum");
 
-            return new GraphQLEnumTypeDefinition
-            {
-                Comment = comment,
-                Name = ParseName(),
-                Directives = ParseDirectives(),
-                Values = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLEnumTypeDefinition
+                {
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                    Values = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
+                }
+                : new GraphQLEnumTypeDefinitionFull
+                {
+                    Comment = comment,
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                    Values = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLValue ParseEnumValue(Token token)
         {
             Advance();
-            return new GraphQLScalarValue(ASTNodeKind.EnumValue)
-            {
-                Value = token.Value,
-                Location = GetLocation(token.Start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLScalarValue(ASTNodeKind.EnumValue)
+                {
+                    Value = token.Value,
+                }
+                : new GraphQLScalarValueFull(ASTNodeKind.EnumValue)
+                {
+                    Value = token.Value,
+                    Location = GetLocation(token.Start)
+                };
         }
 
         private GraphQLEnumValueDefinition ParseEnumValueDefinition()
@@ -514,13 +591,19 @@ namespace GraphQLParser
             var comment = GetComment();
             int start = _currentToken.Start;
 
-            return new GraphQLEnumValueDefinition
-            {
-                Comment = comment,
-                Name = ParseName(),
-                Directives = ParseDirectives(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLEnumValueDefinition
+                {
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                }
+                : new GraphQLEnumValueDefinitionFull
+                {
+                    Comment = comment,
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLFieldDefinition ParseFieldDefinition()
@@ -531,15 +614,23 @@ namespace GraphQLParser
             var args = ParseArgumentDefs();
             Expect(TokenKind.COLON);
 
-            return new GraphQLFieldDefinition
-            {
-                Comment = comment,
-                Name = name,
-                Arguments = args,
-                Type = ParseType(),
-                Directives = ParseDirectives(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLFieldDefinition
+                {
+                    Name = name,
+                    Arguments = args,
+                    Type = ParseType(),
+                    Directives = ParseDirectives(),
+                }
+                : new GraphQLFieldDefinitionFull
+                {
+                    Comment = comment,
+                    Name = name,
+                    Arguments = args,
+                    Type = ParseType(),
+                    Directives = ParseDirectives(),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLFieldSelection ParseFieldSelection()
@@ -568,11 +659,16 @@ namespace GraphQLParser
         {
             var token = _currentToken;
             Advance();
-            return new GraphQLScalarValue(ASTNodeKind.FloatValue)
-            {
-                Value = token.Value,
-                Location = GetLocation(token.Start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLScalarValue(ASTNodeKind.FloatValue)
+                {
+                    Value = token.Value,
+                }
+                : new GraphQLScalarValueFull(ASTNodeKind.FloatValue)
+                {
+                    Value = token.Value,
+                    Location = GetLocation(token.Start)
+                };
         }
 
         private ASTNode ParseFragment()
@@ -592,15 +688,23 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             ExpectKeyword("fragment");
 
-            return new GraphQLFragmentDefinition
-            {
-                Comment = comment,
-                Name = ParseFragmentName(),
-                TypeCondition = ExpectOnKeywordAndParseNamedType(),
-                Directives = ParseDirectives(),
-                SelectionSet = ParseSelectionSet(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations 
+                ? new GraphQLFragmentDefinition
+                {
+                    Name = ParseFragmentName(),
+                    TypeCondition = ExpectOnKeywordAndParseNamedType(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = ParseSelectionSet(),
+                }
+                : new GraphQLFragmentDefinitionFull
+                {
+                    Comment = comment,
+                    Name = ParseFragmentName(),
+                    TypeCondition = ExpectOnKeywordAndParseNamedType(),
+                    Directives = ParseDirectives(),
+                    SelectionSet = ParseSelectionSet(),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLName ParseFragmentName()
@@ -642,14 +746,21 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             ExpectKeyword("input");
 
-            return new GraphQLInputObjectTypeDefinition
-            {
-                Comment = comment,
-                Name = ParseName(),
-                Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations 
+                ? new GraphQLInputObjectTypeDefinition
+                {
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                    Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R),
+                }
+                : new GraphQLInputObjectTypeDefinitionFull
+                {
+                    Comment = comment,
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                    Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLInputValueDefinition ParseInputValueDef()
@@ -659,15 +770,23 @@ namespace GraphQLParser
             var name = ParseName();
             Expect(TokenKind.COLON);
 
-            return new GraphQLInputValueDefinition
-            {
-                Comment = comment,
-                Name = name,
-                Type = ParseType(),
-                DefaultValue = GetDefaultConstantValue(),
-                Directives = ParseDirectives(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLInputValueDefinition
+                {
+                    Name = name,
+                    Type = ParseType(),
+                    DefaultValue = GetDefaultConstantValue(),
+                    Directives = ParseDirectives(),
+                }
+                : new GraphQLInputValueDefinitionFull
+                {
+                    Comment = comment,
+                    Name = name,
+                    Type = ParseType(),
+                    DefaultValue = GetDefaultConstantValue(),
+                    Directives = ParseDirectives(),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLValue ParseInt(/*bool isConstant*/)
@@ -675,11 +794,16 @@ namespace GraphQLParser
             var token = _currentToken;
             Advance();
 
-            return new GraphQLScalarValue(ASTNodeKind.IntValue)
-            {
-                Value = token.Value,
-                Location = GetLocation(token.Start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLScalarValue(ASTNodeKind.IntValue)
+                {
+                    Value = token.Value,
+                }
+                : new GraphQLScalarValueFull(ASTNodeKind.IntValue)
+                {
+                    Value = token.Value,
+                    Location = GetLocation(token.Start)
+                };
         }
 
         private GraphQLInterfaceTypeDefinition ParseInterfaceTypeDefinition()
@@ -688,14 +812,21 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             ExpectKeyword("interface");
 
-            return new GraphQLInterfaceTypeDefinition
-            {
-                Comment = comment,
-                Name = ParseName(),
-                Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLInterfaceTypeDefinition
+                {
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                    Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                }
+                : new GraphQLInterfaceTypeDefinitionFull
+                {
+                    Comment = comment,
+                    Name = ParseName(),
+                    Directives = ParseDirectives(),
+                    Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLValue ParseList(bool isConstant)
@@ -705,12 +836,18 @@ namespace GraphQLParser
             ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseConstantValue();
             ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueValue();
 
-            return new GraphQLListValue(ASTNodeKind.ListValue)
-            {
-                Values = Any(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R),
-                Location = GetLocation(start),
-                AstValue = _source.Slice(start, _currentToken.End - start - 1)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLListValue(ASTNodeKind.ListValue)
+                {
+                    Values = Any(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R),
+                    AstValue = _source.Slice(start, _currentToken.End - start - 1)
+                }
+                : new GraphQLListValueFull(ASTNodeKind.ListValue)
+                {
+                    Values = Any(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R),
+                    Location = GetLocation(start),
+                    AstValue = _source.Slice(start, _currentToken.End - start - 1)
+                };
         }
 
         private GraphQLName ParseName()
@@ -720,11 +857,16 @@ namespace GraphQLParser
 
             Expect(TokenKind.NAME);
 
-            return new GraphQLName
-            {
-                Location = GetLocation(start),
-                Value = value
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLName
+                {
+                    Value = value
+                }
+                : new GraphQLNameFull
+                {
+                    Location = GetLocation(start),
+                    Value = value
+                };
         }
 
         private ASTNode? ParseNamedDefinition()
@@ -776,11 +918,16 @@ namespace GraphQLParser
         private GraphQLNamedType ParseNamedType()
         {
             int start = _currentToken.Start;
-            return new GraphQLNamedType
-            {
-                Name = ParseName(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLNamedType
+                {
+                    Name = ParseName(),
+                }
+                : new GraphQLNamedTypeFull
+                {
+                    Name = ParseName(),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLValue ParseNameValue(/*bool isConstant*/)
@@ -811,35 +958,51 @@ namespace GraphQLParser
             var comment = GetComment();
             int start = _currentToken.Start;
 
-            return new GraphQLObjectValue
-            {
-                Comment = comment,
-                Fields = ParseObjectFields(isConstant),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLObjectValue
+                {
+                    Fields = ParseObjectFields(isConstant),
+                }
+                : new GraphQLObjectValueFull
+                {
+                    Comment = comment,
+                    Fields = ParseObjectFields(isConstant),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLValue ParseNullValue(Token token)
         {
             Advance();
-            return new GraphQLScalarValue(ASTNodeKind.NullValue)
-            {
-                Value = default,
-                Location = GetLocation(token.Start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLScalarValue(ASTNodeKind.NullValue)
+                {
+                    Value = token.Value,
+                }
+                : new GraphQLScalarValueFull(ASTNodeKind.NullValue)
+                {
+                    Value = token.Value,
+                    Location = GetLocation(token.Start)
+                };
         }
 
         private GraphQLObjectField ParseObjectField(bool isConstant)
         {
             var comment = GetComment();
             int start = _currentToken.Start;
-            return new GraphQLObjectField
-            {
-                Comment = comment,
-                Name = ParseName(),
-                Value = ExpectColonAndParseValueLiteral(isConstant),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLObjectField
+                {
+                    Name = ParseName(),
+                    Value = ExpectColonAndParseValueLiteral(isConstant),
+                }
+                : new GraphQLObjectFieldFull
+                {
+                    Comment = comment,
+                    Name = ParseName(),
+                    Value = ExpectColonAndParseValueLiteral(isConstant),
+                    Location = GetLocation(start)
+                };
         }
 
         private List<GraphQLObjectField> ParseObjectFields(bool isConstant)
@@ -860,15 +1023,23 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             ExpectKeyword("type");
 
-            return new GraphQLObjectTypeDefinition
-            {
-                Comment = comment,
-                Name = ParseName(),
-                Interfaces = ParseImplementsInterfaces(),
-                Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLObjectTypeDefinition
+                {
+                    Name = ParseName(),
+                    Interfaces = ParseImplementsInterfaces(),
+                    Directives = ParseDirectives(),
+                    Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                }
+                : new GraphQLObjectTypeDefinitionFull
+                {
+                    Comment = comment,
+                    Name = ParseName(),
+                    Interfaces = ParseImplementsInterfaces(),
+                    Directives = ParseDirectives(),
+                    Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                    Location = GetLocation(start)
+                };
         }
 
         private ASTNode ParseOperationDefinition()
@@ -901,12 +1072,18 @@ namespace GraphQLParser
             Expect(TokenKind.COLON);
             var type = ParseNamedType();
 
-            return new GraphQLOperationTypeDefinition
-            {
-                Operation = operation,
-                Type = type,
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLOperationTypeDefinition
+                {
+                    Operation = operation,
+                    Type = type,
+                }
+                : new GraphQLOperationTypeDefinitionFull
+                {
+                    Operation = operation,
+                    Type = type,
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLScalarTypeDefinition ParseScalarTypeDefinition()
@@ -917,13 +1094,19 @@ namespace GraphQLParser
             var name = ParseName();
             var directives = ParseDirectives();
 
-            return new GraphQLScalarTypeDefinition
-            {
-                Comment = comment,
-                Name = name,
-                Directives = directives,
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLScalarTypeDefinition
+                {
+                    Name = name,
+                    Directives = directives,
+                }
+                : new GraphQLScalarTypeDefinitionFull
+                {
+                    Comment = comment,
+                    Name = name,
+                    Directives = directives,
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLSchemaDefinition ParseSchemaDefinition()
@@ -934,13 +1117,19 @@ namespace GraphQLParser
             var directives = ParseDirectives();
             var operationTypes = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseOperationTypeDefinition(), TokenKind.BRACE_R);
 
-            return new GraphQLSchemaDefinition
-            {
-                Comment = comment,
-                Directives = directives,
-                OperationTypes = operationTypes,
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLSchemaDefinition
+                {
+                    Directives = directives,
+                    OperationTypes = operationTypes,
+                }
+                : new GraphQLSchemaDefinitionFull
+                {
+                    Comment = comment,
+                    Directives = directives,
+                    OperationTypes = operationTypes,
+                    Location = GetLocation(start)
+                };
         }
 
         private ASTNode ParseSelection()
@@ -953,22 +1142,32 @@ namespace GraphQLParser
         private GraphQLSelectionSet ParseSelectionSet()
         {
             int start = _currentToken.Start;
-            return new GraphQLSelectionSet
-            {
-                Selections = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseSelection(), TokenKind.BRACE_R),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLSelectionSet
+                {
+                    Selections = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseSelection(), TokenKind.BRACE_R),
+                }
+                : new GraphQLSelectionSetFull
+                {
+                    Selections = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseSelection(), TokenKind.BRACE_R),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLValue ParseString(/*bool isConstant*/)
         {
             var token = _currentToken;
             Advance();
-            return new GraphQLScalarValue(ASTNodeKind.StringValue)
-            {
-                Value = token.Value,
-                Location = GetLocation(token.Start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLScalarValue(ASTNodeKind.StringValue)
+                {
+                    Value = token.Value,
+                }
+                : new GraphQLScalarValueFull(ASTNodeKind.StringValue)
+                {
+                    Value = token.Value,
+                    Location = GetLocation(token.Start)
+                };
         }
 
         private GraphQLType ParseType()
@@ -979,11 +1178,16 @@ namespace GraphQLParser
             {
                 type = ParseType();
                 Expect(TokenKind.BRACKET_R);
-                type = new GraphQLListType
-                {
-                    Type = type,
-                    Location = GetLocation(start)
-                };
+                type = _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                    ? new GraphQLListType
+                    {
+                        Type = type,
+                    }
+                    : new GraphQLListTypeFull
+                    {
+                        Type = type,
+                        Location = GetLocation(start)
+                    };
             }
             else
             {
@@ -991,11 +1195,16 @@ namespace GraphQLParser
             }
 
             return Skip(TokenKind.BANG)
+                ? (_ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
                 ? new GraphQLNonNullType
                 {
                     Type = type,
-                    Location = GetLocation(start)
                 }
+                : new GraphQLNonNullTypeFull
+                {
+                    Type = type,
+                    Location = GetLocation(start)
+                })
                 : type;
         }
 
@@ -1006,13 +1215,19 @@ namespace GraphQLParser
             ExpectKeyword("extend");
             var definition = ParseObjectTypeDefinition();
 
-            return new GraphQLTypeExtensionDefinition
-            {
-                Comment = comment,
-                Name = definition.Name,
-                Definition = definition,
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLTypeExtensionDefinition
+                {
+                    Name = definition.Name,
+                    Definition = definition,
+                }
+                : new GraphQLTypeExtensionDefinitionFull
+                {
+                    Comment = comment,
+                    Name = definition.Name,
+                    Definition = definition,
+                    Location = GetLocation(start)
+                };
         }
 
         private List<GraphQLNamedType> ParseUnionMembers()
@@ -1042,14 +1257,21 @@ namespace GraphQLParser
             Expect(TokenKind.EQUALS);
             var types = ParseUnionMembers();
 
-            return new GraphQLUnionTypeDefinition
-            {
-                Comment = comment,
-                Name = name,
-                Directives = directives,
-                Types = types,
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLUnionTypeDefinition
+                {
+                    Name = name,
+                    Directives = directives,
+                    Types = types,
+                }
+                : new GraphQLUnionTypeDefinitionFull
+                {
+                    Comment = comment,
+                    Name = name,
+                    Directives = directives,
+                    Types = types,
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLValue ParseValueLiteral(bool isConstant) => _currentToken.Kind switch
@@ -1076,11 +1298,16 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             Expect(TokenKind.DOLLAR);
 
-            return new GraphQLVariable
-            {
-                Name = GetName(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLVariable
+                {
+                    Name = GetName(),
+                }
+                : new GraphQLVariableFull
+                {
+                    Name = GetName(),
+                    Location = GetLocation(start)
+                };
         }
 
         private GraphQLVariableDefinition ParseVariableDefinition()
@@ -1088,14 +1315,21 @@ namespace GraphQLParser
             var comment = GetComment();
             int start = _currentToken.Start;
 
-            return new GraphQLVariableDefinition
-            {
-                Comment = comment,
-                Variable = ParseVariable(),
-                Type = AdvanceThroughColonAndParseType(),
-                DefaultValue = SkipEqualsAndParseValueLiteral(),
-                Location = GetLocation(start)
-            };
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLVariableDefinition
+                {
+                    Variable = ParseVariable(),
+                    Type = AdvanceThroughColonAndParseType(),
+                    DefaultValue = SkipEqualsAndParseValueLiteral(),
+                }
+                : new GraphQLVariableDefinitionFull
+                {
+                    Comment = comment,
+                    Variable = ParseVariable(),
+                    Type = AdvanceThroughColonAndParseType(),
+                    DefaultValue = SkipEqualsAndParseValueLiteral(),
+                    Location = GetLocation(start)
+                };
         }
 
         private List<GraphQLVariableDefinition>? ParseVariableDefinitions()

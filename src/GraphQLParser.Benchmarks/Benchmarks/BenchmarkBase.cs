@@ -10,6 +10,7 @@ namespace GraphQLParser.Benchmarks
         private string _kitchen = null!;
         private string _introspection = null!;
         private string _params = null!;
+        private string _variables = null!;
         private string _github = null!;
 
         [GlobalSetup]
@@ -20,6 +21,7 @@ namespace GraphQLParser.Benchmarks
             _kitchen = "kitchenSink".ReadGraphQLFile();
             _introspection = "introspectionQuery".ReadGraphQLFile();
             _params = "params".ReadGraphQLFile();
+            _variables = "variables".ReadGraphQLFile();
             _github = "github".ReadGraphQLFile();
         }
 
@@ -32,6 +34,7 @@ namespace GraphQLParser.Benchmarks
                 "kitchen" => _kitchen,
                 "introspection" => _introspection,
                 "params" => _params,
+                "variables" => _variables,
                 "github" => _github,
                 _ => throw new System.Exception(name)
             };
@@ -44,6 +47,7 @@ namespace GraphQLParser.Benchmarks
             yield return "kitchen";
             yield return "introspection";
             yield return "params";
+            yield return "variables";
             yield return "github";
         }
 

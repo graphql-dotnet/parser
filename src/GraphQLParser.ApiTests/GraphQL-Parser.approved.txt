@@ -3,9 +3,9 @@ namespace GraphQLParser.AST
     public abstract class ASTNode
     {
         protected ASTNode() { }
-        public GraphQLParser.AST.GraphQLComment? Comment { get; set; }
         public abstract GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public GraphQLParser.AST.GraphQLLocation Location { get; set; }
+        public virtual GraphQLParser.AST.GraphQLComment? Comment { get; set; }
+        public virtual GraphQLParser.AST.GraphQLLocation Location { get; set; }
     }
     public enum ASTNodeKind
     {
@@ -60,6 +60,7 @@ namespace GraphQLParser.AST
         public GraphQLComment() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Text { get; set; }
+        public override GraphQLParser.AST.GraphQLLocation Location { get; set; }
     }
     public class GraphQLDirective : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -374,6 +375,12 @@ namespace GraphQLParser
         public virtual GraphQLParser.AST.GraphQLVariable EndVisitVariable(GraphQLParser.AST.GraphQLVariable variable) { }
         public virtual void Visit(GraphQLParser.AST.GraphQLDocument ast) { }
     }
+    public enum IgnoreOptions
+    {
+        IgnoreComments = 0,
+        IgnoreCommentsAndLocations = 1,
+        None = 2,
+    }
     public static class Lexer
     {
         public static GraphQLParser.Token Lex(GraphQLParser.ROM source, int start = 0) { }
@@ -386,12 +393,16 @@ namespace GraphQLParser
     }
     public static class Parser
     {
-        public static GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ROM source, bool ignoreComments = true) { }
+        public static GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ROM source, GraphQLParser.ParserOptions options = default) { }
     }
     public static class ParserExtensions
     {
         public static GraphQLParser.Token Lex(this string source, int start = 0) { }
-        public static GraphQLParser.AST.GraphQLDocument Parse(this string source, bool ignoreComments = true) { }
+        public static GraphQLParser.AST.GraphQLDocument Parse(this string source, GraphQLParser.ParserOptions options = default) { }
+    }
+    public struct ParserOptions
+    {
+        public GraphQLParser.IgnoreOptions Ignore { get; set; }
     }
     public readonly struct ROM : System.IEquatable<GraphQLParser.ROM>
     {

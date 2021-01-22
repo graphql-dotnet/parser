@@ -1,0 +1,32 @@
+query var($condition: Boolean! = true, $count: Int! = 1000, $name: String! = "Tom", $address: String! = null) {
+  alias1: field1(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+            field2(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+              field3(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+                field4(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+                  field5(c: $condition, cnt: $count, name: $name, addr: $address, info: null)
+                    inner: value
+                }
+              }
+            }
+  }
+  alias2: field1(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+            field2(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+              field3(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+                field4(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+                  field5(c: $condition, cnt: $count, name: $name, addr: $address, info: null)
+                    inner: value
+                }
+              }
+            }
+  }
+  alias3: field1(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+            field2(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+              field3(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+                field4(c: $condition, cnt: $count, name: $name, addr: $address, info: null) {
+                  field5(c: $condition, cnt: $count, name: $name, addr: $address, info: null)
+                    inner: value
+                }
+              }
+            }
+  }
+}

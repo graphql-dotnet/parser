@@ -22,9 +22,9 @@ namespace GraphQLParser
         /// Generates AST based on input text.
         /// </summary>
         /// <param name="source">Input data as a string.</param>
-        /// <param name="ignoreComments">Specifies whether to ignore comments when parsing GraphQL document. By default, all comments are ignored.</param>
+        /// <param name="options">Parser options.</param>
         /// <returns>AST (Abstract Syntax Tree) for GraphQL document.</returns>
-        public static GraphQLDocument Parse(this string source, bool ignoreComments = true) => Parser.Parse(source, ignoreComments);
+        public static GraphQLDocument Parse(this string source, ParserOptions options = default) => Parser.Parse(source, options);
 
         internal static (IMemoryOwner<char> owner, ROM result) Concat(this List<ROM> parts)
         {

@@ -1,4 +1,5 @@
 # GraphQL Dotnet Parser
+
 [![AppVeyor](https://img.shields.io/appveyor/ci/graphql-dotnet-ci/parser.svg)](https://ci.appveyor.com/project/graphql-dotnet-ci/parser)
 [![Coverage Status](https://coveralls.io/repos/github/graphql-dotnet/parser/badge.svg?branch=master)](https://coveralls.io/github/graphql-dotnet/parser?branch=master)
 [![NuGet](https://img.shields.io/nuget/v/GraphQL-Parser.svg)](https://www.nuget.org/packages/GraphQL-Parser)
@@ -21,13 +22,19 @@ Generates token based on input text. Lexer takes advantage of `ReadOnlyMemory<ch
 does not allocate memory on the managed heap at all.
 
 ### Usage
+
+Directly:
+
 ```c#
 var token = Lexer.Lex("\"str\"");
+```
 
-or
+Or via extension method:
 
+```c#
 var token = "\"str\"".Lex();
 ```
+
 Lex method always returns the first token it finds. In this case case the result would look like following.
 ![lexer example](assets/lexer-example.png)
 
@@ -37,67 +44,84 @@ Parses provided GraphQL expression into AST (abstract syntax tree). Parser also 
 `ReadOnlyMemory<char>` but still allocates memory for AST.
 
 ### Usage
+
+Directly:
+
 ```c#
-var ast = Parser.Parse(@"
+var ast1 = Parser.Parse(@"
 {
   field
-}", ignoreComments: true);
+}");
 
-or
+var ast2 = Parser.Parse(@"
+{
+  field
+}", new ParserOptions { Ignore = IgnoreOptions.IgnoreComments });
+```
+
+Or via extension method:
+
+```c#
+var ast = @"
+{
+  field
+}".Parse();
 
 var ast = @"
 {
   field
-}".Parse(ignoreComments: true);
+}".Parse(new ParserOptions { Ignore = IgnoreOptions.IgnoreCommentsAndLocations });
 ```
 
-By default `ignoreComments` is `true` to improve performance.
+By default `ParserOptions.Ignore` is `IgnoreOptions.IgnoreComments` to improve performance.
+If you don't need information about tokens locations in the source document, then use `IgnoreOptions.IgnoreCommentsAndLocations`.
+This will maximize the saving of memory allocated in the managed heap for AST.
 
-Json representation of the resulting AST would be:
+### Example of json representation of the resulting AST
 
 ```json
 {
-	"Definitions": [{
-		"Directives": [],
-		"Kind": 2,
-		"Name": null,
-		"Operation": 0,
-		"SelectionSet": {
-			"Kind": 5,
-			"Selections": [{
-				"Alias": null,
-				"Arguments": [],
-				"Directives": [],
-				"Kind": 6,
-				"Name": {
-					"Kind": 0,
-					"Value": "field",
-					"Location": {
-						"End": 50,
-						"Start": 31
-					}
-				},
-				"SelectionSet": null,
-				"Location": {
-					"End": 50,
-					"Start": 31
-				}
-			}],
-			"Location": {
-				"End": 50,
-				"Start": 13
-			}
-		},
-		"VariableDefinitions": null,
-		"Location": {
-			"End": 50,
-			"Start": 13
-		}
-	}],
-	"Kind": 1,
-	"Location": {
-		"End": 50,
-		"Start": 13
-	}
+  "Definitions": [{
+    "Directives": [],
+    "Kind": 2,
+    "Name": null,
+    "Operation": 0,
+    "SelectionSet": {
+      "Kind": 5,
+      "Selections": [{
+        "Alias": null,
+        "Arguments": [],
+        "Directives": [],
+        "Kind": 6,
+        "Name": {
+          "Kind": 0,
+          "Value": "field",
+          "Location": {
+            "End": 50,
+            "Start": 31
+          }
+        },
+        "SelectionSet": null,
+        "Location": {
+          "End": 50,
+          "Start": 31
+        }
+      }],
+      "Location": {
+        "End": 50,
+        "Start": 13
+      }
+    },
+    "VariableDefinitions": null,
+    "Location": {
+      "End": 50,
+      "Start": 13
+    }
+  }],
+  "Kind": 1,
+  "Location": {
+    "End": 50,
+    "Start": 13
+  }
 }
 ```
