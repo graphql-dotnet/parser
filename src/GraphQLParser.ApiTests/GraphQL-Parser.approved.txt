@@ -395,7 +395,6 @@ namespace GraphQLParser
     {
         public static GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ROM source, GraphQLParser.ParserOptions options = default) { }
     }
-    public static class ParserExtensions { }
     public struct ParserOptions
     {
         public GraphQLParser.IgnoreOptions Ignore { get; set; }

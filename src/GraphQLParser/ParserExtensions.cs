@@ -7,7 +7,7 @@ namespace GraphQLParser
     /// <summary>
     /// Extension methods for parsing GraphQL documents.
     /// </summary>
-    public static class ParserExtensions
+    internal static class ParserExtensions
     {
         internal static (IMemoryOwner<char> owner, ROM result) Concat(this List<ROM> parts)
         {
