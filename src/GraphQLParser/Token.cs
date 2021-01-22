@@ -17,7 +17,7 @@ namespace GraphQLParser
         }
 
         /// <summary>
-        /// Kind of token. 
+        /// Kind of token.
         /// </summary>
         public TokenKind Kind { get; }
 
