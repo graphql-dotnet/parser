@@ -417,6 +417,51 @@ scalar JSON
             }
         }
 
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Parse_Empty_Field_Arguments_Should_Throw(IgnoreOptions options)
+        {
+            Should.Throw<GraphQLSyntaxErrorException>(() => "{ a() }".Parse(new ParserOptions { Ignore = options }));
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Parse_Empty_Directive_Arguments_Should_Throw(IgnoreOptions options)
+        {
+            Should.Throw<GraphQLSyntaxErrorException>(() => "directive @dir() on FIELD_DEFINITION".Parse(new ParserOptions { Ignore = options }));
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Parse_Empty_Enum_Values_Should_Throw(IgnoreOptions options)
+        {
+            Should.Throw<GraphQLSyntaxErrorException>(() => "enum Empty { }".Parse(new ParserOptions { Ignore = options }));
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Parse_Empty_SelectionSet_Should_Throw(IgnoreOptions options)
+        {
+            Should.Throw<GraphQLSyntaxErrorException>(() => "{ a { } }".Parse(new ParserOptions { Ignore = options }));
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Parse_Empty_VariableDefinitions_Should_Throw(IgnoreOptions options)
+        {
+            Should.Throw<GraphQLSyntaxErrorException>(() => "query test() { a }".Parse(new ParserOptions { Ignore = options }));
+        }
+
         private static GraphQLOperationDefinition GetSingleOperationDefinition(GraphQLDocument document)
         {
             return (GraphQLOperationDefinition)document.Definitions.Single();
@@ -600,7 +645,7 @@ FIELD_DEFINITION
         [InlineData(@"directive @dir on
 | FIELD_DEFINITION
 | ENUM_VALUE", false)]
-        [InlineData(@"directive @dir on   
+        [InlineData(@"directive @dir on
 |  FIELD_DEFINITION
 |          ENUM_VALUE", false)]
         public void Should_Parse_Directives(string text, bool repeatable)
