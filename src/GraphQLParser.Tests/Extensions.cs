@@ -7,7 +7,6 @@ namespace GraphQLParser.Tests
 {
     internal static class ParserTestExtensions
     {
-
         /// <summary>
         /// Generates token based on input text.
         /// </summary>
