@@ -82,14 +82,14 @@ jobs:
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ matrix.os }}.lcov.info
+          path-to-lcov: ${{ matrix.os }}.lcov.net5.info
           parallel: true
           flag-name: ${{ matrix.os }}
       - name: Upload coverage to Codecov
         if: ${{ 0 == 1 }} #now disabled
         uses: codecov/codecov-action@v1
         with:
-          file: ${{ matrix.os }}.lcov.info
+          file: ${{ matrix.os }}.lcov.net5.info
           flags: unittests # optional
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
