@@ -1,8 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>6.0.0-preview</VersionPrefix>
-    <LangVersion>latest</LangVersion>
+    <VersionPrefix>7.0.0-preview</VersionPrefix>
+    <LangVersion>8.0</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -25,7 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\assets\logo.64x64.png" Pack="true" PackagePath="" />
+    <None Include="..\..\assets\logo.64x64.png" Pack="true" PackagePath="" Condition="'$(IsPackable)' == 'true'"/>
   </ItemGroup>
 
   <ItemGroup>

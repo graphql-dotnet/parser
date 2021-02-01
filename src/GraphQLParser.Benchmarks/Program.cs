@@ -1,55 +1,42 @@
-using BenchmarkDotNet.Running;
 using System;
-using System.Linq;
+using System.IO;
 using System.Threading;
+using BenchmarkDotNet.Running;
 
 namespace GraphQLParser.Benchmarks
 {
     internal static class Program
     {
+        internal static string ReadGraphQLFile(this string name) => File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "Files", name + ".graphql"));
+
         // Call without args for BenchmarkDotNet
-        // Call with some arbitrary args for any memory profiler
-        private static void Main(string[] args)
+        // Call with some arbitrary args for any profiler
+        private static void Main(string[] args) => Run<ParserBenchmark>(args);
+
+        private static void Run<TBenchmark>(string[] args)
+            where TBenchmark : IBenchmark, new()
         {
             if (args.Length == 0)
-                BenchmarkRunner.Run<LexerBenchmark>();
+                _ = BenchmarkRunner.Run<TBenchmark>();
             else
-                RunMemoryProfilerPayload1();
+                RunProfilerPayload<TBenchmark>(100);
         }
 
-        private static void RunMemoryProfilerPayload1()
+        private static void RunProfilerPayload<TBenchmark>(int count)
+            where TBenchmark : IBenchmark, new()
         {
-            var bench = new ParserBenchmark();
+            var bench = new TBenchmark();
             bench.GlobalSetup();
-            var queries = bench.Queries().ToArray();
             
-            int count = 0;
+            int index = 0;
             while (true)
             {
-                bench.Concurrent(queries[2]);
+                bench.Run();
 
                 Thread.Sleep(10);
 
-                ++count;
-                if (count == 500)
-                    break;
-            }
-
-            Console.WriteLine("end");
-            Console.ReadLine();
-        }
-
-        private static void RunMemoryProfilerPayload2()
-        {
-            var bench = new LexerBenchmark();
-            bench.GlobalSetup();
-
-            while (true)
-            {
-                bench.LexQueryWithManyEscapeSymbols();
-
-                Console.WriteLine("press key");
-                Console.ReadLine();
+                if (++index % count == 0)
+                    Console.ReadLine();
             }
         }
     }

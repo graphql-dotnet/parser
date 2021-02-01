@@ -13,21 +13,23 @@ namespace GraphQLParser.Tests
 }
 ";
 
-        [Fact]
-        public void Parse_Named_And_Literal_Variables()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Parse_Named_And_Literal_Variables(IgnoreOptions options)
         {
-            var parser = new Parser(new Lexer());
-            var document = parser.Parse(new Source(_query));
+            using var document = _query.Parse(new ParserOptions { Ignore = options });
 
             var def = document.Definitions[0] as GraphQLOperationDefinition;
             def.VariableDefinitions.Count.ShouldBe(1);
-            def.VariableDefinitions[0].Type.ShouldBeOfType<GraphQLNamedType>().Name.Value.ShouldBe("String");
+            def.VariableDefinitions[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
             def.VariableDefinitions[0].Variable.Name.Value.ShouldBe("username");
 
-            var selection = def.SelectionSet.Selections[0].ShouldBeOfType<GraphQLFieldSelection>();
+            var selection = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLFieldSelection>();
             selection.Arguments.Count.ShouldBe(2);
-            selection.Arguments[0].Value.ShouldBeOfType<GraphQLVariable>().Name.Value.ShouldBe("username");
-            selection.Arguments[1].Value.ShouldBeOfType<GraphQLScalarValue>().Value.ShouldBe("Pete");
+            selection.Arguments[0].Value.ShouldBeAssignableTo<GraphQLVariable>().Name.Value.ShouldBe("username");
+            selection.Arguments[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>().Value.ShouldBe("Pete");
         }
     }
 }

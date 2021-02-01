@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// Provides information regarding the location of a node within a document's original query text.
+    /// Provides information regarding the location of a node within a document's original text.
     /// </summary>
     [DebuggerDisplay("(Start={Start}, End={End})")]
     public readonly struct GraphQLLocation : IEquatable<GraphQLLocation>
@@ -53,5 +53,15 @@ namespace GraphQLParser.AST
 
         /// <inheritdoc/>
         public override string ToString() => $"({Start},{End})";
+
+        /// <summary>
+        /// Indicates whether one object is equal to another object of the same type.
+        /// </summary>
+        public static bool operator ==(GraphQLLocation left, GraphQLLocation right) => left.Equals(right);
+
+        /// <summary>
+        /// Indicates whether one object is not equal to another object of the same type.
+        /// </summary>
+        public static bool operator !=(GraphQLLocation left, GraphQLLocation right) => !(left == right);
     }
 }

@@ -25,80 +25,87 @@ The parser from this library is used in [GraphQL for .NET](https://github.com/gr
 Preview versions of this package are available on [GitHub Packages](https://github.com/orgs/graphql-dotnet/packages?repo_name=parser).
 
 ## Lexer
-Generates token based on input text.
+
+Generates token based on input text. Lexer takes advantage of `ReadOnlyMemory<char>` and in most cases
+does not allocate memory on the managed heap at all.
+
 ### Usage
-```csharp
-var lexer = new Lexer();
-var token = lexer.Lex(new Source("\"str\""));
+
+```c#
+var token = Lexer.Lex("\"str\"");
 ```
+
 Lex method always returns the first token it finds. In this case case the result would look like following.
 ![lexer example](assets/lexer-example.png)
 
-Also lexer can use the [cache](src/GraphQLParser/Cache/ILexemeCache.cs) to save on memory allocations for named tokens in the managed heap:
-```csharp
-var cache = new DictionaryCache(); // for single-threaded usage
-var cache = new ConcurrentDictionaryCache(); // for multi-threaded usage
-var lexer = new Lexer { Cache = cache };           
-```
-By default the cache is not used. You can find some results of testing with and without the cache in [this file](src/GraphQLParser.Benchmarks/GraphQLParser.Benchmarks.Reference.md).
-Keep in mind that the advantages and disadvantages of using the cache appear depending on the specific usage scenario, so it is strongly recommended that you obtain some metrics before
-and after using the cache to ensure that you achieve the desired result.
-
 ## Parser
-Parses provided GraphQL expression into AST (abstract syntax tree).
+
+Parses provided GraphQL expression into AST (abstract syntax tree). Parser also takes advantage of
+`ReadOnlyMemory<char>` but still allocates memory for AST.
+
 ### Usage
-```csharp
-var lexer = new Lexer();
-var parser = new Parser(lexer);
-var ast = parser.Parse(new Source(@"
+
+```c#
+var ast1 = Parser.Parse(@"
 {
   field
-}"));
+}");
+
+var ast2 = Parser.Parse(@"
+{
+  field
+}", new ParserOptions { Ignore = IgnoreOptions.IgnoreComments });
 ```
-Json representation of the resulting AST would be:
+
+By default `ParserOptions.Ignore` is `IgnoreOptions.IgnoreComments` to improve performance.
+If you don't need information about tokens locations in the source document, then use `IgnoreOptions.IgnoreCommentsAndLocations`.
+This will maximize the saving of memory allocated in the managed heap for AST.
+
+### Example of json representation of the resulting AST
+
 ```json
 {
-	"Definitions": [{
-		"Directives": [],
-		"Kind": 2,
-		"Name": null,
-		"Operation": 0,
-		"SelectionSet": {
-			"Kind": 5,
-			"Selections": [{
-				"Alias": null,
-				"Arguments": [],
-				"Directives": [],
-				"Kind": 6,
-				"Name": {
-					"Kind": 0,
-					"Value": "field",
-					"Location": {
-						"End": 50,
-						"Start": 31
-					}
-				},
-				"SelectionSet": null,
-				"Location": {
-					"End": 50,
-					"Start": 31
-				}
-			}],
-			"Location": {
-				"End": 50,
-				"Start": 13
-			}
-		},
-		"VariableDefinitions": null,
-		"Location": {
-			"End": 50,
-			"Start": 13
-		}
-	}],
-	"Kind": 1,
-	"Location": {
-		"End": 50,
-		"Start": 13
-	}
+  "Definitions": [{
+    "Directives": [],
+    "Kind": 2,
+    "Name": null,
+    "Operation": 0,
+    "SelectionSet": {
+      "Kind": 5,
+      "Selections": [{
+        "Alias": null,
+        "Arguments": [],
+        "Directives": [],
+        "Kind": 6,
+        "Name": {
+          "Kind": 0,
+          "Value": "field",
+          "Location": {
+            "End": 50,
+            "Start": 31
+          }
+        },
+        "SelectionSet": null,
+        "Location": {
+          "End": 50,
+          "Start": 31
+        }
+      }],
+      "Location": {
+        "End": 50,
+        "Start": 13
+      }
+    },
+    "VariableDefinitions": null,
+    "Location": {
+      "End": 50,
+      "Start": 13
+    }
+  }],
+  "Kind": 1,
+  "Location": {
+    "End": 50,
+    "Start": 13
+  }
 }
 ```

@@ -10,7 +10,6 @@ namespace GraphQLParser.Tests
 {
     public class GraphQLAstVisitorTests
     {
-        private readonly Parser _parser;
         private readonly List<GraphQLName> _visitedAliases;
         private readonly List<GraphQLArgument> _visitedArguments;
         private readonly List<ASTNode> _visitedDefinitions;
@@ -32,7 +31,6 @@ namespace GraphQLParser.Tests
 
         public GraphQLAstVisitorTests()
         {
-            _parser = new Parser(new Lexer());
             _visitor = Substitute.ForPartsOf<GraphQLAstVisitor>();
 
             _visitedDefinitions = MockVisitMethod<ASTNode>((visitor) => visitor.BeginVisitOperationDefinition(null));
@@ -54,227 +52,338 @@ namespace GraphQLParser.Tests
             _visitedEnumValues = MockVisitMethod<GraphQLScalarValue>((visitor) => visitor.BeginVisitEnumValue(null));
         }
 
-        [Fact]
-        public void Visit_BooleanValueArgument_VisitsOneBooleanValue()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_BooleanValueArgument_VisitsOneBooleanValue(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ stuff(id : true) }"));
+            using var d = "{ stuff(id : true) }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedBooleanValues.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_DefinitionWithSingleFragmentSpread_VisitsFragmentSpreadOneTime()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_DefinitionWithSingleFragmentSpread_VisitsFragmentSpreadOneTime(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ foo { ...fragment } }"));
+            using var d = "{ foo { ...fragment } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFragmentSpreads.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_DefinitionWithSingleFragmentSpread_VisitsNameOfPropertyAndFragmentSpread()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_DefinitionWithSingleFragmentSpread_VisitsNameOfPropertyAndFragmentSpread(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ foo { ...fragment } }"));
+            using var d = "{ foo { ...fragment } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(2);
         }
 
-        [Fact]
-        public void Visit_DirectiveWithVariable_VisitsVariableOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_DirectiveWithVariable_VisitsVariableOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedVariables.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_EnumValueArgument_VisitsOneEnumValue()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_EnumValueArgument_VisitsOneEnumValue(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ stuff(id : TEST_ENUM) }"));
+            using var d = "{ stuff(id : TEST_ENUM) }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedEnumValues.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_FloatValueArgument_VisitsOneFloatValue()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_FloatValueArgument_VisitsOneFloatValue(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ stuff(id : 1.2) }"));
+            using var d = "{ stuff(id : 1.2) }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFloatValues.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_FragmentWithTypeCondition_VisitsFragmentDefinitionOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_FragmentWithTypeCondition_VisitsFragmentDefinitionOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("fragment testFragment on Stuff { field }"));
+            using var d = "fragment testFragment on Stuff { field }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFragmentDefinitions.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_FragmentWithTypeCondition_VisitsTypeConditionOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_FragmentWithTypeCondition_VisitsTypeConditionOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("fragment testFragment on Stuff { field }"));
+            using var d = "fragment testFragment on Stuff { field }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFragmentTypeConditions.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsArgumentsOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsArgumentsOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedArguments.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsDirectiveOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsDirectiveOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedDirectives.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsNameThreeTimes()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsNameThreeTimes(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(4);
         }
 
-        [Fact]
-        public void Visit_InlineFragmentWithOneField_VisitsOneField()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_InlineFragmentWithOneField_VisitsOneField(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ ... @include(if : $stuff) { field } }"));
+            using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFieldSelections.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_InlineFragmentWithTypeCondition_VisitsInlineFragmentOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_InlineFragmentWithTypeCondition_VisitsInlineFragmentOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ ... on Stuff { field } }"));
+            using var d = "{ ... on Stuff { field } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedInlineFragments.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_InlineFragmentWithTypeCondition_VisitsTypeConditionOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_InlineFragmentWithTypeCondition_VisitsTypeConditionOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ ... on Stuff { field } }"));
+            using var d = "{ ... on Stuff { field } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFragmentTypeConditions.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_IntValueArgument_VisitsOneIntValue()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_IntValueArgument_VisitsOneIntValue(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ stuff(id : 1) }"));
+            using var d = "{ stuff(id : 1) }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedIntValues.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_OneDefinition_CallsVisitDefinitionOnce()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_OneDefinition_CallsVisitDefinitionOnce(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ a }"));
+            using var d = "{ a }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedDefinitions.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_OneDefinition_ProvidesCorrectDefinitionAsParameter()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_OneDefinition_ProvidesCorrectDefinitionAsParameter(IgnoreOptions options)
         {
-            var ast = Parse("{ a }");
-            _visitor.Visit(ast);
+            using var d = "{ a }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
-            _visitedDefinitions.Single().ShouldBe(ast.Definitions.Single());
+            _visitedDefinitions.Single().ShouldBe(d.Definitions.Single());
         }
 
-        [Fact]
-        public void Visit_OneDefinition_VisitsOneSelectionSet()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_OneDefinition_VisitsOneSelectionSet(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ a, b }"));
+            using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedSelectionSets.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_OneDefinitionWithOneAliasedField_VisitsOneAlias()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_OneDefinitionWithOneAliasedField_VisitsOneAlias(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ foo, foo : bar }"));
+            using var d = "{ foo, foo : bar }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedAliases.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_OneDefinitionWithOneArgument_VisitsOneArgument()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_OneDefinitionWithOneArgument_VisitsOneArgument(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ foo(id : 1) { name } }"));
+            using var d = "{ foo(id : 1) { name } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedArguments.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_OneDefinitionWithOneNestedArgument_VisitsOneArgument()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_OneDefinitionWithOneNestedArgument_VisitsOneArgument(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ foo{ names(size: 10) } }"));
+            using var d = "{ foo{ names(size: 10) } }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedArguments.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_StringValueArgument_VisitsOneStringValue()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_StringValueArgument_VisitsOneStringValue(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ stuff(id : \"abc\") }"));
+            using var d = "{ stuff(id : \"abc\") }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedStringValues.ShouldHaveSingleItem();
         }
 
-        [Fact]
-        public void Visit_TwoDefinitions_CallsVisitDefinitionTwice()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_TwoDefinitions_CallsVisitDefinitionTwice(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ a }\n{ b }"));
+            using var d = "{ a }\n{ b }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedDefinitions.Count.ShouldBe(2);
         }
 
-        [Fact]
-        public void Visit_TwoFieldSelections_VisitsFieldSelectionTwice()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_TwoFieldSelections_VisitsFieldSelectionTwice(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ a, b }"));
+            using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFieldSelections.Count.ShouldBe(2);
         }
 
-        [Fact]
-        public void Visit_TwoFieldSelections_VisitsTwoFieldNames()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_TwoFieldSelections_VisitsTwoFieldNames(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{ a, b }"));
+            using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(2);
         }
 
-        [Fact]
-        public void Visit_TwoFieldSelections_VisitsTwoFieldNamesAndDefinitionName()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_TwoFieldSelections_VisitsTwoFieldNamesAndDefinitionName(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("query foo { a, b }"));
+            using var d = "query foo { a, b }".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(3);
         }
 
-        [Fact]
-        public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveFieldSelections()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveFieldSelections(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{a, nested { x,  y }, b}"));
+            using var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedFieldSelections.Count.ShouldBe(5);
         }
 
-        [Fact]
-        public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveNames()
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveNames(IgnoreOptions options)
         {
-            _visitor.Visit(Parse("{a, nested { x,  y }, b}"));
+            using var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
+            _visitor.Visit(d);
 
             _visitedNames.Count.ShouldBe(5);
         }
@@ -287,7 +396,5 @@ namespace GraphQLParser.Tests
 
             return collection;
         }
-
-        private GraphQLDocument Parse(string expression) => _parser.Parse(new Source(expression));
     }
 }

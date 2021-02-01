@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GraphQLParser
 {
-    public class GraphQLAstVisitor
+    public class GraphQLAstVisitor //TODO: not used
     {
         protected IDictionary<string, GraphQLFragmentDefinition> Fragments { get; private set; }
 
@@ -206,7 +206,7 @@ namespace GraphQLParser
                     if (definition.Kind == ASTNodeKind.FragmentDefinition)
                     {
                         var fragment = (GraphQLFragmentDefinition)definition;
-                        string? name = fragment.Name?.Value;
+                        string? name = fragment.Name?.Value.ToString(); //TODO: heap allocation
                         if (name == null)
                             throw new InvalidOperationException("Fragment name cannot be null");
 

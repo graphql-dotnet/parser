@@ -1,14 +1,33 @@
+using System.Diagnostics;
+
 namespace GraphQLParser.AST
 {
+    /// <inheritdoc cref="ASTNodeKind.Comment"/>
+    [DebuggerDisplay("{Text}")]
     public class GraphQLComment : ASTNode
     {
-        public GraphQLComment(string text)
-        {
-            Text = text;
-        }
+        private GraphQLLocation _location;
+        //private GraphQLComment? _comment;
 
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Comment;
 
-        public string Text { get; set; }
+        /// <summary>
+        /// Comment value represented as <see cref="ROM"/>.
+        /// </summary>
+        public ROM Text { get; set; }
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+
+        // Comment itself can't have a comment
+        //public override GraphQLComment? Comment
+        //{
+        //    get => _comment;
+        //    set => _comment = value;
+        //}
     }
 }

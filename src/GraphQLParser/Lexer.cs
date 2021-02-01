@@ -1,15 +1,16 @@
-﻿namespace GraphQLParser
+namespace GraphQLParser
 {
-    public class Lexer : ILexer
+    /// <summary>
+    /// Lexer for GraphQL syntax.
+    /// </summary>
+    public static class Lexer
     {
-        public ILexemeCache? Cache { get; set; }
-
-        public Token Lex(ISource source) => Lex(source, 0);
-
-        public Token Lex(ISource source, int start)
-        {
-            var context = new LexerContext(source, start, Cache);
-            return context.GetToken();
-        }
+        /// <summary>
+        /// Generates token based on input text.
+        /// </summary>
+        /// <param name="source">Input data as a sequence of characters.</param>
+        /// <param name="start">The index in the source at which to start searching the token.</param>
+        /// <returns>Found token.</returns>
+        public static Token Lex(ROM source, int start = 0) => new LexerContext(source, start).GetToken();
     }
 }

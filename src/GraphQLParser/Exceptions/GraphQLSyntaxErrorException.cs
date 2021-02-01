@@ -4,20 +4,35 @@ using System.Text;
 
 namespace GraphQLParser.Exceptions
 {
+    /// <summary>
+    /// An exception representing a GraphQL document syntax error.
+    /// </summary>
     public class GraphQLSyntaxErrorException : Exception
     {
+        /// <summary>
+        /// Error description.
+        /// </summary>
         public string Description { get; private set; }
 
+        /// <summary>
+        /// The line number on which the symbol that caused the error is located.
+        /// </summary>
         public int Line { get; private set; }
 
+        /// <summary>
+        /// The column number on which the symbol that caused the error is located.
+        /// </summary>
         public int Column { get; private set; }
 
-        public GraphQLSyntaxErrorException(string description, ISource source, int location)
+        /// <summary>
+        /// Initializes a new instance with the specified parameters.
+        /// </summary>
+        public GraphQLSyntaxErrorException(string description, ROM source, int location)
             : this(description, source, new Location(source, location))
         {
         }
 
-        private GraphQLSyntaxErrorException(string description, ISource source, Location location)
+        private GraphQLSyntaxErrorException(string description, ReadOnlySpan<char> source, Location location)
             : base(ComposeMessage(description, source, location))
         {
             Description = description;
@@ -25,20 +40,21 @@ namespace GraphQLParser.Exceptions
             Column = location.Column;
         }
 
-        private static string ComposeMessage(string description, ISource source, Location location)
+        private static string ComposeMessage(string description, ReadOnlySpan<char> source, Location location)
         {
             return $"Syntax Error GraphQL ({location.Line}:{location.Column}) {description}" +
                 "\n" + HighlightSourceAtLocation(source, location);
         }
 
-        private static string HighlightSourceAtLocation(ISource source, Location location)
+        private static string HighlightSourceAtLocation(ReadOnlySpan<char> source, Location location)
         {
             int line = location.Line;
             string prevLineNum = (line - 1).ToString();
             string lineNum = line.ToString();
             string nextLineNum = (line + 1).ToString();
             int padLen = nextLineNum.Length;
-            string[] lines = source.Body
+            string[] lines = source
+                .ToString() // TODO: heap allocation
                 .Split(new string[] { "\n" }, StringSplitOptions.None)
                 .Select(e => ReplaceWithUnicodeRepresentation(e))
                 .ToArray();
@@ -54,7 +70,7 @@ namespace GraphQLParser.Exceptions
         {
             string pad = string.Empty;
 
-            for (int i = 0; i < length - str.Length; i++)
+            for (int i = 0; i < length - str.Length; ++i)
                 pad += " ";
 
             return pad + str;
