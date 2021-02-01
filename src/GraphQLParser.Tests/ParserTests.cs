@@ -528,6 +528,8 @@ Cat
         [InlineData("type Query", ASTNodeKind.ObjectTypeDefinition)]
         [InlineData("extend type Query", ASTNodeKind.TypeExtensionDefinition)]
         [InlineData("input Empty", ASTNodeKind.InputObjectTypeDefinition)]
+        [InlineData("interface Empty", ASTNodeKind.InterfaceTypeDefinition)]
+        [InlineData("enum Empty", ASTNodeKind.EnumTypeDefinition)]
         [InlineData("extend type Type implements Interface", ASTNodeKind.TypeExtensionDefinition)]
         public void Should_Parse_Empty_Types(string text, ASTNodeKind kind)
         {

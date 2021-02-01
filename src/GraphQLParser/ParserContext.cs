@@ -458,7 +458,9 @@ namespace GraphQLParser
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Values = Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
+                Values = Peek(TokenKind.BRACE_L)
+                    ? Many(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R)
+                    : new List<GraphQLEnumValueDefinition>(),
                 Location = GetLocation(start)
             };
         }
@@ -655,7 +657,9 @@ namespace GraphQLParser
                 Comment = comment,
                 Name = ParseName(),
                 Directives = ParseDirectives(),
-                Fields = Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                Fields = Peek(TokenKind.BRACE_L)
+                    ? Any(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R)
+                    : new List<GraphQLFieldDefinition>(),
                 Location = GetLocation(start)
             };
         }
