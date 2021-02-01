@@ -69,7 +69,7 @@ jobs:
           parallel: true
           flag-name: ${{ matrix.os }}
       - name: Upload coverage to Codecov
-        if: ${{ 0 == 1 }}
+        if: ${{ 0 == 1 }} #now disabled
         uses: codecov/codecov-action@v1
         with:
           file: ${{ matrix.os }}.lcov.info
@@ -86,3 +86,16 @@ jobs:
       with:
         github-token: ${{ secrets.github_token }}
         parallel-finished: true
+
+  buildcheck:
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Pass build check
+        if: ${{ needs.test.result == 'success' }}
+        run: exit 0
+      - name: Fail build check
+        if: ${{ needs.test.result != 'success' }}
+        run: exit 1
