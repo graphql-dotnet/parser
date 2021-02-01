@@ -64,7 +64,7 @@ jobs:
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: danielpalme/ReportGenerator-GitHub-Action@4.8.4
         with:
-          reports: '${{ matrix.os }}.lcov.info'
+          reports: '${{ matrix.os }}.lcov.net5.info' # net5 only, ignore file for netcoreapp3.1
           targetdir: '.'
           reporttypes: 'Clover'
           tag: 'test_${{ github.run_number }}'
