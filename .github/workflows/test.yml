@@ -2,10 +2,10 @@ name: Run unit tests
 
 on:
   pull_request:
-    branches: 
+    branches:
       - master
       - develop
-    paths: 
+    paths:
       - src/**
       - .github/workflows/**
 
