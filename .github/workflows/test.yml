@@ -2,12 +2,17 @@ name: Run unit tests
 
 on:
   pull_request:
-    branches: 
+    branches:
       - master
       - develop
-    paths: 
+    paths:
       - src/**
       - .github/workflows/**
+  # save code coverage reports when PRs are merged
+  push:
+    branches:
+      - master
+      - develop
 
 env:
   DOTNET_NOLOGO: true
@@ -23,10 +28,13 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Use .NET Core 3.1 LTS SDK
+      - name: Setup .NET Core 3.1 LTS SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.x'
+          source-url: https://nuget.pkg.github.com/graphql-dotnet/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Install dependencies
         working-directory: src
         run: dotnet restore
@@ -44,4 +52,60 @@ jobs:
         run: dotnet build --no-restore -c Debug
       - name: Test solution [Debug]
         working-directory: src
-        run: dotnet test --no-restore
+        run: dotnet test --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=lcov -p:Include=[GraphQL-Parser]* -p:CoverletOutput=../../${{ matrix.os }}.lcov.info
+      - name: Convert coverage report to clover format
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        uses: danielpalme/ReportGenerator-GitHub-Action@4.7.1
+        with:
+          reports: '${{ matrix.os }}.lcov.info'
+          targetdir: '.'
+          reporttypes: 'Clover'
+          tag: 'test_${{ github.run_number }}'
+      - name: Monitor coverage
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        uses: slavcodev/coverage-monitor-action@1.2.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          clover_file: "Clover.xml"
+          threshold_alert: 80
+          threshold_warning: 90
+      # https://github.com/marketplace/actions/coveralls-github-action
+      - name: Upload coverage to Coveralls
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{ matrix.os }}.lcov.info
+          parallel: true
+          flag-name: ${{ matrix.os }}
+      - name: Upload coverage to Codecov
+        if: ${{ 0 == 1 }} #now disabled
+        uses: codecov/codecov-action@v1
+        with:
+          file: ${{ matrix.os }}.lcov.info
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
+
+  buildcheck:
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Pass build check
+        if: ${{ needs.test.result == 'success' }}
+        run: exit 0
+      - name: Fail build check
+        if: ${{ needs.test.result != 'success' }}
+        run: exit 1

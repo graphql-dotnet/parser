@@ -11,13 +11,17 @@ on:
       - src/**
       - .github/workflows/**
 
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
 jobs:
   pack:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Use .NET Core 3.1 SDK
+      - name: Setup .NET Core 3.1 SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.x'
@@ -27,9 +31,6 @@ jobs:
       - name: Install dependencies
         working-directory: src
         run: dotnet restore
-        env:
-          DOTNET_NOLOGO: true
-          DOTNET_CLI_TELEMETRY_OPTOUT: true
       - name: Build solution [Release]
         working-directory: src
         run: dotnet build --no-restore -c Release -p:VersionSuffix=$GITHUB_RUN_NUMBER

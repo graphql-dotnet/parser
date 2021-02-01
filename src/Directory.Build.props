@@ -17,9 +17,10 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables -->
+    <!-- https://github.com/clairernovotny/DeterministicBuilds -->
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <NoWarn>$(NoWarn);1591</NoWarn> <!--TODO: temporary solution-->
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
