@@ -46,10 +46,20 @@ namespace GraphQLParser.AST
         ListValue,
         ObjectValue,
         ObjectField,
+
+        /// <summary>
+        /// Applied directive. Directives provide a way to describe alternate runtime execution
+        /// and type validation behavior in a GraphQL document. Directives can be used to describe
+        /// additional information for types, fields, fragments, operations, etc.
+        /// </summary>
         Directive,
         NamedType,
         ListType,
         NonNullType,
+
+        /// <summary>
+        /// Null values are represented as the keyword null.
+        /// </summary>
         NullValue,
         SchemaDefinition,
         OperationTypeDefinition,
@@ -63,6 +73,12 @@ namespace GraphQLParser.AST
         EnumValueDefinition,
         InputObjectTypeDefinition,
         TypeExtensionDefinition,
+
+        /// <summary>
+        /// Directive definition. Directives provide a way to describe alternate runtime execution
+        /// and type validation behavior in a GraphQL document. Directives can be used to describe
+        /// additional information for types, fields, fragments, operations, etc.
+        /// </summary>
         DirectiveDefinition,
 
         /// <summary>

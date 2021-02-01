@@ -4,6 +4,7 @@ namespace GraphQLParser.AST
 {
     public class GraphQLInterfaceTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
+        /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
         public List<GraphQLFieldDefinition>? Fields { get; set; }

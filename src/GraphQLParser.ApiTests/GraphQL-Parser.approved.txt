@@ -73,7 +73,6 @@ namespace GraphQLParser.AST
     {
         public GraphQLDirectiveDefinition() { }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLInputValueDefinition>? Arguments { get; set; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLInputValueDefinition>? Definitions { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLName>? Locations { get; set; }
         public bool Repeatable { get; set; }

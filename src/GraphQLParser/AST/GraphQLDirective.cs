@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// Represents a directive, applied to some GraphQL element.
+    /// </summary>
     public class GraphQLDirective : ASTNode, INamedNode
     {
         public List<GraphQLArgument>? Arguments { get; set; }
@@ -9,6 +12,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Directive;
 
+        /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
     }
 

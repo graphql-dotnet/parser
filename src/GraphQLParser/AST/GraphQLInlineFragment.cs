@@ -4,6 +4,7 @@ namespace GraphQLParser.AST
 {
     public class GraphQLInlineFragment : ASTNode, IHasDirectivesNode
     {
+        /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
         /// <inheritdoc/>
