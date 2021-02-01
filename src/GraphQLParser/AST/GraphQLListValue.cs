@@ -17,6 +17,7 @@ namespace GraphQLParser.AST
 
         public List<GraphQLValue>? Values { get; set; }
 
+        /// <inheritdoc/>
         public override string ToString() => AstValue!;
     }
 }
