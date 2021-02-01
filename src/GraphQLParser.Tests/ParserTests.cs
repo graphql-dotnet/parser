@@ -523,5 +523,17 @@ Cat
         {
             new Parser(new Lexer()).Parse(new Source(text)).ShouldNotBeNull();
         }
+
+        [Theory]
+        [InlineData("type Query", ASTNodeKind.ObjectTypeDefinition)]
+        [InlineData("extend type Query", ASTNodeKind.TypeExtensionDefinition)]
+        [InlineData("input Empty", ASTNodeKind.InputObjectTypeDefinition)]
+        [InlineData("extend type Type implements Interface", ASTNodeKind.TypeExtensionDefinition)]
+        public void Should_Parse_Empty_Types(string text, ASTNodeKind kind)
+        {
+            var document = new Parser(new Lexer()).Parse(new Source(text));
+            document.ShouldNotBeNull();
+            document.Definitions[0].Kind.ShouldBe(kind);
+        }
     }
 }
