@@ -60,29 +60,12 @@ jobs:
       - name: Test solution [Debug]
         working-directory: src
         run: dotnet test --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=lcov -p:Include=[GraphQL-Parser]* -p:CoverletOutput=../../${{ matrix.os }}.lcov.info
-      - name: Convert coverage report to clover format
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
-        uses: danielpalme/ReportGenerator-GitHub-Action@4.8.4
-        with:
-          reports: '${{ matrix.os }}.lcov.net5.info' # net5 only, ignore file for netcoreapp3.1
-          targetdir: '.'
-          reporttypes: 'Clover'
-          tag: 'test_${{ github.run_number }}'
-      - name: Monitor coverage
-        if: ${{ startsWith(matrix.os, 'ubuntu') && github.event.pull_request }} # action supports only pull_request event
-        uses: slavcodev/coverage-monitor-action@1.2.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          clover_file: "Clover.xml"
-          threshold_alert: 80
-          threshold_warning: 90
-      # https://github.com/marketplace/actions/coveralls-github-action
-      - name: Upload coverage to Coveralls
+      - name: Upload coverage to Coveralls # https://github.com/marketplace/actions/coveralls-github-action
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ matrix.os }}.lcov.net5.info
+          path-to-lcov: ${{ matrix.os }}.lcov.net5.info # net5 only, ignore netcoreapp3.1
           parallel: true
           flag-name: ${{ matrix.os }}
       - name: Upload coverage to Codecov
