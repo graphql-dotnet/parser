@@ -62,7 +62,7 @@ jobs:
           reporttypes: 'Clover'
           tag: 'test_${{ github.run_number }}'
       - name: Monitor coverage
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        if: ${{ startsWith(matrix.os, 'ubuntu') && github.event.pull_request }} # action supports only pull_request event
         uses: slavcodev/coverage-monitor-action@1.2.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
