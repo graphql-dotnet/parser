@@ -8,6 +8,11 @@ on:
     paths:
       - src/**
       - .github/workflows/**
+  # save code coverage reports when PRs are merged
+  push:
+    branches:
+      - master
+      - develop
 
 env:
   DOTNET_NOLOGO: true
@@ -23,7 +28,7 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Use .NET Core 3.1 LTS SDK
+      - name: Setup .NET Core 3.1 LTS SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.x'
@@ -49,6 +54,7 @@ jobs:
         working-directory: src
         run: dotnet test --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=lcov -p:Include=[GraphQL-Parser]* -p:CoverletOutput=../../${{ matrix.os }}.lcov.info
       - name: Convert coverage report to clover format
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: danielpalme/ReportGenerator-GitHub-Action@4.7.1
         with:
           reports: '${{ matrix.os }}.lcov.info'
@@ -56,7 +62,7 @@ jobs:
           reporttypes: 'Clover'
           tag: 'test_${{ github.run_number }}'
       - name: Monitor coverage
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: slavcodev/coverage-monitor-action@1.2.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -65,6 +71,7 @@ jobs:
           threshold_warning: 90
       # https://github.com/marketplace/actions/coveralls-github-action
       - name: Upload coverage to Coveralls
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{secrets.GITHUB_TOKEN }}
