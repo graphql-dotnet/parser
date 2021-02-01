@@ -13,6 +13,9 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - src/**
+      - .github/workflows/**
 
 env:
   DOTNET_NOLOGO: true
@@ -28,10 +31,17 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-      - name: Setup .NET Core 3.1 LTS SDK
+      - name: Setup .NET Core 3.1 SDK
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.x'
+          source-url: https://nuget.pkg.github.com/graphql-dotnet/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Setup .NET Core 5.0 SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
           source-url: https://nuget.pkg.github.com/graphql-dotnet/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -53,40 +63,14 @@ jobs:
       - name: Test solution [Debug]
         working-directory: src
         run: dotnet test --no-restore -p:CollectCoverage=true -p:CoverletOutputFormat=lcov -p:Include=[GraphQL-Parser]* -p:CoverletOutput=../../${{ matrix.os }}.lcov.info
-      - name: Convert coverage report to clover format
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
-        uses: danielpalme/ReportGenerator-GitHub-Action@4.7.1
-        with:
-          reports: '${{ matrix.os }}.lcov.info'
-          targetdir: '.'
-          reporttypes: 'Clover'
-          tag: 'test_${{ github.run_number }}'
-      - name: Monitor coverage
-        if: ${{ startsWith(matrix.os, 'ubuntu') && github.event.pull_request }} # action supports only pull_request event
-        uses: slavcodev/coverage-monitor-action@1.2.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          clover_file: "Clover.xml"
-          threshold_alert: 80
-          threshold_warning: 90
-      # https://github.com/marketplace/actions/coveralls-github-action
-      - name: Upload coverage to Coveralls
+      - name: Upload coverage to Coveralls # https://github.com/marketplace/actions/coveralls-github-action
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ matrix.os }}.lcov.info
+          path-to-lcov: ${{ matrix.os }}.lcov.net5.info # net5 only, ignore netcoreapp3.1
           parallel: true
           flag-name: ${{ matrix.os }}
-      - name: Upload coverage to Codecov
-        if: ${{ 0 == 1 }} #now disabled
-        uses: codecov/codecov-action@v1
-        with:
-          file: ${{ matrix.os }}.lcov.info
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
   finish:
     needs: test
     runs-on: ubuntu-latest
