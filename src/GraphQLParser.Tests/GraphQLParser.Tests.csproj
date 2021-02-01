@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net5;netcoreapp3.1</TargetFrameworks>
     <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

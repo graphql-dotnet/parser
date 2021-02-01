@@ -5,6 +5,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.ObjectField;
 
+        /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
 
         public GraphQLValue? Value { get; set; }

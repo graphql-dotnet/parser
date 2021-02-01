@@ -4,11 +4,13 @@ namespace GraphQLParser.AST
 {
     public class GraphQLOperationDefinition : ASTNode, IHasDirectivesNode, INamedNode
     {
+        /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
 
+        /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
 
         public OperationType Operation { get; set; }

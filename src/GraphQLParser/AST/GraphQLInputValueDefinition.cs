@@ -6,6 +6,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLValue? DefaultValue { get; set; }
 
+        /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
         /// <inheritdoc/>
