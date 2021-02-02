@@ -55,11 +55,32 @@ namespace GraphQLParser
                 : null;
         }
 
+        private List<GraphQLInputValueDefinition>? ParseInputValueDefs()
+        {
+            return Peek(TokenKind.BRACE_L)
+                ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R)
+                : null;
+        }
+
         private List<GraphQLArgument>? ParseArguments()
         {
-            return Peek(TokenKind.PAREN_L) ?
-                OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R) :
-                null;
+            return Peek(TokenKind.PAREN_L)
+                ? OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R)
+                : null;
+        }
+
+        private List<GraphQLFieldDefinition>? ParseFieldDefinitions()
+        {
+            return Peek(TokenKind.BRACE_L)
+                ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R)
+                : null;
+        }
+
+        private List<GraphQLEnumValueDefinition>? ParseEnumValueDefinitions()
+        {
+            return Peek(TokenKind.BRACE_L)
+                ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R)
+                : null;
         }
 
         private GraphQLValue ParseBooleanValue(Token token)
@@ -321,14 +342,14 @@ namespace GraphQLParser
                 {
                     Name = ParseName(),
                     Directives = ParseDirectives(),
-                    Values = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
+                    Values = ParseEnumValueDefinitions(),
                 }
                 : new GraphQLEnumTypeDefinitionFull
                 {
                     Comment = comment,
                     Name = ParseName(),
                     Directives = ParseDirectives(),
-                    Values = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R),
+                    Values = ParseEnumValueDefinitions(),
                     Location = GetLocation(start)
                 };
         }
@@ -567,14 +588,14 @@ namespace GraphQLParser
                 {
                     Name = ParseName(),
                     Directives = ParseDirectives(),
-                    Fields = ZeroOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R),
+                    Fields = ParseInputValueDefs(),
                 }
                 : new GraphQLInputObjectTypeDefinitionFull
                 {
                     Comment = comment,
                     Name = ParseName(),
                     Directives = ParseDirectives(),
-                    Fields = ZeroOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R),
+                    Fields = ParseInputValueDefs(),
                     Location = GetLocation(start)
                 };
         }
@@ -633,14 +654,14 @@ namespace GraphQLParser
                 {
                     Name = ParseName(),
                     Directives = ParseDirectives(),
-                    Fields = ZeroOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                    Fields = ParseFieldDefinitions(),
                 }
                 : new GraphQLInterfaceTypeDefinitionFull
                 {
                     Comment = comment,
                     Name = ParseName(),
                     Directives = ParseDirectives(),
-                    Fields = ZeroOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                    Fields = ParseFieldDefinitions(),
                     Location = GetLocation(start)
                 };
         }
@@ -845,7 +866,7 @@ namespace GraphQLParser
                     Name = ParseName(),
                     Interfaces = ParseImplementsInterfaces(),
                     Directives = ParseDirectives(),
-                    Fields = ZeroOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                    Fields = ParseFieldDefinitions(),
                 }
                 : new GraphQLObjectTypeDefinitionFull
                 {
@@ -853,7 +874,7 @@ namespace GraphQLParser
                     Name = ParseName(),
                     Interfaces = ParseImplementsInterfaces(),
                     Directives = ParseDirectives(),
-                    Fields = ZeroOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R),
+                    Fields = ParseFieldDefinitions(),
                     Location = GetLocation(start)
                 };
         }

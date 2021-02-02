@@ -1,0 +1,12 @@
+query _ {
+    person {
+        name
+        #comment1
+    }
+    #comment2
+    test {
+        alt
+    }
+    #comment3
+}
+#comment4

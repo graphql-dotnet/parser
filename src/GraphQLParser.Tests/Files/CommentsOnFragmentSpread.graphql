@@ -1,0 +1,10 @@
+query _ {
+    person {
+        #comment
+        ...human
+    }
+}
+
+fragment human on person {
+        name
+}

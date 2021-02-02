@@ -27,7 +27,7 @@ namespace GraphQLParser.Benchmarks
         {
             var bench = new TBenchmark();
             bench.GlobalSetup();
-            
+
             int index = 0;
             while (true)
             {

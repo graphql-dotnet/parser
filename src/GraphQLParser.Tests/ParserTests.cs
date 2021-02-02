@@ -18,20 +18,7 @@ namespace GraphQLParser.Tests
         //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
         public void Extra_Comments_Should_Read_Correctly(IgnoreOptions options)
         {
-            const string query = @"
-query _ {
-    person {
-        name
-        #comment1
-    }
-    #comment2
-    test {
-        alt
-    }
-    #comment3
-}
-#comment4
-";
+            string query = "ExtraComments".ReadGraphQLFile();
 
             using var document = query.Parse(new ParserOptions { Ignore = options });
             document.Definitions.Count().ShouldBe(1);
@@ -87,17 +74,7 @@ query _ {
         //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
         public void Comments_on_FragmentSpread_Should_Read_Correclty(IgnoreOptions options)
         {
-            const string query = @"
-query _ {
-    person {
-        #comment
-        ...human
-    }
-}
-
-fragment human on person {
-        name
-}";
+            string query = "CommentsOnFragmentSpread".ReadGraphQLFile();
 
             using var document = query.Parse(new ParserOptions { Ignore = options });
             document.Definitions.Count.ShouldBe(2);
@@ -115,15 +92,7 @@ fragment human on person {
         //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
         public void Comments_on_FragmentInline_Should_Read_Correclty(IgnoreOptions options)
         {
-            const string query = @"
-query _ {
-    person {
-        #comment
-        ... on human {
-            name
-        }
-    }
-}";
+            string query = "CommentsOnInlineFragment".ReadGraphQLFile();
 
             using var document = query.Parse(new ParserOptions { Ignore = options });
             document.Definitions.Count.ShouldBe(1);
@@ -141,17 +110,7 @@ query _ {
         //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
         public void Comments_on_Variable_Should_Read_Correclty(IgnoreOptions options)
         {
-            const string query = @"
-query _(
-    #comment1
-    $id: ID,
-    $id2: String!,
-    #comment3
-    $id3: String) {
-    person {
-        name
-    }
-}";
+            string query = "CommentsOnVariables".ReadGraphQLFile();
 
             using var document = query.Parse(new ParserOptions { Ignore = options });
             document.Definitions.Count.ShouldBe(1);
@@ -383,7 +342,7 @@ scalar JSON
         //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
         public void Parse_KitchenSink_DoesNotThrowError(IgnoreOptions options)
         {
-            using var document = LoadKitchenSink().Parse(new ParserOptions { Ignore = options });
+            using var document = "KitchenSink".ReadGraphQLFile().Parse(new ParserOptions { Ignore = options });
             var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
             var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
             fieldDef.Comment.ShouldNotBeNull().Text.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
@@ -472,162 +431,6 @@ scalar JSON
             return GetSingleOperationDefinition(document).SelectionSet.Selections.Single();
         }
 
-        private static string LoadKitchenSink()
-        {
-            return @"﻿# Copyright (c) 2015, Facebook, Inc.
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-
-query queryName($foo: ComplexType, $site: Site = MOBILE) {
-  whoever123is: node(id: [123, 456]) {
-    id ,
-    ... on User @defer {
-      field2 {
-        id ,
-        alias: field1(first:10, after:$foo,) @include(if: $foo) {
-          id,
-          ...frag
-        }
-      }
-    }
-    ... @skip(unless: $foo) {
-      id
-    }
-    ... {
-      id
-    }
-  }
-}
-
-mutation updateStory {
-  like(story: {id: 123, EndDate: null}) {
-    story {
-      id
-    }
-  }
-}
-
-mutation likeStory {
-  like(story: 123) @defer {
-    story {
-      id
-    }
-  }
-}
-
-subscription StoryLikeSubscription($input: StoryLikeSubscribeInput) {
-  storyLikeSubscribe(input: $input) {
-    story {
-      likers {
-        count
-      }
-      likeSentence {
-        text
-      }
-    }
-  }
-}
-
-fragment frag on Friend {
-  foo(size: $size, bar: $b, obj: {key: ""value""})
-}
-
-{
-  unnamed(truthy: true, falsey: false),
-  query
-    }
-
-# Copyright (c) 2015, Facebook, Inc.
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-
-schema {
-  query: QueryType
-  mutation: MutationType
-}
-
-type Foo implements Bar
-{
-  # comment 1
-  one: Type
-  # comment 2
-  two(argument: InputType!): Type
-  # multiline comments
-  # with very importand description #
-  # # and symbol # and ##
-  three(argument: InputType, other: String): Int
-  four(argument: String = ""string""): String
-  five(argument: [String] = [""string"", ""string""]): String
-  six(argument: InputType = { key: ""value""}): Type
-}
-
-type AnnotatedObject @onObject(arg: ""value"")
-{
-    # a comment
-    annotatedField(arg: Type = ""default"" @onArg): Type @onField
-}
-
-interface Bar
-{
-    one: Type
-    four(argument: String = ""string""): String
-}
-
-interface AnnotatedInterface @onInterface {
-  annotatedField(arg: Type @onArg): Type @onField
-}
-
-union Feed = Story | Article | Advert
-
-union AnnotatedUnion @onUnion = A | B
-
-scalar CustomScalar
-
-scalar AnnotatedScalar @onScalar
-
-enum Site
-{
-    DESKTOP
-  MOBILE
-}
-
-enum AnnotatedEnum @onEnum {
-  ANNOTATED_VALUE @onEnumValue
-  OTHER_VALUE
-}
-
-input InputType
-{
-    key: String!
-  answer: Int = 42
-}
-
-input AnnotatedInput @onInputObjectType {
-  annotatedField: Type @onField
-}
-
-extend type Foo {
-  seven(argument: [String]): Type
-}
-
-extend type Foo @onType { }
-
-type NoFields { }
-
-directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
-
-directive @include(if: Boolean!)
-  on FIELD
-   | FRAGMENT_SPREAD
-   | INLINE_FRAGMENT";
-        }
-
         private static GraphQLDocument ParseGraphQLFieldSource(IgnoreOptions options) => "{ field }".Parse(new ParserOptions { Ignore = options });
 
         private static GraphQLDocument ParseGraphQLFieldWithOperationTypeAndNameSource(IgnoreOptions options) => "mutation Foo { field }".Parse(new ParserOptions { Ignore = options });
@@ -686,6 +489,35 @@ Cat
         {
             using var document = text.Parse();
             document.ShouldNotBeNull();
+        }
+
+        [Theory]
+        [InlineData("type Query", ASTNodeKind.ObjectTypeDefinition)]
+        [InlineData("extend type Query", ASTNodeKind.TypeExtensionDefinition)]
+        [InlineData("input Empty", ASTNodeKind.InputObjectTypeDefinition)]
+        [InlineData("interface Empty", ASTNodeKind.InterfaceTypeDefinition)]
+        [InlineData("enum Empty", ASTNodeKind.EnumTypeDefinition)]
+        [InlineData("extend type Type implements Interface", ASTNodeKind.TypeExtensionDefinition)]
+        public void Should_Parse_Empty_Types(string text, ASTNodeKind kind)
+        {
+            using var document = text.Parse();
+            document.ShouldNotBeNull();
+            document.Definitions[0].Kind.ShouldBe(kind);
+        }
+
+        [Theory]
+        [InlineData("type Query { }", 1, 14)]
+        [InlineData("extend type Query { }", 1, 21)]
+        [InlineData("input Empty { }", 1, 15)]
+        [InlineData("interface Empty { }", 1, 19)]
+        [InlineData("enum Empty { }", 1, 14)]
+        [InlineData("extend type Type implements Interface { }", 1, 41)]
+        public void Should_Throw_On_Empty_Types_With_Braces(string text, int line, int column)
+        {
+            var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
+            ex.Line.ShouldBe(line);
+            ex.Column.ShouldBe(column);
+            ex.Message.ShouldContain("Expected Name, found }");
         }
     }
 }

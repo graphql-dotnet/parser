@@ -1,0 +1,10 @@
+query _(
+    #comment1
+    $id: ID,
+    $id2: String!,
+    #comment3
+    $id3: String) {
+    person {
+        name
+    }
+}
