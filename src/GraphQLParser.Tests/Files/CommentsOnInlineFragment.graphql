@@ -1,0 +1,8 @@
+query _ {
+    person {
+        #comment
+        ... on human {
+            name
+        }
+    }
+}

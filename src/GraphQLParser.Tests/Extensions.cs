@@ -1,9 +1,13 @@
+using System;
+using System.IO;
 using GraphQLParser.AST;
 
 namespace GraphQLParser.Tests
 {
     internal static class ParserTestExtensions
     {
+        internal static string ReadGraphQLFile(this string name) => File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "Files", name + ".graphql"));
+
         /// <summary>
         /// Generates token based on input text.
         /// </summary>
