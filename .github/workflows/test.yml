@@ -67,7 +67,7 @@ jobs:
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: codecov/codecov-action@v1.2.1
         with:
-          files: .coverage/GraphQL-Parser/coverage.net5.opencover.xml
+          files: .coverage/GraphQLParser.Tests/coverage.net5.opencover.xml
 
   buildcheck:
     needs:
