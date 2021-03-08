@@ -425,9 +425,9 @@ namespace GraphQLParser
                         ++position;
                         break;
 
-//                    case '#':
-//                        position = WaitForEndOfComment(body, position, code);
-//                        break;
+                    //                    case '#':
+                    //                        position = WaitForEndOfComment(body, position, code);
+                    //                        break;
 
                     default:
                         return position;
