@@ -1,6 +1,6 @@
-using GraphQLParser.AST;
 using System;
 using System.Collections.Generic;
+using GraphQLParser.AST;
 
 namespace GraphQLParser
 {

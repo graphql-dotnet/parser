@@ -1,6 +1,6 @@
-using GraphQLParser.Exceptions;
 using System;
 using System.Text;
+using GraphQLParser.Exceptions;
 
 namespace GraphQLParser
 {

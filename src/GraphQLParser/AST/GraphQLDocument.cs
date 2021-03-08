@@ -44,7 +44,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public void Dispose()
         {
-            Dispose(true);  
+            Dispose(true);
         }
     }
 
