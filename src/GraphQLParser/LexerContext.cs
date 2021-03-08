@@ -505,7 +505,7 @@ namespace GraphQLParser
             return CreateNameToken(start);
         }
 
-        private string ResolveCharName(char code, string? unicodeString = null)
+        private static string ResolveCharName(char code, string? unicodeString = null)
         {
             if (code == '\0')
                 return "<EOF>";

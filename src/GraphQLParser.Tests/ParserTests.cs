@@ -21,25 +21,25 @@ namespace GraphQLParser.Tests
             string query = "ExtraComments".ReadGraphQLFile();
 
             using var document = query.Parse(new ParserOptions { Ignore = options });
-            document.Definitions.Count().ShouldBe(1);
+            document.Definitions.Count.ShouldBe(1);
             // query
             var def = document.Definitions.First() as GraphQLOperationDefinition;
-            def.SelectionSet.Selections.Count().ShouldBe(2);
+            def.SelectionSet.Selections.Count.ShouldBe(2);
             // person
             var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
-            field.SelectionSet.Selections.Count().ShouldBe(1);
+            field.SelectionSet.Selections.Count.ShouldBe(1);
             // name
             var subField = field.SelectionSet.Selections.First() as GraphQLFieldSelection;
             subField.Comment.ShouldBeNull();
             // test
             field = def.SelectionSet.Selections.Last() as GraphQLFieldSelection;
-            field.SelectionSet.Selections.Count().ShouldBe(1);
+            field.SelectionSet.Selections.Count.ShouldBe(1);
             field.Comment.ShouldNotBeNull().Text.ShouldBe("comment2");
             // alt
             subField = field.SelectionSet.Selections.First() as GraphQLFieldSelection;
             subField.Comment.ShouldBeNull();
             // extra document comments
-            document.UnattachedComments.Count().ShouldBe(3);
+            document.UnattachedComments.Count.ShouldBe(3);
             document.UnattachedComments[0].Text.ShouldBe("comment1");
             document.UnattachedComments[1].Text.ShouldBe("comment3");
             document.UnattachedComments[2].Text.ShouldBe("comment4");
@@ -60,9 +60,9 @@ namespace GraphQLParser.Tests
 
             var document = query.Parse(new ParserOptions { Ignore = options });
             document.UnattachedComments.ShouldBeNull();
-            document.Definitions.Count().ShouldBe(1);
+            document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
-            def.SelectionSet.Selections.Count().ShouldBe(1);
+            def.SelectionSet.Selections.Count.ShouldBe(1);
             def.Comment.ShouldBeNull();
             var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
             field.Comment.ShouldBeNull();
