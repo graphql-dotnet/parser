@@ -1,9 +1,9 @@
 # GraphQL Dotnet Parser
 
-**master**<br/>[![Coverage Status](https://coveralls.io/repos/github/graphql-dotnet/parser/badge.svg?branch=master)](https://coveralls.io/github/graphql-dotnet/parser?branch=master)<br/>
-**develop**<br/>[![Coverage Status](https://coveralls.io/repos/github/graphql-dotnet/parser/badge.svg?branch=develop)](https://coveralls.io/github/graphql-dotnet/parser?branch=develop)<br/>
-
-<br/>
+[![Run unit tests](https://github.com/graphql-dotnet/parser/actions/workflows/test.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/test.yml)
+[![Publish preview to GitHub registry](https://github.com/graphql-dotnet/parser/actions/workflows/publish-preview.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/publish-preview.yml)
+[![Publish release to Nuget registry](https://github.com/graphql-dotnet/parser/actions/workflows/publish-release.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/publish-release.yml)
+[![CodeQL analysis](https://github.com/graphql-dotnet/parser/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/codeql-analysis.yml)
 
 [![NuGet](https://img.shields.io/nuget/v/GraphQL-Parser.svg)](https://www.nuget.org/packages/GraphQL-Parser)
 [![Nuget](https://img.shields.io/nuget/dt/GraphQL-Parser)](https://www.nuget.org/packages/GraphQL-Parser)
@@ -14,10 +14,7 @@
 
 ![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
 
-[![Build status](https://github.com/graphql-dotnet/parser/workflows/Publish%20preview%20to%20GitHub%20registry/badge.svg)](https://github.com/graphql-dotnet/parser/actions)
-[![Build status](https://github.com/graphql-dotnet/parser/workflows/Publish%20release%20to%20Nuget%20registry/badge.svg)](https://github.com/graphql-dotnet/parser/actions)
-[![CodeQL analysis](https://github.com/graphql-dotnet/parser/workflows/CodeQL%20analysis/badge.svg)](https://github.com/graphql-dotnet/parser/actions?query=workflow%3A%22%22CodeQL+analysis%22%22)
-
+[![codecov](https://codecov.io/gh/graphql-dotnet/parser/branch/master/graph/badge.svg?token=GEjwg1by60)](https://codecov.io/gh/graphql-dotnet/parser)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/graphql-dotnet/parser.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/graphql-dotnet/parser/alerts/)
 [![Language grade: C#](https://img.shields.io/lgtm/grade/csharp/g/graphql-dotnet/parser.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/graphql-dotnet/parser/context:csharp)
 

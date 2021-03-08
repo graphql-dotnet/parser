@@ -1,6 +1,6 @@
-using GraphQLParser.Exceptions;
 using System;
 using System.Text;
+using GraphQLParser.Exceptions;
 
 namespace GraphQLParser
 {
@@ -425,9 +425,9 @@ namespace GraphQLParser
                         ++position;
                         break;
 
-//                    case '#':
-//                        position = WaitForEndOfComment(body, position, code);
-//                        break;
+                    //                    case '#':
+                    //                        position = WaitForEndOfComment(body, position, code);
+                    //                        break;
 
                     default:
                         return position;
@@ -505,7 +505,7 @@ namespace GraphQLParser
             return CreateNameToken(start);
         }
 
-        private string ResolveCharName(char code, string? unicodeString = null)
+        private static string ResolveCharName(char code, string? unicodeString = null)
         {
             if (code == '\0')
                 return "<EOF>";

@@ -51,7 +51,7 @@ namespace GraphQLParser.AST
         //private GraphQLComment? _comment;
 
         public GraphQLScalarValueFull(ASTNodeKind kind)
-            :base(kind)
+            : base(kind)
         {
         }
 

@@ -1,4 +1,4 @@
-﻿namespace GraphQLParser.AST
+namespace GraphQLParser.AST
 {
     public abstract class GraphQLValue : ASTNode
     {
