@@ -1,14 +1,13 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>7.0.0-preview</VersionPrefix>
+    <VersionPrefix>7.0.1-preview</VersionPrefix>
     <LangVersion>8.0</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Authors>Marek Magdziak</Authors>
-    <Copyright>Copyright 2016-$(CurrentYear) $(Authors) et al. All rights reserved.</Copyright>
+    <Copyright>Copyright 2016-2019 $(Authors) et al. All rights reserved.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageIcon>logo.64x64.png</PackageIcon>
