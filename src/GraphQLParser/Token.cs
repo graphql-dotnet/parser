@@ -1,3 +1,5 @@
+using System;
+
 namespace GraphQLParser
 {
     /// <summary>
@@ -71,7 +73,8 @@ namespace GraphQLParser
             TokenKind.FLOAT => "Float",
             TokenKind.STRING => "String",
             TokenKind.COMMENT => "#",
-            _ => string.Empty
+            TokenKind.UNKNOWN => "Unknown",
+            _ => throw new NotSupportedException(kind.ToString())
         };
 
         private bool HasUniqueValue =>
