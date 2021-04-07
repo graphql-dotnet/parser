@@ -455,5 +455,6 @@ namespace GraphQLParser
         STRING = 18,
         COMMENT = 19,
         UNKNOWN = 20,
+        AMPERSAND = 21,
     }
 }

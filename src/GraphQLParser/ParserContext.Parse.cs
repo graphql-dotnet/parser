@@ -567,11 +567,15 @@ namespace GraphQLParser
                 types = new List<GraphQLNamedType>();
                 Advance();
 
+                // Objects that implement interfaces may be defined with an optional leading & character
+                // to aid formatting when representing a longer list of implemented interfaces
+                Skip(TokenKind.AMPERSAND);
+
                 do
                 {
                     types.Add(ParseNamedType());
                 }
-                while (Peek(TokenKind.NAME));
+                while (Skip(TokenKind.AMPERSAND));
             }
 
             return types;

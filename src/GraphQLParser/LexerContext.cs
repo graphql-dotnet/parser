@@ -322,6 +322,7 @@ namespace GraphQLParser
             ':' => CreatePunctuationToken(TokenKind.COLON, 1),
             '=' => CreatePunctuationToken(TokenKind.EQUALS, 1),
             '@' => CreatePunctuationToken(TokenKind.AT, 1),
+            '&' => CreatePunctuationToken(TokenKind.AMPERSAND, 1),
             '[' => CreatePunctuationToken(TokenKind.BRACKET_L, 1),
             ']' => CreatePunctuationToken(TokenKind.BRACKET_R, 1),
             '{' => CreatePunctuationToken(TokenKind.BRACE_L, 1),

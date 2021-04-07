@@ -63,6 +63,7 @@ namespace GraphQLParser
             TokenKind.COLON => ":",
             TokenKind.EQUALS => "=",
             TokenKind.AT => "@",
+            TokenKind.AMPERSAND => "&",
             TokenKind.BRACKET_L => "[",
             TokenKind.BRACKET_R => "]",
             TokenKind.BRACE_L => "{",

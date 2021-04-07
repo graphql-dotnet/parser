@@ -110,6 +110,11 @@ namespace GraphQLParser
         /// <summary>
         /// Unknown token. Something went wrong.
         /// </summary>
-        UNKNOWN = 20
+        UNKNOWN = 20,
+
+        /// <summary>
+        /// &amp;
+        /// </summary>
+        AMPERSAND = 21
     }
 }
