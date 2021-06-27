@@ -73,6 +73,7 @@ namespace GraphQLParser
             TokenKind.INT => "Int",
             TokenKind.FLOAT => "Float",
             TokenKind.STRING => "String",
+            TokenKind.BLOCKSTRING => "BlockString",
             TokenKind.COMMENT => "#",
             TokenKind.UNKNOWN => "Unknown",
             _ => throw new NotSupportedException(kind.ToString())
@@ -83,6 +84,7 @@ namespace GraphQLParser
             Kind == TokenKind.INT ||
             Kind == TokenKind.FLOAT ||
             Kind == TokenKind.STRING ||
+            Kind == TokenKind.BLOCKSTRING ||
             Kind == TokenKind.COMMENT ||
             Kind == TokenKind.UNKNOWN;
 

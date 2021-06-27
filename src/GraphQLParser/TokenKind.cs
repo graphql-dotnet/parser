@@ -115,6 +115,18 @@ namespace GraphQLParser
         /// <summary>
         /// &amp;
         /// </summary>
-        AMPERSAND = 21
+        AMPERSAND = 21,
+
+        /// <summary>
+        /// Block strings are sequences of characters wrapped in triple‐quotes ("""). White space, line terminators,
+        /// quote, and backslash characters may all be used unescaped to enable verbatim text.
+        /// Since block strings represent freeform text often used in indented positions, the string value semantics
+        /// of a block string excludes uniform indentation and blank initial and trailing lines.
+        /// Triple-quotes (""") may be escaped as \""" within the block string.
+        /// </summary>
+        /// <remarks>
+        /// Line termination sequences (LF, CR, or CRLF) are always replaced with a line-feed (LF) character.
+        /// </remarks>
+        BLOCKSTRING = 22,
     }
 }

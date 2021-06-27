@@ -47,7 +47,16 @@ namespace GraphQLParser
                 return ReadNumber();
 
             if (code == '"')
-                return ReadString();
+            {
+                if (_currentIndex + 2 < _source.Length && _source.Span[_currentIndex + 1] == '"' && _source.Span[_currentIndex + 2] == '"')
+                {
+                    return ReadBlockString();
+                }
+                else
+                {
+                    return ReadString();
+                }
+            }
 
             return Throw_From_GetToken2(code);
         }
@@ -172,6 +181,192 @@ namespace GraphQLParser
             );
         }
 
+        private Token ReadBlockString()
+        {
+            int start = _currentIndex += 2;
+            char code = NextCode();
+
+            Span<char> buffer = stackalloc char[4096];
+            StringBuilder? sb = null;
+
+            int index = 0;
+            bool escape = false; //when the last character was \
+            bool lastWasCr = false;
+
+            while (_currentIndex < _source.Length)
+            {
+                if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
+                {
+                    Throw_From_ReadBlockString1(code);
+                }
+
+                //check for """
+                if (code == '"' && _currentIndex + 2 < _source.Length && _source.Span[_currentIndex + 1] == '"' && _source.Span[_currentIndex + 2] == '"')
+                {
+                    //if last character was \ then go ahead and write out the """, skipping the \
+                    if (escape)
+                    {
+                        escape = false;
+                    }
+                    else
+                    {
+                        //end of blockstring
+                        break;
+                    }
+                }
+                else if (escape)
+                {
+                    //last character was \ so write the \ and then retry this character with escaped = false
+                    code = '\\';
+                    _currentIndex--;
+                    escape = false;
+                }
+                else if (code == '\\')
+                {
+                    //this character is a \ so don't write anything yet, but check the next character
+                    escape = true;
+                    code = NextCode();
+                    lastWasCr = false;
+                    continue;
+                }
+                else
+                {
+                    escape = false;
+                }
+
+
+                if (!(lastWasCr && code == '\n'))
+                {
+                    //write code
+                    if (index < buffer.Length)
+                    {
+                        buffer[index++] = code == '\r' ? '\n' : code;
+                    }
+                    else // fallback to StringBuilder in case of buffer overflow
+                    {
+                        if (sb == null)
+                            sb = new StringBuilder(buffer.Length * 2);
+
+                        for (int i = 0; i < buffer.Length; ++i)
+                            sb.Append(buffer[i]);
+
+                        sb.Append(code == '\r' ? '\n' : code);
+                        index = 0;
+                    }
+                }
+
+                lastWasCr = code == '\r';
+
+                code = NextCode();
+            }
+
+            if (_currentIndex >= _source.Length)
+            {
+                Throw_From_ReadString2();
+            }
+
+            if (sb != null)
+            {
+                for (int i = 0; i < index; ++i)
+                    sb.Append(buffer[i]);
+            }
+
+            //at this point, if sb != null, then sb has the whole string, otherwise buffer (of length index) has the whole string
+            //also, all line termination combinations have been replaced with LF
+
+            ROM value;
+            if (sb != null)
+            {
+                var chars = new char[sb.Length];
+                sb.CopyTo(0, chars, 0, sb.Length);
+                value = ProcessBuffer(chars, sb.Length);
+            }
+            else {
+                value = ProcessBuffer(buffer, index);
+            }
+
+            return new Token
+            (
+                TokenKind.BLOCKSTRING,
+                value,
+                start,
+                _currentIndex + 1
+            );
+
+            ROM ProcessBuffer(Span<char> buffer, int length)
+            {
+                //scan string to determine maximum valid commonIndent value, number of initial blank lines, and number of trailing blank lines
+                int commonIndent = int.MaxValue;
+                int line = 0;
+                int whitespace = 0;
+                bool allWhitespace = true;
+                int initialBlankLines = 1;
+                bool reachedCharacter = false;
+                int trailingBlankLines = 0;
+                for (int index = 0; index < length; index++)
+                {
+                    code = buffer[index];
+                    if (code == '\n')
+                    {
+                        if (allWhitespace)
+                            trailingBlankLines += 1;
+                        if (line != 0 && !allWhitespace && whitespace < commonIndent)
+                            commonIndent = whitespace;
+                        line++;
+                        whitespace = 0;
+                        allWhitespace = true;
+                        if (!reachedCharacter)
+                            initialBlankLines++;
+                    }
+                    else if (code == ' ' || code == '\t')
+                    {
+                        if (allWhitespace)
+                            commonIndent += 1;
+                    }
+                    else
+                    {
+                        allWhitespace = false;
+                        reachedCharacter = true;
+                        initialBlankLines--;
+                        trailingBlankLines = 0;
+                    }
+                }
+                if (allWhitespace)
+                    trailingBlankLines += 1;
+                if (line != 0 && !allWhitespace && whitespace < commonIndent)
+                    commonIndent = whitespace;
+                if (commonIndent == int.MaxValue)
+                    commonIndent = 0;
+                int lines = line + 1;
+                int skipLinesAfter = lines - trailingBlankLines;
+
+                //step through the input, skipping the initial blank lines and the trailing blank lines, and skipping the initial blank characters from the start of each line
+                Span<char> output = length <= 4096 ? stackalloc char[length] : new char[length];
+                int outputIndex = 0;
+                line = 0;
+                int col = 0;
+                for (int index = 0; index < length; index++)
+                {
+                    code = buffer[index];
+                    if (code == '\n')
+                    {
+                        if (++line >= skipLinesAfter)
+                            break;
+                        col = 0;
+                        if (line > initialBlankLines)
+                            output[outputIndex++] = code;
+                    }
+                    else
+                    {
+                        if (line > 0 && col++ >= commonIndent)
+                            output[outputIndex++] = code;
+                    }
+                }
+
+                return buffer.Slice(0, outputIndex).ToString();
+            }
+        }
+
         private Token ReadString()
         {
             int start = _currentIndex;
@@ -243,6 +438,11 @@ namespace GraphQLParser
         private void Throw_From_ReadString2()
         {
             throw new GraphQLSyntaxErrorException("Unterminated string.", _source, _currentIndex);
+        }
+
+        private void Throw_From_ReadBlockString1(char code)
+        {
+            throw new GraphQLSyntaxErrorException($"Invalid character within BlockString: \\u{(int)code:D4}.", _source, _currentIndex);
         }
 
         // sets escaped only to true
