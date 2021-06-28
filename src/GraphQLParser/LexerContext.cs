@@ -264,6 +264,7 @@ namespace GraphQLParser
             {
                 Throw_From_ReadString2();
             }
+            _currentIndex += 2;
 
             if (sb != null)
             {
@@ -279,10 +280,10 @@ namespace GraphQLParser
             {
                 var chars = new char[sb.Length];
                 sb.CopyTo(0, chars, 0, sb.Length);
-                value = ProcessBuffer(chars, sb.Length);
+                value = ProcessBuffer(chars);
             }
             else {
-                value = ProcessBuffer(buffer, index);
+                value = ProcessBuffer(buffer.Slice(0, index));
             }
 
             return new Token
@@ -293,7 +294,7 @@ namespace GraphQLParser
                 _currentIndex + 1
             );
 
-            ROM ProcessBuffer(Span<char> buffer, int length)
+            ROM ProcessBuffer(Span<char> buffer)
             {
                 //scan string to determine maximum valid commonIndent value, number of initial blank lines, and number of trailing blank lines
                 int commonIndent = int.MaxValue;
@@ -303,7 +304,7 @@ namespace GraphQLParser
                 int initialBlankLines = 1;
                 bool reachedCharacter = false;
                 int trailingBlankLines = 0;
-                for (int index = 0; index < length; index++)
+                for (int index = 0; index < buffer.Length; index++)
                 {
                     code = buffer[index];
                     if (code == '\n')
@@ -321,13 +322,14 @@ namespace GraphQLParser
                     else if (code == ' ' || code == '\t')
                     {
                         if (allWhitespace)
-                            commonIndent += 1;
+                            whitespace++;
                     }
                     else
                     {
                         allWhitespace = false;
+                        if (!reachedCharacter)
+                            initialBlankLines--;
                         reachedCharacter = true;
-                        initialBlankLines--;
                         trailingBlankLines = 0;
                     }
                 }
@@ -339,13 +341,18 @@ namespace GraphQLParser
                     commonIndent = 0;
                 int lines = line + 1;
                 int skipLinesAfter = lines - trailingBlankLines;
+                //outputs:
+                //  commonIndent
+                //  initialBlankLines
+                //  skipLinesAfter
 
-                //step through the input, skipping the initial blank lines and the trailing blank lines, and skipping the initial blank characters from the start of each line
-                Span<char> output = length <= 4096 ? stackalloc char[length] : new char[length];
+                //step through the input, skipping the initial blank lines and the trailing blank lines,
+                //and skipping the initial blank characters from the start of each line
+                Span<char> output = buffer.Length <= 4096 ? stackalloc char[buffer.Length] : new char[buffer.Length];
                 int outputIndex = 0;
                 line = 0;
                 int col = 0;
-                for (int index = 0; index < length; index++)
+                for (int index = 0; index < buffer.Length; index++)
                 {
                     code = buffer[index];
                     if (code == '\n')
@@ -358,12 +365,12 @@ namespace GraphQLParser
                     }
                     else
                     {
-                        if (line > 0 && col++ >= commonIndent)
+                        if (line >= initialBlankLines && (line == 0 || col++ >= commonIndent))
                             output[outputIndex++] = code;
                     }
                 }
 
-                return buffer.Slice(0, outputIndex).ToString();
+                return output.Slice(0, outputIndex).ToString();
             }
         }
 
