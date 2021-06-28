@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLEnumValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
+    public class GraphQLEnumValueDefinition : GraphQLTypeDefinitionWithDescription, IHasDirectivesNode
     {
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }

@@ -519,5 +519,130 @@ Cat
             ex.Column.ShouldBe(column);
             ex.Message.ShouldContain("Expected Name, found }");
         }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.IgnoreComments)]
+        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        public void Descriptions_Should_Read_Correctly(IgnoreOptions options)
+        {
+            using var document = @"
+""A JSON scalar""
+scalar JSON
+
+""""""
+Human type
+""""""
+type Human {
+  """"""
+  Name of human
+  """"""
+  name: String
+
+  ""Test""
+  test(
+    ""desc""
+    arg: Int
+  ): Int
+}
+
+""Test interface""
+interface TestInterface {
+  ""Object name""
+  name: String
+}
+
+""""""
+Test union
+""""""
+union TestUnion = Test1 | Test2
+
+""Example enum""
+enum Colors {
+  ""Red"" RED
+  ""Blue"" BLUE
+}
+
+""""""
+This is an example input object
+Line two of the description
+""""""
+input TestInputObject {
+    """"""
+    The value of the input object
+      (any JSON value is accepted)
+    """"""
+    Value: JSON
+}
+
+""Test directive""
+directive @TestDirective (
+  ""Example""
+  Value: Int
+) on QUERY
+".Parse(new ParserOptions { Ignore = options });
+            var defs = document.Definitions;
+            defs.Count.ShouldBe(7);
+
+            var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
+            scalarDef.Name.Value.ShouldBe("JSON");
+            scalarDef.Description.Value.ShouldBe("A JSON scalar");
+
+            var objectDef = defs.Single(x => x is GraphQLObjectTypeDefinition) as GraphQLObjectTypeDefinition;
+            objectDef.Name.Value.ShouldBe("Human");
+            objectDef.Description.Value.ShouldBe("Human type");
+            objectDef.Fields.Count.ShouldBe(2);
+            objectDef.Fields[0].Name.Value.ShouldBe("name");
+            objectDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
+            objectDef.Fields[0].Description.Value.ShouldBe("Name of human");
+            objectDef.Fields[1].Name.Value.ShouldBe("test");
+            objectDef.Fields[1].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
+            objectDef.Fields[1].Description.Value.ShouldBe("Test");
+            objectDef.Fields[1].Arguments.Count.ShouldBe(1);
+            objectDef.Fields[1].Arguments[0].Name.Value.ShouldBe("arg");
+            objectDef.Fields[1].Arguments[0].Description.Value.ShouldBe("desc");
+            objectDef.Fields[1].Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
+
+            var interfaceDef = defs.Single(x => x is GraphQLInterfaceTypeDefinition) as GraphQLInterfaceTypeDefinition;
+            interfaceDef.Name.Value.ShouldBe("TestInterface");
+            interfaceDef.Description.Value.ShouldBe("Test interface");
+            interfaceDef.Fields.Count.ShouldBe(1);
+            interfaceDef.Fields[0].Name.Value.ShouldBe("name");
+            interfaceDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
+            interfaceDef.Fields[0].Description.Value.ShouldBe("Object name");
+
+            var unionDef = defs.Single(x => x is GraphQLUnionTypeDefinition) as GraphQLUnionTypeDefinition;
+            unionDef.Name.Value.ShouldBe("TestUnion");
+            unionDef.Description.Value.ShouldBe("Test union");
+            unionDef.Types.Count.ShouldBe(2);
+            unionDef.Types[0].Name.Value.ShouldBe("Test1");
+            unionDef.Types[1].Name.Value.ShouldBe("Test2");
+
+            var enumDef = defs.Single(x => x is GraphQLEnumTypeDefinition) as GraphQLEnumTypeDefinition;
+            enumDef.Name.Value.ShouldBe("Colors");
+            enumDef.Description.Value.ShouldBe("Example enum");
+            enumDef.Values.Count.ShouldBe(2);
+            enumDef.Values[0].Name.Value.ShouldBe("RED");
+            enumDef.Values[0].Description.Value.ShouldBe("Red");
+            enumDef.Values[1].Name.Value.ShouldBe("BLUE");
+            enumDef.Values[1].Description.Value.ShouldBe("Blue");
+
+            var inputDef = defs.Single(x => x is GraphQLInputObjectTypeDefinition) as GraphQLInputObjectTypeDefinition;
+            inputDef.Name.Value.ShouldBe("TestInputObject");
+            inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
+            inputDef.Fields.Count.ShouldBe(1);
+            inputDef.Fields[0].Name.Value.ShouldBe("Value");
+            inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
+            inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
+
+            var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
+            directiveDef.Name.Value.ShouldBe("TestDirective");
+            directiveDef.Description.Value.ShouldBe("Test directive");
+            directiveDef.Arguments.Count.ShouldBe(1);
+            directiveDef.Arguments[0].Name.Value.ShouldBe("Value");
+            directiveDef.Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
+            directiveDef.Arguments[0].Description.Value.ShouldBe("Example");
+        }
+
     }
 }

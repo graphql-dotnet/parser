@@ -5,7 +5,7 @@ namespace GraphQLParser.AST
     /// <summary>
     /// Represents a directive definition.
     /// </summary>
-    public class GraphQLDirectiveDefinition : GraphQLTypeDefinition
+    public class GraphQLDirectiveDefinition : GraphQLTypeDefinitionWithDescription
     {
         public List<GraphQLInputValueDefinition>? Arguments { get; set; }
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
+    public class GraphQLInputValueDefinition : GraphQLTypeDefinitionWithDescription, IHasDirectivesNode
     {
         public GraphQLValue? DefaultValue { get; set; }
 
