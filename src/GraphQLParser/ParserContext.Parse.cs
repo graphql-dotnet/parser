@@ -825,7 +825,7 @@ namespace GraphQLParser
             //look-ahead to next token
             var token = Lexer.Lex(_source, _currentToken.End);
             //skip comments
-            while (_currentToken.Kind != TokenKind.EOF && _currentToken.Kind == TokenKind.COMMENT)
+            while (token.Kind != TokenKind.EOF && token.Kind == TokenKind.COMMENT)
             {
                 token = Lexer.Lex(_source, token.End);
             }
