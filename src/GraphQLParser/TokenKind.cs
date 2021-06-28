@@ -93,9 +93,21 @@ namespace GraphQLParser
         FLOAT = 17,
 
         /// <summary>
+        /// A string value, encoded as either a 'string' or 'block string'
+        /// <br/><br/>
         /// Strings are sequences of characters wrapped in double‐quotes ("). (ex. "Hello World").
         /// White space and other otherwise‐ignored characters are significant within a string value.
+        /// <br/><br/>
+        /// Block strings are sequences of characters wrapped in triple‐quotes ("""). White space, line terminators,
+        /// quote, and backslash characters may all be used unescaped to enable verbatim text.
+        /// Since block strings represent freeform text often used in indented positions, the string value semantics
+        /// of a block string excludes uniform indentation and blank initial and trailing lines.
+        /// Triple-quotes (""") may be escaped as \""" within the block string. No other escape sequences may be used
+        /// within a block string.
         /// </summary>
+        /// <remarks>
+        /// Within a block string, line termination sequences (LF, CR, or CRLF) are always replaced with a line-feed (LF) character.
+        /// </remarks>
         STRING = 18,
 
         /// <summary>
@@ -116,17 +128,5 @@ namespace GraphQLParser
         /// &amp;
         /// </summary>
         AMPERSAND = 21,
-
-        /// <summary>
-        /// Block strings are sequences of characters wrapped in triple‐quotes ("""). White space, line terminators,
-        /// quote, and backslash characters may all be used unescaped to enable verbatim text.
-        /// Since block strings represent freeform text often used in indented positions, the string value semantics
-        /// of a block string excludes uniform indentation and blank initial and trailing lines.
-        /// Triple-quotes (""") may be escaped as \""" within the block string.
-        /// </summary>
-        /// <remarks>
-        /// Line termination sequences (LF, CR, or CRLF) are always replaced with a line-feed (LF) character.
-        /// </remarks>
-        BLOCKSTRING = 22,
     }
 }

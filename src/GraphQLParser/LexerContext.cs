@@ -288,88 +288,91 @@ namespace GraphQLParser
 
             return new Token
             (
-                TokenKind.BLOCKSTRING,
+                TokenKind.STRING,
                 value,
                 start,
                 _currentIndex + 1
             );
 
-            ROM ProcessBuffer(Span<char> buffer)
+            static ROM ProcessBuffer(Span<char> buffer)
             {
-                //scan string to determine maximum valid commonIndent value, number of initial blank lines, and number of trailing blank lines
+                //scan string to determine maximum valid commonIndent value,
+                //number of initial blank lines, and number of trailing blank lines
                 int commonIndent = int.MaxValue;
-                int line = 0;
-                int whitespace = 0;
-                bool allWhitespace = true;
                 int initialBlankLines = 1;
-                bool reachedCharacter = false;
-                int trailingBlankLines = 0;
-                for (int index = 0; index < buffer.Length; index++)
+                int skipLinesAfter; //skip all text after line ###, as determined by the number of trailing blank lines
                 {
-                    code = buffer[index];
-                    if (code == '\n')
+                    int trailingBlankLines = 0;
+                    int line = 0;
+                    int whitespace = 0;
+                    bool allWhitespace = true;
+                    bool reachedCharacter = false;
+                    for (int index = 0; index < buffer.Length; index++)
                     {
-                        if (allWhitespace)
-                            trailingBlankLines += 1;
-                        if (line != 0 && !allWhitespace && whitespace < commonIndent)
-                            commonIndent = whitespace;
-                        line++;
-                        whitespace = 0;
-                        allWhitespace = true;
-                        if (!reachedCharacter)
-                            initialBlankLines++;
+                        char code = buffer[index];
+                        if (code == '\n')
+                        {
+                            if (allWhitespace)
+                                trailingBlankLines += 1;
+                            if (line != 0 && !allWhitespace && whitespace < commonIndent)
+                                commonIndent = whitespace;
+                            line++;
+                            whitespace = 0;
+                            allWhitespace = true;
+                            if (!reachedCharacter)
+                                initialBlankLines++;
+                        }
+                        else if (code == ' ' || code == '\t')
+                        {
+                            if (allWhitespace)
+                                whitespace++;
+                        }
+                        else
+                        {
+                            allWhitespace = false;
+                            if (!reachedCharacter)
+                                initialBlankLines--;
+                            reachedCharacter = true;
+                            trailingBlankLines = 0;
+                        }
                     }
-                    else if (code == ' ' || code == '\t')
-                    {
-                        if (allWhitespace)
-                            whitespace++;
-                    }
-                    else
-                    {
-                        allWhitespace = false;
-                        if (!reachedCharacter)
-                            initialBlankLines--;
-                        reachedCharacter = true;
-                        trailingBlankLines = 0;
-                    }
+                    if (allWhitespace)
+                        trailingBlankLines += 1;
+                    if (line != 0 && !allWhitespace && whitespace < commonIndent)
+                        commonIndent = whitespace;
+                    if (commonIndent == int.MaxValue)
+                        commonIndent = 0;
+                    int lines = line + 1;
+                    skipLinesAfter = lines - trailingBlankLines;
                 }
-                if (allWhitespace)
-                    trailingBlankLines += 1;
-                if (line != 0 && !allWhitespace && whitespace < commonIndent)
-                    commonIndent = whitespace;
-                if (commonIndent == int.MaxValue)
-                    commonIndent = 0;
-                int lines = line + 1;
-                int skipLinesAfter = lines - trailingBlankLines;
-                //outputs:
-                //  commonIndent
-                //  initialBlankLines
-                //  skipLinesAfter
 
                 //step through the input, skipping the initial blank lines and the trailing blank lines,
                 //and skipping the initial blank characters from the start of each line
                 Span<char> output = buffer.Length <= 4096 ? stackalloc char[buffer.Length] : new char[buffer.Length];
                 int outputIndex = 0;
-                line = 0;
-                int col = 0;
-                for (int index = 0; index < buffer.Length; index++)
                 {
-                    code = buffer[index];
-                    if (code == '\n')
+                    int line = 0;
+                    int col = 0;
+                    for (int index = 0; index < buffer.Length; index++)
                     {
-                        if (++line >= skipLinesAfter)
-                            break;
-                        col = 0;
-                        if (line > initialBlankLines)
-                            output[outputIndex++] = code;
-                    }
-                    else
-                    {
-                        if (line >= initialBlankLines && (line == 0 || col++ >= commonIndent))
-                            output[outputIndex++] = code;
+                        char code = buffer[index];
+                        if (code == '\n')
+                        {
+                            if (++line >= skipLinesAfter)
+                                break;
+                            col = 0;
+                            if (line > initialBlankLines)
+                                output[outputIndex++] = code;
+                        }
+                        else
+                        {
+                            if (line >= initialBlankLines && (line == 0 || col++ >= commonIndent))
+                                output[outputIndex++] = code;
+                        }
                     }
                 }
 
+                //return the string value from the output buffer
                 return output.Slice(0, outputIndex).ToString();
             }
         }

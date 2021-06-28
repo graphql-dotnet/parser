@@ -365,6 +365,20 @@ namespace GraphQLParser.Tests.Validation
         }
 
         [Fact]
+        public void Lex_UnescapedControlChar_Blockstring_ThrowsExceptionWithCorrectMessage()
+        {
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"contains unescaped \u0007 control char".Lex());
+
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (1:23) Invalid character within BlockString: \\u0007.\n" +
+                "1: \"\"\"contains unescaped \\u0007 control char\n" +
+                "                         ^\n");
+            exception.Description.ShouldBe("Invalid character within BlockString: \\u0007.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(23);
+        }
+
+        [Fact]
         public void Lex_UnterminatedString_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"".Lex());
@@ -392,39 +406,32 @@ namespace GraphQLParser.Tests.Validation
             exception.Column.ShouldBe(14);
         }
 
-        [Theory]
-        [InlineData("test", "test")]
-        [InlineData("te\\\"\"\"st", "te\"\"\"st")]
-        [InlineData("\ntest", "test")]
-        [InlineData("\r\ntest", "test")]
-        [InlineData(" \ntest", "test")]
-        [InlineData("\t\ntest", "test")]
-        [InlineData("\n\ntest", "test")]
-        [InlineData("test\nline2", "test\nline2")]
-        [InlineData("test\rline2", "test\nline2")]
-        [InlineData("test\r\nline2", "test\nline2")]
-        [InlineData("test\r\r\nline2", "test\n\nline2")]
-        [InlineData("test\r\n\nline2", "test\n\nline2")]
-        [InlineData("test\n", "test")]
-        [InlineData("test\n ", "test")]
-        [InlineData("test\n\t", "test")]
-        [InlineData("test\n\n", "test")]
-        [InlineData("test\n  line2", "test\nline2")]
-        [InlineData("test\n\t\tline2", "test\nline2")]
-        [InlineData("test\n \tline2", "test\nline2")]
-        [InlineData("  test\n  line2", "  test\nline2")]
-        [InlineData("  test\n line2\n\t\tline3\n  line4", "  test\nline2\n\tline3\n line4")]
-        [InlineData("  test\n  Hello,\n\n    world!\n ", "  test\nHello,\n\n  world!")]
-        [InlineData("  \n  Hello,\r\n\n    world!\n ", "Hello,\n\n  world!")]
-        [InlineData("  \n  Hello,\r\n\n    wor___ld!\n ", "Hello,\n\n  wor___ld!")]
-        public void Lex_BlockString_Tests(string input, string expected)
+        [Fact]
+        public void Lex_UnterminatedBlockString_ThrowsExceptionWithCorrectMessage()
         {
-            input = input.Replace("___", new string('_', 9000));
-            expected = expected.Replace("___", new string('_', 9000));
-            input = "\"\"\"" + input + "\"\"\"";
-            var actual = input.Lex();
-            actual.Kind.ShouldBe(TokenKind.BLOCKSTRING);
-            actual.Value.ToString().ShouldBe(expected);
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"".Lex());
+
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (1:4) Unterminated string.\n" +
+                "1: \"\"\"\n" +
+                "      ^\n");
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(4);
+        }
+
+        [Fact]
+        public void Lex_UnterminatedBlockStringWithText_ThrowsExceptionWithCorrectMessage()
+        {
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"no end triple-quote\"\"".Lex());
+
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (1:25) Unterminated string.\n" +
+                "1: \"\"\"no end triple-quote\"\"\n" +
+                "                           ^\n");
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(25);
         }
     }
 }

@@ -456,6 +456,5 @@ namespace GraphQLParser
         COMMENT = 19,
         UNKNOWN = 20,
         AMPERSAND = 21,
-        BLOCKSTRING = 22,
     }
 }
