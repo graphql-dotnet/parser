@@ -282,7 +282,8 @@ namespace GraphQLParser
                 sb.CopyTo(0, chars, 0, sb.Length);
                 value = ProcessBuffer(chars);
             }
-            else {
+            else
+            {
                 value = ProcessBuffer(buffer.Slice(0, index));
             }
 
