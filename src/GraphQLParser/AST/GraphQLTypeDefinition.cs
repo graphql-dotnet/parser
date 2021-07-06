@@ -6,11 +6,11 @@ namespace GraphQLParser.AST
         public GraphQLName? Name { get; set; }
     }
 
-    public abstract class GraphQLTypeDefinitionWithDescription : GraphQLTypeDefinition
+    public abstract class GraphQLTypeDefinitionWithDescription : GraphQLTypeDefinition, IHasDescription
     {
         /// <summary>
-        /// Description of the node as represented by a nested node.
+        /// Description of the node
         /// </summary>
-        public GraphQLScalarValue? Description { get; set; }
+        public GraphQLDescription? Description { get; set; }
     }
 }

@@ -47,6 +47,7 @@ namespace GraphQLParser.AST
         TypeExtensionDefinition = 35,
         DirectiveDefinition = 36,
         Comment = 37,
+        Description = 38,
     }
     public class GraphQLArgument : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -61,6 +62,12 @@ namespace GraphQLParser.AST
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Text { get; set; }
         public override GraphQLParser.AST.GraphQLLocation Location { get; set; }
+    }
+    public class GraphQLDescription : GraphQLParser.AST.ASTNode
+    {
+        public GraphQLDescription() { }
+        public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public GraphQLParser.ROM Value { get; set; }
     }
     public class GraphQLDirective : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -280,10 +287,10 @@ namespace GraphQLParser.AST
         protected GraphQLTypeDefinition() { }
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
     }
-    public abstract class GraphQLTypeDefinitionWithDescription : GraphQLParser.AST.GraphQLTypeDefinition
+    public abstract class GraphQLTypeDefinitionWithDescription : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDescription
     {
         protected GraphQLTypeDefinitionWithDescription() { }
-        public GraphQLParser.AST.GraphQLScalarValue? Description { get; set; }
+        public GraphQLParser.AST.GraphQLDescription? Description { get; set; }
     }
     public class GraphQLTypeExtensionDefinition : GraphQLParser.AST.GraphQLTypeDefinition
     {
@@ -315,6 +322,10 @@ namespace GraphQLParser.AST
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType? Type { get; set; }
         public GraphQLParser.AST.GraphQLVariable? Variable { get; set; }
+    }
+    public interface IHasDescription
+    {
+        GraphQLParser.AST.GraphQLDescription? Description { get; set; }
     }
     public interface IHasDirectivesNode
     {

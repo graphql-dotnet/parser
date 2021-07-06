@@ -233,10 +233,10 @@ namespace GraphQLParser
         private GraphQLDirectiveDefinition ParseDirectiveDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -349,10 +349,10 @@ namespace GraphQLParser
         private GraphQLEnumTypeDefinition ParseEnumTypeDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -395,10 +395,10 @@ namespace GraphQLParser
         private GraphQLEnumValueDefinition ParseEnumValueDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -423,10 +423,10 @@ namespace GraphQLParser
         private GraphQLFieldDefinition ParseFieldDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
 
@@ -624,10 +624,10 @@ namespace GraphQLParser
         private GraphQLInputObjectTypeDefinition ParseInputObjectTypeDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -655,10 +655,10 @@ namespace GraphQLParser
         private GraphQLInputValueDefinition ParseInputValueDef()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -706,10 +706,10 @@ namespace GraphQLParser
         private GraphQLInterfaceTypeDefinition ParseInterfaceTypeDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -964,10 +964,10 @@ namespace GraphQLParser
         private GraphQLObjectTypeDefinition ParseObjectTypeDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -1084,10 +1084,10 @@ namespace GraphQLParser
         private GraphQLScalarTypeDefinition ParseScalarTypeDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
@@ -1167,6 +1167,22 @@ namespace GraphQLParser
                     Value = token.Value,
                 }
                 : new GraphQLScalarValueFull(ASTNodeKind.StringValue)
+                {
+                    Value = token.Value,
+                    Location = GetLocation(token.Start)
+                };
+        }
+
+        private GraphQLDescription ParseDescription()
+        {
+            var token = _currentToken;
+            Advance();
+            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? new GraphQLDescription()
+                {
+                    Value = token.Value,
+                }
+                : new GraphQLDescription()
                 {
                     Value = token.Value,
                     Location = GetLocation(token.Start)
@@ -1253,10 +1269,10 @@ namespace GraphQLParser
         private GraphQLUnionTypeDefinition ParseUnionTypeDefinition()
         {
             int start = _currentToken.Start;
-            GraphQLScalarValue? description = null;
+            GraphQLDescription? description = null;
             if (Peek(TokenKind.STRING))
             {
-                description = ParseString();
+                description = ParseDescription();
                 ParseComment();
             }
             var comment = GetComment();
