@@ -365,6 +365,20 @@ namespace GraphQLParser.Tests.Validation
         }
 
         [Fact]
+        public void Lex_UnescapedControlChar_Blockstring_ThrowsExceptionWithCorrectMessage()
+        {
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"contains unescaped \u0007 control char".Lex());
+
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (1:23) Invalid character within BlockString: \\u0007.\n" +
+                "1: \"\"\"contains unescaped \\u0007 control char\n" +
+                "                         ^\n");
+            exception.Description.ShouldBe("Invalid character within BlockString: \\u0007.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(23);
+        }
+
+        [Fact]
         public void Lex_UnterminatedString_ThrowsExceptionWithCorrectMessage()
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"".Lex());
@@ -390,6 +404,34 @@ namespace GraphQLParser.Tests.Validation
             exception.Description.ShouldBe("Unterminated string.");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(14);
+        }
+
+        [Fact]
+        public void Lex_UnterminatedBlockString_ThrowsExceptionWithCorrectMessage()
+        {
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"".Lex());
+
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (1:4) Unterminated string.\n" +
+                "1: \"\"\"\n" +
+                "      ^\n");
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(4);
+        }
+
+        [Fact]
+        public void Lex_UnterminatedBlockStringWithText_ThrowsExceptionWithCorrectMessage()
+        {
+            var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"no end triple-quote\"\"".Lex());
+
+            exception.Message.ShouldBe(
+                "Syntax Error GraphQL (1:25) Unterminated string.\n" +
+                "1: \"\"\"no end triple-quote\"\"\n" +
+                "                           ^\n");
+            exception.Description.ShouldBe("Unterminated string.");
+            exception.Line.ShouldBe(1);
+            exception.Column.ShouldBe(25);
         }
     }
 }

@@ -974,6 +974,47 @@ namespace GraphQLParser.Tests
             token.Kind.ShouldBe(TokenKind.STRING);
         }
 
+        [Theory]
+        [InlineData("test", "test")]
+        [InlineData("te\\\"\"\"st", "te\"\"\"st")]
+        [InlineData("\ntest", "test")]
+        [InlineData("\r\ntest", "test")]
+        [InlineData(" \ntest", "test")]
+        [InlineData("\t\ntest", "test")]
+        [InlineData("\n\ntest", "test")]
+        [InlineData("test\nline2", "test\nline2")]
+        [InlineData("test\rline2", "test\nline2")]
+        [InlineData("test\r\nline2", "test\nline2")]
+        [InlineData("test\r\r\nline2", "test\n\nline2")]
+        [InlineData("test\r\n\nline2", "test\n\nline2")]
+        [InlineData("test\n", "test")]
+        [InlineData("test\n ", "test")]
+        [InlineData("test\n\t", "test")]
+        [InlineData("test\n\n", "test")]
+        [InlineData("test\n  line2", "test\nline2")]
+        [InlineData("test\n\t\tline2", "test\nline2")]
+        [InlineData("test\n \tline2", "test\nline2")]
+        [InlineData("  test\nline2", "  test\nline2")]
+        [InlineData("  test\n  line2", "  test\nline2")]
+        [InlineData("\n  test\n  line2", "test\nline2")]
+        [InlineData("  test\n line2\n\t\tline3\n  line4", "  test\nline2\n\tline3\n line4")]
+        [InlineData("  test\n  Hello,\n\n    world!\n ", "  test\nHello,\n\n  world!")]
+        [InlineData("  \n  Hello,\r\n\n    world!\n ", "Hello,\n\n  world!")]
+        [InlineData("  \n  Hello,\r\n\n    wor___ld!\n ", "Hello,\n\n  wor___ld!")]
+        [InlineData("\r\n    Hello,\r\n      World!\r\n\r\n    Yours,\r\n      GraphQL.\r\n  ", "Hello,\n  World!\n\nYours,\n  GraphQL.")]
+        [InlineData("Test \\n escaping", "Test \\n escaping")]
+        [InlineData("Test \\u1234 escaping", "Test \\u1234 escaping")]
+        [InlineData("Test \\ escaping", "Test \\ escaping")]
+        public void Lex_BlockString_Tests(string input, string expected)
+        {
+            input = input.Replace("___", new string('_', 9000));
+            expected = expected.Replace("___", new string('_', 9000));
+            input = "\"\"\"" + input + "\"\"\"";
+            var actual = input.Lex();
+            actual.Kind.ShouldBe(TokenKind.STRING);
+            actual.Value.ToString().ShouldBe(expected);
+        }
+
         private static Token GetATPunctuationTokenLexer()
         {
             return "@".Lex();
