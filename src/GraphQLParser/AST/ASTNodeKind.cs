@@ -89,5 +89,10 @@ namespace GraphQLParser.AST
         /// and have no significance to the semantic meaning of a GraphQL Document.
         /// </summary>
         Comment,
+
+        /// <summary>
+        /// Description of a type definition.
+        /// </summary>
+        Description,
     }
 }

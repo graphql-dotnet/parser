@@ -5,4 +5,12 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
     }
+
+    public abstract class GraphQLTypeDefinitionWithDescription : GraphQLTypeDefinition, IHasDescription
+    {
+        /// <summary>
+        /// Description of the node
+        /// </summary>
+        public GraphQLDescription? Description { get; set; }
+    }
 }
