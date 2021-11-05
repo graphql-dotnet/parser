@@ -183,7 +183,8 @@ namespace GraphQLParser
         //
         // 1) not too long
         // 2) has no escape sequences
-        // 3) has no '\r` characters
+        // 3) has no '\r' characters
+        // 4) has no initial whitespace on each line, ignoring the first line (or, has no '\n' characters)
         //
         // In this case, ROM for the returned token represents unmodified part of the source ROM,
         // so it can be just sliced from '_source' as you can see in more simple ReadString method.
