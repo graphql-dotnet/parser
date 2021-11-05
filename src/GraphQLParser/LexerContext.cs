@@ -48,14 +48,9 @@ namespace GraphQLParser
 
             if (code == '"')
             {
-                if (_currentIndex + 2 < _source.Length && _source.Span[_currentIndex + 1] == '"' && _source.Span[_currentIndex + 2] == '"')
-                {
-                    return ReadBlockString();
-                }
-                else
-                {
-                    return ReadString();
-                }
+                return _currentIndex + 2 < _source.Length && _source.Span[_currentIndex + 1] == '"' && _source.Span[_currentIndex + 2] == '"'
+                    ? ReadBlockString()
+                    : ReadString();
             }
 
             return Throw_From_GetToken2(code);
@@ -133,7 +128,11 @@ namespace GraphQLParser
             int start = _currentIndex;
             char code = NextCode();
 
-            Span<char> buffer = stackalloc char[4096];
+            // The buffer on the stack allows to get rid of intermediate heap allocations if the string
+            // 1) not too long
+            // or
+            // 2) does not contain escape sequences.
+            Span<char> buffer = stackalloc char[Math.Min(_source.Length - _currentIndex + 32, 4096)];
             StringBuilder? sb = null;
 
             int index = 0;
@@ -149,8 +148,7 @@ namespace GraphQLParser
                 }
                 catch (IndexOutOfRangeException) // fallback to StringBuilder in case of buffer overflow
                 {
-                    if (sb == null)
-                        sb = new StringBuilder(buffer.Length * 2);
+                    sb ??= new StringBuilder(buffer.Length * 2);
 
                     for (int i = 0; i < buffer.Length; ++i)
                         sb.Append(buffer[i]);
@@ -181,16 +179,24 @@ namespace GraphQLParser
             );
         }
 
+        // TODO: this method can still be optimized no not allocate at all if block string:
+        //
+        // 1) not too long
+        // 2) has no escape sequences
+        // 3) has no '\r` characters
+        //
+        // In this case, ROM for the returned token represents unmodified part of the source ROM,
+        // so it can be just sliced from '_source' as you can see in more simple ReadString method.
         private Token ReadBlockString()
         {
-            int start = _currentIndex += 2;
+            int start = _currentIndex += 2; // skip ""
             char code = NextCode();
 
-            Span<char> buffer = stackalloc char[4096];
+            Span<char> buffer = stackalloc char[Math.Min(_source.Length - _currentIndex + 32, 4096)];
             StringBuilder? sb = null;
 
             int index = 0;
-            bool escape = false; //when the last character was \
+            bool escape = false; // when the last character was \
             bool lastWasCr = false;
 
             while (_currentIndex < _source.Length)
@@ -200,30 +206,30 @@ namespace GraphQLParser
                     Throw_From_ReadBlockString1(code);
                 }
 
-                //check for """
+                // check for """
                 if (code == '"' && _currentIndex + 2 < _source.Length && _source.Span[_currentIndex + 1] == '"' && _source.Span[_currentIndex + 2] == '"')
                 {
-                    //if last character was \ then go ahead and write out the """, skipping the \
+                    // if last character was \ then go ahead and write out the """, skipping the \
                     if (escape)
                     {
                         escape = false;
                     }
                     else
                     {
-                        //end of blockstring
+                        // end of block string
                         break;
                     }
                 }
                 else if (escape)
                 {
-                    //last character was \ so write the \ and then retry this character with escaped = false
+                    // last character was \ so write the \ and then retry this character with escaped = false
                     code = '\\';
                     _currentIndex--;
                     escape = false;
                 }
                 else if (code == '\\')
                 {
-                    //this character is a \ so don't write anything yet, but check the next character
+                    // this character is a \ so don't write anything yet, but check the next character
                     escape = true;
                     code = NextCode();
                     lastWasCr = false;
@@ -237,15 +243,14 @@ namespace GraphQLParser
 
                 if (!(lastWasCr && code == '\n'))
                 {
-                    //write code
+                    // write code
                     if (index < buffer.Length)
                     {
                         buffer[index++] = code == '\r' ? '\n' : code;
                     }
                     else // fallback to StringBuilder in case of buffer overflow
                     {
-                        if (sb == null)
-                            sb = new StringBuilder(buffer.Length * 2);
+                        sb ??= new StringBuilder(buffer.Length * 2);
 
                         for (int i = 0; i < buffer.Length; ++i)
                             sb.Append(buffer[i]);
@@ -262,9 +267,9 @@ namespace GraphQLParser
 
             if (_currentIndex >= _source.Length)
             {
-                Throw_From_ReadString2();
+                Throw_From_ReadBlockString2();
             }
-            _currentIndex += 2;
+            _currentIndex += 2; // skip ""
 
             if (sb != null)
             {
@@ -272,8 +277,8 @@ namespace GraphQLParser
                     sb.Append(buffer[i]);
             }
 
-            //at this point, if sb != null, then sb has the whole string, otherwise buffer (of length index) has the whole string
-            //also, all line termination combinations have been replaced with LF
+            // at this point, if sb != null, then sb has the whole string, otherwise buffer (of length index) has the whole string
+            // also, all line termination combinations have been replaced with LF
 
             ROM value;
             if (sb != null)
@@ -297,11 +302,11 @@ namespace GraphQLParser
 
             static ROM ProcessBuffer(Span<char> buffer)
             {
-                //scan string to determine maximum valid commonIndent value,
-                //number of initial blank lines, and number of trailing blank lines
+                // scan string to determine maximum valid commonIndent value,
+                // number of initial blank lines, and number of trailing blank lines
                 int commonIndent = int.MaxValue;
                 int initialBlankLines = 1;
-                int skipLinesAfter; //skip all text after line ###, as determined by the number of trailing blank lines
+                int skipLinesAfter; // skip all text after line ###, as determined by the number of trailing blank lines
                 {
                     int trailingBlankLines = 0;
                     int line = 0;
@@ -347,8 +352,8 @@ namespace GraphQLParser
                     skipLinesAfter = lines - trailingBlankLines;
                 }
 
-                //step through the input, skipping the initial blank lines and the trailing blank lines,
-                //and skipping the initial blank characters from the start of each line
+                // step through the input, skipping the initial blank lines and the trailing blank lines,
+                // and skipping the initial blank characters from the start of each line
                 Span<char> output = buffer.Length <= 4096 ? stackalloc char[buffer.Length] : new char[buffer.Length];
                 int outputIndex = 0;
                 {
@@ -373,7 +378,7 @@ namespace GraphQLParser
                     }
                 }
 
-                //return the string value from the output buffer
+                // return the string value from the output buffer
                 return output.Slice(0, outputIndex).ToString();
             }
         }
@@ -383,7 +388,7 @@ namespace GraphQLParser
             int start = _currentIndex;
             char code = NextCode();
 
-            Span<char> buffer = stackalloc char[4096];
+            Span<char> buffer = stackalloc char[Math.Min(_source.Length - _currentIndex + 32, 4096)];
             StringBuilder? sb = null;
 
             int index = 0;
@@ -404,8 +409,7 @@ namespace GraphQLParser
                 }
                 catch (IndexOutOfRangeException) // fallback to StringBuilder in case of buffer overflow
                 {
-                    if (sb == null)
-                        sb = new StringBuilder(buffer.Length * 2);
+                    sb ??= new StringBuilder(buffer.Length * 2);
 
                     for (int i = 0; i < buffer.Length; ++i)
                         sb.Append(buffer[i]);
@@ -453,7 +457,12 @@ namespace GraphQLParser
 
         private void Throw_From_ReadBlockString1(char code)
         {
-            throw new GraphQLSyntaxErrorException($"Invalid character within BlockString: \\u{(int)code:D4}.", _source, _currentIndex);
+            throw new GraphQLSyntaxErrorException($"Invalid character within block string: \\u{(int)code:D4}.", _source, _currentIndex);
+        }
+
+        private void Throw_From_ReadBlockString2()
+        {
+            throw new GraphQLSyntaxErrorException("Unterminated block string.", _source, _currentIndex);
         }
 
         // sets escaped only to true
