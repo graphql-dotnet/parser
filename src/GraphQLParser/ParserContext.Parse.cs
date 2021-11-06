@@ -33,7 +33,7 @@ namespace GraphQLParser
             var comment = GetComment();
             int start = _currentToken.Start;
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLArgument
                 {
                     Name = ParseName(),
@@ -86,7 +86,7 @@ namespace GraphQLParser
         private GraphQLValue ParseBooleanValue(Token token)
         {
             Advance();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLScalarValue(ASTNodeKind.BooleanValue)
                 {
                     Value = token.Value,
@@ -147,7 +147,8 @@ namespace GraphQLParser
 
         private GraphQLComment? ParseComment()
         {
-            if (_ignoreOptions != IgnoreOptions.None)
+            // skip comments
+            if (_ignoreOptions.HasFlag(IgnoreOptions.Comments))
             {
                 while (Peek(TokenKind.COMMENT))
                 {
@@ -173,14 +174,12 @@ namespace GraphQLParser
             }
             while (_currentToken.Kind == TokenKind.COMMENT);
 
-            var comment = new GraphQLComment
-            {
-                Location = new GraphQLLocation
-                (
-                    start,
-                    end
-                )
-            };
+            var comment = _ignoreOptions.HasFlag(IgnoreOptions.Locations)
+                ? new GraphQLComment()
+                : new GraphQLCommentFull
+                {
+                    Location = new GraphQLLocation(start, end),
+                };
 
             if (text.Count == 1)
             {
@@ -210,7 +209,7 @@ namespace GraphQLParser
         {
             int start = _currentToken.Start;
             Expect(TokenKind.AT);
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLDirective
                 {
                     Name = ParseName(),
@@ -250,7 +249,7 @@ namespace GraphQLParser
             ExpectKeyword("on");
             var locations = ParseDirectiveLocations();
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLDirectiveDefinition
                 {
                     Name = name,
@@ -323,14 +322,14 @@ namespace GraphQLParser
 
         private GraphQLDocument ParseDocument()
         {
-            _document = _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations ? new GraphQLDocument() : new GraphQLDocumentFull();
+            _document = _ignoreOptions.HasFlag(IgnoreOptions.Locations) ? new GraphQLDocument() : new GraphQLDocumentFull();
 
             int start = _currentToken.Start;
             var definitions = ParseDefinitionsIfNotEOF();
 
             SetCurrentComment(null);
 
-            if (_ignoreOptions != IgnoreOptions.IgnoreCommentsAndLocations)
+            if (!_ignoreOptions.HasFlag(IgnoreOptions.Locations))
             {
                 _document.Location = new GraphQLLocation
                 (
@@ -358,7 +357,7 @@ namespace GraphQLParser
             var comment = GetComment();
             ExpectKeyword("enum");
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLEnumTypeDefinition
                 {
                     Name = ParseName(),
@@ -380,7 +379,7 @@ namespace GraphQLParser
         private GraphQLValue ParseEnumValue(Token token)
         {
             Advance();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLScalarValue(ASTNodeKind.EnumValue)
                 {
                     Value = token.Value,
@@ -403,7 +402,7 @@ namespace GraphQLParser
             }
             var comment = GetComment();
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLEnumValueDefinition
                 {
                     Name = ParseName(),
@@ -435,7 +434,7 @@ namespace GraphQLParser
             var args = ParseArgumentDefs();
             Expect(TokenKind.COLON);
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLFieldDefinition
                 {
                     Name = name,
@@ -475,7 +474,7 @@ namespace GraphQLParser
                 name = nameOrAlias;
             }
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
               ? new GraphQLFieldSelection
               {
                   Alias = alias,
@@ -500,7 +499,7 @@ namespace GraphQLParser
         {
             var token = _currentToken;
             Advance();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLScalarValue(ASTNodeKind.FloatValue)
                 {
                     Value = token.Value,
@@ -525,7 +524,7 @@ namespace GraphQLParser
 
         private ASTNode CreateGraphQLFragmentSpread(int start, GraphQLComment? comment)
         {
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLFragmentSpread
                 {
                     Name = ParseFragmentName(),
@@ -542,7 +541,7 @@ namespace GraphQLParser
 
         private ASTNode CreateInlineFragment(int start, GraphQLComment? comment)
         {
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLInlineFragment
                 {
                     TypeCondition = ParseTypeCondition(),
@@ -565,7 +564,7 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             ExpectKeyword("fragment");
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLFragmentDefinition
                 {
                     Name = ParseFragmentName(),
@@ -633,7 +632,7 @@ namespace GraphQLParser
             var comment = GetComment();
             ExpectKeyword("input");
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLInputObjectTypeDefinition
                 {
                     Name = ParseName(),
@@ -665,7 +664,7 @@ namespace GraphQLParser
             var name = ParseName();
             Expect(TokenKind.COLON);
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLInputValueDefinition
                 {
                     Name = name,
@@ -691,7 +690,7 @@ namespace GraphQLParser
             var token = _currentToken;
             Advance();
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLScalarValue(ASTNodeKind.IntValue)
                 {
                     Value = token.Value,
@@ -715,7 +714,7 @@ namespace GraphQLParser
             var comment = GetComment();
             ExpectKeyword("interface");
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLInterfaceTypeDefinition
                 {
                     Name = ParseName(),
@@ -741,7 +740,7 @@ namespace GraphQLParser
             ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseValueLiteral(true);
             ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueLiteral(false);
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLListValue(ASTNodeKind.ListValue)
                 {
                     Values = ZeroOrMore(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R),
@@ -762,7 +761,7 @@ namespace GraphQLParser
 
             Expect(TokenKind.NAME);
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLName
                 {
                     Value = value
@@ -822,19 +821,22 @@ namespace GraphQLParser
 
         private ASTNode? ParseNamedDefinitionWithDescription()
         {
-            //look-ahead to next token
+            // look-ahead to next token (_currentToken remains unchanged)
             var token = Lexer.Lex(_source, _currentToken.End);
-            //skip comments
+            // skip comments
             while (token.Kind != TokenKind.EOF && token.Kind == TokenKind.COMMENT)
             {
                 token = Lexer.Lex(_source, token.End);
             }
-            //verify this is a NAME
+            // verify this is a NAME
             if (token.Kind != TokenKind.NAME)
                 return null;
 
-            //retrieve the value
+            // retrieve the value
             var value = token.Value;
+
+            if (value == "schema")
+                return ParseSchemaDefinition();
 
             if (value == "scalar")
                 return ParseScalarTypeDefinition();
@@ -863,7 +865,7 @@ namespace GraphQLParser
         private GraphQLNamedType ParseNamedType()
         {
             int start = _currentToken.Start;
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLNamedType
                 {
                     Name = ParseName(),
@@ -903,7 +905,7 @@ namespace GraphQLParser
             var comment = GetComment();
             int start = _currentToken.Start;
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLObjectValue
                 {
                     Fields = ParseObjectFields(isConstant),
@@ -919,7 +921,7 @@ namespace GraphQLParser
         private GraphQLValue ParseNullValue(Token token)
         {
             Advance();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLScalarValue(ASTNodeKind.NullValue)
                 {
                     Value = token.Value,
@@ -935,7 +937,7 @@ namespace GraphQLParser
         {
             var comment = GetComment();
             int start = _currentToken.Start;
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLObjectField
                 {
                     Name = ParseName(),
@@ -974,7 +976,7 @@ namespace GraphQLParser
 
             ExpectKeyword("type");
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLObjectTypeDefinition
                 {
                     Name = ParseName(),
@@ -1007,7 +1009,7 @@ namespace GraphQLParser
         private ASTNode CreateOperationDefinition(int start)
         {
             var comment = GetComment();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLOperationDefinition
                 {
                     Operation = OperationType.Query,
@@ -1025,7 +1027,7 @@ namespace GraphQLParser
         private ASTNode CreateOperationDefinition(int start, OperationType operation, GraphQLName? name)
         {
             var comment = GetComment();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLOperationDefinition
                 {
                     Operation = operation,
@@ -1067,7 +1069,7 @@ namespace GraphQLParser
             Expect(TokenKind.COLON);
             var type = ParseNamedType();
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLOperationTypeDefinition
                 {
                     Operation = operation,
@@ -1095,7 +1097,7 @@ namespace GraphQLParser
             var name = ParseName();
             var directives = ParseDirectives();
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLScalarTypeDefinition
                 {
                     Name = name,
@@ -1114,23 +1116,31 @@ namespace GraphQLParser
 
         private GraphQLSchemaDefinition ParseSchemaDefinition()
         {
-            var comment = GetComment();
             int start = _currentToken.Start;
+            GraphQLDescription? description = null;
+            if (Peek(TokenKind.STRING))
+            {
+                description = ParseDescription();
+                ParseComment();
+            }
+            var comment = GetComment();
             ExpectKeyword("schema");
             var directives = ParseDirectives();
             var operationTypes = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseOperationTypeDefinition(), TokenKind.BRACE_R);
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLSchemaDefinition
                 {
                     Directives = directives,
                     OperationTypes = operationTypes,
+                    Description = description,
                 }
                 : new GraphQLSchemaDefinitionFull
                 {
                     Comment = comment,
                     Directives = directives,
                     OperationTypes = operationTypes,
+                    Description = description,
                     Location = GetLocation(start)
                 };
         }
@@ -1145,7 +1155,7 @@ namespace GraphQLParser
         private GraphQLSelectionSet ParseSelectionSet()
         {
             int start = _currentToken.Start;
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLSelectionSet
                 {
                     Selections = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseSelection(), TokenKind.BRACE_R),
@@ -1161,7 +1171,7 @@ namespace GraphQLParser
         {
             var token = _currentToken;
             Advance();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLScalarValue(ASTNodeKind.StringValue)
                 {
                     Value = token.Value,
@@ -1177,7 +1187,7 @@ namespace GraphQLParser
         {
             var token = _currentToken;
             Advance();
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLDescription()
                 {
                     Value = token.Value,
@@ -1197,7 +1207,7 @@ namespace GraphQLParser
             {
                 type = ParseType();
                 Expect(TokenKind.BRACKET_R);
-                type = _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                type = _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                     ? new GraphQLListType
                     {
                         Type = type,
@@ -1214,7 +1224,7 @@ namespace GraphQLParser
             }
 
             return Skip(TokenKind.BANG)
-                ? (_ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+                ? (_ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLNonNullType
                 {
                     Type = type,
@@ -1234,7 +1244,8 @@ namespace GraphQLParser
             ExpectKeyword("extend");
             var definition = ParseObjectTypeDefinition();
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            // Note that due to the spec extension definitions have no descriptions.
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLTypeExtensionDefinition
                 {
                     Name = definition.Name,
@@ -1282,7 +1293,7 @@ namespace GraphQLParser
             Expect(TokenKind.EQUALS);
             var types = ParseUnionMembers();
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLUnionTypeDefinition
                 {
                     Name = name,
@@ -1323,7 +1334,7 @@ namespace GraphQLParser
             int start = _currentToken.Start;
             Expect(TokenKind.DOLLAR);
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLVariable
                 {
                     Name = ParseName(),
@@ -1340,7 +1351,7 @@ namespace GraphQLParser
             var comment = GetComment();
             int start = _currentToken.Start;
 
-            return _ignoreOptions == IgnoreOptions.IgnoreCommentsAndLocations
+            return _ignoreOptions.HasFlag(IgnoreOptions.Locations)
                 ? new GraphQLVariableDefinition
                 {
                     Variable = ParseVariable(),

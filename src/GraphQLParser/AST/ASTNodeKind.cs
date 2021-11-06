@@ -91,7 +91,7 @@ namespace GraphQLParser.AST
         Comment,
 
         /// <summary>
-        /// Description of a type definition.
+        /// Description of a GraphQL definition.
         /// </summary>
         Description,
     }

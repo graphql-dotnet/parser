@@ -47,8 +47,9 @@ namespace GraphQLParser.Tests
 
         [Theory]
         //[InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        //[InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Comments_Can_Be_Ignored(IgnoreOptions options)
         {
             const string query = @"
@@ -188,8 +189,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Unicode_Char_At_EOF_Should_Throw(IgnoreOptions options)
         {
             Should.Throw<GraphQLSyntaxErrorException>(() => "{\"\\ue }".Parse(new ParserOptions { Ignore = options }));
@@ -197,8 +199,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        //[InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
         public void Parse_FieldInput_HasCorrectLocations(IgnoreOptions options)
         {
             // { field }
@@ -212,8 +215,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldInput_HasOneOperationDefinition(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldSource(options);
@@ -223,8 +227,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldInput_NameIsNull(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldSource(options);
@@ -234,8 +239,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldInput_OperationIsQuery(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldSource(options);
@@ -245,8 +251,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldInput_ReturnsDocumentNode(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldSource(options);
@@ -256,8 +263,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldInput_SelectionSetContainsSingleFieldSelection(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldSource(options);
@@ -267,8 +275,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        //[InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
         public void Parse_FieldWithOperationTypeAndNameInput_HasCorrectLocations(IgnoreOptions options)
         {
             // mutation Foo { field }
@@ -283,8 +292,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldWithOperationTypeAndNameInput_HasOneOperationDefinition(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
@@ -294,8 +304,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldWithOperationTypeAndNameInput_NameIsNull(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
@@ -305,8 +316,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldWithOperationTypeAndNameInput_OperationIsQuery(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
@@ -316,8 +328,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldWithOperationTypeAndNameInput_ReturnsDocumentNode(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
@@ -327,8 +340,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FieldWithOperationTypeAndNameInput_SelectionSetContainsSingleFieldWithOperationTypeAndNameSelection(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
@@ -356,8 +370,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_NullInput_EmptyDocument(IgnoreOptions options)
         {
             using var document = ((string)null).Parse(new ParserOptions { Ignore = options });
@@ -367,8 +382,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_VariableInlineValues_DoesNotThrowError(IgnoreOptions options)
         {
             using ("{ field(complex: { a: { b: [ $var ] } }) }".Parse(new ParserOptions { Ignore = options }))
@@ -378,8 +394,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Empty_Field_Arguments_Should_Throw(IgnoreOptions options)
         {
             Should.Throw<GraphQLSyntaxErrorException>(() => "{ a() }".Parse(new ParserOptions { Ignore = options }));
@@ -387,8 +404,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Empty_Directive_Arguments_Should_Throw(IgnoreOptions options)
         {
             Should.Throw<GraphQLSyntaxErrorException>(() => "directive @dir() on FIELD_DEFINITION".Parse(new ParserOptions { Ignore = options }));
@@ -396,8 +414,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Empty_Enum_Values_Should_Throw(IgnoreOptions options)
         {
             Should.Throw<GraphQLSyntaxErrorException>(() => "enum Empty { }".Parse(new ParserOptions { Ignore = options }));
@@ -405,8 +424,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Empty_SelectionSet_Should_Throw(IgnoreOptions options)
         {
             Should.Throw<GraphQLSyntaxErrorException>(() => "{ a { } }".Parse(new ParserOptions { Ignore = options }));
@@ -414,8 +434,9 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Empty_VariableDefinitions_Should_Throw(IgnoreOptions options)
         {
             Should.Throw<GraphQLSyntaxErrorException>(() => "query test() { a }".Parse(new ParserOptions { Ignore = options }));
@@ -522,11 +543,17 @@ Cat
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Descriptions_Should_Read_Correctly(IgnoreOptions options)
         {
             using var document = @"
+""Super schema""
+schema {
+  query: String
+}
+
 ""A JSON scalar""
 scalar JSON
 
@@ -582,7 +609,10 @@ directive @TestDirective (
 ) on QUERY
 ".Parse(new ParserOptions { Ignore = options });
             var defs = document.Definitions;
-            defs.Count.ShouldBe(7);
+            defs.Count.ShouldBe(8);
+
+            var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
+            schemaDef.Description.Value.ShouldBe("Super schema");
 
             var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
             scalarDef.Name.Value.ShouldBe("JSON");
@@ -646,11 +676,19 @@ directive @TestDirective (
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Descriptions_WithComments_Should_Read_Correctly_1(IgnoreOptions options)
         {
             using var document = @"
+# comment -1
+""Super schema""
+# comment 0
+schema {
+  query: String
+}
+
 # comment 1
 ""A JSON scalar""
 # comment 2
@@ -738,8 +776,13 @@ directive @TestDirective (
 ) on QUERY
 ".Parse(new ParserOptions { Ignore = options });
             var defs = document.Definitions;
-            defs.Count.ShouldBe(7);
+            defs.Count.ShouldBe(8);
             var parseComments = options == IgnoreOptions.None;
+
+            var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
+            schemaDef.Description.Value.ShouldBe("Super schema");
+            if (parseComments)
+                schemaDef.Comment.Text.ShouldBe(" comment 0");
 
             var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
             scalarDef.Name.Value.ShouldBe("JSON");
@@ -833,11 +876,18 @@ directive @TestDirective (
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Descriptions_WithComments_Should_Read_Correctly_2(IgnoreOptions options)
         {
             using var document = @"
+""Super schema""
+# comment 1
+schema {
+  query: String
+}
+
 ""A JSON scalar""
 # comment 2
 scalar JSON
@@ -910,8 +960,13 @@ directive @TestDirective (
 ) on QUERY
 ".Parse(new ParserOptions { Ignore = options });
             var defs = document.Definitions;
-            defs.Count.ShouldBe(7);
+            defs.Count.ShouldBe(8);
             var parseComments = options == IgnoreOptions.None;
+
+            var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
+            schemaDef.Description.Value.ShouldBe("Super schema");
+            if (parseComments)
+                schemaDef.Comment.Text.ShouldBe(" comment 1");
 
             var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
             scalarDef.Name.Value.ShouldBe("JSON");
@@ -1005,11 +1060,18 @@ directive @TestDirective (
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Descriptions_WithComments_Should_Read_Correctly_3(IgnoreOptions options)
         {
             using var document = @"
+# comment 0
+""Super schema""
+schema {
+  query: String
+}
+
 # comment 1
 ""A JSON scalar""
 scalar JSON
@@ -1082,8 +1144,13 @@ directive @TestDirective (
 ) on QUERY
 ".Parse(new ParserOptions { Ignore = options });
             var defs = document.Definitions;
-            defs.Count.ShouldBe(7);
+            defs.Count.ShouldBe(8);
             var parseComments = options == IgnoreOptions.None;
+
+            var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
+            schemaDef.Description.Value.ShouldBe("Super schema");
+            if (parseComments)
+                schemaDef.Comment.Text.ShouldBe(" comment 0");
 
             var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
             scalarDef.Name.Value.ShouldBe("JSON");

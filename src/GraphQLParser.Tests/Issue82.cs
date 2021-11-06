@@ -15,8 +15,9 @@ namespace GraphQLParser.Tests
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Named_And_Literal_Variables(IgnoreOptions options)
         {
             using var document = _query.Parse(new ParserOptions { Ignore = options });

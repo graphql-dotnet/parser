@@ -2,10 +2,13 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode
+    public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHasDescriptionNode
     {
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
+
+        /// <inheritdoc/>
+        public GraphQLDescription? Description { get; set; }
 
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.SchemaDefinition;
