@@ -370,10 +370,10 @@ namespace GraphQLParser.Tests.Validation
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"contains unescaped \u0007 control char".Lex());
 
             exception.Message.ShouldBe(
-                "Syntax Error GraphQL (1:23) Invalid character within BlockString: \\u0007.\n" +
+                "Syntax Error GraphQL (1:23) Invalid character within block string: \\u0007.\n" +
                 "1: \"\"\"contains unescaped \\u0007 control char\n" +
                 "                         ^\n");
-            exception.Description.ShouldBe("Invalid character within BlockString: \\u0007.");
+            exception.Description.ShouldBe("Invalid character within block string: \\u0007.");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(23);
         }
@@ -412,10 +412,10 @@ namespace GraphQLParser.Tests.Validation
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"".Lex());
 
             exception.Message.ShouldBe(
-                "Syntax Error GraphQL (1:4) Unterminated string.\n" +
+                "Syntax Error GraphQL (1:4) Unterminated block string.\n" +
                 "1: \"\"\"\n" +
                 "      ^\n");
-            exception.Description.ShouldBe("Unterminated string.");
+            exception.Description.ShouldBe("Unterminated block string.");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(4);
         }
@@ -426,10 +426,10 @@ namespace GraphQLParser.Tests.Validation
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "\"\"\"no end triple-quote\"\"".Lex());
 
             exception.Message.ShouldBe(
-                "Syntax Error GraphQL (1:25) Unterminated string.\n" +
+                "Syntax Error GraphQL (1:25) Unterminated block string.\n" +
                 "1: \"\"\"no end triple-quote\"\"\n" +
                 "                           ^\n");
-            exception.Description.ShouldBe("Unterminated string.");
+            exception.Description.ShouldBe("Unterminated block string.");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(25);
         }
