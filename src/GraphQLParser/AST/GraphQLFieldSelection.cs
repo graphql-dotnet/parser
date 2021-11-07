@@ -20,6 +20,28 @@ namespace GraphQLParser.AST
         public GraphQLSelectionSet? SelectionSet { get; set; }
     }
 
+    internal sealed class GraphQLFieldSelectionWithLocation : GraphQLFieldSelection
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLFieldSelectionWithComment : GraphQLFieldSelection
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLFieldSelectionFull : GraphQLFieldSelection
     {
         private GraphQLLocation _location;

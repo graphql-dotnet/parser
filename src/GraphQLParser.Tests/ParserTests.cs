@@ -14,8 +14,9 @@ namespace GraphQLParser.Tests
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        //[InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
         public void Extra_Comments_Should_Read_Correctly(IgnoreOptions options)
         {
             string query = "ExtraComments".ReadGraphQLFile();
@@ -71,9 +72,10 @@ namespace GraphQLParser.Tests
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        //[InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
-        public void Comments_on_FragmentSpread_Should_Read_Correclty(IgnoreOptions options)
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_FragmentSpread_Should_Read_Correctly(IgnoreOptions options)
         {
             string query = "CommentsOnFragmentSpread".ReadGraphQLFile();
 
@@ -89,9 +91,55 @@ namespace GraphQLParser.Tests
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        //[InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
-        public void Comments_on_FragmentInline_Should_Read_Correclty(IgnoreOptions options)
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_Values_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnValues".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions.First() as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count.ShouldBe(1);
+            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            field.SelectionSet.Selections.Count.ShouldBe(1);
+            field.Arguments.Count.ShouldBe(9);
+
+            var boolValue = field.Arguments[0].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            boolValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for bool");
+
+            var nullValue = field.Arguments[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            nullValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for null");
+
+            var enumValue = field.Arguments[2].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            enumValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for enum");
+
+            var listValue = field.Arguments[3].Value.ShouldBeAssignableTo<GraphQLListValue>();
+            listValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for list");
+
+            var objValue = field.Arguments[4].Value.ShouldBeAssignableTo<GraphQLObjectValue>();
+            objValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for object");
+
+            var intValue = field.Arguments[5].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            intValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for int");
+
+            var floatValue = field.Arguments[6].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            floatValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for float");
+
+            var stringValue = field.Arguments[7].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            stringValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for string");
+
+            var varValue = field.Arguments[8].Value.ShouldBeAssignableTo<GraphQLVariable>();
+            varValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for variable");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_FragmentInline_Should_Read_Correctly(IgnoreOptions options)
         {
             string query = "CommentsOnInlineFragment".ReadGraphQLFile();
 
@@ -107,9 +155,10 @@ namespace GraphQLParser.Tests
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        //[InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
-        public void Comments_on_Variable_Should_Read_Correclty(IgnoreOptions options)
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_Variable_Should_Read_Correctly(IgnoreOptions options)
         {
             string query = "CommentsOnVariables".ReadGraphQLFile();
 
@@ -124,8 +173,9 @@ namespace GraphQLParser.Tests
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        //[InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
         public void Comments_On_SelectionSet_Should_Read_Correctly(IgnoreOptions options)
         {
             using var document = @"
@@ -147,9 +197,10 @@ query {
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        //[InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
-        public void Comments_On_Enums_Should_Read_Correctly(IgnoreOptions options)
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_On_Enum_Definitions_Should_Read_Correctly(IgnoreOptions options)
         {
             using var document = @"
 # different animals
@@ -352,20 +403,31 @@ scalar JSON
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        //[InlineData(IgnoreOptions.IgnoreComments)]
-        //[InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_KitchenSink_DoesNotThrowError(IgnoreOptions options)
         {
             using var document = "KitchenSink".ReadGraphQLFile().Parse(new ParserOptions { Ignore = options });
             var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
             var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
-            fieldDef.Comment.ShouldNotBeNull().Text.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
+            if (options.HasFlag(IgnoreOptions.Comments))
+                fieldDef.Comment.ShouldBeNull();
+            else
+                fieldDef.Comment.ShouldNotBeNull().Text.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
 
             // Schema description
             // https://github.com/graphql/graphql-spec/pull/466
             var comment = document.Definitions.OfType<GraphQLSchemaDefinition>().First().Comment;
-            comment.ShouldNotBeNull();
-            ((string)comment.Text).StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
+            if (options.HasFlag(IgnoreOptions.Comments))
+            {
+                comment.ShouldBeNull();
+            }
+            else
+            {
+                comment.ShouldNotBeNull();
+                ((string)comment.Text).StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
+            }
         }
 
         [Theory]
@@ -777,7 +839,7 @@ directive @TestDirective (
 ".Parse(new ParserOptions { Ignore = options });
             var defs = document.Definitions;
             defs.Count.ShouldBe(8);
-            var parseComments = options == IgnoreOptions.None;
+            var parseComments = !options.HasFlag(IgnoreOptions.Comments);
 
             var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
             schemaDef.Description.Value.ShouldBe("Super schema");
@@ -961,7 +1023,7 @@ directive @TestDirective (
 ".Parse(new ParserOptions { Ignore = options });
             var defs = document.Definitions;
             defs.Count.ShouldBe(8);
-            var parseComments = options == IgnoreOptions.None;
+            var parseComments = !options.HasFlag(IgnoreOptions.Comments);
 
             var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
             schemaDef.Description.Value.ShouldBe("Super schema");
@@ -1145,7 +1207,7 @@ directive @TestDirective (
 ".Parse(new ParserOptions { Ignore = options });
             var defs = document.Definitions;
             defs.Count.ShouldBe(8);
-            var parseComments = options == IgnoreOptions.None;
+            var parseComments = !options.HasFlag(IgnoreOptions.Comments);
 
             var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
             schemaDef.Description.Value.ShouldBe("Super schema");

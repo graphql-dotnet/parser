@@ -15,6 +15,28 @@ namespace GraphQLParser.AST
         public GraphQLNamedType? TypeCondition { get; set; }
     }
 
+    internal sealed class GraphQLInlineFragmentWithLocation : GraphQLInlineFragment
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLInlineFragmentWithComment : GraphQLInlineFragment
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLInlineFragmentFull : GraphQLInlineFragment
     {
         private GraphQLLocation _location;

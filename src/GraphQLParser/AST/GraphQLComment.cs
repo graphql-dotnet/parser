@@ -24,7 +24,7 @@ namespace GraphQLParser.AST
         //}
     }
 
-    internal class GraphQLCommentFull : GraphQLComment
+    internal class GraphQLCommentWithLocation : GraphQLComment
     {
         private GraphQLLocation _location;
 

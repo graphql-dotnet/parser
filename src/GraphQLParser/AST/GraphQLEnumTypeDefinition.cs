@@ -13,6 +13,28 @@ namespace GraphQLParser.AST
         public List<GraphQLEnumValueDefinition>? Values { get; set; }
     }
 
+    internal sealed class GraphQLEnumTypeDefinitionWithLocation : GraphQLEnumTypeDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLEnumTypeDefinitionWithComment : GraphQLEnumTypeDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLEnumTypeDefinitionFull : GraphQLEnumTypeDefinition
     {
         private GraphQLLocation _location;

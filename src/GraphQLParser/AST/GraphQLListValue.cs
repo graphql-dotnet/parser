@@ -22,10 +22,42 @@ namespace GraphQLParser.AST
         public override string ToString() => AstValue.ToString();
     }
 
+    internal sealed class GraphQLListValueWithLocation : GraphQLListValue
+    {
+        private GraphQLLocation _location;
+
+        public GraphQLListValueWithLocation(ASTNodeKind kind)
+            : base(kind)
+        {
+        }
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLListValueWithComment : GraphQLListValue
+    {
+        private GraphQLComment? _comment;
+
+        public GraphQLListValueWithComment(ASTNodeKind kind)
+            : base(kind)
+        {
+        }
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLListValueFull : GraphQLListValue
     {
         private GraphQLLocation _location;
-        //private GraphQLComment? _comment;
+        private GraphQLComment? _comment;
 
         public GraphQLListValueFull(ASTNodeKind kind)
             : base(kind)
@@ -38,11 +70,10 @@ namespace GraphQLParser.AST
             set => _location = value;
         }
 
-        // TODO: this property is not set anywhere (yet), so it makes no sense to create a field for it
-        //public override GraphQLComment? Comment
-        //{
-        //    get => _comment;
-        //    set => _comment = value;
-        //}
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
     }
 }

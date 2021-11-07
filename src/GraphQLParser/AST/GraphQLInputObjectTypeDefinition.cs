@@ -13,6 +13,28 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeDefinition;
     }
 
+    internal sealed class GraphQLInputObjectTypeDefinitionWithLocation : GraphQLInputObjectTypeDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLInputObjectTypeDefinitionWithComment : GraphQLInputObjectTypeDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLInputObjectTypeDefinitionFull : GraphQLInputObjectTypeDefinition
     {
         private GraphQLLocation _location;

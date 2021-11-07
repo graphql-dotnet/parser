@@ -55,6 +55,7 @@ namespace GraphQLParser.Tests
         [Theory]
         [InlineData(IgnoreOptions.None)]
         [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
         public void Visit_BooleanValueArgument_VisitsOneBooleanValue(IgnoreOptions options)
         {
@@ -67,6 +68,7 @@ namespace GraphQLParser.Tests
         [Theory]
         [InlineData(IgnoreOptions.None)]
         [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
         public void Visit_DefinitionWithSingleFragmentSpread_VisitsFragmentSpreadOneTime(IgnoreOptions options)
         {

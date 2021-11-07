@@ -20,6 +20,28 @@ namespace GraphQLParser.AST
         public List<GraphQLVariableDefinition>? VariableDefinitions { get; set; }
     }
 
+    internal sealed class GraphQLOperationDefinitionWithLocation : GraphQLOperationDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLOperationDefinitionWithComment : GraphQLOperationDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLOperationDefinitionFull : GraphQLOperationDefinition
     {
         private GraphQLLocation _location;

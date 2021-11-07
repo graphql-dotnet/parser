@@ -14,6 +14,28 @@ namespace GraphQLParser.AST
         public GraphQLName? Name { get; set; }
     }
 
+    internal sealed class GraphQLFragmentSpreadWithLocation : GraphQLFragmentSpread
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLFragmentSpreadWithComment : GraphQLFragmentSpread
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLFragmentSpreadFull : GraphQLFragmentSpread
     {
         private GraphQLLocation _location;

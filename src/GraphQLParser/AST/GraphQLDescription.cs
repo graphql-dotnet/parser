@@ -10,4 +10,15 @@ namespace GraphQLParser.AST
 
         public ROM Value { get; set; }
     }
+
+    internal sealed class GraphQLDescriptionWithLocation : GraphQLDescription
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
 }

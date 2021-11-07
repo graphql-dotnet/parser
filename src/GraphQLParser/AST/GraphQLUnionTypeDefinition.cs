@@ -13,6 +13,28 @@ namespace GraphQLParser.AST
         public List<GraphQLNamedType>? Types { get; set; }
     }
 
+    internal sealed class GraphQLUnionTypeDefinitionWithLocation : GraphQLUnionTypeDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLUnionTypeDefinitionWithComment : GraphQLUnionTypeDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLUnionTypeDefinitionFull : GraphQLUnionTypeDefinition
     {
         private GraphQLLocation _location;

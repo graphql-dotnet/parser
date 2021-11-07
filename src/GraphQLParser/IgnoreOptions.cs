@@ -19,7 +19,7 @@ namespace GraphQLParser
         Comments = 1,
 
         /// <summary>
-        /// Specifies whether to ignore  token locations when parsing GraphQL document.
+        /// Specifies whether to ignore token locations when parsing GraphQL document.
         /// </summary>
         Locations = 2,
 

@@ -1,0 +1,34 @@
+query q($id: ID) {
+    person(
+    valBool:
+    #comment for bool
+    true,
+    valNull:
+    #comment for null
+    null,
+    valEnum:
+    #comment for enum
+    RED,
+    valList:
+    #comment for list
+    [1,2,3],
+    valObj:
+    #comment for object
+    { a: 1 },
+    valInt:
+    #comment for int
+    7,
+    valFloat:
+    #comment for float
+    1.4,
+    valString:
+    #comment for string
+    "!#$",
+    valVariable:
+    #comment for variable
+    $id
+    )
+    {
+      a
+    }
+}

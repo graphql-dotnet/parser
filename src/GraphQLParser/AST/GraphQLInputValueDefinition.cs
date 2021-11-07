@@ -15,6 +15,28 @@ namespace GraphQLParser.AST
         public GraphQLType? Type { get; set; }
     }
 
+    internal sealed class GraphQLInputValueDefinitionWithLocation : GraphQLInputValueDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLInputValueDefinitionWithComment : GraphQLInputValueDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLInputValueDefinitionFull : GraphQLInputValueDefinition
     {
         private GraphQLLocation _location;

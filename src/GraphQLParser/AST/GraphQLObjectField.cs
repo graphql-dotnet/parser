@@ -11,6 +11,28 @@ namespace GraphQLParser.AST
         public GraphQLValue? Value { get; set; }
     }
 
+    internal sealed class GraphQLObjectFieldWithLocation : GraphQLObjectField
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLObjectFieldWithComment : GraphQLObjectField
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
     internal sealed class GraphQLObjectFieldFull : GraphQLObjectField
     {
         private GraphQLLocation _location;
