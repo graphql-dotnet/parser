@@ -27,17 +27,17 @@ namespace GraphQLParser.Tests
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(2);
             // person
-            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            var field = def.SelectionSet.Selections.First() as GraphQLField;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             // name
-            var subField = field.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            var subField = field.SelectionSet.Selections.First() as GraphQLField;
             subField.Comment.ShouldBeNull();
             // test
-            field = def.SelectionSet.Selections.Last() as GraphQLFieldSelection;
+            field = def.SelectionSet.Selections.Last() as GraphQLField;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             field.Comment.ShouldNotBeNull().Text.ShouldBe("comment2");
             // alt
-            subField = field.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            subField = field.SelectionSet.Selections.First() as GraphQLField;
             subField.Comment.ShouldBeNull();
             // extra document comments
             document.UnattachedComments.Count.ShouldBe(3);
@@ -66,7 +66,7 @@ namespace GraphQLParser.Tests
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
             def.Comment.ShouldBeNull();
-            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            var field = def.SelectionSet.Selections.First() as GraphQLField;
             field.Comment.ShouldBeNull();
         }
 
@@ -83,7 +83,7 @@ namespace GraphQLParser.Tests
             document.Definitions.Count.ShouldBe(2);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
-            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            var field = def.SelectionSet.Selections.First() as GraphQLField;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             var fragment = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
             fragment.Comment.ShouldNotBeNull().Text.ShouldBe("comment");
@@ -102,7 +102,7 @@ namespace GraphQLParser.Tests
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
-            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            var field = def.SelectionSet.Selections.First() as GraphQLField;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             field.Arguments.Count.ShouldBe(9);
 
@@ -147,10 +147,103 @@ namespace GraphQLParser.Tests
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.SelectionSet.Selections.Count.ShouldBe(1);
-            var field = def.SelectionSet.Selections.First() as GraphQLFieldSelection;
+            var field = def.SelectionSet.Selections.First() as GraphQLField;
             field.SelectionSet.Selections.Count.ShouldBe(1);
             var fragment = field.SelectionSet.Selections.First() as GraphQLInlineFragment;
             fragment.Comment.ShouldNotBeNull().Text.ShouldBe("comment");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_NamedTypes_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnNamedType".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(5);
+
+            var def1 = document.Definitions[0] as GraphQLOperationDefinition;
+            var field = def1.SelectionSet.Selections[0] as GraphQLField;
+            var frag = field.SelectionSet.Selections[0] as GraphQLInlineFragment;
+            frag.TypeCondition.Comment.Text.ShouldBe("comment for named type from TypeCondition");
+
+            var def2 = document.Definitions[1] as GraphQLObjectTypeDefinition;
+            def2.Interfaces[0].Comment.Text.ShouldBe("comment for named type from ImplementsInterfaces");
+
+            var def3 = document.Definitions[2] as GraphQLSchemaDefinition;
+            def3.OperationTypes[0].Type.Comment.Text.ShouldBe("comment for named type from RootOperationTypeDefinition");
+
+            var def4 = document.Definitions[3] as GraphQLObjectTypeDefinition;
+            def4.Fields[0].Type.Comment.Text.ShouldBe("comment for named type from Type");
+
+            var def5 = document.Definitions[4] as GraphQLUnionTypeDefinition;
+            def5.Types[1].Comment.Text.ShouldBe("comment for named type from UnionMemberTypes");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_SelectionSet_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnSelectionSet".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions[0] as GraphQLOperationDefinition;
+            def.SelectionSet.Comment.Text.ShouldBe("comment on selection set");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_RootOperationType_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnRootOperationType".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions[0] as GraphQLSchemaDefinition;
+            def.OperationTypes[0].Comment.Text.ShouldBe("comment for root operation type");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_Directive_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnDirective".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions[0] as GraphQLScalarTypeDefinition;
+            def.Directives[0].Comment.Text.ShouldBe("comment for directive");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_Type_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnType".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions[0] as GraphQLObjectTypeDefinition;
+            def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
+            def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
+            def.Fields[2].Type.Comment.Text.ShouldBe("comment for list type");
+            (def.Fields[2].Type as GraphQLListType).Type.Comment.Text.ShouldBe("comment for item type");
         }
 
         [Theory]
@@ -317,7 +410,7 @@ scalar JSON
         [InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
-        public void Parse_FieldInput_SelectionSetContainsSingleFieldSelection(IgnoreOptions options)
+        public void Parse_FieldInput_SelectionSetContainsSingleField(IgnoreOptions options)
         {
             using var document = ParseGraphQLFieldSource(options);
 

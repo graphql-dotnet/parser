@@ -7,7 +7,7 @@ namespace GraphQLParser
     /// </summary>
     public readonly struct Location
     {
-        private static readonly Regex _lineRegex = new Regex("\r\n|[\n\r]", RegexOptions.ECMAScript);
+        private static readonly Regex _lineRegex = new("\r\n|[\n\r]", RegexOptions.ECMAScript);
 
         /// <summary>
         /// Creates location from a given sequence of characters and a linear character position.

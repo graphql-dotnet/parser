@@ -13,7 +13,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.SchemaDefinition;
 
-        public List<GraphQLOperationTypeDefinition>? OperationTypes { get; set; }
+        public List<GraphQLRootOperationTypeDefinition>? OperationTypes { get; set; }
     }
 
     internal sealed class GraphQLSchemaDefinitionWithLocation : GraphQLSchemaDefinition

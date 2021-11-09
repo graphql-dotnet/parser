@@ -1,0 +1,33 @@
+# aaa
+
+query _ {
+    person {
+        ... on
+        #comment for named type from TypeCondition
+        human {
+            name
+        }
+    }
+}
+
+type A implements
+  #comment for named type from ImplementsInterfaces
+  B {
+  name : String
+}
+
+schema {
+  query:
+  #comment for named type from RootOperationTypeDefinition
+  Query
+}
+
+type Query {
+  field:
+  #comment for named type from Type
+  String
+}
+
+union U = A |
+#comment for named type from UnionMemberTypes
+B

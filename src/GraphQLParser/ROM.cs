@@ -47,7 +47,7 @@ namespace GraphQLParser
         }
 
         /// <inheritdoc/>
-        public override int GetHashCode() //TODO: find a better implementation
+        public override int GetHashCode() // TODO: find a better implementation
         {
             if (_memory.Length == 0)
                 return 0;
@@ -80,7 +80,7 @@ namespace GraphQLParser
         /// <summary>
         /// Implicitly casts ReadOnlyMemory&lt;char&gt; to <see cref="ROM"/>.
         /// </summary>
-        public static implicit operator ROM(ReadOnlyMemory<char> memory) => new ROM(memory);
+        public static implicit operator ROM(ReadOnlyMemory<char> memory) => new(memory);
 
         /// <summary>
         /// Implicitly casts <see cref="ROM"/> to ReadOnlyMemory&lt;char&gt;.
@@ -95,7 +95,7 @@ namespace GraphQLParser
         /// <summary>
         /// Implicitly casts Memory&lt;char&gt; to <see cref="ROM"/>.
         /// </summary>
-        public static implicit operator ROM(Memory<char> memory) => new ROM(memory);
+        public static implicit operator ROM(Memory<char> memory) => new(memory);
 
         /// <summary>
         /// Implicitly casts string to <see cref="ROM"/>.

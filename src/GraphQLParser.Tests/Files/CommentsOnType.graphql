@@ -1,0 +1,14 @@
+type Person {
+  name:
+  #comment for named type
+  String
+  age:
+  #comment for nonnull type
+  Int!
+  friends:
+  #comment for list type
+  [
+  #comment for item type
+  Person
+  ]
+}

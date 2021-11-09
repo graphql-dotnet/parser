@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
 
@@ -15,27 +16,28 @@ namespace GraphQLParser
         private List<GraphQLComment>? _unattachedComments;
         private Token _currentToken;
         private Token _prevToken;
-        private GraphQLDocument? _document;
+        private readonly GraphQLDocument _document;
 
         public ParserContext(ROM source, ParserOptions options)
         {
-            _document = null;
             _currentComment = null;
             _unattachedComments = null;
             _source = source;
             _ignoreOptions = options.Ignore;
-
-            _currentToken = Lexer.Lex(source);
-            _prevToken = new Token
+            // should create document beforehand to use RentedMemoryTracker while parsing coomments
+            _document = NodeHelper.CreateGraphQLDocument(options.Ignore);
+            _currentToken = _prevToken = new Token
             (
                 TokenKind.UNKNOWN,
                 default,
                 0,
                 0
             );
+
+            Advance();
         }
 
-        private GraphQLLocation GetLocation(int start)
+        private readonly GraphQLLocation GetLocation(int start)
         {
             return new GraphQLLocation
             (
@@ -49,8 +51,6 @@ namespace GraphQLParser
         {
             Expect(open);
 
-            ParseComment();
-
             List<T>? nodes = null;
             while (!Skip(close))
                 (nodes ??= new List<T>()).Add(next(ref this));
@@ -63,8 +63,6 @@ namespace GraphQLParser
         {
             Expect(open);
 
-            ParseComment();
-
             var nodes = new List<T> { next(ref this) };
             while (!Skip(close))
                 nodes.Add(next(ref this));
@@ -72,11 +70,11 @@ namespace GraphQLParser
             return nodes;
         }
 
-        private bool Peek(TokenKind kind) => _currentToken.Kind == kind;
+        private readonly bool Peek(TokenKind kind) => _currentToken.Kind == kind;
 
         private bool Skip(TokenKind kind)
         {
-            ParseComment();
+            Debug.Assert(kind != TokenKind.COMMENT && kind != TokenKind.UNKNOWN);
 
             bool isCurrentTokenMatching = _currentToken.Kind == kind;
 
@@ -88,13 +86,16 @@ namespace GraphQLParser
             return isCurrentTokenMatching;
         }
 
-        private void Advance()
+        private void Advance(bool fromParseComment = false)
         {
             // We should not advance further if we have already reached the EOF.
             if (_currentToken.Kind != TokenKind.EOF)
             {
                 _prevToken = _currentToken;
                 _currentToken = Lexer.Lex(_source, _currentToken.End);
+                // Comments may appear everywhere
+                if (!fromParseComment)
+                    ParseComment();
             }
         }
 
@@ -126,24 +127,6 @@ namespace GraphQLParser
         private void Throw_From_ExpectKeyword(string keyword)
         {
             throw new GraphQLSyntaxErrorException($"Expected \"{keyword}\", found Name \"{_currentToken.Value}\"", _source, _currentToken.Start);
-        }
-
-        private GraphQLNamedType ExpectOnKeywordAndParseNamedType()
-        {
-            ExpectKeyword("on");
-            return ParseNamedType();
-        }
-
-        private GraphQLType ExpectColonAndParseType()
-        {
-            Expect(TokenKind.COLON);
-            return ParseType();
-        }
-
-        private GraphQLValue ExpectColonAndParseValueLiteral(bool isConstant)
-        {
-            Expect(TokenKind.COLON);
-            return ParseValueLiteral(isConstant);
         }
     }
 }

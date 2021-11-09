@@ -1,26 +1,16 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
-    public class GraphQLFieldSelection : ASTNode, IHasDirectivesNode, INamedNode
+    public class GraphQLRootOperationTypeDefinition : ASTNode
     {
-        public GraphQLName? Alias { get; set; }
-
-        public List<GraphQLArgument>? Arguments { get; set; }
-
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.OperationTypeDefinition;
 
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.Field;
+        public OperationType Operation { get; set; }
 
-        /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
-
-        public GraphQLSelectionSet? SelectionSet { get; set; }
+        public GraphQLNamedType? Type { get; set; }
     }
 
-    internal sealed class GraphQLFieldSelectionWithLocation : GraphQLFieldSelection
+    internal sealed class GraphQLRootOperationTypeDefinitionWithLocation : GraphQLRootOperationTypeDefinition
     {
         private GraphQLLocation _location;
 
@@ -31,7 +21,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFieldSelectionWithComment : GraphQLFieldSelection
+    internal sealed class GraphQLRootOperationTypeDefinitionWithComment : GraphQLRootOperationTypeDefinition
     {
         private GraphQLComment? _comment;
 
@@ -42,7 +32,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFieldSelectionFull : GraphQLFieldSelection
+    internal sealed class GraphQLRootOperationTypeDefinitionFull : GraphQLRootOperationTypeDefinition
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

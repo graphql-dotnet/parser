@@ -15,7 +15,7 @@ namespace GraphQLParser.Tests
         private readonly List<ASTNode> _visitedDefinitions;
         private readonly List<GraphQLDirective> _visitedDirectives;
         private readonly List<GraphQLScalarValue> _visitedEnumValues;
-        private readonly List<GraphQLFieldSelection> _visitedFieldSelections;
+        private readonly List<GraphQLField> _visitedFields;
         private readonly List<GraphQLScalarValue> _visitedFloatValues;
         private readonly List<GraphQLFragmentDefinition> _visitedFragmentDefinitions;
         private readonly List<GraphQLFragmentSpread> _visitedFragmentSpreads;
@@ -35,7 +35,7 @@ namespace GraphQLParser.Tests
 
             _visitedDefinitions = MockVisitMethod<ASTNode>((visitor) => visitor.BeginVisitOperationDefinition(null));
             _visitedSelectionSets = MockVisitMethod<GraphQLSelectionSet>((visitor) => visitor.BeginVisitSelectionSet(null));
-            _visitedFieldSelections = MockVisitMethod<GraphQLFieldSelection>((visitor) => visitor.BeginVisitFieldSelection(null));
+            _visitedFields = MockVisitMethod<GraphQLField>((visitor) => visitor.BeginVisitField(null));
             _visitedNames = MockVisitMethod<GraphQLName>((visitor) => visitor.BeginVisitName(null));
             _visitedArguments = MockVisitMethod<GraphQLArgument>((visitor) => visitor.BeginVisitArgument(null));
             _visitedAliases = MockVisitMethod<GraphQLName>((visitor) => visitor.BeginVisitAlias(null));
@@ -205,7 +205,7 @@ namespace GraphQLParser.Tests
             using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
             _visitor.Visit(d);
 
-            _visitedFieldSelections.ShouldHaveSingleItem();
+            _visitedFields.ShouldHaveSingleItem();
         }
 
         [Theory]
@@ -356,12 +356,12 @@ namespace GraphQLParser.Tests
         [InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
-        public void Visit_TwoFieldSelections_VisitsFieldSelectionTwice(IgnoreOptions options)
+        public void Visit_TwoFields_VisitsFieldTwice(IgnoreOptions options)
         {
             using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
             _visitor.Visit(d);
 
-            _visitedFieldSelections.Count.ShouldBe(2);
+            _visitedFields.Count.ShouldBe(2);
         }
 
         [Theory]
@@ -369,7 +369,7 @@ namespace GraphQLParser.Tests
         [InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
-        public void Visit_TwoFieldSelections_VisitsTwoFieldNames(IgnoreOptions options)
+        public void Visit_TwoFields_VisitsTwoFieldNames(IgnoreOptions options)
         {
             using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
             _visitor.Visit(d);
@@ -382,7 +382,7 @@ namespace GraphQLParser.Tests
         [InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
-        public void Visit_TwoFieldSelections_VisitsTwoFieldNamesAndDefinitionName(IgnoreOptions options)
+        public void Visit_TwoFields_VisitsTwoFieldNamesAndDefinitionName(IgnoreOptions options)
         {
             using var d = "query foo { a, b }".Parse(new ParserOptions { Ignore = options });
             _visitor.Visit(d);
@@ -395,12 +395,12 @@ namespace GraphQLParser.Tests
         [InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
-        public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveFieldSelections(IgnoreOptions options)
+        public void Visit_TwoFieldsWithOneNested_VisitsFiveFields(IgnoreOptions options)
         {
             using var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
             _visitor.Visit(d);
 
-            _visitedFieldSelections.Count.ShouldBe(5);
+            _visitedFields.Count.ShouldBe(5);
         }
 
         [Theory]
@@ -408,7 +408,7 @@ namespace GraphQLParser.Tests
         [InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
-        public void Visit_TwoFieldSelectionsWithOneNested_VisitsFiveNames(IgnoreOptions options)
+        public void Visit_TwoFieldsWithOneNested_VisitsFiveNames(IgnoreOptions options)
         {
             using var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
             _visitor.Visit(d);

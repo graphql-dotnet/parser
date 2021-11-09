@@ -5,6 +5,8 @@ namespace GraphQLParser
 {
     internal static class NodeHelper
     {
+        #region ASTNodes that can not have comments, only locations
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GraphQLComment CreateGraphQLComment(IgnoreOptions options)
         {
@@ -40,6 +42,10 @@ namespace GraphQLParser
                 _ => new GraphQLDescriptionWithLocation(),
             };
         }
+
+        #endregion
+
+        #region ASTNodes that can have comments and locations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GraphQLArgument CreateGraphQLArgument(IgnoreOptions options)
@@ -150,14 +156,14 @@ namespace GraphQLParser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GraphQLOperationTypeDefinition CreateGraphQLOperationTypeDefinition(IgnoreOptions options)
+        public static GraphQLRootOperationTypeDefinition CreateGraphQLOperationTypeDefinition(IgnoreOptions options)
         {
             return options switch
             {
-                IgnoreOptions.All => new GraphQLOperationTypeDefinition(),
-                IgnoreOptions.Comments => new GraphQLOperationTypeDefinitionWithLocation(),
-                IgnoreOptions.Locations => new GraphQLOperationTypeDefinitionWithComment(),
-                _ => new GraphQLOperationTypeDefinitionFull(),
+                IgnoreOptions.All => new GraphQLRootOperationTypeDefinition(),
+                IgnoreOptions.Comments => new GraphQLRootOperationTypeDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLRootOperationTypeDefinitionWithComment(),
+                _ => new GraphQLRootOperationTypeDefinitionFull(),
             };
         }
 
@@ -222,14 +228,14 @@ namespace GraphQLParser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GraphQLFieldSelection CreateGraphQLFieldSelection(IgnoreOptions options)
+        public static GraphQLField CreateGraphQLField(IgnoreOptions options)
         {
             return options switch
             {
-                IgnoreOptions.All => new GraphQLFieldSelection(),
-                IgnoreOptions.Comments => new GraphQLFieldSelectionWithLocation(),
-                IgnoreOptions.Locations => new GraphQLFieldSelectionWithComment(),
-                _ => new GraphQLFieldSelectionFull(),
+                IgnoreOptions.All => new GraphQLField(),
+                IgnoreOptions.Comments => new GraphQLFieldWithLocation(),
+                IgnoreOptions.Locations => new GraphQLFieldWithComment(),
+                _ => new GraphQLFieldFull(),
             };
         }
 
@@ -412,5 +418,7 @@ namespace GraphQLParser
                 _ => new GraphQLInputValueDefinitionFull(),
             };
         }
+
+        #endregion
     }
 }

@@ -1,16 +1,26 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST
 {
-    public class GraphQLOperationTypeDefinition : ASTNode
+    public class GraphQLField : ASTNode, IHasDirectivesNode, INamedNode
     {
+        public GraphQLName? Alias { get; set; }
+
+        public List<GraphQLArgument>? Arguments { get; set; }
+
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.OperationTypeDefinition;
+        public List<GraphQLDirective>? Directives { get; set; }
 
-        public OperationType Operation { get; set; }
+        /// <inheritdoc/>
+        public override ASTNodeKind Kind => ASTNodeKind.Field;
 
-        public GraphQLNamedType? Type { get; set; }
+        /// <inheritdoc/>
+        public GraphQLName? Name { get; set; }
+
+        public GraphQLSelectionSet? SelectionSet { get; set; }
     }
 
-    internal sealed class GraphQLOperationTypeDefinitionWithLocation : GraphQLOperationTypeDefinition
+    internal sealed class GraphQLFieldWithLocation : GraphQLField
     {
         private GraphQLLocation _location;
 
@@ -21,7 +31,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLOperationTypeDefinitionWithComment : GraphQLOperationTypeDefinition
+    internal sealed class GraphQLFieldWithComment : GraphQLField
     {
         private GraphQLComment? _comment;
 
@@ -32,7 +42,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLOperationTypeDefinitionFull : GraphQLOperationTypeDefinition
+    internal sealed class GraphQLFieldFull : GraphQLField
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

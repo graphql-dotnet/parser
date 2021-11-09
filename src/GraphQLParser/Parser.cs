@@ -13,6 +13,7 @@ namespace GraphQLParser
         /// <param name="source">Input data as a sequence of characters.</param>
         /// <param name="options">Parser options.</param>
         /// <returns>AST (Abstract Syntax Tree) for GraphQL document.</returns>
-        public static GraphQLDocument Parse(ROM source, ParserOptions options = default) => new ParserContext(source, options).Parse();
+        public static GraphQLDocument Parse(ROM source, ParserOptions options = default)
+            => new ParserContext(source, options).ParseDocument();
     }
 }

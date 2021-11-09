@@ -1,0 +1,4 @@
+schema {
+  #comment for root operation type
+  query: Query
+}

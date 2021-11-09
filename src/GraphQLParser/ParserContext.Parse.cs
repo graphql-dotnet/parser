@@ -7,29 +7,60 @@ namespace GraphQLParser
     // WARNING: mutable struct, pass it by reference to those methods that will change it
     internal partial struct ParserContext
     {
-        public GraphQLDocument Parse() => ParseDocument();
-
-        private GraphQLNamedType? ParseTypeCondition()
+        // http://spec.graphql.org/October2021/#Document
+        public GraphQLDocument ParseDocument()
         {
-            GraphQLNamedType? typeCondition = null;
-            if (_currentToken.Value == "on")
-            {
-                Advance();
-                typeCondition = ParseNamedType();
-            }
 
-            return typeCondition;
+            int start = _currentToken.Start;
+            var definitions = ParseDefinitionsIfNotEOF();
+
+            SetCurrentComment(null); // push current (last) comment into _unattachedComments
+
+            _document.Location = new GraphQLLocation
+            (
+                start,
+                // Formally, to denote the end of the document, it is better to use _prevToken.End,
+                // since _prevToken represents some real meaningful token; _currentToken here is always EOF.
+                // EOF is a technical token with length = 0, _prevToken.End and _currentToken.End have the same value here.
+                _prevToken.End // equals to _currentToken.End (EOF)
+            );
+            _document.Definitions = definitions;
+            _document.UnattachedComments = _unattachedComments;
+            return _document;
         }
 
+        // http://spec.graphql.org/October2021/#TypeCondition
+        private GraphQLNamedType? ParseTypeCondition(bool optional)
+        {
+            if (optional)
+            {
+                GraphQLNamedType? typeCondition = null;
+                if (_currentToken.Value == "on")
+                {
+                    Advance();
+                    typeCondition = ParseNamedType();
+                }
+                return typeCondition;
+            }
+            else
+            {
+                ExpectKeyword("on");
+                return ParseNamedType();
+            }
+        }
+
+        // http://spec.graphql.org/October2021/#Argument
         private GraphQLArgument ParseArgument()
         {
             int start = _currentToken.Start;
-            var comment = GetComment();
 
             var arg = NodeHelper.CreateGraphQLArgument(_ignoreOptions);
+            arg.Comment = GetComment();
             arg.Name = ParseName();
-            arg.Value = ExpectColonAndParseValueLiteral(false);
-            arg.Comment = comment;
+
+            Expect(TokenKind.COLON);
+
+            arg.Value = ParseValueLiteral(false);
             arg.Location = GetLocation(start);
             return arg;
         }
@@ -69,22 +100,22 @@ namespace GraphQLParser
                 : null;
         }
 
-        private GraphQLValue ParseBooleanValue(Token token)
+        // http://spec.graphql.org/October2021/#BooleanValue
+        private GraphQLValue ParseBooleanValue()
         {
-            var comment = GetComment();
+            var token = _currentToken;
+            var val = NodeHelper.CreateGraphQLScalarValue(_ignoreOptions, ASTNodeKind.BooleanValue);
+            val.Comment = GetComment();
+
             Advance();
 
-            var val = NodeHelper.CreateGraphQLScalarValue(_ignoreOptions, ASTNodeKind.BooleanValue);
             val.Value = token.Value;
-            val.Comment = comment;
             val.Location = GetLocation(token.Start);
             return val;
         }
 
         private ASTNode ParseDefinition()
         {
-            ParseComment();
-
             if (Peek(TokenKind.BRACE_L))
             {
                 return ParseOperationDefinition();
@@ -128,21 +159,22 @@ namespace GraphQLParser
             return result;
         }
 
-        private GraphQLComment? ParseComment()
+        // http://spec.graphql.org/October2021/#Comment
+        private void ParseComment()
         {
             // skip comments
             if (_ignoreOptions.HasFlag(IgnoreOptions.Comments))
             {
                 while (Peek(TokenKind.COMMENT))
                 {
-                    Advance();
+                    Advance(fromParseComment: true);
                 }
-                return null;
+                return;
             }
 
             if (!Peek(TokenKind.COMMENT))
             {
-                return null;
+                return;
             }
 
             var text = new List<ROM>();
@@ -153,7 +185,7 @@ namespace GraphQLParser
             {
                 text.Add(_currentToken.Value);
                 end = _currentToken.End;
-                Advance();
+                Advance(fromParseComment: true);
             }
             while (_currentToken.Kind == TokenKind.COMMENT);
 
@@ -168,12 +200,10 @@ namespace GraphQLParser
             {
                 var (owner, result) = text.Concat();
                 comment.Text = result;
-                (_document!.RentedMemoryTracker ??= new List<(System.Buffers.IMemoryOwner<char>, ASTNode)>()).Add((owner, comment));
+                (_document.RentedMemoryTracker ??= new List<(System.Buffers.IMemoryOwner<char>, ASTNode)>()).Add((owner, comment));
             }
 
             SetCurrentComment(comment);
-
-            return comment;
         }
 
         private void SetCurrentComment(GraphQLComment? comment)
@@ -191,21 +221,23 @@ namespace GraphQLParser
             return ret;
         }
 
+        // http://spec.graphql.org/October2021/#Directive
         private GraphQLDirective ParseDirective()
         {
             int start = _currentToken.Start;
+            var dir = NodeHelper.CreateGraphQLDirective(_ignoreOptions);
+            dir.Comment = GetComment();
+
             Expect(TokenKind.AT);
 
-            var dir = NodeHelper.CreateGraphQLDirective(_ignoreOptions);
             dir.Name = ParseName();
             dir.Arguments = ParseArguments();
-            dir.Comment = null; //TODO: ????
             dir.Location = GetLocation(start);
             return dir;
         }
 
         /// <summary>
-        /// http://spec.graphql.org/draft/#DirectiveDefinition
+        /// http://spec.graphql.org/October2021/#DirectiveDefinition
         /// DirectiveDefinition:
         ///     Description(opt) directive @ Name ArgumentsDefinition(opt) repeatable(opt) on DirectiveLocations
         /// </summary>
@@ -217,7 +249,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             ExpectKeyword("directive");
@@ -282,6 +313,7 @@ namespace GraphQLParser
             return locations;
         }
 
+        // http://spec.graphql.org/October2021/#Directives
         private List<GraphQLDirective>? ParseDirectives()
         {
             List<GraphQLDirective>? directives = null;
@@ -291,28 +323,7 @@ namespace GraphQLParser
             return directives;
         }
 
-        private GraphQLDocument ParseDocument()
-        {
-            _document = NodeHelper.CreateGraphQLDocument(_ignoreOptions);
-
-            int start = _currentToken.Start;
-            var definitions = ParseDefinitionsIfNotEOF();
-
-            SetCurrentComment(null);
-
-            _document.Location = new GraphQLLocation
-            (
-                start,
-                // Formally, to denote the end of the document, it is better to use _prevToken.End,
-                // since _prevToken represents some real meaningful token; _currentToken here is always EOF.
-                // EOF is a technical token with length = 0, _prevToken.End and _currentToken.End have the same value here.
-                _prevToken.End // equals to _currentToken.End (EOF)
-            );
-            _document.Definitions = definitions;
-            _document.UnattachedComments = _unattachedComments;
-            return _document;
-        }
-
+        // http://spec.graphql.org/October2021/#EnumTypeDefinition
         private GraphQLEnumTypeDefinition ParseEnumTypeDefinition()
         {
             int start = _currentToken.Start;
@@ -320,7 +331,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             ExpectKeyword("enum");
@@ -335,18 +345,21 @@ namespace GraphQLParser
             return def;
         }
 
-        private GraphQLValue ParseEnumValue(Token token)
+        // http://spec.graphql.org/October2021/#EnumValue
+        private GraphQLValue ParseEnumValue()
         {
-            var comment = GetComment();
+            var token = _currentToken;
+            var val = NodeHelper.CreateGraphQLScalarValue(_ignoreOptions, ASTNodeKind.EnumValue);
+            val.Comment = GetComment();
+
             Advance();
 
-            var val = NodeHelper.CreateGraphQLScalarValue(_ignoreOptions, ASTNodeKind.EnumValue);
             val.Value = token.Value;
-            val.Comment = comment;
             val.Location = GetLocation(token.Start);
             return val;
         }
 
+        // http://spec.graphql.org/October2021/#EnumValueDefinition
         private GraphQLEnumValueDefinition ParseEnumValueDefinition()
         {
             int start = _currentToken.Start;
@@ -354,7 +367,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
 
@@ -367,6 +379,7 @@ namespace GraphQLParser
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#FieldDefinition
         private GraphQLFieldDefinition ParseFieldDefinition()
         {
             int start = _currentToken.Start;
@@ -374,7 +387,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
 
             var comment = GetComment();
@@ -393,7 +405,8 @@ namespace GraphQLParser
             return def;
         }
 
-        private GraphQLFieldSelection ParseFieldSelection()
+        // http://spec.graphql.org/October2021/#Field
+        private GraphQLField ParseField()
         {
             int start = _currentToken.Start;
             var comment = GetComment();
@@ -412,18 +425,19 @@ namespace GraphQLParser
                 name = nameOrAlias;
             }
 
-            var sel = NodeHelper.CreateGraphQLFieldSelection(_ignoreOptions);
-            sel.Alias = alias;
-            sel.Name = name;
-            sel.Arguments = ParseArguments();
-            sel.Directives = ParseDirectives();
-            sel.SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null;
-            sel.Comment = comment;
-            sel.Location = GetLocation(start);
-            return sel;
+            var field = NodeHelper.CreateGraphQLField(_ignoreOptions);
+            field.Alias = alias;
+            field.Name = name;
+            field.Arguments = ParseArguments();
+            field.Directives = ParseDirectives();
+            field.SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null;
+            field.Comment = comment;
+            field.Location = GetLocation(start);
+            return field;
         }
 
-        private GraphQLValue ParseFloat(/*bool isConstant*/)
+        // http://spec.graphql.org/October2021/#FloatValue
+        private GraphQLValue ParseFloatValue(/*bool isConstant*/)
         {
             var token = _currentToken;
             var comment = GetComment();
@@ -443,11 +457,12 @@ namespace GraphQLParser
             Expect(TokenKind.SPREAD);
 
             return Peek(TokenKind.NAME) && _currentToken.Value != "on"
-                ? CreateGraphQLFragmentSpread(start, comment)
-                : CreateInlineFragment(start, comment);
+                ? ParseFragmentSpread(start, comment)
+                : ParseInlineFragment(start, comment);
         }
 
-        private ASTNode CreateGraphQLFragmentSpread(int start, GraphQLComment? comment)
+        // http://spec.graphql.org/October2021/#FragmentSpread
+        private GraphQLFragmentSpread ParseFragmentSpread(int start, GraphQLComment? comment)
         {
             var spread = NodeHelper.CreateGraphQLFragmentSpread(_ignoreOptions);
             spread.Name = ParseFragmentName();
@@ -457,10 +472,11 @@ namespace GraphQLParser
             return spread;
         }
 
-        private ASTNode CreateInlineFragment(int start, GraphQLComment? comment)
+        // http://spec.graphql.org/October2021/#InlineFragment
+        private GraphQLInlineFragment ParseInlineFragment(int start, GraphQLComment? comment)
         {
             var frag = NodeHelper.CreateGraphQLInlineFragment(_ignoreOptions);
-            frag.TypeCondition = ParseTypeCondition();
+            frag.TypeCondition = ParseTypeCondition(optional: true);
             frag.Directives = ParseDirectives();
             frag.SelectionSet = ParseSelectionSet();
             frag.Comment = comment;
@@ -468,6 +484,7 @@ namespace GraphQLParser
             return frag;
         }
 
+        // http://spec.graphql.org/October2021/#FragmentDefinition
         private GraphQLFragmentDefinition ParseFragmentDefinition()
         {
             int start = _currentToken.Start;
@@ -476,7 +493,7 @@ namespace GraphQLParser
 
             var def = NodeHelper.CreateGraphQLFragmentDefinition(_ignoreOptions);
             def.Name = ParseFragmentName();
-            def.TypeCondition = ExpectOnKeywordAndParseNamedType();
+            def.TypeCondition = ParseTypeCondition(optional: false);
             def.Directives = ParseDirectives();
             def.SelectionSet = ParseSelectionSet();
             def.Comment = comment;
@@ -484,6 +501,7 @@ namespace GraphQLParser
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#FragmentName
         private GraphQLName ParseFragmentName()
         {
             if (_currentToken.Value == "on")
@@ -499,6 +517,7 @@ namespace GraphQLParser
             throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
+        // http://spec.graphql.org/October2021/#ImplementsInterfaces
         private List<GraphQLNamedType>? ParseImplementsInterfaces()
         {
             List<GraphQLNamedType>? types = null;
@@ -521,6 +540,7 @@ namespace GraphQLParser
             return types;
         }
 
+        // http://spec.graphql.org/October2021/#InputObjectTypeDefinition
         private GraphQLInputObjectTypeDefinition ParseInputObjectTypeDefinition()
         {
             int start = _currentToken.Start;
@@ -528,7 +548,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             ExpectKeyword("input");
@@ -543,6 +562,7 @@ namespace GraphQLParser
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#InputValueDefinition
         private GraphQLInputValueDefinition ParseInputValueDef()
         {
             int start = _currentToken.Start;
@@ -550,7 +570,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             var name = ParseName();
@@ -567,7 +586,8 @@ namespace GraphQLParser
             return def;
         }
 
-        private GraphQLValue ParseInt(/*bool isConstant*/)
+        // http://spec.graphql.org/October2021/#IntValue
+        private GraphQLValue ParseIntValue(/*bool isConstant*/)
         {
             var token = _currentToken;
             var comment = GetComment();
@@ -580,6 +600,7 @@ namespace GraphQLParser
             return val;
         }
 
+        // http://spec.graphql.org/October2021/#InterfaceTypeDefinition
         private GraphQLInterfaceTypeDefinition ParseInterfaceTypeDefinition()
         {
             int start = _currentToken.Start;
@@ -587,7 +608,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             ExpectKeyword("interface");
@@ -602,7 +622,8 @@ namespace GraphQLParser
             return def;
         }
 
-        private GraphQLValue ParseList(bool isConstant)
+        // http://spec.graphql.org/October2021/#ListValue
+        private GraphQLValue ParseListValue(bool isConstant)
         {
             int start = _currentToken.Start;
             var comment = GetComment();
@@ -619,6 +640,7 @@ namespace GraphQLParser
             return val;
         }
 
+        // http://spec.graphql.org/October2021/#Name
         private GraphQLName ParseName()
         {
             int start = _currentToken.Start;
@@ -723,12 +745,13 @@ namespace GraphQLParser
             return null;
         }
 
+        // http://spec.graphql.org/October2021/#NamedType
         private GraphQLNamedType ParseNamedType()
         {
             int start = _currentToken.Start;
             var named = NodeHelper.CreateGraphQLNamedType(_ignoreOptions);
+            named.Comment = GetComment();
             named.Name = ParseName();
-            named.Comment = null; //TODO: ????
             named.Location = GetLocation(start);
             return named;
         }
@@ -739,13 +762,13 @@ namespace GraphQLParser
 
             if (token.Value == "true" || token.Value == "false")
             {
-                return ParseBooleanValue(token);
+                return ParseBooleanValue();
             }
             else if (!token.Value.IsEmpty)
             {
                 return token.Value == "null"
-                    ? ParseNullValue(token)
-                    : ParseEnumValue(token);
+                    ? ParseNullValue()
+                    : ParseEnumValue();
             }
 
             return Throw_From_ParseNameValue();
@@ -756,7 +779,8 @@ namespace GraphQLParser
             throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
-        private GraphQLValue ParseObject(bool isConstant)
+        // http://spec.graphql.org/October2021/#ObjectValue
+        private GraphQLValue ParseObjectValue(bool isConstant)
         {
             int start = _currentToken.Start;
             var comment = GetComment();
@@ -768,24 +792,31 @@ namespace GraphQLParser
             return val;
         }
 
-        private GraphQLValue ParseNullValue(Token token)
+        // http://spec.graphql.org/October2021/#NullValue
+        private GraphQLValue ParseNullValue()
         {
-            var comment = GetComment();
-            Advance();
+            var token = _currentToken;
             var val = NodeHelper.CreateGraphQLScalarValue(_ignoreOptions, ASTNodeKind.NullValue);
+            val.Comment = GetComment();
             val.Value = token.Value;
-            val.Comment = comment;
+
+            Advance();
+
             val.Location = GetLocation(token.Start);
             return val;
         }
 
+        // http://spec.graphql.org/October2021/#ObjectField
         private GraphQLObjectField ParseObjectField(bool isConstant)
         {
             int start = _currentToken.Start;
             var comment = GetComment();
             var field = NodeHelper.CreateGraphQLObjectField(_ignoreOptions);
             field.Name = ParseName();
-            field.Value = ExpectColonAndParseValueLiteral(isConstant);
+
+            Expect(TokenKind.COLON);
+
+            field.Value = ParseValueLiteral(isConstant);
             field.Comment = comment;
             field.Location = GetLocation(start);
             return field;
@@ -802,6 +833,7 @@ namespace GraphQLParser
             return fields;
         }
 
+        // http://spec.graphql.org/October2021/#ObjectTypeDefinition
         private GraphQLObjectTypeDefinition ParseObjectTypeDefinition()
         {
             int start = _currentToken.Start;
@@ -809,7 +841,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
 
@@ -826,40 +857,33 @@ namespace GraphQLParser
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#OperationDefinition
         private ASTNode ParseOperationDefinition()
         {
             int start = _currentToken.Start;
-
-            return Peek(TokenKind.BRACE_L)
-                ? CreateOperationDefinition(start)
-                : CreateOperationDefinition(start, ParseOperationType(), Peek(TokenKind.NAME) ? ParseName() : null); // Peek(TokenKind.NAME) because of anonymous query
-        }
-
-        private ASTNode CreateOperationDefinition(int start)
-        {
-            var comment = GetComment();
             var def = NodeHelper.CreateGraphQLOperationDefinition(_ignoreOptions);
-            def.Operation = OperationType.Query;
-            def.SelectionSet = ParseSelectionSet();
-            def.Comment = comment;
-            def.Location = GetLocation(start);
-            return def;
+            def.Comment = GetComment();
+
+            if (Peek(TokenKind.BRACE_L))
+            {
+                def.Operation = OperationType.Query;
+                def.SelectionSet = ParseSelectionSet();
+                def.Location = GetLocation(start);
+                return def;
+            }
+            else
+            {
+                def.Operation = ParseOperationType();
+                def.Name = Peek(TokenKind.NAME) ? ParseName() : null; // Peek(TokenKind.NAME) because of anonymous query
+                def.VariableDefinitions = ParseVariableDefinitions();
+                def.Directives = ParseDirectives();
+                def.SelectionSet = ParseSelectionSet();
+                def.Location = GetLocation(start);
+                return def;
+            }
         }
 
-        private ASTNode CreateOperationDefinition(int start, OperationType operation, GraphQLName? name)
-        {
-            var comment = GetComment();
-            var def = NodeHelper.CreateGraphQLOperationDefinition(_ignoreOptions);
-            def.Operation = operation;
-            def.Name = name;
-            def.VariableDefinitions = ParseVariableDefinitions();
-            def.Directives = ParseDirectives();
-            def.SelectionSet = ParseSelectionSet();
-            def.Comment = comment;
-            def.Location = GetLocation(start);
-            return def;
-        }
-
+        // http://spec.graphql.org/October2021/#OperationType
         private OperationType ParseOperationType()
         {
             var token = _currentToken;
@@ -874,21 +898,22 @@ namespace GraphQLParser
             return OperationType.Query;
         }
 
-        private GraphQLOperationTypeDefinition ParseOperationTypeDefinition()
+        // http://spec.graphql.org/October2021/#RootOperationTypeDefinition
+        private GraphQLRootOperationTypeDefinition ParseRootOperationTypeDefinition()
         {
             int start = _currentToken.Start;
-            var operation = ParseOperationType();
-            Expect(TokenKind.COLON);
-            var type = ParseNamedType();
-
             var def = NodeHelper.CreateGraphQLOperationTypeDefinition(_ignoreOptions);
-            def.Operation = operation;
-            def.Type = type;
-            def.Comment = null; //TODO: ????
+            def.Comment = GetComment();
+            def.Operation = ParseOperationType();
+
+            Expect(TokenKind.COLON);
+
+            def.Type = ParseNamedType();
             def.Location = GetLocation(start);
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#ScalarTypeDefinition
         private GraphQLScalarTypeDefinition ParseScalarTypeDefinition()
         {
             int start = _currentToken.Start;
@@ -896,7 +921,6 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             ExpectKeyword("scalar");
@@ -912,6 +936,7 @@ namespace GraphQLParser
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#SchemaDefinition
         private GraphQLSchemaDefinition ParseSchemaDefinition()
         {
             int start = _currentToken.Start;
@@ -919,12 +944,11 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             ExpectKeyword("schema");
             var directives = ParseDirectives();
-            var operationTypes = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseOperationTypeDefinition(), TokenKind.BRACE_R);
+            var operationTypes = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseRootOperationTypeDefinition(), TokenKind.BRACE_R);
 
             var def = NodeHelper.CreateGraphQLSchemaDefinition(_ignoreOptions);
             def.Directives = directives;
@@ -935,24 +959,27 @@ namespace GraphQLParser
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#Selection
         private ASTNode ParseSelection()
         {
             return Peek(TokenKind.SPREAD) ?
                 ParseFragment() :
-                ParseFieldSelection();
+                ParseField();
         }
 
+        // http://spec.graphql.org/October2021/#SelectionSet
         private GraphQLSelectionSet ParseSelectionSet()
         {
             int start = _currentToken.Start;
             var selection = NodeHelper.CreateGraphQLSelectionSet(_ignoreOptions);
+            selection.Comment = GetComment();
             selection.Selections = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseSelection(), TokenKind.BRACE_R);
-            selection.Comment = null; //TODO: ???
             selection.Location = GetLocation(start);
             return selection;
         }
 
-        private GraphQLScalarValue ParseString(/*bool isConstant*/)
+        // http://spec.graphql.org/October2021/#StringValue
+        private GraphQLScalarValue ParseStringValue(/*bool isConstant*/)
         {
             var token = _currentToken;
             var comment = GetComment();
@@ -965,6 +992,7 @@ namespace GraphQLParser
             return val;
         }
 
+        // http://spec.graphql.org/October2021/#Description
         private GraphQLDescription ParseDescription()
         {
             var token = _currentToken;
@@ -975,17 +1003,22 @@ namespace GraphQLParser
             return descr;
         }
 
+        // http://spec.graphql.org/October2021/#Type
         private GraphQLType ParseType()
         {
             GraphQLType type;
             int start = _currentToken.Start;
-            if (Skip(TokenKind.BRACKET_L))
+            if (Peek(TokenKind.BRACKET_L))
             {
-                type = ParseType();
-                Expect(TokenKind.BRACKET_R);
                 var listType = NodeHelper.CreateGraphQLListType(_ignoreOptions);
-                listType.Type = type;
-                listType.Comment = null; //TODO: ???????????????
+                listType.Comment = GetComment();
+
+                Advance(); // skip BRACKET_L
+
+                listType.Type = ParseType();
+
+                Expect(TokenKind.BRACKET_R);
+
                 listType.Location = GetLocation(start);
                 type = listType;
             }
@@ -999,11 +1032,14 @@ namespace GraphQLParser
 
             var nonNull = NodeHelper.CreateGraphQLNonNullType(_ignoreOptions);
             nonNull.Type = type;
-            nonNull.Comment = null; /////TODO: ????
+            // move comment from wrapped type to wrapping type
+            nonNull.Comment = type.Comment;
+            type.Comment = null;
             nonNull.Location = GetLocation(start);
             return nonNull;
         }
 
+        // TODO: change name, spec does not containt term TypeExtensionDefinition
         private GraphQLTypeExtensionDefinition ParseTypeExtensionDefinition()
         {
             int start = _currentToken.Start;
@@ -1020,8 +1056,11 @@ namespace GraphQLParser
             return def;
         }
 
-        private List<GraphQLNamedType> ParseUnionMembers()
+        // http://spec.graphql.org/October2021/#UnionMemberTypes
+        private List<GraphQLNamedType> ParseUnionMemberTypes()
         {
+            Expect(TokenKind.EQUALS);
+
             var members = new List<GraphQLNamedType>();
 
             // Union members may be defined with an optional leading | character
@@ -1037,6 +1076,7 @@ namespace GraphQLParser
             return members;
         }
 
+        // http://spec.graphql.org/October2021/#UnionTypeDefinition
         private GraphQLUnionTypeDefinition ParseUnionTypeDefinition()
         {
             int start = _currentToken.Start;
@@ -1044,14 +1084,12 @@ namespace GraphQLParser
             if (Peek(TokenKind.STRING))
             {
                 description = ParseDescription();
-                ParseComment();
             }
             var comment = GetComment();
             ExpectKeyword("union");
             var name = ParseName();
             var directives = ParseDirectives();
-            Expect(TokenKind.EQUALS);
-            var types = ParseUnionMembers();
+            var types = ParseUnionMemberTypes();
 
             var def = NodeHelper.CreateGraphQLUnionTypeDefinition(_ignoreOptions);
             def.Name = name;
@@ -1065,15 +1103,13 @@ namespace GraphQLParser
 
         private GraphQLValue ParseValueLiteral(bool isConstant)
         {
-            ParseComment();
-
             return _currentToken.Kind switch
             {
-                TokenKind.BRACKET_L => ParseList(isConstant),
-                TokenKind.BRACE_L => ParseObject(isConstant),
-                TokenKind.INT => ParseInt(/*isConstant*/),
-                TokenKind.FLOAT => ParseFloat(/*isConstant*/),
-                TokenKind.STRING => ParseString(/*isConstant*/),
+                TokenKind.BRACKET_L => ParseListValue(isConstant),
+                TokenKind.BRACE_L => ParseObjectValue(isConstant),
+                TokenKind.INT => ParseIntValue(/*isConstant*/),
+                TokenKind.FLOAT => ParseFloatValue(/*isConstant*/),
+                TokenKind.STRING => ParseStringValue(/*isConstant*/),
                 TokenKind.NAME => ParseNameValue(/*isConstant*/),
                 TokenKind.DOLLAR when !isConstant => ParseVariable(),
                 _ => Throw_From_ParseValueLiteral()
@@ -1085,6 +1121,7 @@ namespace GraphQLParser
             throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}", _source, _currentToken.Start);
         }
 
+        // http://spec.graphql.org/October2021/#Variable
         private GraphQLVariable ParseVariable()
         {
             int start = _currentToken.Start;
@@ -1098,6 +1135,7 @@ namespace GraphQLParser
             return variable;
         }
 
+        // http://spec.graphql.org/October2021/#VariableDefinition
         private GraphQLVariableDefinition ParseVariableDefinition()
         {
             int start = _currentToken.Start;
@@ -1105,13 +1143,17 @@ namespace GraphQLParser
 
             var def = NodeHelper.CreateGraphQLVariableDefinition(_ignoreOptions);
             def.Variable = ParseVariable();
-            def.Type = ExpectColonAndParseType();
+
+            Expect(TokenKind.COLON);
+
+            def.Type = ParseType();
             def.DefaultValue = Skip(TokenKind.EQUALS) ? ParseValueLiteral(true) : null;
             def.Comment = comment;
             def.Location = GetLocation(start);
             return def;
         }
 
+        // http://spec.graphql.org/October2021/#VariableDefinitions
         private List<GraphQLVariableDefinition>? ParseVariableDefinitions()
         {
             return Peek(TokenKind.PAREN_L) ?
