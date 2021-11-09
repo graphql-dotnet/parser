@@ -24,7 +24,7 @@ namespace GraphQLParser
             _unattachedComments = null;
             _source = source;
             _ignoreOptions = options.Ignore;
-            // should create document beforehand to use RentedMemoryTracker while parsing coomments
+            // should create document beforehand to use RentedMemoryTracker while parsing comments
             _document = NodeHelper.CreateGraphQLDocument(options.Ignore);
             _currentToken = _prevToken = new Token
             (

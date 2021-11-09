@@ -10,7 +10,6 @@ namespace GraphQLParser
         // http://spec.graphql.org/October2021/#Document
         public GraphQLDocument ParseDocument()
         {
-
             int start = _currentToken.Start;
             var definitions = ParseDefinitionsIfNotEOF();
 
