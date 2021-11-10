@@ -1,0 +1,4 @@
+interface Dog
+interface Dog implements & Eat
+interface Dog implements Eat & Sleep
+interface Dog implements Eat & Sleep { name: String }

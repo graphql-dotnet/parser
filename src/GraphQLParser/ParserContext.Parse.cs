@@ -609,10 +609,12 @@ namespace GraphQLParser
                 description = ParseDescription();
             }
             var comment = GetComment();
+
             ExpectKeyword("interface");
 
             var def = NodeHelper.CreateGraphQLInterfaceTypeDefinition(_ignoreOptions);
             def.Name = ParseName();
+            def.Interfaces = ParseImplementsInterfaces();
             def.Directives = ParseDirectives();
             def.Fields = ParseFieldDefinitions();
             def.Description = description;

@@ -6,8 +6,12 @@ namespace GraphQLParser.AST
     [DebuggerDisplay("{Value}")]
     public class GraphQLDescription : ASTNode
     {
+        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Description;
 
+        /// <summary>
+        /// Description value represented as <see cref="ROM"/>.
+        /// </summary>
         public ROM Value { get; set; }
     }
 
