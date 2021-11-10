@@ -635,6 +635,23 @@ FIELD_DEFINITION
             document.Definitions[0].ShouldBeAssignableTo<GraphQLDirectiveDefinition>().Repeatable.ShouldBe(repeatable);
         }
 
+        // http://spec.graphql.org/October2021/#sec--specifiedBy
+        [Fact]
+        public void Should_Parse_SpecifiedBy()
+        {
+            string text = @"scalar UUID @specifiedBy(url: ""https://tools.ietf.org/html/rfc4122"")";
+            using var document = text.Parse();
+            document.ShouldNotBeNull();
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLScalarTypeDefinition>();
+            def.Directives.Count.ShouldBe(1);
+            def.Directives[0].Name.Value.ShouldBe("specifiedBy");
+            def.Directives[0].Arguments.Count.ShouldBe(1);
+            def.Directives[0].Arguments[0].Name.Value.ShouldBe("url");
+            var value = def.Directives[0].Arguments[0].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            value.Value.ShouldBe("https://tools.ietf.org/html/rfc4122");
+
+        }
         [Theory]
         [InlineData("directive @dir On FIELD_DEFINITION")]
         [InlineData("directive @dir onn FIELD_DEFINITION")]
