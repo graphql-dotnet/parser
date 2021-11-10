@@ -4,7 +4,7 @@ using GraphQLParser.AST;
 
 namespace GraphQLParser
 {
-    public class GraphQLAstVisitor //TODO: not used
+    public class GraphQLAstVisitor // TODO: not used
     {
         protected IDictionary<string, GraphQLFragmentDefinition> Fragments { get; private set; }
 
@@ -57,7 +57,7 @@ namespace GraphQLParser
 
         public virtual GraphQLScalarValue BeginVisitEnumValue(GraphQLScalarValue value) => value;
 
-        public virtual GraphQLFieldSelection BeginVisitFieldSelection(GraphQLFieldSelection selection)
+        public virtual GraphQLField BeginVisitField(GraphQLField selection)
         {
             BeginVisitNode(selection.Name);
 
@@ -73,7 +73,7 @@ namespace GraphQLParser
             if (selection.Directives != null)
                 BeginVisitDirectives(selection.Directives);
 
-            return EndVisitFieldSelection(selection);
+            return EndVisitField(selection);
         }
 
         public virtual GraphQLScalarValue BeginVisitFloatValue(GraphQLScalarValue value) => value;
@@ -119,7 +119,7 @@ namespace GraphQLParser
         {
             ASTNodeKind.OperationDefinition => BeginVisitOperationDefinition((GraphQLOperationDefinition)node),
             ASTNodeKind.SelectionSet => BeginVisitSelectionSet((GraphQLSelectionSet)node),
-            ASTNodeKind.Field => BeginVisitNonIntrospectionFieldSelection((GraphQLFieldSelection)node),
+            ASTNodeKind.Field => BeginVisitNonIntrospectionField((GraphQLField)node),
             ASTNodeKind.Name => BeginVisitName((GraphQLName)node),
             ASTNodeKind.Argument => BeginVisitArgument((GraphQLArgument)node),
             ASTNodeKind.FragmentSpread => BeginVisitFragmentSpread((GraphQLFragmentSpread)node),
@@ -193,7 +193,7 @@ namespace GraphQLParser
 
         public virtual GraphQLArgument EndVisitArgument(GraphQLArgument argument) => argument;
 
-        public virtual GraphQLFieldSelection EndVisitFieldSelection(GraphQLFieldSelection selection) => selection;
+        public virtual GraphQLField EndVisitField(GraphQLField selection) => selection;
 
         public virtual GraphQLVariable EndVisitVariable(GraphQLVariable variable) => variable;
 
@@ -206,7 +206,7 @@ namespace GraphQLParser
                     if (definition.Kind == ASTNodeKind.FragmentDefinition)
                     {
                         var fragment = (GraphQLFragmentDefinition)definition;
-                        string? name = fragment.Name?.Value.ToString(); //TODO: heap allocation
+                        string? name = fragment.Name?.Value.ToString(); // TODO: heap allocation
                         if (name == null)
                             throw new InvalidOperationException("Fragment name cannot be null");
 
@@ -256,9 +256,9 @@ namespace GraphQLParser
             return EndVisitListValue(node);
         }
 
-        private ASTNode BeginVisitNonIntrospectionFieldSelection(GraphQLFieldSelection selection)
+        private ASTNode BeginVisitNonIntrospectionField(GraphQLField selection)
         {
-            return BeginVisitFieldSelection(selection);
+            return BeginVisitField(selection);
         }
     }
 }

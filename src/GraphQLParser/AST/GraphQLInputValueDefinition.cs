@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLInputValueDefinition : GraphQLTypeDefinitionWithDescription, IHasDirectivesNode
+    public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
         public GraphQLValue? DefaultValue { get; set; }
 
@@ -13,6 +13,28 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.InputValueDefinition;
 
         public GraphQLType? Type { get; set; }
+    }
+
+    internal sealed class GraphQLInputValueDefinitionWithLocation : GraphQLInputValueDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLInputValueDefinitionWithComment : GraphQLInputValueDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
     }
 
     internal sealed class GraphQLInputValueDefinitionFull : GraphQLInputValueDefinition

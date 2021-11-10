@@ -1,17 +1,16 @@
 namespace GraphQLParser.AST
 {
-    public class GraphQLObjectField : ASTNode, INamedNode
+    public class GraphQLRootOperationTypeDefinition : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectField;
+        public override ASTNodeKind Kind => ASTNodeKind.OperationTypeDefinition;
 
-        /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public OperationType Operation { get; set; }
 
-        public GraphQLValue? Value { get; set; }
+        public GraphQLNamedType? Type { get; set; }
     }
 
-    internal sealed class GraphQLObjectFieldWithLocation : GraphQLObjectField
+    internal sealed class GraphQLRootOperationTypeDefinitionWithLocation : GraphQLRootOperationTypeDefinition
     {
         private GraphQLLocation _location;
 
@@ -22,7 +21,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectFieldWithComment : GraphQLObjectField
+    internal sealed class GraphQLRootOperationTypeDefinitionWithComment : GraphQLRootOperationTypeDefinition
     {
         private GraphQLComment? _comment;
 
@@ -33,7 +32,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectFieldFull : GraphQLObjectField
+    internal sealed class GraphQLRootOperationTypeDefinitionFull : GraphQLRootOperationTypeDefinition
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

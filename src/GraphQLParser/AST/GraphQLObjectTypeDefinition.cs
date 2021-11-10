@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLObjectTypeDefinition : GraphQLTypeDefinitionWithDescription, IHasDirectivesNode
+    public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
@@ -13,6 +13,28 @@ namespace GraphQLParser.AST
 
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeDefinition;
+    }
+
+    internal sealed class GraphQLObjectTypeDefinitionWithLocation : GraphQLObjectTypeDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLObjectTypeDefinitionWithComment : GraphQLObjectTypeDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
     }
 
     internal sealed class GraphQLObjectTypeDefinitionFull : GraphQLObjectTypeDefinition

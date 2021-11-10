@@ -5,7 +5,7 @@ namespace GraphQLParser.AST
     /// <summary>
     /// Represents a directive definition.
     /// </summary>
-    public class GraphQLDirectiveDefinition : GraphQLTypeDefinitionWithDescription
+    public class GraphQLDirectiveDefinition : GraphQLTypeDefinition
     {
         public List<GraphQLInputValueDefinition>? Arguments { get; set; }
 
@@ -26,6 +26,28 @@ namespace GraphQLParser.AST
         /// provided to a type or schema extension via a directive
         /// </summary>
         public bool Repeatable { get; set; }
+    }
+
+    internal sealed class GraphQLDirectiveDefinitionWithLocation : GraphQLDirectiveDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLDirectiveDefinitionWithComment : GraphQLDirectiveDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
     }
 
     internal sealed class GraphQLDirectiveDefinitionFull : GraphQLDirectiveDefinition

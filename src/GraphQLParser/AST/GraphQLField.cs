@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLFieldSelection : ASTNode, IHasDirectivesNode, INamedNode
+    public class GraphQLField : ASTNode, IHasDirectivesNode, INamedNode
     {
         public GraphQLName? Alias { get; set; }
 
@@ -20,7 +20,29 @@ namespace GraphQLParser.AST
         public GraphQLSelectionSet? SelectionSet { get; set; }
     }
 
-    internal sealed class GraphQLFieldSelectionFull : GraphQLFieldSelection
+    internal sealed class GraphQLFieldWithLocation : GraphQLField
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLFieldWithComment : GraphQLField
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
+
+    internal sealed class GraphQLFieldFull : GraphQLField
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

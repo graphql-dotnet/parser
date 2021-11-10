@@ -15,8 +15,9 @@ namespace GraphQLParser.Tests
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Named_And_Literal_Variables(IgnoreOptions options)
         {
             using var document = _query.Parse(new ParserOptions { Ignore = options });
@@ -26,7 +27,7 @@ namespace GraphQLParser.Tests
             def.VariableDefinitions[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
             def.VariableDefinitions[0].Variable.Name.Value.ShouldBe("username");
 
-            var selection = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLFieldSelection>();
+            var selection = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
             selection.Arguments.Count.ShouldBe(2);
             selection.Arguments[0].Value.ShouldBeAssignableTo<GraphQLVariable>().Name.Value.ShouldBe("username");
             selection.Arguments[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>().Value.ShouldBe("Pete");

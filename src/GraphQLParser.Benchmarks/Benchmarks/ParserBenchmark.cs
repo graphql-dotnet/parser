@@ -28,9 +28,10 @@ namespace GraphQLParser.Benchmarks
                 private static int GetOrder(object o) => o switch
                 {
                     IgnoreOptions.None => 1,
-                    IgnoreOptions.IgnoreComments => 2,
-                    IgnoreOptions.IgnoreCommentsAndLocations => 3,
-                    _ => 4
+                    IgnoreOptions.Comments => 2,
+                    IgnoreOptions.Locations => 3,
+                    IgnoreOptions.All => 4,
+                    _ => 5
                 };
 
                 public IEnumerable<BenchmarkCase> GetExecutionOrder(ImmutableArray<BenchmarkCase> benchmarksCase) => benchmarksCase;
@@ -62,32 +63,39 @@ namespace GraphQLParser.Benchmarks
         public IEnumerable<object[]> NamesAndOptions()
         {
             yield return new object[] { "hero", IgnoreOptions.None };
-            yield return new object[] { "hero", IgnoreOptions.IgnoreComments };
-            yield return new object[] { "hero", IgnoreOptions.IgnoreCommentsAndLocations };
+            yield return new object[] { "hero", IgnoreOptions.Comments };
+            yield return new object[] { "hero", IgnoreOptions.Locations };
+            yield return new object[] { "hero", IgnoreOptions.All };
 
             yield return new object[] { "escapes", IgnoreOptions.None };
-            yield return new object[] { "escapes", IgnoreOptions.IgnoreComments };
-            yield return new object[] { "escapes", IgnoreOptions.IgnoreCommentsAndLocations };
+            yield return new object[] { "escapes", IgnoreOptions.Comments };
+            yield return new object[] { "escapes", IgnoreOptions.Locations };
+            yield return new object[] { "escapes", IgnoreOptions.All };
 
             yield return new object[] { "kitchen", IgnoreOptions.None };
-            yield return new object[] { "kitchen", IgnoreOptions.IgnoreComments };
-            yield return new object[] { "kitchen", IgnoreOptions.IgnoreCommentsAndLocations };
+            yield return new object[] { "kitchen", IgnoreOptions.Comments };
+            yield return new object[] { "kitchen", IgnoreOptions.Locations };
+            yield return new object[] { "kitchen", IgnoreOptions.All };
 
             yield return new object[] { "introspection", IgnoreOptions.None };
-            yield return new object[] { "introspection", IgnoreOptions.IgnoreComments };
-            yield return new object[] { "introspection", IgnoreOptions.IgnoreCommentsAndLocations };
+            yield return new object[] { "introspection", IgnoreOptions.Comments };
+            yield return new object[] { "introspection", IgnoreOptions.Locations };
+            yield return new object[] { "introspection", IgnoreOptions.All };
 
             yield return new object[] { "params", IgnoreOptions.None };
-            yield return new object[] { "params", IgnoreOptions.IgnoreComments };
-            yield return new object[] { "params", IgnoreOptions.IgnoreCommentsAndLocations };
+            yield return new object[] { "params", IgnoreOptions.Comments };
+            yield return new object[] { "params", IgnoreOptions.Locations };
+            yield return new object[] { "params", IgnoreOptions.All };
 
             yield return new object[] { "variables", IgnoreOptions.None };
-            yield return new object[] { "variables", IgnoreOptions.IgnoreComments };
-            yield return new object[] { "variables", IgnoreOptions.IgnoreCommentsAndLocations };
+            yield return new object[] { "variables", IgnoreOptions.Comments };
+            yield return new object[] { "variables", IgnoreOptions.Locations };
+            yield return new object[] { "variables", IgnoreOptions.All };
 
             yield return new object[] { "github", IgnoreOptions.None };
-            yield return new object[] { "github", IgnoreOptions.IgnoreComments };
-            yield return new object[] { "github", IgnoreOptions.IgnoreCommentsAndLocations };
+            yield return new object[] { "github", IgnoreOptions.Comments };
+            yield return new object[] { "github", IgnoreOptions.Locations };
+            yield return new object[] { "github", IgnoreOptions.All };
         }
 
         public override void Run() => Parse("params", IgnoreOptions.None);

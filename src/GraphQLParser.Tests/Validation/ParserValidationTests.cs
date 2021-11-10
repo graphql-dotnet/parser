@@ -8,8 +8,9 @@ namespace GraphQLParser.Tests.Validation
     {
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_FragmentInvalidOnName_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "fragment on on on { on }".Parse(new ParserOptions { Ignore = options }));
@@ -25,8 +26,9 @@ namespace GraphQLParser.Tests.Validation
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_InvalidDefaultValue_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "query Foo($x: Complex = { a: { b: [ $var ] } }) { field }".Parse(new ParserOptions { Ignore = options }));
@@ -42,8 +44,9 @@ namespace GraphQLParser.Tests.Validation
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_InvalidFragmentNameInSpread_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "{ ...on }".Parse(new ParserOptions { Ignore = options }));
@@ -59,8 +62,9 @@ namespace GraphQLParser.Tests.Validation
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_LonelySpread_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "...".Parse(new ParserOptions { Ignore = options }));
@@ -76,8 +80,9 @@ namespace GraphQLParser.Tests.Validation
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_MissingEndingBrace_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "{".Parse(new ParserOptions { Ignore = options }));
@@ -93,8 +98,9 @@ namespace GraphQLParser.Tests.Validation
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_MissingFieldNameWhenAliasing_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "{ field: {} }".Parse(new ParserOptions { Ignore = options }));
@@ -110,8 +116,9 @@ namespace GraphQLParser.Tests.Validation
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_MissingFragmentType_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "{ ...MissingOn }\nfragment MissingOn Type".Parse(new ParserOptions { Ignore = options }));
@@ -128,8 +135,9 @@ namespace GraphQLParser.Tests.Validation
 
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_UnknownOperation_ThrowsExceptionWithCorrectMessage(IgnoreOptions options)
         {
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "notanoperation Foo { field }".Parse(new ParserOptions { Ignore = options }));

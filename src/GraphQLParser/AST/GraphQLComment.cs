@@ -6,7 +6,6 @@ namespace GraphQLParser.AST
     [DebuggerDisplay("{Text}")]
     public class GraphQLComment : ASTNode
     {
-        private GraphQLLocation _location;
         //private GraphQLComment? _comment;
 
         /// <inheritdoc/>
@@ -17,17 +16,22 @@ namespace GraphQLParser.AST
         /// </summary>
         public ROM Text { get; set; }
 
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-
         // Comment itself can't have a comment
         //public override GraphQLComment? Comment
         //{
         //    get => _comment;
         //    set => _comment = value;
         //}
+    }
+
+    internal class GraphQLCommentWithLocation : GraphQLComment
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
     }
 }

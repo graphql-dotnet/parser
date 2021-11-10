@@ -1,8 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>7.2.0-preview</VersionPrefix>
-    <LangVersion>8.0</LangVersion>
+    <VersionPrefix>8.0.0-preview</VersionPrefix>
+    <LangVersion>9.0</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

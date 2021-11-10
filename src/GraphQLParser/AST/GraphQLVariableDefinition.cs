@@ -12,6 +12,27 @@ namespace GraphQLParser.AST
         public GraphQLVariable? Variable { get; set; }
     }
 
+    internal sealed class GraphQLVariableDefinitionWithLocation : GraphQLVariableDefinition
+    {
+        private GraphQLLocation _location;
+
+        public override GraphQLLocation Location
+        {
+            get => _location;
+            set => _location = value;
+        }
+    }
+
+    internal sealed class GraphQLVariableDefinitionWithComment : GraphQLVariableDefinition
+    {
+        private GraphQLComment? _comment;
+
+        public override GraphQLComment? Comment
+        {
+            get => _comment;
+            set => _comment = value;
+        }
+    }
     internal sealed class GraphQLVariableDefinitionFull : GraphQLVariableDefinition
     {
         private GraphQLLocation _location;

@@ -9,8 +9,9 @@ namespace GraphQLParser.Tests
     {
         [Theory]
         [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.IgnoreComments)]
-        [InlineData(IgnoreOptions.IgnoreCommentsAndLocations)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void TestSchemaWithTwoInterfaceImplemented(IgnoreOptions options)
         {
             string query = @"
