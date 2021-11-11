@@ -5,6 +5,9 @@ using Xunit;
 
 namespace GraphQLParser.ApiTests
 {
+    /// <summary>
+    /// Tests to verify public API surface.
+    /// </summary>
     public class ApiApprovalTests
     {
         [Theory]

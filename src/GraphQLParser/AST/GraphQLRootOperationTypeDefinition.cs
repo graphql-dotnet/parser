@@ -3,7 +3,7 @@ namespace GraphQLParser.AST
     public class GraphQLRootOperationTypeDefinition : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.OperationTypeDefinition;
+        public override ASTNodeKind Kind => ASTNodeKind.RootOperationTypeDefinition;
 
         public OperationType Operation { get; set; }
 

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5</TargetFramework>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -34,7 +34,7 @@ namespace GraphQLParser.AST
         NonNullType = 22,
         NullValue = 23,
         SchemaDefinition = 24,
-        OperationTypeDefinition = 25,
+        RootOperationTypeDefinition = 25,
         ScalarTypeDefinition = 26,
         ObjectTypeDefinition = 27,
         FieldDefinition = 28,
@@ -164,6 +164,7 @@ namespace GraphQLParser.AST
         public GraphQLInterfaceTypeDefinition() { }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLFieldDefinition>? Fields { get; set; }
+        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Interfaces { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLListType : GraphQLParser.AST.GraphQLType

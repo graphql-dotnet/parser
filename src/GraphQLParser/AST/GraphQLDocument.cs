@@ -16,6 +16,9 @@ namespace GraphQLParser.AST
 
         public List<ASTNode>? Definitions { get; set; }
 
+        /// <summary>
+        /// Comments that have not been correlated to any AST node of GraphQL document.
+        /// </summary>
         public List<GraphQLComment>? UnattachedComments { get; set; }
 
         /// <inheritdoc/>

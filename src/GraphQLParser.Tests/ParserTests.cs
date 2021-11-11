@@ -650,8 +650,54 @@ FIELD_DEFINITION
             def.Directives[0].Arguments[0].Name.Value.ShouldBe("url");
             var value = def.Directives[0].Arguments[0].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
             value.Value.ShouldBe("https://tools.ietf.org/html/rfc4122");
-
         }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
+        public void Should_Fail_On_Empty_Fields(IgnoreOptions options)
+        {
+            string text = "interface Dog { }";
+            Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse(new ParserOptions { Ignore = options })).Message.ShouldContain("Expected Name, found }");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
+        public void Should_Parse_Interfaces_Implemented_By_Interface(IgnoreOptions options)
+        {
+            string text = "InterfacesOnInterface".ReadGraphQLFile();
+
+            using var document = text.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(4);
+            var def1 = document.Definitions[0].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
+            def1.Name.Value.ShouldBe("Dog");
+            def1.Interfaces.ShouldBeNull();
+
+            var def2 = document.Definitions[1].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
+            def2.Name.Value.ShouldBe("Dog");
+            def2.Interfaces.Count.ShouldBe(1);
+            def2.Interfaces[0].Name.Value.ShouldBe("Eat");
+
+            var def3 = document.Definitions[2].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
+            def3.Name.Value.ShouldBe("Dog");
+            def3.Interfaces.Count.ShouldBe(2);
+            def3.Interfaces[0].Name.Value.ShouldBe("Eat");
+            def3.Interfaces[1].Name.Value.ShouldBe("Sleep");
+
+            var def4 = document.Definitions[3].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
+            def4.Name.Value.ShouldBe("Dog");
+            def4.Interfaces.Count.ShouldBe(2);
+            def4.Interfaces[0].Name.Value.ShouldBe("Eat");
+            def4.Interfaces[1].Name.Value.ShouldBe("Sleep");
+            def4.Fields.Count.ShouldBe(1);
+            def4.Fields[0].Name.Value.ShouldBe("name");
+        }
+
         [Theory]
         [InlineData("directive @dir On FIELD_DEFINITION")]
         [InlineData("directive @dir onn FIELD_DEFINITION")]
