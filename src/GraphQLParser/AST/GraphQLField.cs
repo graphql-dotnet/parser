@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLField : ASTNode, IHasDirectivesNode, INamedNode
+    public class GraphQLField : ASTNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
     {
         public GraphQLName? Alias { get; set; }
 

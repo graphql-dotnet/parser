@@ -552,6 +552,25 @@ scalar JSON
         [InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         [InlineData(IgnoreOptions.All)]
+        public void Should_Read_Directives_on_VariableDefinition(IgnoreOptions options)
+        {
+            using (var document = "query A($id: String @a @b(priority: 1, managed: true)) { name }".Parse(new ParserOptions { Ignore = options }))
+            {
+                document.Definitions.Count.ShouldBe(1);
+                var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLOperationDefinition>();
+                def.VariableDefinitions.Count.ShouldBe(1);
+                def.VariableDefinitions[0].Directives.Count.ShouldBe(2);
+                def.VariableDefinitions[0].Directives[0].Name.Value.ShouldBe("a");
+                def.VariableDefinitions[0].Directives[1].Name.Value.ShouldBe("b");
+                def.VariableDefinitions[0].Directives[1].Arguments.Count.ShouldBe(2);
+            }
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
         public void Parse_Empty_Field_Arguments_Should_Throw(IgnoreOptions options)
         {
             Should.Throw<GraphQLSyntaxErrorException>(() => "{ a() }".Parse(new ParserOptions { Ignore = options }));

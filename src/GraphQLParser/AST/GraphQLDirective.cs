@@ -5,7 +5,7 @@ namespace GraphQLParser.AST
     /// <summary>
     /// Represents a directive, applied to some GraphQL element.
     /// </summary>
-    public class GraphQLDirective : ASTNode, INamedNode
+    public class GraphQLDirective : ASTNode, INamedNode, IHasArgumentsNode
     {
         public List<GraphQLArgument>? Arguments { get; set; }
 

@@ -1149,6 +1149,7 @@ namespace GraphQLParser
 
             def.Type = ParseType();
             def.DefaultValue = Skip(TokenKind.EQUALS) ? ParseValueLiteral(true) : null;
+            def.Directives = ParseDirectives();
             def.Comment = comment;
             def.Location = GetLocation(start);
             return def;
