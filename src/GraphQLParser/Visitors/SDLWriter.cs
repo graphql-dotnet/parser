@@ -182,18 +182,26 @@ namespace GraphQLParser.Visitors
             await context.WriteLine().ConfigureAwait(false);
         }
 
-        /// <inheritdoc/>
-        public override async ValueTask VisitField(GraphQLField field, TContext context)
+        public override async ValueTask VisitAlias(GraphQLAlias alias, TContext context)
         {
-            await Visit(field.Comment, context).ConfigureAwait(false);
+            await Visit(alias.Comment, context).ConfigureAwait(false);
 
             var level = GetLevel(context);
             await WriteIndent(context, level).ConfigureAwait(false);
 
-            if (field.Alias != null)
+            await Visit(alias.Name, context).ConfigureAwait(false);
+            await context.Write(": ").ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitField(GraphQLField field, TContext context)
+        {
+            await Visit(field.Comment, context).ConfigureAwait(false);
+            await Visit(field.Alias, context).ConfigureAwait(false);
+            if (field.Alias == null)
             {
-                await Visit(field.Alias, context).ConfigureAwait(false);
-                await context.Write(": ").ConfigureAwait(false);
+                var level = GetLevel(context);
+                await WriteIndent(context, level).ConfigureAwait(false);
             }
             await Visit(field.Name, context).ConfigureAwait(false);
             if (field.Arguments != null)

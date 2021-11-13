@@ -80,6 +80,13 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public virtual async ValueTask VisitAlias(GraphQLAlias alias, TContext context)
+        {
+            await Visit(alias.Comment, context).ConfigureAwait(false);
+            await Visit(alias.Name, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public virtual async ValueTask VisitField(GraphQLField field, TContext context)
         {
             await Visit(field.Comment, context).ConfigureAwait(false);
@@ -347,6 +354,7 @@ namespace GraphQLParser.Visitors
                     GraphQLDocument document => VisitDocument(document, context),
                     GraphQLEnumTypeDefinition enumTypeDefinition => VisitEnumTypeDefinition(enumTypeDefinition, context),
                     GraphQLEnumValueDefinition enumValueDefinition => VisitEnumValueDefinition(enumValueDefinition, context),
+                    GraphQLAlias alias => VisitAlias(alias, context),
                     GraphQLField field => VisitField(field, context),
                     GraphQLFieldDefinition fieldDefinition => VisitFieldDefinition(fieldDefinition, context),
                     GraphQLFragmentDefinition fragmentDefinition => VisitFragmentDefinition(fragmentDefinition, context), // inherits from GraphQLInlineFragment so should be above

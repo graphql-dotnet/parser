@@ -251,6 +251,29 @@ namespace GraphQLParser.Tests
         //[InlineData(IgnoreOptions.Comments)]
         [InlineData(IgnoreOptions.Locations)]
         //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_Alias_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnAlias".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions[0] as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count.ShouldBe(1);
+            var field = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
+            field.Name.Value.ShouldBe("name");
+            field.Comment.Text.ShouldBe("field comment");
+            field.Alias.Name.Value.ShouldBe("a");
+            field.Alias.Comment.Text.ShouldBe("alias comment");
+
+            document.UnattachedComments.Count.ShouldBe(1);
+            document.UnattachedComments[0].Text.ShouldBe("colon comment");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
         public void Comments_on_Variable_Should_Read_Correctly(IgnoreOptions options)
         {
             string query = "CommentsOnVariables".ReadGraphQLFile();

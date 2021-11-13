@@ -1,0 +1,9 @@
+query q
+{
+#alias comment
+  a
+#colon comment
+  :
+#field comment
+  name
+}

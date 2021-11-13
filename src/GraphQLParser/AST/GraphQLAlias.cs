@@ -1,29 +1,20 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.Field"/>.
+    /// AST node for <see cref="ASTNodeKind.Alias"/>.
     /// </summary>
-    public class GraphQLField : ASTNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
+    public class GraphQLAlias : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.Field;
+        public override ASTNodeKind Kind => ASTNodeKind.TypeCondition;
 
-        public GraphQLAlias? Alias { get; set; }
-
-        /// <inheritdoc/>
+        /// <summary>
+        /// Alias name.
+        /// </summary>
         public GraphQLName? Name { get; set; }
-
-        public List<GraphQLArgument>? Arguments { get; set; }
-
-        /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
-        public GraphQLSelectionSet? SelectionSet { get; set; }
     }
 
-    internal sealed class GraphQLFieldWithLocation : GraphQLField
+    internal sealed class GraphQLAliasWithLocation : GraphQLAlias
     {
         private GraphQLLocation _location;
 
@@ -34,7 +25,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFieldWithComment : GraphQLField
+    internal sealed class GraphQLAliasWithComment : GraphQLAlias
     {
         private GraphQLComment? _comment;
 
@@ -45,7 +36,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFieldFull : GraphQLField
+    internal sealed class GraphQLAliasFull : GraphQLAlias
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

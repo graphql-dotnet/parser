@@ -209,5 +209,10 @@ namespace GraphQLParser.Visitors
         /// Visits <see cref="GraphQLTypeCondition"/> node.
         /// </summary>
         ValueTask VisitTypeCondition(GraphQLTypeCondition typeCondition, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLAlias"/> node.
+        /// </summary>
+        ValueTask VisitAlias(GraphQLAlias alias, TContext context);
     }
 }

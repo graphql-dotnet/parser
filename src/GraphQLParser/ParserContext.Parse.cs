@@ -400,32 +400,57 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#Field
+        // http://spec.graphql.org/October2021/#Alias
         private GraphQLField ParseField()
         {
+            // start of alias (if exists) equals start of field
             int start = _currentToken.Start;
-            var comment = GetComment();
+
+            var nameOrAliasComment = GetComment();
             var nameOrAlias = ParseName();
+
             GraphQLName name;
             GraphQLName? alias;
 
+            GraphQLComment? nameComment;
+            GraphQLComment? aliasComment;
+
+            GraphQLLocation aliasLocation = default;
+
             if (Skip(TokenKind.COLON))
             {
+                aliasLocation = GetLocation(start);
+
+                nameComment = GetComment();
+                aliasComment = nameOrAliasComment;
+
                 name = ParseName();
                 alias = nameOrAlias;
             }
             else
             {
+                aliasComment = null;
+                nameComment = nameOrAliasComment;
+
                 alias = null;
                 name = nameOrAlias;
             }
 
             var field = NodeHelper.CreateGraphQLField(_ignoreOptions);
-            field.Alias = alias;
+            if (alias != null)
+            {
+                var aliasNode = NodeHelper.CreateGraphQLAlias(_ignoreOptions);
+                aliasNode.Comment = aliasComment;
+                aliasNode.Name = alias;
+                aliasNode.Location = aliasLocation;
+
+                field.Alias = aliasNode;
+            }
+            field.Comment = nameComment;
             field.Name = name;
             field.Arguments = ParseArguments();
             field.Directives = ParseDirectives();
             field.SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null;
-            field.Comment = comment;
             field.Location = GetLocation(start);
             return field;
         }

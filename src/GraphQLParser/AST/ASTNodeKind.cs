@@ -334,5 +334,14 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#TypeCondition"/>
         /// </summary>
         TypeCondition,
+
+        /// <summary>
+        /// By default a field's response key in the response object will use that
+        /// field's name. However, you can define a different response key by
+        /// specifying an alias.Fragments must specify the type they apply to.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#Alias"/>
+        /// </summary>
+        Alias,
     }
 }

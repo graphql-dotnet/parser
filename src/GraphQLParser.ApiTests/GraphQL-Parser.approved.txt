@@ -49,6 +49,13 @@ namespace GraphQLParser.AST
         Comment = 37,
         Description = 38,
         TypeCondition = 39,
+        Alias = 40,
+    }
+    public class GraphQLAlias : GraphQLParser.AST.ASTNode
+    {
+        public GraphQLAlias() { }
+        public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public GraphQLParser.AST.GraphQLName? Name { get; set; }
     }
     public class GraphQLArgument : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -109,7 +116,7 @@ namespace GraphQLParser.AST
     public class GraphQLField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.INamedNode
     {
         public GraphQLField() { }
-        public GraphQLParser.AST.GraphQLName? Alias { get; set; }
+        public GraphQLParser.AST.GraphQLAlias? Alias { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLArgument>? Arguments { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
@@ -462,6 +469,7 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
         protected System.Threading.Tasks.ValueTask Visit<T>(System.Collections.Generic.List<T>? nodes, TContext context)
             where T : GraphQLParser.AST.ASTNode { }
+        public virtual System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitArgument(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitBooleanValue(GraphQLParser.AST.GraphQLScalarValue booleanValue, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitComment(GraphQLParser.AST.GraphQLComment comment, TContext context) { }
@@ -509,6 +517,7 @@ namespace GraphQLParser.Visitors
     public interface INodeVisitor<TContext>
         where TContext : GraphQLParser.Visitors.INodeVisitorContext
     {
+        System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context);
         System.Threading.Tasks.ValueTask VisitArgument(GraphQLParser.AST.GraphQLArgument argument, TContext context);
         System.Threading.Tasks.ValueTask VisitBooleanValue(GraphQLParser.AST.GraphQLScalarValue booleanValue, TContext context);
         System.Threading.Tasks.ValueTask VisitComment(GraphQLParser.AST.GraphQLComment comment, TContext context);
@@ -559,6 +568,7 @@ namespace GraphQLParser.Visitors
     {
         public SDLWriter() { }
         public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
+        public override System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitArgument(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitBooleanValue(GraphQLParser.AST.GraphQLScalarValue booleanValue, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitComment(GraphQLParser.AST.GraphQLComment comment, TContext context) { }

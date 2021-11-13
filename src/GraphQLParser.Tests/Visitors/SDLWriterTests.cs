@@ -114,6 +114,19 @@ fragment Frag on Query
 }
 ")]
         [InlineData(@"union Animal @immutable = |Cat | Dog", @"union Animal @immutable = Cat | Dog")]
+        [InlineData(@"query
+    q
+{
+  a : name
+ b
+  c  :  age
+}", @"query q
+{
+  a: name
+  b
+  c: age
+}
+")]
         [InlineData(@"schema @checked { mutation: MyMutation subscription: MySub }", @"schema @checked
 {
   mutation: MyMutation

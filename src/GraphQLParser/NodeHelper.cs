@@ -431,6 +431,18 @@ namespace GraphQLParser
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLAlias CreateGraphQLAlias(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLAlias(),
+                IgnoreOptions.Comments => new GraphQLAliasWithLocation(),
+                IgnoreOptions.Locations => new GraphQLAliasWithComment(),
+                _ => new GraphQLAliasFull(),
+            };
+        }
+
         #endregion
     }
 }

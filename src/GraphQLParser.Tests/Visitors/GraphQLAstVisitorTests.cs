@@ -188,7 +188,7 @@ namespace GraphQLParser.Tests.Visitors
 
         public class CountContext : INodeVisitorContext
         {
-            public List<GraphQLName> VisitedAliases = new();
+            public List<GraphQLAlias> VisitedAliases = new();
             public List<GraphQLArgument> VisitedArguments = new();
             public List<ASTNode> VisitedDefinitions = new();
             public List<GraphQLDirective> VisitedDirectives = new();
