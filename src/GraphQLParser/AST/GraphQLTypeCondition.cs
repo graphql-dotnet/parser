@@ -1,21 +1,17 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
-    public class GraphQLInlineFragment : ASTNode, IHasDirectivesNode
+    public class GraphQLTypeCondition : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.InlineFragment;
+        public override ASTNodeKind Kind => ASTNodeKind.TypeCondition;
 
-        public GraphQLTypeCondition? TypeCondition { get; set; }
-
-        /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
-        public GraphQLSelectionSet? SelectionSet { get; set; }
+        /// <summary>
+        /// Type to which this condition is applied.
+        /// </summary>
+        public GraphQLNamedType? Type { get; set; }
     }
 
-    internal sealed class GraphQLInlineFragmentWithLocation : GraphQLInlineFragment
+    internal sealed class GraphQLTypeConditionWithLocation : GraphQLTypeCondition
     {
         private GraphQLLocation _location;
 
@@ -26,7 +22,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLInlineFragmentWithComment : GraphQLInlineFragment
+    internal sealed class GraphQLTypeConditionWithComment : GraphQLTypeCondition
     {
         private GraphQLComment? _comment;
 
@@ -37,7 +33,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLInlineFragmentFull : GraphQLInlineFragment
+    internal sealed class GraphQLTypeConditionFull : GraphQLTypeCondition
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

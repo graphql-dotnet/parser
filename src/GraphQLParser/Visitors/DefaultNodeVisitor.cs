@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GraphQLParser.AST;
 
 namespace GraphQLParser.Visitors
@@ -13,309 +14,318 @@ namespace GraphQLParser.Visitors
         where TContext : IVisitorContext
     {
         /// <inheritdoc/>
-        public virtual void VisitDocument(GraphQLDocument document, TContext context)
+        public virtual async ValueTask VisitDocument(GraphQLDocument document, TContext context)
         {
-            Visit(document.Definitions, context);
+            await Visit(document.Definitions, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitArgument(GraphQLArgument argument, TContext context)
+        public virtual async ValueTask VisitArgument(GraphQLArgument argument, TContext context)
         {
-            Visit(argument.Comment, context);
-            Visit(argument.Name, context);
-            Visit(argument.Value, context);
+            await Visit(argument.Comment, context);
+            await Visit(argument.Name, context);
+            await Visit(argument.Value, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitComment(GraphQLComment comment, TContext context)
+        public virtual ValueTask VisitComment(GraphQLComment comment, TContext context)
         {
+            return new ValueTask(Task.CompletedTask);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitDescription(GraphQLDescription description, TContext context)
+        public virtual ValueTask VisitDescription(GraphQLDescription description, TContext context)
         {
+            return new ValueTask(Task.CompletedTask);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
+        public virtual async ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
         {
-            Visit(operationDefinition.Comment, context);
-            Visit(operationDefinition.Name, context);
-            Visit(operationDefinition.VariableDefinitions, context);
-            Visit(operationDefinition.Directives, context);
-            Visit(operationDefinition.SelectionSet, context);
+            await Visit(operationDefinition.Comment, context);
+            await Visit(operationDefinition.Name, context);
+            await Visit(operationDefinition.VariableDefinitions, context);
+            await Visit(operationDefinition.Directives, context);
+            await Visit(operationDefinition.SelectionSet, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitName(GraphQLName name, TContext context)
+        public virtual async ValueTask VisitName(GraphQLName name, TContext context)
         {
-            Visit(name.Comment, context);
+            await Visit(name.Comment, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context)
+        public virtual async ValueTask VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context)
         {
-            Visit(variableDefinition.Comment, context);
-            Visit(variableDefinition.Variable, context);
-            Visit(variableDefinition.Type, context);
-            Visit(variableDefinition.DefaultValue, context);
-            Visit(variableDefinition.Directives, context);
+            await Visit(variableDefinition.Comment, context);
+            await Visit(variableDefinition.Variable, context);
+            await Visit(variableDefinition.Type, context);
+            await Visit(variableDefinition.DefaultValue, context);
+            await Visit(variableDefinition.Directives, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitVariable(GraphQLVariable variable, TContext context)
+        public virtual async ValueTask VisitVariable(GraphQLVariable variable, TContext context)
         {
-            Visit(variable.Comment, context);
-            Visit(variable.Name, context);
+            await Visit(variable.Comment, context);
+            await Visit(variable.Name, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
+        public virtual async ValueTask VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
         {
-            Visit(selectionSet.Comment, context);
-            Visit(selectionSet.Selections, context);
+            await Visit(selectionSet.Comment, context);
+            await Visit(selectionSet.Selections, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitField(GraphQLField field, TContext context)
+        public virtual async ValueTask VisitField(GraphQLField field, TContext context)
         {
-            Visit(field.Comment, context);
-            Visit(field.Alias, context);
-            Visit(field.Name, context);
-            Visit(field.Arguments, context);
-            Visit(field.Directives, context);
-            Visit(field.SelectionSet, context);
+            await Visit(field.Comment, context);
+            await Visit(field.Alias, context);
+            await Visit(field.Name, context);
+            await Visit(field.Arguments, context);
+            await Visit(field.Directives, context);
+            await Visit(field.SelectionSet, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context)
+        public virtual async ValueTask VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context)
         {
-            Visit(fragmentSpread.Comment, context);
-            Visit(fragmentSpread.Name, context);
-            Visit(fragmentSpread.Directives, context);
+            await Visit(fragmentSpread.Comment, context);
+            await Visit(fragmentSpread.Name, context);
+            await Visit(fragmentSpread.Directives, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitInlineFragment(GraphQLInlineFragment inlineFragment, TContext context)
+        public virtual async ValueTask VisitInlineFragment(GraphQLInlineFragment inlineFragment, TContext context)
         {
-            Visit(inlineFragment.Comment, context);
-            Visit(inlineFragment.TypeCondition, context);
-            Visit(inlineFragment.Directives, context);
-            Visit(inlineFragment.SelectionSet, context);
+            await Visit(inlineFragment.Comment, context);
+            await Visit(inlineFragment.TypeCondition, context);
+            await Visit(inlineFragment.Directives, context);
+            await Visit(inlineFragment.SelectionSet, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
+        public virtual async ValueTask VisitTypeCondition(GraphQLTypeCondition typeCondition, TContext context)
         {
-            Visit(fragmentDefinition.Comment, context);
-            Visit(fragmentDefinition.Name, context);
-            Visit(fragmentDefinition.TypeCondition, context);
-            Visit(fragmentDefinition.Directives, context);
-            Visit(fragmentDefinition.SelectionSet, context);
+            await Visit(typeCondition.Comment, context);
+            await Visit(typeCondition.Type, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitIntValue(GraphQLScalarValue intValue, TContext context)
+        public virtual async ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
         {
-            Visit(intValue.Comment, context);
+            await Visit(fragmentDefinition.Comment, context);
+            await Visit(fragmentDefinition.Name, context);
+            await Visit(fragmentDefinition.TypeCondition, context);
+            await Visit(fragmentDefinition.Directives, context);
+            await Visit(fragmentDefinition.SelectionSet, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitFloatValue(GraphQLScalarValue floatValue, TContext context)
+        public virtual async ValueTask VisitIntValue(GraphQLScalarValue intValue, TContext context)
         {
-            Visit(floatValue.Comment, context);
+            await Visit(intValue.Comment, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitStringValue(GraphQLScalarValue stringValue, TContext context)
+        public virtual async ValueTask VisitFloatValue(GraphQLScalarValue floatValue, TContext context)
         {
-            Visit(stringValue.Comment, context);
+            await Visit(floatValue.Comment, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context)
+        public virtual async ValueTask VisitStringValue(GraphQLScalarValue stringValue, TContext context)
         {
-            Visit(booleanValue.Comment, context);
+            await Visit(stringValue.Comment, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitEnumValue(GraphQLScalarValue enumValue, TContext context)
+        public virtual async ValueTask VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context)
         {
-            Visit(enumValue.Comment, context);
+            await Visit(booleanValue.Comment, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitListValue(GraphQLListValue listValue, TContext context)
+        public virtual async ValueTask VisitEnumValue(GraphQLScalarValue enumValue, TContext context)
         {
-            Visit(listValue.Comment, context);
-            Visit(listValue.Values, context);
+            await Visit(enumValue.Comment, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitObjectValue(GraphQLObjectValue objectValue, TContext context)
+        public virtual async ValueTask VisitListValue(GraphQLListValue listValue, TContext context)
         {
-            Visit(objectValue.Comment, context);
-            Visit(objectValue.Fields, context);
+            await Visit(listValue.Comment, context);
+            await Visit(listValue.Values, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitObjectField(GraphQLObjectField objectField, TContext context)
+        public virtual async ValueTask VisitObjectValue(GraphQLObjectValue objectValue, TContext context)
         {
-            Visit(objectField.Comment, context);
-            Visit(objectField.Name, context);
-            Visit(objectField.Value, context);
+            await Visit(objectValue.Comment, context);
+            await Visit(objectValue.Fields, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitDirective(GraphQLDirective directive, TContext context)
+        public virtual async ValueTask VisitObjectField(GraphQLObjectField objectField, TContext context)
         {
-            Visit(directive.Comment, context);
-            Visit(directive.Name, context);
-            Visit(directive.Arguments, context);
+            await Visit(objectField.Comment, context);
+            await Visit(objectField.Name, context);
+            await Visit(objectField.Value, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitNamedType(GraphQLNamedType namedType, TContext context)
+        public virtual async ValueTask VisitDirective(GraphQLDirective directive, TContext context)
         {
-            Visit(namedType.Comment, context);
-            Visit(namedType.Name, context);
+            await Visit(directive.Comment, context);
+            await Visit(directive.Name, context);
+            await Visit(directive.Arguments, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitListType(GraphQLListType listType, TContext context)
+        public virtual async ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context)
         {
-            Visit(listType.Comment, context);
-            Visit(listType.Type, context);
+            await Visit(namedType.Comment, context);
+            await Visit(namedType.Name, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitNonNullType(GraphQLNonNullType nonNullType, TContext context)
+        public virtual async ValueTask VisitListType(GraphQLListType listType, TContext context)
         {
-            Visit(nonNullType.Comment, context);
-            Visit(nonNullType.Type, context);
+            await Visit(listType.Comment, context);
+            await Visit(listType.Type, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitNullValue(GraphQLScalarValue nullValue, TContext context)
+        public virtual async ValueTask VisitNonNullType(GraphQLNonNullType nonNullType, TContext context)
         {
-            Visit(nullValue.Comment, context);
+            await Visit(nonNullType.Comment, context);
+            await Visit(nonNullType.Type, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitSchemaDefinition(GraphQLSchemaDefinition schemaDefinition, TContext context)
+        public virtual async ValueTask VisitNullValue(GraphQLScalarValue nullValue, TContext context)
         {
-            Visit(schemaDefinition.Comment, context);
-            Visit(schemaDefinition.Description, context);
-            Visit(schemaDefinition.Directives, context);
-            Visit(schemaDefinition.OperationTypes, context);
+            await Visit(nullValue.Comment, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitRootOperationTypeDefinition(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
+        public virtual async ValueTask VisitSchemaDefinition(GraphQLSchemaDefinition schemaDefinition, TContext context)
         {
-            Visit(rootOperationTypeDefinition.Comment, context);
-            Visit(rootOperationTypeDefinition.Type, context);
+            await Visit(schemaDefinition.Comment, context);
+            await Visit(schemaDefinition.Description, context);
+            await Visit(schemaDefinition.Directives, context);
+            await Visit(schemaDefinition.OperationTypes, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitScalarTypeDefinition(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
+        public virtual async ValueTask VisitRootOperationTypeDefinition(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
         {
-            Visit(scalarTypeDefinition.Comment, context);
-            Visit(scalarTypeDefinition.Description, context);
-            Visit(scalarTypeDefinition.Name, context);
-            Visit(scalarTypeDefinition.Directives, context);
+            await Visit(rootOperationTypeDefinition.Comment, context);
+            await Visit(rootOperationTypeDefinition.Type, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitObjectTypeDefinition(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
+        public virtual async ValueTask VisitScalarTypeDefinition(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
         {
-            Visit(objectTypeDefinition.Comment, context);
-            Visit(objectTypeDefinition.Description, context);
-            Visit(objectTypeDefinition.Name, context);
-            Visit(objectTypeDefinition.Interfaces, context);
-            Visit(objectTypeDefinition.Directives, context);
-            Visit(objectTypeDefinition.Fields, context);
+            await Visit(scalarTypeDefinition.Comment, context);
+            await Visit(scalarTypeDefinition.Description, context);
+            await Visit(scalarTypeDefinition.Name, context);
+            await Visit(scalarTypeDefinition.Directives, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context)
+        public virtual async ValueTask VisitObjectTypeDefinition(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
         {
-            Visit(fieldDefinition.Comment, context);
-            Visit(fieldDefinition.Description, context);
-            Visit(fieldDefinition.Name, context);
-            Visit(fieldDefinition.Arguments, context);
-            Visit(fieldDefinition.Type, context);
-            Visit(fieldDefinition.Directives, context);
+            await Visit(objectTypeDefinition.Comment, context);
+            await Visit(objectTypeDefinition.Description, context);
+            await Visit(objectTypeDefinition.Name, context);
+            await Visit(objectTypeDefinition.Interfaces, context);
+            await Visit(objectTypeDefinition.Directives, context);
+            await Visit(objectTypeDefinition.Fields, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context)
+        public virtual async ValueTask VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context)
         {
-            Visit(inputValueDefinition.Comment, context);
-            Visit(inputValueDefinition.Description, context);
-            Visit(inputValueDefinition.Name, context);
-            Visit(inputValueDefinition.Type, context);
-            Visit(inputValueDefinition.DefaultValue, context);
-            Visit(inputValueDefinition.Directives, context);
+            await Visit(fieldDefinition.Comment, context);
+            await Visit(fieldDefinition.Description, context);
+            await Visit(fieldDefinition.Name, context);
+            await Visit(fieldDefinition.Arguments, context);
+            await Visit(fieldDefinition.Type, context);
+            await Visit(fieldDefinition.Directives, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
+        public virtual async ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context)
         {
-            Visit(interfaceTypeDefinition.Comment, context);
-            Visit(interfaceTypeDefinition.Description, context);
-            Visit(interfaceTypeDefinition.Name, context);
-            Visit(interfaceTypeDefinition.Interfaces, context);
-            Visit(interfaceTypeDefinition.Directives, context);
-            Visit(interfaceTypeDefinition.Fields, context);
+            await Visit(inputValueDefinition.Comment, context);
+            await Visit(inputValueDefinition.Description, context);
+            await Visit(inputValueDefinition.Name, context);
+            await Visit(inputValueDefinition.Type, context);
+            await Visit(inputValueDefinition.DefaultValue, context);
+            await Visit(inputValueDefinition.Directives, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
+        public virtual async ValueTask VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
         {
-            Visit(unionTypeDefinition.Comment, context);
-            Visit(unionTypeDefinition.Description, context);
-            Visit(unionTypeDefinition.Name, context);
-            Visit(unionTypeDefinition.Directives, context);
-            Visit(unionTypeDefinition.Types, context);
+            await Visit(interfaceTypeDefinition.Comment, context);
+            await Visit(interfaceTypeDefinition.Description, context);
+            await Visit(interfaceTypeDefinition.Name, context);
+            await Visit(interfaceTypeDefinition.Interfaces, context);
+            await Visit(interfaceTypeDefinition.Directives, context);
+            await Visit(interfaceTypeDefinition.Fields, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
+        public virtual async ValueTask VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
         {
-            Visit(enumTypeDefinition.Comment, context);
-            Visit(enumTypeDefinition.Description, context);
-            Visit(enumTypeDefinition.Name, context);
-            Visit(enumTypeDefinition.Directives, context);
-            Visit(enumTypeDefinition.Values, context);
+            await Visit(unionTypeDefinition.Comment, context);
+            await Visit(unionTypeDefinition.Description, context);
+            await Visit(unionTypeDefinition.Name, context);
+            await Visit(unionTypeDefinition.Directives, context);
+            await Visit(unionTypeDefinition.Types, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
+        public virtual async ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
         {
-            Visit(enumValueDefinition.Comment, context);
-            Visit(enumValueDefinition.Description, context);
-            Visit(enumValueDefinition.Name, context);
-            Visit(enumValueDefinition.Directives, context);
+            await Visit(enumTypeDefinition.Comment, context);
+            await Visit(enumTypeDefinition.Description, context);
+            await Visit(enumTypeDefinition.Name, context);
+            await Visit(enumTypeDefinition.Directives, context);
+            await Visit(enumTypeDefinition.Values, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
+        public virtual async ValueTask VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
         {
-            Visit(inputObjectTypeDefinition.Comment, context);
-            Visit(inputObjectTypeDefinition.Description, context);
-            Visit(inputObjectTypeDefinition.Name, context);
-            Visit(inputObjectTypeDefinition.Directives, context);
-            Visit(inputObjectTypeDefinition.Fields, context);
+            await Visit(enumValueDefinition.Comment, context);
+            await Visit(enumValueDefinition.Description, context);
+            await Visit(enumValueDefinition.Name, context);
+            await Visit(enumValueDefinition.Directives, context);
         }
 
         /// <inheritdoc/>
-        public virtual void VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context)
+        public virtual async ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
         {
-            Visit(directiveDefinition.Comment, context);
-            Visit(directiveDefinition.Description, context);
-            Visit(directiveDefinition.Name, context);
-            Visit(directiveDefinition.Arguments, context);
+            await Visit(inputObjectTypeDefinition.Comment, context);
+            await Visit(inputObjectTypeDefinition.Description, context);
+            await Visit(inputObjectTypeDefinition.Name, context);
+            await Visit(inputObjectTypeDefinition.Directives, context);
+            await Visit(inputObjectTypeDefinition.Fields, context);
+        }
+
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context)
+        {
+            await Visit(directiveDefinition.Comment, context);
+            await Visit(directiveDefinition.Description, context);
+            await Visit(directiveDefinition.Name, context);
+            await Visit(directiveDefinition.Arguments, context);
         }
 
         /// <summary>
@@ -323,186 +333,69 @@ namespace GraphQLParser.Visitors
         /// </summary>
         /// <param name="node">AST node to dispatch.</param>
         /// <param name="context">Context passed into all INodeVisitor.VisitXXX methods.</param>
-        public virtual void Visit(ASTNode? node, TContext context)
+        public virtual ValueTask Visit(ASTNode? node, TContext context)
         {
             if (node == null)
-                return;
+                return new ValueTask(Task.CompletedTask);
 
-            switch (node)
+            return node switch
             {
-                case GraphQLArgument argument:
-                    VisitArgument(argument, context);
-                    break;
+                GraphQLArgument argument => VisitArgument(argument, context),
+                GraphQLComment comment => VisitComment(comment, context),
+                GraphQLDescription description => VisitDescription(description, context),
+                GraphQLDirective directive => VisitDirective(directive, context),
+                GraphQLDirectiveDefinition directiveDefinition => VisitDirectiveDefinition(directiveDefinition, context),
+                GraphQLDocument document => VisitDocument(document, context),
+                GraphQLEnumTypeDefinition enumTypeDefinition => VisitEnumTypeDefinition(enumTypeDefinition, context),
+                GraphQLEnumValueDefinition enumValueDefinition => VisitEnumValueDefinition(enumValueDefinition, context),
+                GraphQLField field => VisitField(field, context),
+                GraphQLFieldDefinition fieldDefinition => VisitFieldDefinition(fieldDefinition, context),
+                GraphQLFragmentDefinition fragmentDefinition => VisitFragmentDefinition(fragmentDefinition, context), // inherits from GraphQLInlineFragment so should be above
+                GraphQLFragmentSpread fragmentSpread => VisitFragmentSpread(fragmentSpread, context),
+                GraphQLInlineFragment inlineFragment => VisitInlineFragment(inlineFragment, context),
+                GraphQLTypeCondition typeCondition => VisitTypeCondition(typeCondition, context),
+                GraphQLInputObjectTypeDefinition inputObjectTypeDefinition => VisitInputObjectTypeDefinition(inputObjectTypeDefinition, context),
+                GraphQLInputValueDefinition inputValueDefinition => VisitInputValueDefinition(inputValueDefinition, context),
+                GraphQLInterfaceTypeDefinition interfaceTypeDefinition => VisitInterfaceTypeDefinition(interfaceTypeDefinition, context),
+                GraphQLListType listType => VisitListType(listType, context),
+                GraphQLListValue listValue => VisitListValue(listValue, context),
+                GraphQLName name => VisitName(name, context),
+                GraphQLNamedType namedType => VisitNamedType(namedType, context),
+                GraphQLNonNullType nonNullType => VisitNonNullType(nonNullType, context),
+                GraphQLObjectField objectField => VisitObjectField(objectField, context),
+                GraphQLObjectTypeDefinition objectTypeDefinition => VisitObjectTypeDefinition(objectTypeDefinition, context),
+                GraphQLObjectValue objectValue => VisitObjectValue(objectValue, context),
+                GraphQLOperationDefinition operationDefinition => VisitOperationDefinition(operationDefinition, context),
+                GraphQLRootOperationTypeDefinition rootOperationTypeDefinition => VisitRootOperationTypeDefinition(rootOperationTypeDefinition, context),
+                GraphQLScalarTypeDefinition scalarTypeDefinition => VisitScalarTypeDefinition(scalarTypeDefinition, context),
+                GraphQLScalarValue scalarValue => scalarValue.Kind switch
+                {
+                    ASTNodeKind.BooleanValue => VisitBooleanValue(scalarValue, context),
+                    ASTNodeKind.EnumValue => VisitEnumValue(scalarValue, context),
+                    ASTNodeKind.FloatValue => VisitFloatValue(scalarValue, context),
+                    ASTNodeKind.IntValue => VisitIntValue(scalarValue, context),
+                    ASTNodeKind.NullValue => VisitNullValue(scalarValue, context),
+                    ASTNodeKind.StringValue => VisitStringValue(scalarValue, context),
+                    _ => throw new NotSupportedException($"Unknown GraphQLScalarValue of kind '{scalarValue.Kind}'."),
 
-                case GraphQLComment comment:
-                    VisitComment(comment, context);
-                    break;
-
-                case GraphQLDescription description:
-                    VisitDescription(description, context);
-                    break;
-
-                case GraphQLDirective directive:
-                    VisitDirective(directive, context);
-                    break;
-
-                case GraphQLDirectiveDefinition directiveDefinition:
-                    VisitDirectiveDefinition(directiveDefinition, context);
-                    break;
-
-                case GraphQLDocument document:
-                    VisitDocument(document, context);
-                    break;
-
-                case GraphQLEnumTypeDefinition enumTypeDefinition:
-                    VisitEnumTypeDefinition(enumTypeDefinition, context);
-                    break;
-
-                case GraphQLEnumValueDefinition enumValueDefinition:
-                    VisitEnumValueDefinition(enumValueDefinition, context);
-                    break;
-
-                case GraphQLField field:
-                    VisitField(field, context);
-                    break;
-
-                case GraphQLFieldDefinition fieldDefinition:
-                    VisitFieldDefinition(fieldDefinition, context);
-                    break;
-
-                case GraphQLFragmentDefinition fragmentDefinition:
-                    VisitFragmentDefinition(fragmentDefinition, context);
-                    break;
-
-                case GraphQLFragmentSpread fragmentSpread:
-                    VisitFragmentSpread(fragmentSpread, context);
-                    break;
-
-                case GraphQLInlineFragment inlineFragment:
-                    VisitInlineFragment(inlineFragment, context);
-                    break;
-
-                case GraphQLInputObjectTypeDefinition inputObjectTypeDefinition:
-                    VisitInputObjectTypeDefinition(inputObjectTypeDefinition, context);
-                    break;
-
-                case GraphQLInputValueDefinition inputValueDefinition:
-                    VisitInputValueDefinition(inputValueDefinition, context);
-                    break;
-
-                case GraphQLInterfaceTypeDefinition interfaceTypeDefinition:
-                    VisitInterfaceTypeDefinition(interfaceTypeDefinition, context);
-                    break;
-
-                case GraphQLListType listType:
-                    VisitListType(listType, context);
-                    break;
-
-                case GraphQLListValue listValue:
-                    VisitListValue(listValue, context);
-                    break;
-
-                case GraphQLName name:
-                    VisitName(name, context);
-                    break;
-
-                case GraphQLNamedType namedType:
-                    VisitNamedType(namedType, context);
-                    break;
-
-                case GraphQLNonNullType nonNullType:
-                    VisitNonNullType(nonNullType, context);
-                    break;
-
-                case GraphQLObjectField objectField:
-                    VisitObjectField(objectField, context);
-                    break;
-
-                case GraphQLObjectTypeDefinition objectTypeDefinition:
-                    VisitObjectTypeDefinition(objectTypeDefinition, context);
-                    break;
-
-                case GraphQLObjectValue objectValue:
-                    VisitObjectValue(objectValue, context);
-                    break;
-
-                case GraphQLOperationDefinition operationDefinition:
-                    VisitOperationDefinition(operationDefinition, context);
-                    break;
-
-                case GraphQLRootOperationTypeDefinition rootOperationTypeDefinition:
-                    VisitRootOperationTypeDefinition(rootOperationTypeDefinition, context);
-                    break;
-
-                case GraphQLScalarTypeDefinition scalarTypeDefinition:
-                    VisitScalarTypeDefinition(scalarTypeDefinition, context);
-                    break;
-
-                case GraphQLScalarValue scalarValue:
-                    switch (scalarValue.Kind)
-                    {
-                        case ASTNodeKind.BooleanValue:
-                            VisitBooleanValue(scalarValue, context);
-                            break;
-
-                        case ASTNodeKind.EnumValue:
-                            VisitEnumValue(scalarValue, context);
-                            break;
-
-                        case ASTNodeKind.FloatValue:
-                            VisitFloatValue(scalarValue, context);
-                            break;
-
-                        case ASTNodeKind.IntValue:
-                            VisitIntValue(scalarValue, context);
-                            break;
-
-                        case ASTNodeKind.NullValue:
-                            VisitNullValue(scalarValue, context);
-                            break;
-
-                        case ASTNodeKind.StringValue:
-                            VisitStringValue(scalarValue, context);
-                            break;
-
-                        default:
-                            throw new NotSupportedException($"Unknown GraphQLScalarValue of kind '{scalarValue.Kind}'.");
-                    }
-                    break;
-
-                case GraphQLSchemaDefinition schemaDefinition:
-                    VisitSchemaDefinition(schemaDefinition, context);
-                    break;
-
-                case GraphQLSelectionSet selectionSet:
-                    VisitSelectionSet(selectionSet, context);
-                    break;
-
-                // case GraphQLTypeExtensionDefinition n => VisitTypeDE
-                case GraphQLUnionTypeDefinition unionTypeDefinition:
-                    VisitUnionTypeDefinition(unionTypeDefinition, context);
-                    break;
-
-                case GraphQLVariable variable:
-                    VisitVariable(variable, context);
-                    break;
-
-                case GraphQLVariableDefinition variableDefinition:
-                    VisitVariableDefinition(variableDefinition, context);
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Unknown node '{node.GetType().Name}'.");
+                },
+                GraphQLSchemaDefinition schemaDefinition => VisitSchemaDefinition(schemaDefinition, context),
+                GraphQLSelectionSet selectionSet => VisitSelectionSet(selectionSet, context),
+                //GraphQLTypeExtensionDefinition n => VisitTypeDE
+                GraphQLUnionTypeDefinition unionTypeDefinition => VisitUnionTypeDefinition(unionTypeDefinition, context),
+                GraphQLVariable variable => VisitVariable(variable, context),
+                GraphQLVariableDefinition variableDefinition => VisitVariableDefinition(variableDefinition, context),
+                _ => throw new NotSupportedException($"Unknown node '{node.GetType().Name}'."),
             };
         }
 
-        protected void Visit<T>(List<T>? nodes, TContext context)
+        protected async ValueTask Visit<T>(List<T>? nodes, TContext context)
             where T : ASTNode
         {
             if (nodes != null)
             {
                 foreach (var node in nodes)
-                    Visit(node, context);
+                    await Visit(node, context);
             }
         }
     }

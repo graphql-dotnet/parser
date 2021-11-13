@@ -29,23 +29,18 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#TypeCondition
-        private GraphQLNamedType? ParseTypeCondition(bool optional)
+        private GraphQLTypeCondition? ParseTypeCondition(bool optional)
         {
-            if (optional)
-            {
-                GraphQLNamedType? typeCondition = null;
-                if (_currentToken.Value == "on")
-                {
-                    Advance();
-                    typeCondition = ParseNamedType();
-                }
-                return typeCondition;
-            }
-            else
-            {
-                ExpectKeyword("on");
-                return ParseNamedType();
-            }
+            if (optional && _currentToken.Value != "on")
+                return null;
+
+            int start = _currentToken.Start;
+            var condition = NodeHelper.CreateGraphQLTypeCondition(_ignoreOptions);
+            condition.Comment = GetComment();
+            ExpectKeyword("on");
+            condition.Type = ParseNamedType();
+            condition.Location = GetLocation(start);
+            return condition;
         }
 
         // http://spec.graphql.org/October2021/#Argument

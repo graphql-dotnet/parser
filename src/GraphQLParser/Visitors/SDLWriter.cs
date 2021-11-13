@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using GraphQLParser.AST;
 
 namespace GraphQLParser.Visitors
@@ -12,690 +13,699 @@ namespace GraphQLParser.Visitors
         where TContext : IWriteContext
     {
         /// <inheritdoc/>
-        public override void VisitDocument(GraphQLDocument document, TContext context)
+        public override async ValueTask VisitDocument(GraphQLDocument document, TContext context)
         {
             if (document.Definitions?.Count > 0)
             {
                 for (int i = 0; i < document.Definitions.Count; ++i)
                 {
-                    Visit(document.Definitions[i], context);
+                    await Visit(document.Definitions[i], context);
 
                     if (i < document.Definitions.Count - 1)
                     {
-                        context.Writer.WriteLine();
+                        await context.Writer.WriteLineAsync();
                     }
                 }
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitComment(GraphQLComment comment, TContext context)
+        public override async ValueTask VisitComment(GraphQLComment comment, TContext context)
         {
             int level = GetLevel(context);
 
             bool needStartNewLine = true;
-            var span = comment.Text.Span;
-            for (int i = 0; i < span.Length; ++i)
+            int length = comment.Text.Span.Length;
+            for (int i = 0; i < length; ++i)
             {
                 if (needStartNewLine)
                 {
-                    WriteIndent(context, level);
-                    context.Writer.Write('#');
+                    await WriteIndent(context, level);
+                    await context.Writer.WriteAsync('#');
                     needStartNewLine = false;
                 }
 
-                switch (span[i])
+                char current = comment.Text.Span[i];
+                switch (current)
                 {
                     case '\r':
                         break;
 
                     case '\n':
-                        context.Writer.WriteLine();
+                        await context.Writer.WriteLineAsync();
                         needStartNewLine = true;
                         break;
 
                     default:
-                        context.Writer.Write(span[i]);
+                        await context.Writer.WriteAsync(current);
                         break;
                 }
             }
 
-            context.Writer.WriteLine();
+            await context.Writer.WriteLineAsync();
         }
 
         /// <inheritdoc/>
-        public override void VisitDescription(GraphQLDescription description, TContext context)
+        public override async ValueTask VisitDescription(GraphQLDescription description, TContext context)
         {
             int level = GetLevel(context);
 
-            WriteIndent(context, level);
-            context.Writer.Write("\"\"\"");
-            context.Writer.WriteLine();
+            await WriteIndent(context, level);
+            await context.Writer.WriteAsync("\"\"\"");
+            await context.Writer.WriteLineAsync();
 
             bool needStartNewLine = true;
-            var span = description.Value.Span;
-            for (int i = 0; i < span.Length; ++i)
+            int length = description.Value.Span.Length;
+            for (int i = 0; i < length; ++i)
             {
                 if (needStartNewLine)
                 {
-                    WriteIndent(context, level);
+                    await WriteIndent(context, level);
                     needStartNewLine = false;
                 }
 
-                switch (span[i])
+                char current = description.Value.Span[i];
+                switch (current)
                 {
                     case '\r':
                         break;
 
                     case '\n':
-                        context.Writer.WriteLine();
+                        await context.Writer.WriteLineAsync();
                         needStartNewLine = true;
                         break;
 
                     default:
-                        context.Writer.Write(span[i]);
+                        await context.Writer.WriteAsync(current);
                         break;
                 }
             }
 
-            context.Writer.WriteLine();
-            WriteIndent(context, level);
-            context.Writer.Write("\"\"\"");
-            context.Writer.WriteLine();
+            await context.Writer.WriteLineAsync();
+            await WriteIndent(context, level);
+            await context.Writer.WriteAsync("\"\"\"");
+            await context.Writer.WriteLineAsync();
         }
 
         /// <inheritdoc/>
-        public override void VisitName(GraphQLName name, TContext context)
+        public override async ValueTask VisitName(GraphQLName name, TContext context)
         {
-            Visit(name.Comment, context);
-            Write(context, name.Value);
+            await Visit (name.Comment, context);
+            await Write(context, name.Value);
         }
 
         /// <inheritdoc/>
-        public override void VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
+        public override async ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
         {
-            Visit(fragmentDefinition.Comment, context);
-            context.Writer.Write("fragment ");
-            Visit(fragmentDefinition.Name, context);
-            context.Writer.Write(" on ");
-            Visit(fragmentDefinition.TypeCondition, context);
-            VisitDirectives(fragmentDefinition, context);
-            Visit(fragmentDefinition.SelectionSet, context);
+            await Visit(fragmentDefinition.Comment, context);
+            await context.Writer.WriteAsync("fragment ");
+            await Visit(fragmentDefinition.Name, context);
+            await context.Writer.WriteAsync(" ");
+            await Visit(fragmentDefinition.TypeCondition, context);
+            await VisitDirectives(fragmentDefinition, context);
+            await Visit(fragmentDefinition.SelectionSet, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context)
+        public override async ValueTask VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context)
         {
-            Visit(fragmentSpread.Comment, context);
+            await Visit(fragmentSpread.Comment, context);
 
             int level = GetLevel(context);
-            WriteIndent(context, level);
+            await WriteIndent(context, level);
 
-            context.Writer.Write("...");
-            Visit(fragmentSpread.Name, context);
-            VisitDirectives(fragmentSpread, context);
-            context.Writer.WriteLine();
+            await context.Writer.WriteAsync("...");
+            await Visit(fragmentSpread.Name, context);
+            await VisitDirectives(fragmentSpread, context);
+            await context.Writer.WriteLineAsync();
         }
 
         /// <inheritdoc/>
-        public override void VisitInlineFragment(GraphQLInlineFragment inlineFragment, TContext context)
+        public override async ValueTask VisitInlineFragment(GraphQLInlineFragment inlineFragment, TContext context)
         {
-            Visit(inlineFragment.Comment, context);
+            await Visit(inlineFragment.Comment, context);
 
             int level = GetLevel(context);
-            WriteIndent(context, level);
+            await WriteIndent(context, level);
 
-            context.Writer.Write("... on ");
-            Visit(inlineFragment.TypeCondition, context);
-            VisitDirectives(inlineFragment, context);
-            Visit(inlineFragment.SelectionSet, context);
+            await context.Writer.WriteAsync("... ");
+            await Visit(inlineFragment.TypeCondition, context);
+            await VisitDirectives(inlineFragment, context);
+            await Visit(inlineFragment.SelectionSet, context);
+        }
+
+        public override async ValueTask VisitTypeCondition(GraphQLTypeCondition typeCondition, TContext context)
+        {
+            await Visit(typeCondition.Comment, context);
+            await context.Writer.WriteAsync("on ");
+            await Visit(typeCondition.Type, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
+        public override async ValueTask VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
         {
-            Visit(selectionSet.Comment, context);
-            context.Writer.WriteLine();
+            await Visit(selectionSet.Comment, context);
+            await context.Writer.WriteLineAsync();
             int level = GetLevel(context);
-            WriteIndent(context, level);
-            context.Writer.WriteLine('{');
+            await WriteIndent(context, level);
+            await context.Writer.WriteLineAsync('{');
 
             if (selectionSet.Selections?.Count > 0)
             {
                 foreach (var selection in selectionSet.Selections)
-                    Visit(selection, context);
+                    await Visit(selection, context);
             }
 
-            WriteIndent(context, level);
-            context.Writer.WriteLine('}');
+            await WriteIndent(context, level);
+            await context.Writer.WriteLineAsync('}');
         }
 
         /// <inheritdoc/>
-        public override void VisitField(GraphQLField field, TContext context)
+        public override async ValueTask VisitField(GraphQLField field, TContext context)
         {
-            Visit(field.Comment, context);
+            await Visit(field.Comment, context);
 
             var level = GetLevel(context);
-            WriteIndent(context, level);
+            await WriteIndent(context, level);
 
             if (field.Alias != null)
             {
-                Visit(field.Alias, context);
-                context.Writer.Write(": ");
+                await Visit(field.Alias, context);
+                await context.Writer.WriteAsync(": ");
             }
-            Visit(field.Name, context);
+            await Visit(field.Name, context);
             if (field.Arguments != null)
             {
-                context.Writer.Write('(');
-                VisitArguments(field, context);
-                context.Writer.Write(')');
+                await context.Writer.WriteAsync('(');
+                await VisitArguments(field, context);
+                await context.Writer.WriteAsync(')');
             }
-            VisitDirectives(field, context);
+            await VisitDirectives(field, context);
 
             if (field.SelectionSet == null)
-                context.Writer.WriteLine();
+                await context.Writer.WriteLineAsync();
             else
-                Visit(field.SelectionSet, context);
+                await Visit(field.SelectionSet, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
+        public override async ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
         {
-            Visit(operationDefinition.Comment, context);
+            await Visit(operationDefinition.Comment, context);
 
             if (operationDefinition.Name != null)
             {
-                context.Writer.Write(GetOperationType(operationDefinition.Operation));
-                context.Writer.Write(' ');
-                Visit(operationDefinition.Name, context);
+                await context.Writer.WriteAsync(GetOperationType(operationDefinition.Operation));
+                await context.Writer.WriteAsync(' ');
+                await Visit(operationDefinition.Name, context);
             }
 
             if (operationDefinition.VariableDefinitions?.Count > 0)
             {
-                context.Writer.Write('(');
-                Visit(operationDefinition.VariableDefinitions, context, ", ", "");
-                context.Writer.Write(')');
+                await context.Writer.WriteAsync('(');
+                await Visit(operationDefinition.VariableDefinitions, context, ", ", "");
+                await context.Writer.WriteAsync(')');
             }
 
-            VisitDirectives(operationDefinition, context);
-            Visit(operationDefinition.SelectionSet, context);
+            await VisitDirectives(operationDefinition, context);
+            await Visit(operationDefinition.SelectionSet, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context)
+        public override async ValueTask VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context)
         {
-            Visit(directiveDefinition.Comment, context);
-            Visit(directiveDefinition.Description, context);
-            context.Writer.Write("directive ");
-            Visit(directiveDefinition.Name, context);
+            await Visit(directiveDefinition.Comment, context);
+            await Visit(directiveDefinition.Description, context);
+            await context.Writer.WriteAsync("directive ");
+            await Visit(directiveDefinition.Name, context);
             if (directiveDefinition.Arguments != null)
             {
-                context.Writer.Write('(');
-                Visit(directiveDefinition, context);
-                context.Writer.Write(')');
+                await context.Writer.WriteAsync('(');
+                await Visit(directiveDefinition, context);
+                await context.Writer.WriteAsync(')');
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context)
+        public override async ValueTask VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context)
         {
-            Visit(variableDefinition.Comment, context);
-            Visit(variableDefinition.Variable, context);
-            context.Writer.Write(": ");
-            Visit(variableDefinition.Type, context);
+            await Visit(variableDefinition.Comment, context);
+            await Visit(variableDefinition.Variable, context);
+            await context.Writer.WriteAsync(": ");
+            await Visit(variableDefinition.Type, context);
             if (variableDefinition.DefaultValue != null)
             {
-                context.Writer.Write(" = ");
-                Visit(variableDefinition.DefaultValue, context);
+                await context.Writer.WriteAsync(" = ");
+                await Visit(variableDefinition.DefaultValue, context);
             }
-            VisitDirectives(variableDefinition, context);
+            await VisitDirectives(variableDefinition, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitVariable(GraphQLVariable variable, TContext context)
+        public override async ValueTask VisitVariable(GraphQLVariable variable, TContext context)
         {
-            Visit(variable.Comment, context);
-            context.Writer.Write('$');
-            Visit(variable.Name, context);
+            await Visit(variable.Comment, context);
+            await context.Writer.WriteAsync('$');
+            await Visit(variable.Name, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context)
+        public override async ValueTask VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context)
         {
-            Visit(booleanValue.Comment, context);
-            Write(context, booleanValue.Value);
+            await Visit(booleanValue.Comment, context);
+            await Write(context, booleanValue.Value);
         }
 
         /// <inheritdoc/>
-        public override void VisitScalarTypeDefinition(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
+        public override async ValueTask VisitScalarTypeDefinition(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
         {
-            Visit(scalarTypeDefinition.Comment, context);
-            Visit(scalarTypeDefinition.Description, context);
-            context.Writer.Write("scalar ");
-            Visit(scalarTypeDefinition.Name, context);
-            VisitDirectives(scalarTypeDefinition, context);
-            context.Writer.WriteLine();
+            await Visit(scalarTypeDefinition.Comment, context);
+            await Visit(scalarTypeDefinition.Description, context);
+            await context.Writer.WriteAsync("scalar ");
+            await Visit(scalarTypeDefinition.Name, context);
+            await VisitDirectives(scalarTypeDefinition, context);
+            await context.Writer.WriteLineAsync();
         }
 
         /// <inheritdoc/>
-        public override void VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
+        public override async ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
         {
-            Visit(enumTypeDefinition.Comment, context);
-            Visit(enumTypeDefinition.Description, context);
-            context.Writer.Write("enum ");
-            Visit(enumTypeDefinition.Name, context);
-            VisitDirectives(enumTypeDefinition, context);
+            await Visit(enumTypeDefinition.Comment, context);
+            await Visit(enumTypeDefinition.Description, context);
+            await context.Writer.WriteAsync("enum ");
+            await Visit(enumTypeDefinition.Name, context);
+            await VisitDirectives(enumTypeDefinition, context);
             if (enumTypeDefinition.Values?.Count > 0)
             {
-                context.Writer.WriteLine();
-                context.Writer.WriteLine('{');
+                await context.Writer.WriteLineAsync();
+                await context.Writer.WriteLineAsync('{');
                 for (int i = 0; i < enumTypeDefinition.Values.Count; ++i)
                 {
-                    Visit(enumTypeDefinition.Values[i], context);
-                    context.Writer.WriteLine();
+                    await Visit(enumTypeDefinition.Values[i], context);
+                    await context.Writer.WriteLineAsync();
                 }
-                context.Writer.WriteLine('}');
+                await context.Writer.WriteLineAsync('}');
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
+        public override async ValueTask VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
         {
-            Visit(enumValueDefinition.Comment, context);
-            Visit(enumValueDefinition.Description, context);
+            await Visit(enumValueDefinition.Comment, context);
+            await Visit(enumValueDefinition.Description, context);
 
             int level = GetLevel(context);
-            WriteIndent(context, level);
+            await WriteIndent(context, level);
 
-            Visit(enumValueDefinition.Name, context);
-            VisitDirectives(enumValueDefinition, context);
+            await Visit(enumValueDefinition.Name, context);
+            await VisitDirectives(enumValueDefinition, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
+        public override async ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
         {
-            Visit(inputObjectTypeDefinition.Comment, context);
-            Visit(inputObjectTypeDefinition.Description, context);
-            context.Writer.Write("input ");
-            Visit(inputObjectTypeDefinition.Name, context);
-            VisitDirectives(inputObjectTypeDefinition, context);
+            await Visit(inputObjectTypeDefinition.Comment, context);
+            await Visit(inputObjectTypeDefinition.Description, context);
+            await context.Writer.WriteAsync("input ");
+            await Visit(inputObjectTypeDefinition.Name, context);
+            await VisitDirectives(inputObjectTypeDefinition, context);
             if (inputObjectTypeDefinition.Fields?.Count > 0)
             {
-                context.Writer.WriteLine();
-                context.Writer.WriteLine('{');
+                await context.Writer.WriteLineAsync();
+                await context.Writer.WriteLineAsync('{');
 
                 for (int i = 0; i < inputObjectTypeDefinition.Fields.Count; ++i)
                 {
-                    Visit(inputObjectTypeDefinition.Fields[i], context);
-                    context.Writer.WriteLine();
+                    await Visit(inputObjectTypeDefinition.Fields[i], context);
+                    await context.Writer.WriteLineAsync();
                 }
 
-                context.Writer.WriteLine('}');
+                await context.Writer.WriteLineAsync('}');
             }
             else
             {
-                context.Writer.WriteLine();
+                await context.Writer.WriteLineAsync();
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context)
+        public override async ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context)
         {
-            Visit(inputValueDefinition.Comment, context);
-            Visit(inputValueDefinition.Description, context);
+            await Visit(inputValueDefinition.Comment, context);
+            await Visit(inputValueDefinition.Description, context);
 
             int level = GetLevel(context);
-            WriteIndent(context, level);
+            await WriteIndent(context, level);
 
-            Visit(inputValueDefinition.Name, context);
-            context.Writer.Write(": ");
-            Visit(inputValueDefinition.Type, context);
+            await Visit(inputValueDefinition.Name, context);
+            await context.Writer.WriteAsync(": ");
+            await Visit(inputValueDefinition.Type, context);
             if (inputValueDefinition.DefaultValue != null)
             {
-                context.Writer.Write(" = ");
-                Visit(inputValueDefinition.DefaultValue, context);
+                await context.Writer.WriteAsync(" = ");
+                await Visit(inputValueDefinition.DefaultValue, context);
             }
-            VisitDirectives(inputValueDefinition, context);
+            await VisitDirectives(inputValueDefinition, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitObjectTypeDefinition(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
+        public override async ValueTask VisitObjectTypeDefinition(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
         {
-            Visit(objectTypeDefinition.Comment, context);
-            Visit(objectTypeDefinition.Description, context);
-            context.Writer.Write("type ");
-            Visit(objectTypeDefinition.Name, context);
-            VisitInterfaces(objectTypeDefinition, context);
-            VisitDirectives(objectTypeDefinition, context);
+            await Visit(objectTypeDefinition.Comment, context);
+            await Visit(objectTypeDefinition.Description, context);
+            await context.Writer.WriteAsync("type ");
+            await Visit(objectTypeDefinition.Name, context);
+            await VisitInterfaces(objectTypeDefinition, context);
+            await VisitDirectives(objectTypeDefinition, context);
 
             if (objectTypeDefinition.Fields?.Count > 0)
             {
-                context.Writer.WriteLine();
-                context.Writer.WriteLine('{');
+                await context.Writer.WriteLineAsync();
+                await context.Writer.WriteLineAsync('{');
 
                 for (int i = 0; i < objectTypeDefinition.Fields.Count; ++i)
                 {
-                    Visit(objectTypeDefinition.Fields[i], context);
-                    context.Writer.WriteLine();
+                    await Visit(objectTypeDefinition.Fields[i], context);
+                    await context.Writer.WriteLineAsync();
                 }
 
-                context.Writer.WriteLine('}');
+                await context.Writer.WriteLineAsync('}');
             }
             else
             {
-                context.Writer.WriteLine();
+                await context.Writer.WriteLineAsync();
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
+        public override async ValueTask VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
         {
-            Visit(interfaceTypeDefinition.Comment, context);
-            Visit(interfaceTypeDefinition.Description, context);
-            context.Writer.Write("interface ");
-            Visit(interfaceTypeDefinition.Name, context);
-            VisitInterfaces(interfaceTypeDefinition, context);
-            VisitDirectives(interfaceTypeDefinition, context);
-            context.Writer.WriteLine();
-            context.Writer.WriteLine('{');
+            await Visit(interfaceTypeDefinition.Comment, context);
+            await Visit(interfaceTypeDefinition.Description, context);
+            await context.Writer.WriteAsync("interface ");
+            await Visit(interfaceTypeDefinition.Name, context);
+            await VisitInterfaces(interfaceTypeDefinition, context);
+            await VisitDirectives(interfaceTypeDefinition, context);
+            await context.Writer.WriteLineAsync();
+            await context.Writer.WriteLineAsync('{');
 
             if (interfaceTypeDefinition.Fields?.Count > 0)
             {
                 for (int i = 0; i < interfaceTypeDefinition.Fields.Count; ++i)
                 {
-                    Visit(interfaceTypeDefinition.Fields[i], context);
-                    context.Writer.WriteLine();
+                    await Visit(interfaceTypeDefinition.Fields[i], context);
+                    await context.Writer.WriteLineAsync();
                 }
             }
 
-            context.Writer.WriteLine('}');
+            await context.Writer.WriteLineAsync('}');
         }
 
         /// <inheritdoc/>
-        public override void VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context)
+        public override async ValueTask VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context)
         {
-            Visit(fieldDefinition.Comment, context);
-            Visit(fieldDefinition.Description, context);
+            await Visit(fieldDefinition.Comment, context);
+            await Visit(fieldDefinition.Description, context);
 
             int level = GetLevel(context);
-            WriteIndent(context, level);
+            await WriteIndent(context, level);
 
-            Visit(fieldDefinition.Name, context);
+            await Visit(fieldDefinition.Name, context);
             if (fieldDefinition.Arguments?.Count > 0)
             {
-                context.Writer.Write('(');
+                await context.Writer.WriteAsync('(');
                 for (int i = 0; i < fieldDefinition.Arguments.Count; ++i)
                 {
-                    Visit(fieldDefinition.Arguments[i], context);
+                    await Visit(fieldDefinition.Arguments[i], context);
                     if (i < fieldDefinition.Arguments.Count - 1)
-                        context.Writer.Write(", ");
+                        await context.Writer.WriteAsync(", ");
                 }
-                context.Writer.Write(')');
+                await context.Writer.WriteAsync(')');
             }
-            context.Writer.Write(": ");
-            Visit(fieldDefinition.Type, context);
-            VisitDirectives(fieldDefinition, context);
+            await context.Writer.WriteAsync(": ");
+            await Visit(fieldDefinition.Type, context);
+            await VisitDirectives(fieldDefinition, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitSchemaDefinition(GraphQLSchemaDefinition schemaDefinition, TContext context)
+        public override async ValueTask VisitSchemaDefinition(GraphQLSchemaDefinition schemaDefinition, TContext context)
         {
-            Visit(schemaDefinition.Comment, context);
-            Visit(schemaDefinition.Description, context);
-            context.Writer.Write("schema");
-            VisitDirectives(schemaDefinition, context);
+            await Visit(schemaDefinition.Comment, context);
+            await Visit(schemaDefinition.Description, context);
+            await context.Writer.WriteAsync("schema");
+            await VisitDirectives(schemaDefinition, context);
 
-            context.Writer.WriteLine();
-            context.Writer.WriteLine('{');
+            await context.Writer.WriteLineAsync();
+            await context.Writer.WriteLineAsync('{');
 
             if (schemaDefinition.OperationTypes?.Count > 0)
             {
                 for (int i = 0; i < schemaDefinition.OperationTypes.Count; ++i)
                 {
-                    Visit(schemaDefinition.OperationTypes[i], context);
-                    context.Writer.WriteLine();
+                    await Visit(schemaDefinition.OperationTypes[i], context);
+                    await context.Writer.WriteLineAsync();
                 }
             }
 
-            context.Writer.WriteLine('}');
+            await context.Writer.WriteLineAsync('}');
         }
 
         /// <inheritdoc/>
-        public override void VisitRootOperationTypeDefinition(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
+        public override async ValueTask VisitRootOperationTypeDefinition(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
         {
-            Visit(rootOperationTypeDefinition.Comment, context);
+            await Visit(rootOperationTypeDefinition.Comment, context);
 
             int level = GetLevel(context);
-            WriteIndent(context, level);
+            await WriteIndent(context, level);
 
-            context.Writer.Write(GetOperationType(rootOperationTypeDefinition.Operation));
-            context.Writer.Write(": ");
-            Visit(rootOperationTypeDefinition.Type, context);
+            await context.Writer.WriteAsync(GetOperationType(rootOperationTypeDefinition.Operation));
+            await context.Writer.WriteAsync(": ");
+            await Visit(rootOperationTypeDefinition.Type, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
+        public override async ValueTask VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
         {
-            Visit(unionTypeDefinition.Comment, context);
-            Visit(unionTypeDefinition.Description, context);
-            context.Writer.Write("union ");
-            Visit(unionTypeDefinition.Name, context);
-            VisitDirectives(unionTypeDefinition, context);
+            await Visit(unionTypeDefinition.Comment, context);
+            await Visit(unionTypeDefinition.Description, context);
+            await context.Writer.WriteAsync("union ");
+            await Visit(unionTypeDefinition.Name, context);
+            await VisitDirectives(unionTypeDefinition, context);
 
             if (unionTypeDefinition.Types?.Count > 0)
             {
-                context.Writer.Write(" = ");
+                await context.Writer.WriteAsync(" = ");
 
                 for (int i = 0; i < unionTypeDefinition.Types.Count; ++i)
                 {
-                    Visit(unionTypeDefinition.Types[i], context);
+                    await Visit(unionTypeDefinition.Types[i], context);
                     if (i < unionTypeDefinition.Types.Count - 1)
-                        context.Writer.Write(" | ");
+                        await context.Writer.WriteAsync(" | ");
                 }
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitDirective(GraphQLDirective directive, TContext context)
+        public override async ValueTask VisitDirective(GraphQLDirective directive, TContext context)
         {
-            Visit(directive.Comment, context);
-            context.Writer.Write('@');
-            Visit(directive.Name, context);
+            await Visit(directive.Comment, context);
+            await context.Writer.WriteAsync('@');
+            await Visit(directive.Name, context);
             if (directive.Arguments != null)
             {
-                context.Writer.Write('(');
-                VisitArguments(directive, context);
-                context.Writer.Write(')');
+                await context.Writer.WriteAsync('(');
+                await VisitArguments(directive, context);
+                await context.Writer.WriteAsync(')');
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitArgument(GraphQLArgument argument, TContext context)
+        public override async ValueTask VisitArgument(GraphQLArgument argument, TContext context)
         {
-            Visit(argument.Comment, context);
-            Visit(argument.Name, context);
-            context.Writer.Write(": ");
-            Visit(argument.Value, context);
+            await Visit(argument.Comment, context);
+            await Visit(argument.Name, context);
+            await context.Writer.WriteAsync(": ");
+            await Visit(argument.Value, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitNonNullType(GraphQLNonNullType nonNullType, TContext context)
+        public override async ValueTask VisitNonNullType(GraphQLNonNullType nonNullType, TContext context)
         {
-            Visit(nonNullType.Comment, context);
-            Visit(nonNullType.Type, context);
-            context.Writer.Write('!');
+            await Visit(nonNullType.Comment, context);
+            await Visit(nonNullType.Type, context);
+            await context.Writer.WriteAsync('!');
         }
 
         /// <inheritdoc/>
-        public override void VisitListType(GraphQLListType listType, TContext context)
+        public override async ValueTask VisitListType(GraphQLListType listType, TContext context)
         {
-            Visit(listType.Comment, context);
-            context.Writer.Write('[');
-            Visit(listType.Type, context);
-            context.Writer.Write(']');
+            await Visit(listType.Comment, context);
+            await context.Writer.WriteAsync('[');
+            await Visit(listType.Type, context);
+            await context.Writer.WriteAsync(']');
         }
 
         /// <inheritdoc/>
-        public override void VisitListValue(GraphQLListValue listValue, TContext context)
+        public override async ValueTask VisitListValue(GraphQLListValue listValue, TContext context)
         {
-            Visit(listValue.Comment, context);
+            await Visit(listValue.Comment, context);
             if (listValue.Values?.Count > 0)
             {
-                context.Writer.Write('[');
+                await context.Writer.WriteAsync('[');
                 for (int i=0; i<listValue.Values.Count; ++i)
                 {
-                    Visit(listValue.Values[i], context);
+                    await Visit(listValue.Values[i], context);
                     if (i < listValue.Values.Count - 1)
-                        context.Writer.Write(", ");
+                        await context.Writer.WriteAsync(", ");
                 }
-                context.Writer.Write(']');
+                await context.Writer.WriteAsync(']');
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitNullValue(GraphQLScalarValue nullValue, TContext context)
+        public override async ValueTask VisitNullValue(GraphQLScalarValue nullValue, TContext context)
         {
-            Visit(nullValue.Comment, context);
-            context.Writer.Write("null");
+            await Visit(nullValue.Comment, context);
+            await context.Writer.WriteAsync("null");
         }
 
         /// <inheritdoc/>
-        public override void VisitStringValue(GraphQLScalarValue stringValue, TContext context)
+        public override async ValueTask VisitStringValue(GraphQLScalarValue stringValue, TContext context)
         {
-            Visit(stringValue.Comment, context);
-            context.Writer.Write('\"');
-            Write(context, stringValue.Value);
-            context.Writer.Write('\"');
+            await Visit(stringValue.Comment, context);
+            await context.Writer.WriteAsync('\"');
+            await Write(context, stringValue.Value);
+            await context.Writer.WriteAsync('\"');
         }
 
         /// <inheritdoc/>
-        public override void VisitIntValue(GraphQLScalarValue intValue, TContext context)
+        public override async ValueTask VisitIntValue(GraphQLScalarValue intValue, TContext context)
         {
-            Visit(intValue.Comment, context);
-            Write(context, intValue.Value);
+            await Visit(intValue.Comment, context);
+            await Write(context, intValue.Value);
         }
 
         /// <inheritdoc/>
-        public override void VisitFloatValue(GraphQLScalarValue floatValue, TContext context)
+        public override async ValueTask VisitFloatValue(GraphQLScalarValue floatValue, TContext context)
         {
-            Visit(floatValue.Comment, context);
-            Write(context, floatValue.Value);
+            await Visit(floatValue.Comment, context);
+            await Write(context, floatValue.Value);
         }
 
         /// <inheritdoc/>
-        public override void VisitEnumValue(GraphQLScalarValue enumValue, TContext context)
+        public override async ValueTask VisitEnumValue(GraphQLScalarValue enumValue, TContext context)
         {
-            Visit(enumValue.Comment, context);
-            Write(context, enumValue.Value);
+            await Visit(enumValue.Comment, context);
+            await Write(context, enumValue.Value);
         }
 
         /// <inheritdoc/>
-        public override void VisitObjectValue(GraphQLObjectValue objectValue, TContext context)
+        public override async ValueTask VisitObjectValue(GraphQLObjectValue objectValue, TContext context)
         {
-            Visit(objectValue.Comment, context);
+            await Visit(objectValue.Comment, context);
 
             if (objectValue.Fields?.Count > 0)
             {
-                context.Writer.Write("{ ");
+                await context.Writer.WriteAsync("{ ");
                 for (int i = 0; i < objectValue.Fields.Count; ++i)
                 {
-                    Visit(objectValue.Fields[i], context);
+                    await Visit(objectValue.Fields[i], context);
                     if (i < objectValue.Fields.Count - 1)
-                        context.Writer.Write(", ");
+                        await context.Writer.WriteAsync(", ");
                 }
-                context.Writer.Write(" }");
+                await context.Writer.WriteAsync(" }");
             }
             else
             {
-                context.Writer.Write("{ }");
+                await context.Writer.WriteAsync("{ }");
             }
         }
 
         /// <inheritdoc/>
-        public override void VisitObjectField(GraphQLObjectField objectField, TContext context)
+        public override async ValueTask VisitObjectField(GraphQLObjectField objectField, TContext context)
         {
-            Visit(objectField.Comment, context);
-            Visit(objectField.Name, context);
-            context.Writer.Write(": ");
-            Visit(objectField.Value, context);
+            await Visit(objectField.Comment, context);
+            await Visit(objectField.Name, context);
+            await context.Writer.WriteAsync(": ");
+            await Visit(objectField.Value, context);
         }
 
         /// <inheritdoc/>
-        public override void VisitNamedType(GraphQLNamedType namedType, TContext context)
+        public override ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context)
         {
-            base.VisitNamedType(namedType, context);
+            return base.VisitNamedType(namedType, context);
         }
 
         /// <inheritdoc/>
-        public override void Visit(ASTNode? node, TContext context)
+        public override async ValueTask Visit(ASTNode? node, TContext context)
         {
             if (node == null)
                 return;
 
             context.Parent.Push(node);
 
-            base.Visit(node, context);
+            await base.Visit(node, context);
 
             context.Parent.Pop();
         }
 
-        private void VisitArguments(IHasArgumentsNode node, TContext context)
+        private async ValueTask VisitArguments(IHasArgumentsNode node, TContext context)
         {
             if (node.Arguments?.Count > 0)
             {
                 for (int i = 0; i < node.Arguments.Count; ++i)
                 {
-                    Visit(node.Arguments[i], context);
+                    await Visit(node.Arguments[i], context);
                     if (i < node.Arguments.Count - 1)
-                        context.Writer.Write(", ");
+                        await context.Writer.WriteAsync(", ");
                 }
             }
         }
 
-        private void VisitInterfaces(IHasInterfacesNode node, TContext context)
+        private async ValueTask VisitInterfaces(IHasInterfacesNode node, TContext context)
         {
             if (node.Interfaces?.Count > 0)
             {
-                context.Writer.Write(" implements ");
+                await context.Writer.WriteAsync(" implements ");
 
                 for (int i = 0; i < node.Interfaces.Count; ++i)
                 {
-                    Visit(node.Interfaces[i], context);
+                    await Visit(node.Interfaces[i], context);
                     if (i < node.Interfaces.Count - 1)
-                        context.Writer.Write(" & ");
+                        await context.Writer.WriteAsync(" & ");
                 }
             }
         }
 
         //TODO: remove
-        private void Visit<T>(List<T>? nodes, TContext context, string delimiter, string start)
+        private async ValueTask Visit<T>(List<T>? nodes, TContext context, string delimiter, string start)
             where T : ASTNode
         {
             if (nodes != null)
             {
                 if (!string.IsNullOrEmpty(start))
-                    context.Writer.Write(start);
+                    await context.Writer.WriteAsync(start);
 
                 for (int i = 0; i < nodes.Count; ++i)
                 {
-                    Visit(nodes[i], context);
+                    await Visit(nodes[i], context);
                     if (i < nodes.Count - 1)
-                        context.Writer.Write(delimiter);
+                        await context.Writer.WriteAsync(delimiter);
                 }
             }
         }
 
-        private void VisitDirectives(IHasDirectivesNode node, TContext context)
+        private async ValueTask VisitDirectives(IHasDirectivesNode node, TContext context)
         {
             if (node.Directives?.Count > 0)
             {
-                context.Writer.Write(' ');
+                await context.Writer.WriteAsync(' ');
 
                 for (int i = 0; i < node.Directives.Count; ++i)
                 {
-                    Visit(node.Directives[i], context);
+                    await Visit(node.Directives[i], context);
                     if (i < node.Directives.Count - 1)
-                        context.Writer.Write(' ');
+                        await context.Writer.WriteAsync(' ');
                 }
             }
         }
@@ -707,10 +717,10 @@ namespace GraphQLParser.Visitors
             _ => "query",
         };
 
-        private void WriteIndent(TContext context, int level)
+        private async ValueTask WriteIndent(TContext context, int level)
         {
             for (int i = 0; i < level; ++i)
-                context.Writer.Write("  ");
+                await context.Writer.WriteAsync("  ");
         }
 
         private int GetLevel(TContext context)
@@ -741,13 +751,15 @@ namespace GraphQLParser.Visitors
             return level;
         }
 
-        private void Write(TContext context, ROM value)
+        private ValueTask Write(TContext context, ROM value)
         {
+            var task =
 #if NETSTANDARD2_0
-            context.Writer.Write(value.ToString());
+            context.Writer.WriteAsync(value.ToString());
 #elif NETSTANDARD2_1_OR_GREATER
-            context.Writer.Write(value.Span);
+            context.Writer.WriteAsync(value);
 #endif
+            return new ValueTask(task);
         }
     }
 }

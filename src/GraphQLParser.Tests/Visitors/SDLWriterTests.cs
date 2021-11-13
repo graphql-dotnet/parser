@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using GraphQLParser.Visitors;
 using Shouldly;
 using Xunit;
@@ -202,13 +203,13 @@ type Dog implements Animal
   age: Int!
 }
 ")]
-        public void WriteDocumentVisitor_Should_Print_Document(string text, string expected)
+        public async Task WriteDocumentVisitor_Should_Print_Document(string text, string expected)
         {
             var context = new TestContext();
 
             using (var document = text.Parse())
             {
-                _sdlWriter.Visit(document, context);
+                await _sdlWriter.Visit(document, context);
                 var actual = context.Writer.ToString();
                 actual.ShouldBe(expected);
 

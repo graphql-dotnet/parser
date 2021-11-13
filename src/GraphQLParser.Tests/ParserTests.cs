@@ -168,7 +168,7 @@ namespace GraphQLParser.Tests
             var def1 = document.Definitions[0] as GraphQLOperationDefinition;
             var field = def1.SelectionSet.Selections[0] as GraphQLField;
             var frag = field.SelectionSet.Selections[0] as GraphQLInlineFragment;
-            frag.TypeCondition.Comment.Text.ShouldBe("comment for named type from TypeCondition");
+            frag.TypeCondition.Type.Comment.Text.ShouldBe("comment for named type from TypeCondition");
 
             var def2 = document.Definitions[1] as GraphQLObjectTypeDefinition;
             def2.Interfaces[0].Comment.Text.ShouldBe("comment for named type from ImplementsInterfaces");

@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using GraphQLParser.AST;
 
 namespace GraphQLParser.Visitors
@@ -11,17 +12,17 @@ namespace GraphQLParser.Visitors
         where TContext : IWriteContext
     {
         /// <inheritdoc/>
-        public override void Visit(ASTNode? node, TContext context)
+        public override async ValueTask Visit(ASTNode? node, TContext context)
         {
             if (node == null)
                 return;
 
             for (int i = 0; i < context.Parent.Count; ++i)
-                context.Writer.Write("  ");
+                await context.Writer.WriteAsync("  ");
 
             context.Parent.Push(node);
-            context.Writer.WriteLine(node.Kind.ToString());
-            base.Visit(node, context);
+            await context.Writer.WriteLineAsync(node.Kind.ToString());
+            await base.Visit(node, context);
             context.Parent.Pop();
         }
     }

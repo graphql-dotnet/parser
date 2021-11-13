@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using GraphQLParser.Visitors;
 using Shouldly;
 using Xunit;
@@ -33,13 +34,13 @@ namespace GraphQLParser.Tests.Visitors
     Directive
       Name
 ")]
-        public void WriteTreeVisitor_Should_Print_Tree(string text, string expected)
+        public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
         {
             var context = new TestContext();
 
             using (var document = text.Parse())
             {
-                _structWriter.Visit(document, context);
+                await _structWriter.Visit(document, context).ConfigureAwait(false);
                 var actual = context.Writer.ToString();
                 actual.ShouldBe(expected);
             }

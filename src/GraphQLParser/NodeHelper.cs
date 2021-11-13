@@ -419,6 +419,18 @@ namespace GraphQLParser
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLTypeCondition CreateGraphQLTypeCondition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLTypeCondition(),
+                IgnoreOptions.Comments => new GraphQLTypeConditionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLTypeConditionWithComment(),
+                _ => new GraphQLTypeConditionFull(),
+            };
+        }
+
         #endregion
     }
 }
