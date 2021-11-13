@@ -325,5 +325,12 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#Description"/>
         /// </summary>
         Description,
+
+        /// <summary>
+        /// Fragments must specify the type they apply to.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#TypeCondition"/>
+        /// </summary>
+        TypeCondition,
     }
 }
