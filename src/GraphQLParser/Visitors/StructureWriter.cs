@@ -18,12 +18,12 @@ namespace GraphQLParser.Visitors
                 return;
 
             for (int i = 0; i < context.Parent.Count; ++i)
-                await context.Write("  ");
+                await context.Write("  ").ConfigureAwait(false);
 
             context.Parent.Push(node);
-            await context.Write(node.Kind.ToString());
-            await context.WriteLine();
-            await base.Visit(node, context);
+            await context.Write(node.Kind.ToString()).ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+            await base.Visit(node, context).ConfigureAwait(false);
             context.Parent.Pop();
         }
     }

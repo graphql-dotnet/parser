@@ -16,15 +16,15 @@ namespace GraphQLParser.Visitors
         /// <inheritdoc/>
         public virtual async ValueTask VisitDocument(GraphQLDocument document, TContext context)
         {
-            await Visit(document.Definitions, context);
+            await Visit(document.Definitions, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitArgument(GraphQLArgument argument, TContext context)
         {
-            await Visit(argument.Comment, context);
-            await Visit(argument.Name, context);
-            await Visit(argument.Value, context);
+            await Visit(argument.Comment, context).ConfigureAwait(false);
+            await Visit(argument.Name, context).ConfigureAwait(false);
+            await Visit(argument.Value, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -42,290 +42,290 @@ namespace GraphQLParser.Visitors
         /// <inheritdoc/>
         public virtual async ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
         {
-            await Visit(operationDefinition.Comment, context);
-            await Visit(operationDefinition.Name, context);
-            await Visit(operationDefinition.VariableDefinitions, context);
-            await Visit(operationDefinition.Directives, context);
-            await Visit(operationDefinition.SelectionSet, context);
+            await Visit(operationDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(operationDefinition.Name, context).ConfigureAwait(false);
+            await Visit(operationDefinition.VariableDefinitions, context).ConfigureAwait(false);
+            await Visit(operationDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(operationDefinition.SelectionSet, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitName(GraphQLName name, TContext context)
         {
-            await Visit(name.Comment, context);
+            await Visit(name.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context)
         {
-            await Visit(variableDefinition.Comment, context);
-            await Visit(variableDefinition.Variable, context);
-            await Visit(variableDefinition.Type, context);
-            await Visit(variableDefinition.DefaultValue, context);
-            await Visit(variableDefinition.Directives, context);
+            await Visit(variableDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(variableDefinition.Variable, context).ConfigureAwait(false);
+            await Visit(variableDefinition.Type, context).ConfigureAwait(false);
+            await Visit(variableDefinition.DefaultValue, context).ConfigureAwait(false);
+            await Visit(variableDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitVariable(GraphQLVariable variable, TContext context)
         {
-            await Visit(variable.Comment, context);
-            await Visit(variable.Name, context);
+            await Visit(variable.Comment, context).ConfigureAwait(false);
+            await Visit(variable.Name, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
         {
-            await Visit(selectionSet.Comment, context);
-            await Visit(selectionSet.Selections, context);
+            await Visit(selectionSet.Comment, context).ConfigureAwait(false);
+            await Visit(selectionSet.Selections, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitField(GraphQLField field, TContext context)
         {
-            await Visit(field.Comment, context);
-            await Visit(field.Alias, context);
-            await Visit(field.Name, context);
-            await Visit(field.Arguments, context);
-            await Visit(field.Directives, context);
-            await Visit(field.SelectionSet, context);
+            await Visit(field.Comment, context).ConfigureAwait(false);
+            await Visit(field.Alias, context).ConfigureAwait(false);
+            await Visit(field.Name, context).ConfigureAwait(false);
+            await Visit(field.Arguments, context).ConfigureAwait(false);
+            await Visit(field.Directives, context).ConfigureAwait(false);
+            await Visit(field.SelectionSet, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context)
         {
-            await Visit(fragmentSpread.Comment, context);
-            await Visit(fragmentSpread.Name, context);
-            await Visit(fragmentSpread.Directives, context);
+            await Visit(fragmentSpread.Comment, context).ConfigureAwait(false);
+            await Visit(fragmentSpread.Name, context).ConfigureAwait(false);
+            await Visit(fragmentSpread.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitInlineFragment(GraphQLInlineFragment inlineFragment, TContext context)
         {
-            await Visit(inlineFragment.Comment, context);
-            await Visit(inlineFragment.TypeCondition, context);
-            await Visit(inlineFragment.Directives, context);
-            await Visit(inlineFragment.SelectionSet, context);
+            await Visit(inlineFragment.Comment, context).ConfigureAwait(false);
+            await Visit(inlineFragment.TypeCondition, context).ConfigureAwait(false);
+            await Visit(inlineFragment.Directives, context).ConfigureAwait(false);
+            await Visit(inlineFragment.SelectionSet, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitTypeCondition(GraphQLTypeCondition typeCondition, TContext context)
         {
-            await Visit(typeCondition.Comment, context);
-            await Visit(typeCondition.Type, context);
+            await Visit(typeCondition.Comment, context).ConfigureAwait(false);
+            await Visit(typeCondition.Type, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
         {
-            await Visit(fragmentDefinition.Comment, context);
-            await Visit(fragmentDefinition.Name, context);
-            await Visit(fragmentDefinition.TypeCondition, context);
-            await Visit(fragmentDefinition.Directives, context);
-            await Visit(fragmentDefinition.SelectionSet, context);
+            await Visit(fragmentDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(fragmentDefinition.Name, context).ConfigureAwait(false);
+            await Visit(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
+            await Visit(fragmentDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitIntValue(GraphQLScalarValue intValue, TContext context)
         {
-            await Visit(intValue.Comment, context);
+            await Visit(intValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitFloatValue(GraphQLScalarValue floatValue, TContext context)
         {
-            await Visit(floatValue.Comment, context);
+            await Visit(floatValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitStringValue(GraphQLScalarValue stringValue, TContext context)
         {
-            await Visit(stringValue.Comment, context);
+            await Visit(stringValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context)
         {
-            await Visit(booleanValue.Comment, context);
+            await Visit(booleanValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitEnumValue(GraphQLScalarValue enumValue, TContext context)
         {
-            await Visit(enumValue.Comment, context);
+            await Visit(enumValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitListValue(GraphQLListValue listValue, TContext context)
         {
-            await Visit(listValue.Comment, context);
-            await Visit(listValue.Values, context);
+            await Visit(listValue.Comment, context).ConfigureAwait(false);
+            await Visit(listValue.Values, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitObjectValue(GraphQLObjectValue objectValue, TContext context)
         {
-            await Visit(objectValue.Comment, context);
-            await Visit(objectValue.Fields, context);
+            await Visit(objectValue.Comment, context).ConfigureAwait(false);
+            await Visit(objectValue.Fields, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitObjectField(GraphQLObjectField objectField, TContext context)
         {
-            await Visit(objectField.Comment, context);
-            await Visit(objectField.Name, context);
-            await Visit(objectField.Value, context);
+            await Visit(objectField.Comment, context).ConfigureAwait(false);
+            await Visit(objectField.Name, context).ConfigureAwait(false);
+            await Visit(objectField.Value, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitDirective(GraphQLDirective directive, TContext context)
         {
-            await Visit(directive.Comment, context);
-            await Visit(directive.Name, context);
-            await Visit(directive.Arguments, context);
+            await Visit(directive.Comment, context).ConfigureAwait(false);
+            await Visit(directive.Name, context).ConfigureAwait(false);
+            await Visit(directive.Arguments, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context)
         {
-            await Visit(namedType.Comment, context);
-            await Visit(namedType.Name, context);
+            await Visit(namedType.Comment, context).ConfigureAwait(false);
+            await Visit(namedType.Name, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitListType(GraphQLListType listType, TContext context)
         {
-            await Visit(listType.Comment, context);
-            await Visit(listType.Type, context);
+            await Visit(listType.Comment, context).ConfigureAwait(false);
+            await Visit(listType.Type, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitNonNullType(GraphQLNonNullType nonNullType, TContext context)
         {
-            await Visit(nonNullType.Comment, context);
-            await Visit(nonNullType.Type, context);
+            await Visit(nonNullType.Comment, context).ConfigureAwait(false);
+            await Visit(nonNullType.Type, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitNullValue(GraphQLScalarValue nullValue, TContext context)
         {
-            await Visit(nullValue.Comment, context);
+            await Visit(nullValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitSchemaDefinition(GraphQLSchemaDefinition schemaDefinition, TContext context)
         {
-            await Visit(schemaDefinition.Comment, context);
-            await Visit(schemaDefinition.Description, context);
-            await Visit(schemaDefinition.Directives, context);
-            await Visit(schemaDefinition.OperationTypes, context);
+            await Visit(schemaDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(schemaDefinition.Description, context).ConfigureAwait(false);
+            await Visit(schemaDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(schemaDefinition.OperationTypes, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitRootOperationTypeDefinition(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
         {
-            await Visit(rootOperationTypeDefinition.Comment, context);
-            await Visit(rootOperationTypeDefinition.Type, context);
+            await Visit(rootOperationTypeDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(rootOperationTypeDefinition.Type, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitScalarTypeDefinition(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
         {
-            await Visit(scalarTypeDefinition.Comment, context);
-            await Visit(scalarTypeDefinition.Description, context);
-            await Visit(scalarTypeDefinition.Name, context);
-            await Visit(scalarTypeDefinition.Directives, context);
+            await Visit(scalarTypeDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(scalarTypeDefinition.Description, context).ConfigureAwait(false);
+            await Visit(scalarTypeDefinition.Name, context).ConfigureAwait(false);
+            await Visit(scalarTypeDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitObjectTypeDefinition(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
         {
-            await Visit(objectTypeDefinition.Comment, context);
-            await Visit(objectTypeDefinition.Description, context);
-            await Visit(objectTypeDefinition.Name, context);
-            await Visit(objectTypeDefinition.Interfaces, context);
-            await Visit(objectTypeDefinition.Directives, context);
-            await Visit(objectTypeDefinition.Fields, context);
+            await Visit(objectTypeDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(objectTypeDefinition.Description, context).ConfigureAwait(false);
+            await Visit(objectTypeDefinition.Name, context).ConfigureAwait(false);
+            await Visit(objectTypeDefinition.Interfaces, context).ConfigureAwait(false);
+            await Visit(objectTypeDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(objectTypeDefinition.Fields, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context)
         {
-            await Visit(fieldDefinition.Comment, context);
-            await Visit(fieldDefinition.Description, context);
-            await Visit(fieldDefinition.Name, context);
-            await Visit(fieldDefinition.Arguments, context);
-            await Visit(fieldDefinition.Type, context);
-            await Visit(fieldDefinition.Directives, context);
+            await Visit(fieldDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(fieldDefinition.Description, context).ConfigureAwait(false);
+            await Visit(fieldDefinition.Name, context).ConfigureAwait(false);
+            await Visit(fieldDefinition.Arguments, context).ConfigureAwait(false);
+            await Visit(fieldDefinition.Type, context).ConfigureAwait(false);
+            await Visit(fieldDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context)
         {
-            await Visit(inputValueDefinition.Comment, context);
-            await Visit(inputValueDefinition.Description, context);
-            await Visit(inputValueDefinition.Name, context);
-            await Visit(inputValueDefinition.Type, context);
-            await Visit(inputValueDefinition.DefaultValue, context);
-            await Visit(inputValueDefinition.Directives, context);
+            await Visit(inputValueDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(inputValueDefinition.Description, context).ConfigureAwait(false);
+            await Visit(inputValueDefinition.Name, context).ConfigureAwait(false);
+            await Visit(inputValueDefinition.Type, context).ConfigureAwait(false);
+            await Visit(inputValueDefinition.DefaultValue, context).ConfigureAwait(false);
+            await Visit(inputValueDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
         {
-            await Visit(interfaceTypeDefinition.Comment, context);
-            await Visit(interfaceTypeDefinition.Description, context);
-            await Visit(interfaceTypeDefinition.Name, context);
-            await Visit(interfaceTypeDefinition.Interfaces, context);
-            await Visit(interfaceTypeDefinition.Directives, context);
-            await Visit(interfaceTypeDefinition.Fields, context);
+            await Visit(interfaceTypeDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(interfaceTypeDefinition.Description, context).ConfigureAwait(false);
+            await Visit(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
+            await Visit(interfaceTypeDefinition.Interfaces, context).ConfigureAwait(false);
+            await Visit(interfaceTypeDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
         {
-            await Visit(unionTypeDefinition.Comment, context);
-            await Visit(unionTypeDefinition.Description, context);
-            await Visit(unionTypeDefinition.Name, context);
-            await Visit(unionTypeDefinition.Directives, context);
-            await Visit(unionTypeDefinition.Types, context);
+            await Visit(unionTypeDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(unionTypeDefinition.Description, context).ConfigureAwait(false);
+            await Visit(unionTypeDefinition.Name, context).ConfigureAwait(false);
+            await Visit(unionTypeDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(unionTypeDefinition.Types, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
         {
-            await Visit(enumTypeDefinition.Comment, context);
-            await Visit(enumTypeDefinition.Description, context);
-            await Visit(enumTypeDefinition.Name, context);
-            await Visit(enumTypeDefinition.Directives, context);
-            await Visit(enumTypeDefinition.Values, context);
+            await Visit(enumTypeDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(enumTypeDefinition.Description, context).ConfigureAwait(false);
+            await Visit(enumTypeDefinition.Name, context).ConfigureAwait(false);
+            await Visit(enumTypeDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(enumTypeDefinition.Values, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
         {
-            await Visit(enumValueDefinition.Comment, context);
-            await Visit(enumValueDefinition.Description, context);
-            await Visit(enumValueDefinition.Name, context);
-            await Visit(enumValueDefinition.Directives, context);
+            await Visit(enumValueDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(enumValueDefinition.Description, context).ConfigureAwait(false);
+            await Visit(enumValueDefinition.Name, context).ConfigureAwait(false);
+            await Visit(enumValueDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
         {
-            await Visit(inputObjectTypeDefinition.Comment, context);
-            await Visit(inputObjectTypeDefinition.Description, context);
-            await Visit(inputObjectTypeDefinition.Name, context);
-            await Visit(inputObjectTypeDefinition.Directives, context);
-            await Visit(inputObjectTypeDefinition.Fields, context);
+            await Visit(inputObjectTypeDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeDefinition.Description, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeDefinition.Directives, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeDefinition.Fields, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public virtual async ValueTask VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context)
         {
-            await Visit(directiveDefinition.Comment, context);
-            await Visit(directiveDefinition.Description, context);
-            await Visit(directiveDefinition.Name, context);
-            await Visit(directiveDefinition.Arguments, context);
+            await Visit(directiveDefinition.Comment, context).ConfigureAwait(false);
+            await Visit(directiveDefinition.Description, context).ConfigureAwait(false);
+            await Visit(directiveDefinition.Name, context).ConfigureAwait(false);
+            await Visit(directiveDefinition.Arguments, context).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -335,10 +335,9 @@ namespace GraphQLParser.Visitors
         /// <param name="context">Context passed into all INodeVisitor.VisitXXX methods.</param>
         public virtual ValueTask Visit(ASTNode? node, TContext context)
         {
-            if (node == null)
-                return new ValueTask(Task.CompletedTask);
-
-            return node switch
+            return node == null
+                ? new ValueTask(Task.CompletedTask)
+                : node switch
             {
                 GraphQLArgument argument => VisitArgument(argument, context),
                 GraphQLComment comment => VisitComment(comment, context),
@@ -400,7 +399,7 @@ namespace GraphQLParser.Visitors
             if (nodes != null)
             {
                 foreach (var node in nodes)
-                    await Visit(node, context);
+                    await Visit(node, context).ConfigureAwait(false);
             }
         }
     }
