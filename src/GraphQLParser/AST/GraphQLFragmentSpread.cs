@@ -11,10 +11,10 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLName? Name { get; set; }
 
         /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public List<GraphQLDirective>? Directives { get; set; }
     }
 
     internal sealed class GraphQLFragmentSpreadWithLocation : GraphQLFragmentSpread

@@ -12,13 +12,13 @@ namespace GraphQLParser.AST
 
         public GraphQLName? Alias { get; set; }
 
+        /// <inheritdoc/>
+        public GraphQLName? Name { get; set; }
+
         public List<GraphQLArgument>? Arguments { get; set; }
 
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
-
-        /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
 
         public GraphQLSelectionSet? SelectionSet { get; set; }
     }

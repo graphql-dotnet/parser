@@ -10,11 +10,11 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.VariableDefinition;
 
-        public GraphQLValue? DefaultValue { get; set; }
+        public GraphQLVariable? Variable { get; set; }
 
         public GraphQLType? Type { get; set; }
 
-        public GraphQLVariable? Variable { get; set; }
+        public GraphQLValue? DefaultValue { get; set; }
 
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }

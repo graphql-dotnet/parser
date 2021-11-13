@@ -12,17 +12,17 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Document;
 
-        // In some cases, the parser is forced to change the text (escape symbols, comments),
-        // so it is impossible to simply point to the desired section (span) of the source text.
-        // In this case, array pools are used, memory from which then need to be returned to the pool.
-        internal List<(IMemoryOwner<char> owner, ASTNode rentedBy)>? RentedMemoryTracker { get; set; }
-
         public List<ASTNode>? Definitions { get; set; }
 
         /// <summary>
         /// Comments that have not been correlated to any AST node of GraphQL document.
         /// </summary>
         public List<GraphQLComment>? UnattachedComments { get; set; }
+
+        // In some cases, the parser is forced to change the text (escape symbols, comments),
+        // so it is impossible to simply point to the desired section (span) of the source text.
+        // In this case, array pools are used, memory from which then need to be returned to the pool.
+        internal List<(IMemoryOwner<char> owner, ASTNode rentedBy)>? RentedMemoryTracker { get; set; }
 
         protected virtual void Dispose(bool disposing)
         {

@@ -10,17 +10,17 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
 
-        /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public OperationType Operation { get; set; }
 
         /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
 
-        public OperationType Operation { get; set; }
+        public List<GraphQLVariableDefinition>? VariableDefinitions { get; set; }
+
+        /// <inheritdoc/>
+        public List<GraphQLDirective>? Directives { get; set; }
 
         public GraphQLSelectionSet? SelectionSet { get; set; }
-
-        public List<GraphQLVariableDefinition>? VariableDefinitions { get; set; }
     }
 
     internal sealed class GraphQLOperationDefinitionWithLocation : GraphQLOperationDefinition

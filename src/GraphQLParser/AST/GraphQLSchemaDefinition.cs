@@ -11,10 +11,10 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.SchemaDefinition;
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDescription? Description { get; set; }
 
         /// <inheritdoc/>
-        public GraphQLDescription? Description { get; set; }
+        public List<GraphQLDirective>? Directives { get; set; }
 
         public List<GraphQLRootOperationTypeDefinition>? OperationTypes { get; set; }
     }

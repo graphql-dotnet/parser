@@ -16,11 +16,6 @@ namespace GraphQLParser.AST
         public List<GraphQLInputValueDefinition>? Arguments { get; set; }
 
         /// <summary>
-        /// Returns a list of locations representing the valid locations this directive may be placed.
-        /// </summary>
-        public List<GraphQLName>? Locations { get; set; }
-
-        /// <summary>
         /// Indicates if the directive may be used repeatedly at a single location.
         /// <br/><br/>
         /// Repeatable directives are often useful when the same directive
@@ -29,6 +24,11 @@ namespace GraphQLParser.AST
         /// provided to a type or schema extension via a directive
         /// </summary>
         public bool Repeatable { get; set; }
+
+        /// <summary>
+        /// Returns a list of locations representing the valid locations this directive may be placed.
+        /// </summary>
+        public List<GraphQLName>? Locations { get; set; }
     }
 
     internal sealed class GraphQLDirectiveDefinitionWithLocation : GraphQLDirectiveDefinition

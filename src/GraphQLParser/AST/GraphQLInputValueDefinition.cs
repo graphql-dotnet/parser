@@ -10,12 +10,12 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InputValueDefinition;
 
+        public GraphQLType? Type { get; set; }
+
         public GraphQLValue? DefaultValue { get; set; }
 
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
-
-        public GraphQLType? Type { get; set; }
     }
 
     internal sealed class GraphQLInputValueDefinitionWithLocation : GraphQLInputValueDefinition
