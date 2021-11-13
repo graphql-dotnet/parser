@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.Visitors;
 using Shouldly;
@@ -14,6 +15,8 @@ namespace GraphQLParser.Tests.Visitors
             public TextWriter Writer { get; set; } = new StringWriter();
 
             public Stack<AST.ASTNode> Parent { get; set; } = new Stack<AST.ASTNode>();
+
+            public CancellationToken CancellationToken { get; set; }
         }
 
         private static readonly SDLWriter<TestContext> _sdlWriter = new();

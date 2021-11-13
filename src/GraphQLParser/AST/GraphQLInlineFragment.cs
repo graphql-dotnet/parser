@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.InlineFragment"/>.
+    /// </summary>
     public class GraphQLInlineFragment : ASTNode, IHasDirectivesNode
     {
         /// <inheritdoc/>

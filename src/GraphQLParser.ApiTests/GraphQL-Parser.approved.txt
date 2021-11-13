@@ -177,7 +177,7 @@ namespace GraphQLParser.AST
     }
     public class GraphQLListValue : GraphQLParser.AST.GraphQLValue
     {
-        public GraphQLListValue(GraphQLParser.AST.ASTNodeKind kind) { }
+        public GraphQLListValue() { }
         public GraphQLParser.ROM AstValue { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLValue>? Values { get; set; }
@@ -502,6 +502,10 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitVariableDefinition(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
     }
+    public interface INodeVisitorContext
+    {
+        System.Threading.CancellationToken CancellationToken { get; }
+    }
     public interface INodeVisitor<TContext>
         where TContext : GraphQLParser.Visitors.INodeVisitorContext
     {
@@ -545,7 +549,6 @@ namespace GraphQLParser.Visitors
         System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context);
         System.Threading.Tasks.ValueTask VisitVariableDefinition(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context);
     }
-    public interface INodeVisitorContext { }
     public interface IWriteContext : GraphQLParser.Visitors.INodeVisitorContext
     {
         System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parent { get; }
@@ -601,5 +604,12 @@ namespace GraphQLParser.Visitors
     {
         public StructureWriter() { }
         public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
+    }
+    public static class WriteContextExtensions
+    {
+        public static System.Threading.Tasks.ValueTask Write<TContext>(this TContext context, GraphQLParser.ROM value)
+            where TContext : GraphQLParser.Visitors.IWriteContext { }
+        public static System.Threading.Tasks.ValueTask WriteLine<TContext>(this TContext context)
+            where TContext : GraphQLParser.Visitors.IWriteContext { }
     }
 }

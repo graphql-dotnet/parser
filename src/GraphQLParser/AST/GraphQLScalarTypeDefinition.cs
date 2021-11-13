@@ -2,13 +2,16 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.ScalarTypeDefinition"/>.
+    /// </summary>
     public class GraphQLScalarTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.ScalarTypeDefinition;
 
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ScalarTypeDefinition;
+        public List<GraphQLDirective>? Directives { get; set; }
     }
 
     internal sealed class GraphQLScalarTypeDefinitionWithLocation : GraphQLScalarTypeDefinition

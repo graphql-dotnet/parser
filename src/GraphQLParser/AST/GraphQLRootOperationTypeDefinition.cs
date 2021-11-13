@@ -1,12 +1,21 @@
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.RootOperationTypeDefinition"/>.
+    /// </summary>
     public class GraphQLRootOperationTypeDefinition : ASTNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.RootOperationTypeDefinition;
 
+        /// <summary>
+        /// Kind of operation: query, mutation or subscription.
+        /// </summary>
         public OperationType Operation { get; set; }
 
+        /// <summary>
+        /// Type of this root operation.
+        /// </summary>
         public GraphQLNamedType? Type { get; set; }
     }
 

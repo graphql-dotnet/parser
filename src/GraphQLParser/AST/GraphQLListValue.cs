@@ -2,19 +2,15 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.ListValue"/>.
+    /// </summary>
     public class GraphQLListValue : GraphQLValue
     {
-        private readonly ASTNodeKind _kind;
-
-        public GraphQLListValue(ASTNodeKind kind)
-        {
-            _kind = kind;
-        }
+        /// <inheritdoc/>
+        public override ASTNodeKind Kind => ASTNodeKind.ListValue;
 
         public ROM AstValue { get; set; }
-
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => _kind;
 
         public List<GraphQLValue>? Values { get; set; }
 
@@ -25,11 +21,6 @@ namespace GraphQLParser.AST
     internal sealed class GraphQLListValueWithLocation : GraphQLListValue
     {
         private GraphQLLocation _location;
-
-        public GraphQLListValueWithLocation(ASTNodeKind kind)
-            : base(kind)
-        {
-        }
 
         public override GraphQLLocation Location
         {
@@ -42,11 +33,6 @@ namespace GraphQLParser.AST
     {
         private GraphQLComment? _comment;
 
-        public GraphQLListValueWithComment(ASTNodeKind kind)
-            : base(kind)
-        {
-        }
-
         public override GraphQLComment? Comment
         {
             get => _comment;
@@ -58,11 +44,6 @@ namespace GraphQLParser.AST
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;
-
-        public GraphQLListValueFull(ASTNodeKind kind)
-            : base(kind)
-        {
-        }
 
         public override GraphQLLocation Location
         {

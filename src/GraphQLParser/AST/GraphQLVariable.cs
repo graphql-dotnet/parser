@@ -1,5 +1,8 @@
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.Variable"/>.
+    /// </summary>
     public class GraphQLVariable : GraphQLValue, INamedNode
     {
         /// <inheritdoc/>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.AST;
 using GraphQLParser.Visitors;
@@ -204,6 +205,8 @@ namespace GraphQLParser.Tests.Visitors
             public List<GraphQLScalarValue> VisitedStringValues = new();
             public List<GraphQLVariable> VisitedVariables = new();
             public List<GraphQLScalarValue> VisitedBooleanValues = new();
+
+            public CancellationToken CancellationToken { get; set; }
         }
 
         private readonly CountVisitor _visitor = new();

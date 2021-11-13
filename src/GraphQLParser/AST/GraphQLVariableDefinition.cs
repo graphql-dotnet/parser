@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.VariableDefinition"/>.
+    /// </summary>
     public class GraphQLVariableDefinition : ASTNode, IHasDirectivesNode
     {
         /// <inheritdoc/>

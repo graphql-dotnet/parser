@@ -2,15 +2,18 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.InputObjectTypeDefinition"/>.
+    /// </summary>
     public class GraphQLInputObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
+        /// <inheritdoc/>
+        public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeDefinition;
+
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
         public List<GraphQLInputValueDefinition>? Fields { get; set; }
-
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeDefinition;
     }
 
     internal sealed class GraphQLInputObjectTypeDefinitionWithLocation : GraphQLInputObjectTypeDefinition

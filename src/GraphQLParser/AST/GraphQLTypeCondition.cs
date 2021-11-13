@@ -1,5 +1,8 @@
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.TypeCondition"/>.
+    /// </summary>
     public class GraphQLTypeCondition : ASTNode
     {
         /// <inheritdoc/>

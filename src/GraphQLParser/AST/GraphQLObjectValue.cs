@@ -2,12 +2,15 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.ObjectValue"/>.
+    /// </summary>
     public class GraphQLObjectValue : GraphQLValue
     {
-        public List<GraphQLObjectField>? Fields { get; set; }
-
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
+
+        public List<GraphQLObjectField>? Fields { get; set; }
     }
 
     internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue

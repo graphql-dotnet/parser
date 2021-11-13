@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace GraphQLParser.Visitors
 {
     /// <summary>
@@ -5,5 +7,9 @@ namespace GraphQLParser.Visitors
     /// </summary>
     public interface INodeVisitorContext
     {
+        /// <summary>
+        /// The token to monitor for cancellation requests.
+        /// </summary>
+        CancellationToken CancellationToken { get; }
     }
 }

@@ -296,8 +296,10 @@ namespace GraphQLParser.AST
         /// </summary>
         InputObjectTypeDefinition,
 
-        // TODO: change
-        TypeExtensionDefinition,
+        /// <summary>
+        /// TO BE DONE
+        /// </summary>
+        TypeExtensionDefinition, // TODO: change
 
         /// <summary>
         /// Directive definition. Directives provide a way to describe alternate runtime execution

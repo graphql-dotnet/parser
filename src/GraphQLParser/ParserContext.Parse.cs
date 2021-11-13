@@ -628,7 +628,7 @@ namespace GraphQLParser
             ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseValueLiteral(true);
             ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueLiteral(false);
 
-            var val = NodeHelper.CreateGraphQLListValue(_ignoreOptions, ASTNodeKind.ListValue);
+            var val = NodeHelper.CreateGraphQLListValue(_ignoreOptions);
             val.Values = ZeroOrMore(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R);
             val.AstValue = _source.Slice(start, _currentToken.End - start - 1);
             val.Comment = comment;

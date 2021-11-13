@@ -389,6 +389,11 @@ namespace GraphQLParser.Visitors
             };
         }
 
+        /// <summary>
+        /// Visits all nodes from the provided list. As a rule, these are nested
+        /// sibling nodes of some parent node, for example, argument nodes for
+        /// parent field node or value nodes for parent list node.
+        /// </summary>
         protected async ValueTask Visit<T>(List<T>? nodes, TContext context)
             where T : ASTNode
         {

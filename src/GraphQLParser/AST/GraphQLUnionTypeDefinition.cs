@@ -2,13 +2,16 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.UnionTypeDefinition"/>.
+    /// </summary>
     public class GraphQLUnionTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.UnionTypeDefinition;
 
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.UnionTypeDefinition;
+        public List<GraphQLDirective>? Directives { get; set; }
 
         public List<GraphQLNamedType>? Types { get; set; }
     }

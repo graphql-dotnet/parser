@@ -2,17 +2,20 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.Field"/>.
+    /// </summary>
     public class GraphQLField : ASTNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
     {
+        /// <inheritdoc/>
+        public override ASTNodeKind Kind => ASTNodeKind.Field;
+
         public GraphQLName? Alias { get; set; }
 
         public List<GraphQLArgument>? Arguments { get; set; }
 
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
-
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.Field;
 
         /// <inheritdoc/>
         public GraphQLName? Name { get; set; }

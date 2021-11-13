@@ -3,14 +3,17 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// Represents a directive definition.
+    /// AST node for <see cref="ASTNodeKind.DirectiveDefinition"/>.
     /// </summary>
     public class GraphQLDirectiveDefinition : GraphQLTypeDefinition
     {
-        public List<GraphQLInputValueDefinition>? Arguments { get; set; }
-
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.DirectiveDefinition;
+
+        /// <summary>
+        /// List of arguments for this directive definition.
+        /// </summary>
+        public List<GraphQLInputValueDefinition>? Arguments { get; set; }
 
         /// <summary>
         /// Returns a list of locations representing the valid locations this directive may be placed.

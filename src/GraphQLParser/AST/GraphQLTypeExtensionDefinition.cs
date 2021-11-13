@@ -1,11 +1,12 @@
 namespace GraphQLParser.AST
 {
+    //TODO: change
     public class GraphQLTypeExtensionDefinition : GraphQLTypeDefinition
     {
-        public GraphQLObjectTypeDefinition? Definition { get; set; }
-
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.TypeExtensionDefinition;
+
+        public GraphQLObjectTypeDefinition? Definition { get; set; }
     }
 
     internal sealed class GraphQLTypeExtensionDefinitionWithLocation : GraphQLTypeExtensionDefinition

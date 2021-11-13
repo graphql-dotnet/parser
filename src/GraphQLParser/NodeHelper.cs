@@ -192,14 +192,14 @@ namespace GraphQLParser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GraphQLListValue CreateGraphQLListValue(IgnoreOptions options, ASTNodeKind kind)
+        public static GraphQLListValue CreateGraphQLListValue(IgnoreOptions options)
         {
             return options switch
             {
-                IgnoreOptions.All => new GraphQLListValue(kind),
-                IgnoreOptions.Comments => new GraphQLListValueWithLocation(kind),
-                IgnoreOptions.Locations => new GraphQLListValueWithComment(kind),
-                _ => new GraphQLListValueFull(kind),
+                IgnoreOptions.All => new GraphQLListValue(),
+                IgnoreOptions.Comments => new GraphQLListValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLListValueWithComment(),
+                _ => new GraphQLListValueFull(),
             };
         }
 

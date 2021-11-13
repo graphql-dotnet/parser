@@ -2,7 +2,9 @@ using System.Diagnostics;
 
 namespace GraphQLParser.AST
 {
-    /// <inheritdoc cref="ASTNodeKind.Name"/>
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.Name"/>.
+    /// </summary>
     [DebuggerDisplay("{Value}")]
     public class GraphQLName : ASTNode
     {

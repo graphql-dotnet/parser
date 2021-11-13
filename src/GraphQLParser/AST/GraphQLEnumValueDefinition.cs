@@ -2,13 +2,16 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.EnumValueDefinition"/>.
+    /// </summary>
     public class GraphQLEnumValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
     {
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.EnumValueDefinition;
 
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.EnumValueDefinition;
+        public List<GraphQLDirective>? Directives { get; set; }
     }
 
     internal sealed class GraphQLEnumValueDefinitionWithLocation : GraphQLEnumValueDefinition
