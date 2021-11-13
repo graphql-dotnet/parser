@@ -185,7 +185,7 @@ namespace GraphQLParser.Tests.Visitors
             }
         }
 
-        public class CountContext : IVisitorContext
+        public class CountContext : INodeVisitorContext
         {
             public List<GraphQLName> VisitedAliases = new();
             public List<GraphQLArgument> VisitedArguments = new();

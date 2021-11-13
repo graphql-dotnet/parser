@@ -11,7 +11,7 @@ namespace GraphQLParser.Visitors
     /// </summary>
     /// <typeparam name="TContext">Type of the context object passed into all VisitXXX methods.</typeparam>
     public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
-        where TContext : IVisitorContext
+        where TContext : INodeVisitorContext
     {
         /// <inheritdoc/>
         public virtual async ValueTask VisitDocument(GraphQLDocument document, TContext context)

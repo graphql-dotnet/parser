@@ -8,7 +8,7 @@ namespace GraphQLParser.Visitors
     /// <typeparam name="TContext">Type of the context object passed into all VisitXXX methods.</typeparam>
     /// </summary>
     public interface INodeVisitor<TContext>
-        where TContext : IVisitorContext
+        where TContext : INodeVisitorContext
     {
         /// <summary>
         /// Visits <see cref="GraphQLName"/> node.

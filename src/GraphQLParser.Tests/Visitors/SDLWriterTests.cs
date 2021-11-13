@@ -209,7 +209,7 @@ type Dog implements Animal
 
             using (var document = text.Parse())
             {
-                await _sdlWriter.Visit(document, context);
+                await _sdlWriter.Visit(document, context).ConfigureAwait(false);
                 var actual = context.Writer.ToString();
                 actual.ShouldBe(expected);
 

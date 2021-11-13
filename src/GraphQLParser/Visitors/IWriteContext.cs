@@ -3,7 +3,7 @@ using System.IO;
 
 namespace GraphQLParser.Visitors
 {
-    public interface IWriteContext : IVisitorContext
+    public interface IWriteContext : INodeVisitorContext
     {
         TextWriter Writer { get; }
 

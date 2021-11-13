@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using GraphQLParser.AST;
@@ -223,7 +222,15 @@ namespace GraphQLParser.Visitors
             if (operationDefinition.VariableDefinitions?.Count > 0)
             {
                 await context.Writer.WriteAsync('(');
-                await Visit(operationDefinition.VariableDefinitions, context, ", ", "");
+                if (operationDefinition.VariableDefinitions?.Count > 0)
+                {
+                    for (int i = 0; i < operationDefinition.VariableDefinitions.Count; ++i)
+                    {
+                        await Visit(operationDefinition.VariableDefinitions[i], context);
+                        if (i < operationDefinition.VariableDefinitions.Count - 1)
+                            await context.Writer.WriteAsync(", ");
+                    }
+                }
                 await context.Writer.WriteAsync(')');
             }
 
@@ -673,24 +680,6 @@ namespace GraphQLParser.Visitors
                     await Visit(node.Interfaces[i], context);
                     if (i < node.Interfaces.Count - 1)
                         await context.Writer.WriteAsync(" & ");
-                }
-            }
-        }
-
-        //TODO: remove
-        private async ValueTask Visit<T>(List<T>? nodes, TContext context, string delimiter, string start)
-            where T : ASTNode
-        {
-            if (nodes != null)
-            {
-                if (!string.IsNullOrEmpty(start))
-                    await context.Writer.WriteAsync(start);
-
-                for (int i = 0; i < nodes.Count; ++i)
-                {
-                    await Visit(nodes[i], context);
-                    if (i < nodes.Count - 1)
-                        await context.Writer.WriteAsync(delimiter);
                 }
             }
         }
