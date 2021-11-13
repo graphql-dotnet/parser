@@ -551,7 +551,7 @@ namespace GraphQLParser.Visitors
     }
     public interface IWriteContext : GraphQLParser.Visitors.INodeVisitorContext
     {
-        System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parent { get; }
+        System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
         System.IO.TextWriter Writer { get; }
     }
     public class SDLWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>

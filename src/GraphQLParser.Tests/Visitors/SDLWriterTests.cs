@@ -14,7 +14,7 @@ namespace GraphQLParser.Tests.Visitors
         {
             public TextWriter Writer { get; set; } = new StringWriter();
 
-            public Stack<AST.ASTNode> Parent { get; set; } = new Stack<AST.ASTNode>();
+            public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
 
             public CancellationToken CancellationToken { get; set; }
         }

@@ -16,6 +16,6 @@ namespace GraphQLParser.Visitors
         /// <summary>
         /// Stack of AST nodes to track the current visitor position.
         /// </summary>
-        Stack<AST.ASTNode> Parent { get; }
+        Stack<AST.ASTNode> Parents { get; }
     }
 }

@@ -662,11 +662,11 @@ namespace GraphQLParser.Visitors
             if (node == null)
                 return;
 
-            context.Parent.Push(node);
+            context.Parents.Push(node);
 
             await base.Visit(node, context).ConfigureAwait(false);
 
-            context.Parent.Pop();
+            context.Parents.Pop();
         }
 
         private async ValueTask VisitArguments(IHasArgumentsNode node, TContext context)
@@ -729,11 +729,11 @@ namespace GraphQLParser.Visitors
         {
             int level = 0;
 
-            if (context.Parent.Count > 0)
+            if (context.Parents.Count > 0)
             {
-                var currentNode = context.Parent.Pop();
+                var currentNode = context.Parents.Pop();
 
-                foreach (var node in context.Parent)
+                foreach (var node in context.Parents)
                 {
                     if (node is GraphQLSelectionSet ||
                         node is GraphQLTypeDefinition ||
@@ -744,10 +744,10 @@ namespace GraphQLParser.Visitors
 
                 if (currentNode is GraphQLDescription)
                     --level;
-                else if (currentNode is GraphQLComment && context.Parent.Peek() is GraphQLTypeDefinition)
+                else if (currentNode is GraphQLComment && context.Parents.Peek() is GraphQLTypeDefinition)
                     --level;
 
-                context.Parent.Push(currentNode);
+                context.Parents.Push(currentNode);
             }
 
             return level;

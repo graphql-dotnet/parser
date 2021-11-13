@@ -17,14 +17,14 @@ namespace GraphQLParser.Visitors
             if (node == null)
                 return;
 
-            for (int i = 0; i < context.Parent.Count; ++i)
+            for (int i = 0; i < context.Parents.Count; ++i)
                 await context.Write("  ").ConfigureAwait(false);
 
-            context.Parent.Push(node);
+            context.Parents.Push(node);
             await context.Write(node.Kind.ToString()).ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
             await base.Visit(node, context).ConfigureAwait(false);
-            context.Parent.Pop();
+            context.Parents.Pop();
         }
     }
 }
