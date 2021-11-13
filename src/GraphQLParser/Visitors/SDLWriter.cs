@@ -109,7 +109,7 @@ namespace GraphQLParser.Visitors
         /// <inheritdoc/>
         public override async ValueTask VisitName(GraphQLName name, TContext context)
         {
-            await Visit (name.Comment, context);
+            await Visit(name.Comment, context);
             await Write(context, name.Value);
         }
 
@@ -559,7 +559,7 @@ namespace GraphQLParser.Visitors
             if (listValue.Values?.Count > 0)
             {
                 await context.Writer.WriteAsync('[');
-                for (int i=0; i<listValue.Values.Count; ++i)
+                for (int i = 0; i < listValue.Values.Count; ++i)
                 {
                     await Visit(listValue.Values[i], context);
                     if (i < listValue.Values.Count - 1)
