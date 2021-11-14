@@ -44,8 +44,8 @@ namespace GraphQLParser.Visitors
                     needStartNewLine = false;
                 }
 
-                char current = comment.Text.Span[i];
-                switch (current)
+                char code = comment.Text.Span[i];
+                switch (code)
                 {
                     case '\r':
                         break;
@@ -56,7 +56,7 @@ namespace GraphQLParser.Visitors
                         break;
 
                     default:
-                        await context.Write(comment.Text.Slice(i, 1)/*current*/).ConfigureAwait(false);
+                        await context.Write(comment.Text.Slice(i, 1)/*code*/).ConfigureAwait(false);
                         break;
                 }
             }
@@ -67,43 +67,126 @@ namespace GraphQLParser.Visitors
         /// <inheritdoc/>
         public override async ValueTask VisitDescription(GraphQLDescription description, TContext context)
         {
-            int level = GetLevel(context);
-
-            await WriteIndent(context, level).ConfigureAwait(false);
-            await context.Write("\"\"\"").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
-
-            bool needStartNewLine = true;
-            int length = description.Value.Span.Length;
-            for (int i = 0; i < length; ++i)
+            bool ShouldBeMultilineBlockString()
             {
-                if (needStartNewLine)
+                bool newLineDetected = false;
+                var span = description.Value.Span;
+                for (int i = 0; i < span.Length; ++i)
                 {
-                    await WriteIndent(context, level).ConfigureAwait(false);
-                    needStartNewLine = false;
+                    char code = span[i];
+
+                    if (code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D)
+                        return false;
+
+                    if (code == 0x000A)
+                        newLineDetected = true;
                 }
 
-                char current = description.Value.Span[i];
-                switch (current)
-                {
-                    case '\r':
-                        break;
-
-                    case '\n':
-                        await context.WriteLine().ConfigureAwait(false);
-                        needStartNewLine = true;
-                        break;
-
-                    default:
-                        await context.Write(description.Value.Slice(i, 1)/*current*/).ConfigureAwait(false); //TODO: change
-                        break;
-                }
+                // Note that string value without escape symbols and newline symbols
+                // MAY BE represented as a single-line BlockString, for example,
+                // """SOME TEXT""", but it was decided to use more brief "SOME TEXT"
+                // for such cases. WriteMultilineBlockString method ALWAYS builds
+                // BlockString printing """ on new line.
+                return newLineDetected;
             }
 
-            await context.WriteLine().ConfigureAwait(false);
-            await WriteIndent(context, level).ConfigureAwait(false);
-            await context.Write("\"\"\"").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            async ValueTask WriteMultilineBlockString()
+            {
+                int level = GetLevel(context);
+
+                await WriteIndent(context, level).ConfigureAwait(false);
+                await context.Write("\"\"\"").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+
+                bool needStartNewLine = true;
+                int length = description.Value.Span.Length;
+                // http://spec.graphql.org/October2021/#BlockStringCharacter
+                for (int i = 0; i < length; ++i)
+                {
+                    if (needStartNewLine)
+                    {
+                        await WriteIndent(context, level).ConfigureAwait(false);
+                        needStartNewLine = false;
+                    }
+
+                    char code = description.Value.Span[i];
+                    switch (code)
+                    {
+                        case '\r':
+                            break;
+
+                        case '\n':
+                            await context.WriteLine().ConfigureAwait(false);
+                            needStartNewLine = true;
+                            break;
+
+                        case '"':
+                            if (i < length - 2 && description.Value.Span[i + 1] == '"' && description.Value.Span[i + 2] == '"')
+                            {
+                                await context.Write("\\\"").ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await context.Write(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
+                            }
+                            break;
+
+                        default:
+                            await context.Write(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
+                            break;
+                    }
+                }
+
+                await context.WriteLine().ConfigureAwait(false);
+                await WriteIndent(context, level).ConfigureAwait(false);
+                await context.Write("\"\"\"").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+
+            async ValueTask WriteString()
+            {
+                int level = GetLevel(context);
+
+                await WriteIndent(context, level).ConfigureAwait(false);
+                await context.Write("\"").ConfigureAwait(false);
+
+                int length = description.Value.Span.Length;
+                // http://spec.graphql.org/October2021/#StringCharacter
+                for (int i = 0; i < length; ++i)
+                {
+                    char code = description.Value.Span[i];
+                    if (code < ' ')
+                    {
+                        if (code == '\b')
+                            await context.Write("\\b").ConfigureAwait(false);
+                        else if (code == '\f')
+                            await context.Write("\\f").ConfigureAwait(false);
+                        else if (code == '\n')
+                            await context.Write("\\n").ConfigureAwait(false);
+                        else if (code == '\r')
+                            await context.Write("\\r").ConfigureAwait(false);
+                        else if (code == '\t')
+                            await context.Write("\\t").ConfigureAwait(false);
+                        else
+                            await context.Write("\\u" + ((int)code).ToString("X4")).ConfigureAwait(false);
+                    }
+                    else if (code == '\\')
+                        await context.Write("\\\\").ConfigureAwait(false);
+                    else if (code == '"')
+                        await context.Write("\\\"").ConfigureAwait(false);
+                    else
+                        await context.Write(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
+                }
+
+                await context.Write("\"").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+
+            // http://spec.graphql.org/October2021/#StringValue
+            if (ShouldBeMultilineBlockString())
+                await WriteMultilineBlockString();
+            else
+                await WriteString();
         }
 
         /// <inheritdoc/>

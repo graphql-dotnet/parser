@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.Visitors;
@@ -145,14 +147,13 @@ GREEN @directive(list: [1,2,3,null,{}, {name:""tom"" age:42}]),
 """"""
 another good color
 """"""
-BLUE }", @"enum Color
+BLUE }",
+@"enum Color
 {
   RED
   #good color
   GREEN @directive(list: [1, 2, 3, null, { }, { name: ""tom"", age: 42 }])
-  """"""
-  another good color
-  """"""
+  ""another good color""
   BLUE
 }
 ")]
@@ -207,9 +208,7 @@ scalar JSON @exportable
 # A dog
 type Dog implements Animal
 {
-  """"""
-  inline docs
-  """"""
+  ""inline docs""
   volume: Float
   """"""
   multiline
@@ -230,6 +229,69 @@ type Dog implements Animal
                 actual.ShouldBe(expected);
 
                 using (var parsedBack = actual.Parse())
+                {
+                    // should be parsed back
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData( 1, "test", "test", false)]
+        [InlineData( 2, "te\\\"\"\"st", "te\\\"\\\"\\\"st", false)]
+        [InlineData( 3, "\ntest", "test", false)]
+        [InlineData( 4, "\r\ntest", "test", false)]
+        [InlineData( 5, " \ntest", "test", false)]
+        [InlineData( 6, "\t\ntest", "test", false)]
+        [InlineData( 7, "\n\ntest", "test", false)]
+        [InlineData( 8, "\ntest\nline2", "\ntest\nline2\n", true)]
+        [InlineData( 9, "test\rline2", "\ntest\nline2\n", true)]
+        [InlineData(10, "test\r\nline2", "\ntest\nline2\n", true)]
+        [InlineData(11, "test\r\r\nline2", "\ntest\n\nline2\n", true)]
+        [InlineData(12, "test\r\n\nline2", "\ntest\n\nline2\n", true)]
+        [InlineData(13, "test\n", "test", false)]
+        [InlineData(14, "test\n ", "test", false)]
+        [InlineData(15, "test\n\t", "test", false)]
+        [InlineData(16, "test\n\n", "test", false)]
+        [InlineData(17, "test\n  line2", "\ntest\nline2\n", true)]
+        [InlineData(18, "test\n\t\tline2", "\ntest\nline2\n", true)]
+        [InlineData(19, "test\n \tline2", "\ntest\nline2\n", true)]
+        [InlineData(20, "  test\nline2", "\n  test\nline2\n", true)]
+        [InlineData(21, "  test\n  line2", "\n  test\nline2\n", true)]
+        [InlineData(22, "\n  test\n  line2", "\ntest\nline2\n", true)]
+        [InlineData(23, "  test\n line2\n\t\tline3\n  line4", "\n  test\nline2\n\tline3\n line4\n", true)]
+        [InlineData(24, "  test\n  Hello,\n\n    world!\n ", "\n  test\nHello,\n\n  world!\n", true)]
+        [InlineData(25, "  \n  Hello,\r\n\n    world!\n ", "\nHello,\n\n  world!\n", true)]
+        [InlineData(26, "  \n  Hello,\r\n\n    wor___ld!\n ", "\nHello,\n\n  wor___ld!\n", true)]
+        [InlineData(27, "\r\n    Hello,\r\n      World!\r\n\r\n    Yours,\r\n      GraphQL.\r\n  ", "\nHello,\n  World!\n\nYours,\n  GraphQL.\n", true)]
+        [InlineData(28, "Test \\n escaping", "Test \\\\n escaping", false)]
+        [InlineData(29, "Test \\u1234 escaping", "Test \\\\u1234 escaping", false)]
+        [InlineData(30, "Test \\ escaping", "Test \\\\ escaping", false)]
+        public async Task WriteDocumentVisitor_Should_Print_BlockStrings(int number, string input, string expected, bool isBlockString)
+        {
+            number.ShouldBeGreaterThan(0);
+
+            input = input.Replace("___", new string('_', 9000));
+            expected = expected.Replace("___", new string('_', 9000));
+
+            input = "\"\"\"" + input + "\"\"\"";
+            if (isBlockString)
+                expected = "\"\"\"" + expected + "\"\"\"";
+            else
+                expected = "\"" + expected + "\"";
+
+            var context = new TestContext();
+
+            using (var document = (input + " scalar a").Parse())
+            {
+                await _sdlWriter.Visit(document, context).ConfigureAwait(false);
+                var renderedOriginal = context.Writer.ToString();
+
+                var lines = renderedOriginal.Split(Environment.NewLine);
+                var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
+                renderedDescription = renderedDescription.Replace("\r\n", "\n");
+                renderedDescription.ShouldBe(expected);
+
+                using (var parsedBack = renderedOriginal.Parse())
                 {
                     // should be parsed back
                 }
