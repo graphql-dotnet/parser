@@ -19,23 +19,23 @@ namespace GraphQLParser.Tests.Visitors
             public CancellationToken CancellationToken { get; set; }
         }
 
-        private static readonly StructureWriter<TestContext> _structWriter = new();
+        private static readonly StructureWriter<TestContext> _structWriter = new(new StructureWriterOptions());
 
         [Theory]
         [InlineData("query a { name age }", @"Document
   OperationDefinition
-    Name
+    Name [a]
     SelectionSet
       Field
-        Name
+        Name [name]
       Field
-        Name
+        Name [age]
 ")]
         [InlineData("scalar JSON @exportable", @"Document
   ScalarTypeDefinition
-    Name
+    Name [JSON]
     Directive
-      Name
+      Name [exportable]
 ")]
         public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
         {

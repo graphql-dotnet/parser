@@ -609,10 +609,15 @@ namespace GraphQLParser.Visitors
         public override System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitVariableDefinition(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
     }
+    public class StructureWriterOptions
+    {
+        public StructureWriterOptions() { }
+        public bool WriteNames { get; set; }
+    }
     public class StructureWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
         where TContext : GraphQLParser.Visitors.IWriteContext
     {
-        public StructureWriter() { }
+        public StructureWriter(GraphQLParser.Visitors.StructureWriterOptions options) { }
         public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
     }
     public static class WriteContextExtensions
