@@ -146,39 +146,8 @@ namespace GraphQLParser.Visitors
             async ValueTask WriteString()
             {
                 int level = GetLevel(context);
-
                 await WriteIndent(context, level).ConfigureAwait(false);
-                await context.Write("\"").ConfigureAwait(false);
-
-                int length = description.Value.Span.Length;
-                // http://spec.graphql.org/October2021/#StringCharacter
-                for (int i = 0; i < length; ++i)
-                {
-                    char code = description.Value.Span[i];
-                    if (code < ' ')
-                    {
-                        if (code == '\b')
-                            await context.Write("\\b").ConfigureAwait(false);
-                        else if (code == '\f')
-                            await context.Write("\\f").ConfigureAwait(false);
-                        else if (code == '\n')
-                            await context.Write("\\n").ConfigureAwait(false);
-                        else if (code == '\r')
-                            await context.Write("\\r").ConfigureAwait(false);
-                        else if (code == '\t')
-                            await context.Write("\\t").ConfigureAwait(false);
-                        else
-                            await context.Write("\\u" + ((int)code).ToString("X4")).ConfigureAwait(false);
-                    }
-                    else if (code == '\\')
-                        await context.Write("\\\\").ConfigureAwait(false);
-                    else if (code == '"')
-                        await context.Write("\\\"").ConfigureAwait(false);
-                    else
-                        await context.Write(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
-                }
-
-                await context.Write("\"").ConfigureAwait(false);
+                await WriteEncodedString(context, description.Value).ConfigureAwait(false);
                 await context.WriteLine().ConfigureAwait(false);
             }
 
@@ -684,9 +653,7 @@ namespace GraphQLParser.Visitors
         public override async ValueTask VisitStringValue(GraphQLScalarValue stringValue, TContext context)
         {
             await Visit(stringValue.Comment, context).ConfigureAwait(false);
-            await context.Write("\"").ConfigureAwait(false);
-            await context.Write(stringValue.Value).ConfigureAwait(false);
-            await context.Write("\"").ConfigureAwait(false);
+            await WriteEncodedString(context, stringValue.Value);
         }
 
         /// <inheritdoc/>
@@ -842,6 +809,40 @@ namespace GraphQLParser.Visitors
             }
 
             return level;
+        }
+
+        // http://spec.graphql.org/October2021/#StringCharacter
+        private async ValueTask WriteEncodedString(TContext context, ROM value)
+        {
+            await context.Write("\"").ConfigureAwait(false);
+
+            for (int i = 0; i < value.Span.Length; ++i)
+            {
+                char code = value.Span[i];
+                if (code < ' ')
+                {
+                    if (code == '\b')
+                        await context.Write("\\b").ConfigureAwait(false);
+                    else if (code == '\f')
+                        await context.Write("\\f").ConfigureAwait(false);
+                    else if (code == '\n')
+                        await context.Write("\\n").ConfigureAwait(false);
+                    else if (code == '\r')
+                        await context.Write("\\r").ConfigureAwait(false);
+                    else if (code == '\t')
+                        await context.Write("\\t").ConfigureAwait(false);
+                    else
+                        await context.Write("\\u" + ((int)code).ToString("X4")).ConfigureAwait(false);
+                }
+                else if (code == '\\')
+                    await context.Write("\\\\").ConfigureAwait(false);
+                else if (code == '"')
+                    await context.Write("\\\"").ConfigureAwait(false);
+                else
+                    await context.Write(value.Slice(i, 1)/*code*/).ConfigureAwait(false); // TODO: no method for char
+            }
+
+            await context.Write("\"").ConfigureAwait(false);
         }
     }
 }

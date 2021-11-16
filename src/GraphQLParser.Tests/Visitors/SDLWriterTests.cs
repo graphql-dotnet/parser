@@ -297,5 +297,34 @@ type Dog implements Animal
                 }
             }
         }
+
+        [Theory]
+        [InlineData("\"\"")]
+        [InlineData("\"\\\\\"")]
+        [InlineData("\"\\n\\b\\f\\r\\t\"")]
+        [InlineData("\" \u1234 \"")]
+        [InlineData("\"normal text\"")]
+        public async Task WriteDocumentVisitor_Should_Print_EscapedStrings(string stringValue)
+        {
+            string query = $"{{a(p:{stringValue})}}";
+            string expected = @$"
+{{
+  a(p: {stringValue})
+}}
+";
+            var context = new TestContext();
+
+            using (var document = query.Parse())
+            {
+                await _sdlWriter.Visit(document, context).ConfigureAwait(false);
+                var rendered = context.Writer.ToString();
+                rendered.ShouldBe(expected);
+
+                using (var parsedBack = rendered.Parse())
+                {
+                    // should be parsed back
+                }
+            }
+        }
     }
 }
