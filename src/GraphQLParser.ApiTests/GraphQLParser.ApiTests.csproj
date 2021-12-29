@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6</TargetFramework>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
