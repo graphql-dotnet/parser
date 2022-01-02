@@ -15,7 +15,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Throw_With_Deep_Query()
         {
-            var count = 24000;
+            var count = 200;
             var sb = new System.Text.StringBuilder(count * 3);
             for (int i = 0; i < count; i++)
                 sb.Append("{a");
@@ -27,7 +27,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Throw_With_Deep_Literal()
         {
-            var count = 24000;
+            var count = 200;
             var sb = new System.Text.StringBuilder(count * 4 + 10);
             sb.Append("{a(b:");
             for (int i = 0; i < count; i++)
