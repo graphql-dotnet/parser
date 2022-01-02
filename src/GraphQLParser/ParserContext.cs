@@ -42,8 +42,14 @@ namespace GraphQLParser
 
         private void IncreaseDepth()
         {
+            // Encourage compiler inlining of this method by moving exception to a separate method
             if (_currentDepth++ >= _maxDepth)
-                throw new GraphQLSyntaxErrorException("Maximum depth exceeded.", _source, _currentToken.Start);
+                ThrowMaxDepthException();
+        }
+
+        private void ThrowMaxDepthException()
+        {
+            throw new GraphQLSyntaxErrorException("Maximum depth exceeded.", _source, _currentToken.Start);
         }
 
         private void DecreaseDepth()
