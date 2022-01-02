@@ -358,6 +358,16 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public override async ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
+        {
+            await Visit(scalarTypeExtension.Comment, context).ConfigureAwait(false);
+            await context.Write("extend scalar ").ConfigureAwait(false);
+            await Visit(scalarTypeExtension.Name, context).ConfigureAwait(false);
+            await VisitDirectives(scalarTypeExtension, context).ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public override async ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
         {
             await Visit(enumTypeDefinition.Comment, context).ConfigureAwait(false);
@@ -373,6 +383,28 @@ namespace GraphQLParser.Visitors
                 for (int i = 0; i < enumTypeDefinition.Values.Count; ++i)
                 {
                     await Visit(enumTypeDefinition.Values[i], context).ConfigureAwait(false);
+                    await context.WriteLine().ConfigureAwait(false);
+                }
+                await context.Write("}").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitEnumTypeExtension(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
+        {
+            await Visit(enumTypeExtension.Comment, context).ConfigureAwait(false);
+            await context.Write("extend enum ").ConfigureAwait(false);
+            await Visit(enumTypeExtension.Name, context).ConfigureAwait(false);
+            await VisitDirectives(enumTypeExtension, context).ConfigureAwait(false);
+            if (enumTypeExtension.Values?.Count > 0)
+            {
+                await context.WriteLine().ConfigureAwait(false);
+                await context.Write("{").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+                for (int i = 0; i < enumTypeExtension.Values.Count; ++i)
+                {
+                    await Visit(enumTypeExtension.Values[i], context).ConfigureAwait(false);
                     await context.WriteLine().ConfigureAwait(false);
                 }
                 await context.Write("}").ConfigureAwait(false);
@@ -410,6 +442,34 @@ namespace GraphQLParser.Visitors
                 for (int i = 0; i < inputObjectTypeDefinition.Fields.Count; ++i)
                 {
                     await Visit(inputObjectTypeDefinition.Fields[i], context).ConfigureAwait(false);
+                    await context.WriteLine().ConfigureAwait(false);
+                }
+
+                await context.Write("}").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+            else
+            {
+                await context.WriteLine().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitInputObjectTypeExtension(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
+        {
+            await Visit(inputObjectTypeExtension.Comment, context).ConfigureAwait(false);
+            await context.Write("extend input ").ConfigureAwait(false);
+            await Visit(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
+            await VisitDirectives(inputObjectTypeExtension, context).ConfigureAwait(false);
+            if (inputObjectTypeExtension.Fields?.Count > 0)
+            {
+                await context.WriteLine().ConfigureAwait(false);
+                await context.Write("{").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+
+                for (int i = 0; i < inputObjectTypeExtension.Fields.Count; ++i)
+                {
+                    await Visit(inputObjectTypeExtension.Fields[i], context).ConfigureAwait(false);
                     await context.WriteLine().ConfigureAwait(false);
                 }
 
@@ -474,6 +534,36 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public override async ValueTask VisitObjectTypeExtension(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
+        {
+            await Visit(objectTypeExtension.Comment, context).ConfigureAwait(false);
+            await context.Write("extend type ").ConfigureAwait(false);
+            await Visit(objectTypeExtension.Name, context).ConfigureAwait(false);
+            await VisitInterfaces(objectTypeExtension, context).ConfigureAwait(false);
+            await VisitDirectives(objectTypeExtension, context).ConfigureAwait(false);
+
+            if (objectTypeExtension.Fields?.Count > 0)
+            {
+                await context.WriteLine().ConfigureAwait(false);
+                await context.Write("{").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+
+                for (int i = 0; i < objectTypeExtension.Fields.Count; ++i)
+                {
+                    await Visit(objectTypeExtension.Fields[i], context).ConfigureAwait(false);
+                    await context.WriteLine().ConfigureAwait(false);
+                }
+
+                await context.Write("}").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+            else
+            {
+                await context.WriteLine().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc/>
         public override async ValueTask VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
         {
             await Visit(interfaceTypeDefinition.Comment, context).ConfigureAwait(false);
@@ -482,21 +572,48 @@ namespace GraphQLParser.Visitors
             await Visit(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
             await VisitInterfaces(interfaceTypeDefinition, context).ConfigureAwait(false);
             await VisitDirectives(interfaceTypeDefinition, context).ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
-            await context.Write("{").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
 
             if (interfaceTypeDefinition.Fields?.Count > 0)
             {
+                await context.WriteLine().ConfigureAwait(false);
+                await context.Write("{").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+
                 for (int i = 0; i < interfaceTypeDefinition.Fields.Count; ++i)
                 {
                     await Visit(interfaceTypeDefinition.Fields[i], context).ConfigureAwait(false);
                     await context.WriteLine().ConfigureAwait(false);
                 }
-            }
 
-            await context.Write("}").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+                await context.Write("}").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitInterfaceTypeExtension(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
+        {
+            await Visit(interfaceTypeExtension.Comment, context).ConfigureAwait(false);
+            await context.Write("extend interface ").ConfigureAwait(false);
+            await Visit(interfaceTypeExtension.Name, context).ConfigureAwait(false);
+            await VisitInterfaces(interfaceTypeExtension, context).ConfigureAwait(false);
+            await VisitDirectives(interfaceTypeExtension, context).ConfigureAwait(false);
+
+            if (interfaceTypeExtension.Fields?.Count > 0)
+            {
+                await context.WriteLine().ConfigureAwait(false);
+                await context.Write("{").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+
+                for (int i = 0; i < interfaceTypeExtension.Fields.Count; ++i)
+                {
+                    await Visit(interfaceTypeExtension.Fields[i], context).ConfigureAwait(false);
+                    await context.WriteLine().ConfigureAwait(false);
+                }
+
+                await context.Write("}").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc/>
@@ -580,6 +697,27 @@ namespace GraphQLParser.Visitors
                 {
                     await Visit(unionTypeDefinition.Types[i], context).ConfigureAwait(false);
                     if (i < unionTypeDefinition.Types.Count - 1)
+                        await context.Write(" | ").ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitUnionTypeExtension(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
+        {
+            await Visit(unionTypeExtension.Comment, context).ConfigureAwait(false);
+            await context.Write("extend union ").ConfigureAwait(false);
+            await Visit(unionTypeExtension.Name, context).ConfigureAwait(false);
+            await VisitDirectives(unionTypeExtension, context).ConfigureAwait(false);
+
+            if (unionTypeExtension.Types?.Count > 0)
+            {
+                await context.Write(" = ").ConfigureAwait(false);
+
+                for (int i = 0; i < unionTypeExtension.Types.Count; ++i)
+                {
+                    await Visit(unionTypeExtension.Types[i], context).ConfigureAwait(false);
+                    if (i < unionTypeExtension.Types.Count - 1)
                         await context.Write(" | ").ConfigureAwait(false);
                 }
             }

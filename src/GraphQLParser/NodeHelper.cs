@@ -264,14 +264,74 @@ namespace GraphQLParser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GraphQLTypeExtensionDefinition CreateGraphQLTypeExtensionDefinition(IgnoreOptions options)
+        public static GraphQLObjectTypeExtension CreateGraphQLObjectTypeExtension(IgnoreOptions options)
         {
             return options switch
             {
-                IgnoreOptions.All => new GraphQLTypeExtensionDefinition(),
-                IgnoreOptions.Comments => new GraphQLTypeExtensionDefinitionWithLocation(),
-                IgnoreOptions.Locations => new GraphQLTypeExtensionDefinitionWithComment(),
-                _ => new GraphQLTypeExtensionDefinitionFull(),
+                IgnoreOptions.All => new GraphQLObjectTypeExtension(),
+                IgnoreOptions.Comments => new GraphQLObjectTypeExtensionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLObjectTypeExtensionWithComment(),
+                _ => new GraphQLObjectTypeExtensionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLScalarTypeExtension CreateGraphQLScalarTypeExtension(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLScalarTypeExtension(),
+                IgnoreOptions.Comments => new GraphQLScalarTypeExtensionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLScalarTypeExtensionWithComment(),
+                _ => new GraphQLScalarTypeExtensionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLInterfaceTypeExtension CreateGraphQLInterfaceTypeExtension(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLInterfaceTypeExtension(),
+                IgnoreOptions.Comments => new GraphQLInterfaceTypeExtensionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLInterfaceTypeExtensionWithComment(),
+                _ => new GraphQLInterfaceTypeExtensionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLUnionTypeExtension CreateGraphQLUnionTypeExtension(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLUnionTypeExtension(),
+                IgnoreOptions.Comments => new GraphQLUnionTypeExtensionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLUnionTypeExtensionWithComment(),
+                _ => new GraphQLUnionTypeExtensionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLEnumTypeExtension CreateGraphQLEnumTypeExtension(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLEnumTypeExtension(),
+                IgnoreOptions.Comments => new GraphQLEnumTypeExtensionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLEnumTypeExtensionWithComment(),
+                _ => new GraphQLEnumTypeExtensionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLInputObjectTypeExtension CreateGraphQLInputObjectTypeExtension(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLInputObjectTypeExtension(),
+                IgnoreOptions.Comments => new GraphQLInputObjectTypeExtensionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLInputObjectTypeExtensionWithComment(),
+                _ => new GraphQLInputObjectTypeExtensionFull(),
             };
         }
 

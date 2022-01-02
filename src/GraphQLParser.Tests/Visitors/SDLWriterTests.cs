@@ -24,6 +24,15 @@ namespace GraphQLParser.Tests.Visitors
         private static readonly SDLWriter<TestContext> _sdlWriter = new();
 
         [Theory]
+        [InlineData("extend scalar Foo @exportable", @"extend scalar Foo @exportable
+")]
+        [InlineData("extend type Foo @exportable", @"extend type Foo @exportable
+")]
+        [InlineData("extend interface Foo @exportable", "extend interface Foo @exportable")]
+        [InlineData("extend union Foo @exportable", "extend union Foo @exportable")]
+        [InlineData("extend enum Foo @exportable", "extend enum Foo @exportable")]
+        [InlineData("extend input Foo @exportable", @"extend input Foo @exportable
+")]
         [InlineData(@"#comment
 input Example @x {
   self: [Example!]!

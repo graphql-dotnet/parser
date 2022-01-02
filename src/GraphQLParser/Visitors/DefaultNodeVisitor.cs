@@ -335,6 +335,61 @@ namespace GraphQLParser.Visitors
             await Visit(directiveDefinition.Arguments, context).ConfigureAwait(false);
         }
 
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
+        {
+            await Visit(scalarTypeExtension.Comment, context).ConfigureAwait(false);
+            await Visit(scalarTypeExtension.Name, context).ConfigureAwait(false);
+            await Visit(scalarTypeExtension.Directives, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitObjectTypeExtension(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
+        {
+            await Visit(objectTypeExtension.Comment, context).ConfigureAwait(false);
+            await Visit(objectTypeExtension.Name, context).ConfigureAwait(false);
+            await Visit(objectTypeExtension.Interfaces, context).ConfigureAwait(false);
+            await Visit(objectTypeExtension.Directives, context).ConfigureAwait(false);
+            await Visit(objectTypeExtension.Fields, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitInterfaceTypeExtension(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
+        {
+            await Visit(interfaceTypeExtension.Comment, context).ConfigureAwait(false);
+            await Visit(interfaceTypeExtension.Name, context).ConfigureAwait(false);
+            await Visit(interfaceTypeExtension.Interfaces, context).ConfigureAwait(false);
+            await Visit(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
+            await Visit(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitUnionTypeExtension(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
+        {
+            await Visit(unionTypeExtension.Comment, context).ConfigureAwait(false);
+            await Visit(unionTypeExtension.Name, context).ConfigureAwait(false);
+            await Visit(unionTypeExtension.Directives, context).ConfigureAwait(false);
+            await Visit(unionTypeExtension.Types, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitEnumTypeExtension(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
+        {
+            await Visit(enumTypeExtension.Comment, context).ConfigureAwait(false);
+            await Visit(enumTypeExtension.Name, context).ConfigureAwait(false);
+            await Visit(enumTypeExtension.Directives, context).ConfigureAwait(false);
+            await Visit(enumTypeExtension.Values, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitInputObjectTypeExtension(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
+        {
+            await Visit(inputObjectTypeExtension.Comment, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeExtension.Directives, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Dispatches node to the appropriate VisitXXX method.
         /// </summary>
@@ -387,7 +442,12 @@ namespace GraphQLParser.Visitors
                     },
                     GraphQLSchemaDefinition schemaDefinition => VisitSchemaDefinition(schemaDefinition, context),
                     GraphQLSelectionSet selectionSet => VisitSelectionSet(selectionSet, context),
-                    //GraphQLTypeExtensionDefinition n => VisitTypeDE
+                    GraphQLScalarTypeExtension scalarEx => VisitScalarTypeExtension(scalarEx, context),
+                    GraphQLObjectTypeExtension objectEx => VisitObjectTypeExtension(objectEx, context),
+                    GraphQLInterfaceTypeExtension ifaceEx => VisitInterfaceTypeExtension(ifaceEx, context),
+                    GraphQLUnionTypeExtension unionEx => VisitUnionTypeExtension(unionEx, context),
+                    GraphQLEnumTypeExtension enumEx => VisitEnumTypeExtension(enumEx, context),
+                    GraphQLInputObjectTypeExtension inputEx => VisitInputObjectTypeExtension(inputEx, context),
                     GraphQLUnionTypeDefinition unionTypeDefinition => VisitUnionTypeDefinition(unionTypeDefinition, context),
                     GraphQLVariable variable => VisitVariable(variable, context),
                     GraphQLVariableDefinition variableDefinition => VisitVariableDefinition(variableDefinition, context),

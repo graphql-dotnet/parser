@@ -3,23 +3,20 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.ObjectTypeDefinition"/>.
+    /// AST node for <see cref="ASTNodeKind.InputObjectTypeExtension"/>.
     /// </summary>
-    public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasInterfacesNode
+    public class GraphQLInputObjectTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeDefinition;
-
-        /// <inheritdoc />
-        public List<GraphQLNamedType>? Interfaces { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeExtension;
 
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
-        public List<GraphQLFieldDefinition>? Fields { get; set; }
+        public List<GraphQLInputValueDefinition>? Fields { get; set; }
     }
 
-    internal sealed class GraphQLObjectTypeDefinitionWithLocation : GraphQLObjectTypeDefinition
+    internal sealed class GraphQLInputObjectTypeExtensionWithLocation : GraphQLInputObjectTypeExtension
     {
         private GraphQLLocation _location;
 
@@ -30,7 +27,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectTypeDefinitionWithComment : GraphQLObjectTypeDefinition
+    internal sealed class GraphQLInputObjectTypeExtensionWithComment : GraphQLInputObjectTypeExtension
     {
         private GraphQLComment? _comment;
 
@@ -41,7 +38,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectTypeDefinitionFull : GraphQLObjectTypeDefinition
+    internal sealed class GraphQLInputObjectTypeExtensionFull : GraphQLInputObjectTypeExtension
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

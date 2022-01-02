@@ -773,12 +773,63 @@ Cat
         }
 
         [Theory]
-        [InlineData("type Query", ASTNodeKind.ObjectTypeDefinition)]
-        [InlineData("extend type Query", ASTNodeKind.TypeExtensionDefinition)]
+        [InlineData("extend scalar Foo @exportable", ASTNodeKind.ScalarTypeExtension)]
+        [InlineData("extend type Foo implements Bar @exportable { a: String }", ASTNodeKind.ObjectTypeExtension)]
+        [InlineData("extend type Foo implements Bar @exportable", ASTNodeKind.ObjectTypeExtension)]
+        [InlineData("extend type Foo implements Bar { a: String }", ASTNodeKind.ObjectTypeExtension)]
+        [InlineData("extend type Foo implements Bar", ASTNodeKind.ObjectTypeExtension)]
+        [InlineData("extend type Foo { a: String }", ASTNodeKind.ObjectTypeExtension)]
+        [InlineData("extend interface Foo implements Bar @exportable { a: String }", ASTNodeKind.InterfaceTypeExtension)]
+        [InlineData("extend interface Foo implements Bar @exportable", ASTNodeKind.InterfaceTypeExtension)]
+        [InlineData("extend interface Foo implements Bar { a: String }", ASTNodeKind.InterfaceTypeExtension)]
+        [InlineData("extend interface Foo { a: String }", ASTNodeKind.InterfaceTypeExtension)]
+        [InlineData("extend interface Foo implements Bar", ASTNodeKind.InterfaceTypeExtension)]
+        [InlineData("extend union Foo @exportable = A | B", ASTNodeKind.UnionTypeExtension)]
+        [InlineData("extend union Foo = A | B", ASTNodeKind.UnionTypeExtension)]
+        [InlineData("extend union Foo @exportable", ASTNodeKind.UnionTypeExtension)]
+        [InlineData("extend enum Foo @exportable { ONE TWO }", ASTNodeKind.EnumTypeExtension)]
+        [InlineData("extend enum Foo { ONE TWO }", ASTNodeKind.EnumTypeExtension)]
+        [InlineData("extend enum Foo @exportable", ASTNodeKind.EnumTypeExtension)]
+        [InlineData("extend input Foo @exportable { a: String }", ASTNodeKind.InputObjectTypeExtension)]
+        [InlineData("extend input Foo { a: String }", ASTNodeKind.InputObjectTypeExtension)]
+        [InlineData("extend input Foo @exportable", ASTNodeKind.InputObjectTypeExtension)]
+        public void Should_Parse_Extensions(string text, ASTNodeKind kind)
+        {
+            using var document = text.Parse();
+            document.ShouldNotBeNull();
+            document.Definitions[0].Kind.ShouldBe(kind);
+        }
+
+        [Theory]
+        [InlineData("extend")]
+        [InlineData("extend scalar")]
+        [InlineData("extend scalar A")]
+        [InlineData("extend scalar A B")]
+        [InlineData("extend type")]
+        [InlineData("extend type A")]
+        [InlineData("extend type A B")]
+        [InlineData("extend interface")]
+        [InlineData("extend interface A")]
+        [InlineData("extend interface A B")]
+        [InlineData("extend union")]
+        [InlineData("extend union A")]
+        [InlineData("extend enum")]
+        [InlineData("extend enum A")]
+        [InlineData("extend input")]
+        [InlineData("extend input A")]
+        [InlineData("extend variable")]
+        public void Should_Throw_Extensions(string text)
+        {
+            var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
+        }
+
+        [Theory]
+        [InlineData("scalar Empty", ASTNodeKind.ScalarTypeDefinition)]
+        [InlineData("union Empty", ASTNodeKind.UnionTypeDefinition)]
+        [InlineData("type Empty", ASTNodeKind.ObjectTypeDefinition)]
         [InlineData("input Empty", ASTNodeKind.InputObjectTypeDefinition)]
         [InlineData("interface Empty", ASTNodeKind.InterfaceTypeDefinition)]
         [InlineData("enum Empty", ASTNodeKind.EnumTypeDefinition)]
-        [InlineData("extend type Type implements Interface", ASTNodeKind.TypeExtensionDefinition)]
         public void Should_Parse_Empty_Types(string text, ASTNodeKind kind)
         {
             using var document = text.Parse();
