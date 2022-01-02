@@ -39,6 +39,41 @@ namespace GraphQLParser.Tests
             Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse()).Description.ShouldBe("Maximum depth exceeded.");
         }
 
+        [Fact]
+        public void Should_Throw_With_MaxDepth_0_On_SimpleQuery()
+        {
+            var query = "{a}";
+            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 })).Description.ShouldBe("Maximum depth exceeded.");
+        }
+
+        [Fact]
+        public void Should_Throw_With_MaxDepth_0_On_TypeDefinition()
+        {
+            var query = "scalar Test";
+            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 })).Description.ShouldBe("Maximum depth exceeded.");
+        }
+
+        [Fact]
+        public void Should_Throw_With_MaxDepth_1_On_SimpleQuery()
+        {
+            var query = "{a}";
+            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 1 })).Description.ShouldBe("Maximum depth exceeded.");
+        }
+
+        [Fact]
+        public void Should_Parse_With_MaxDepth_1_On_TypeDefinition()
+        {
+            var query = "scalar Test";
+            _ = Parser.Parse(query, new ParserOptions { MaxDepth = 1 });
+        }
+
+        [Fact]
+        public void Should_Parse_With_MaxDepth_2_On_SimpleQuery()
+        {
+            var query = "{a}";
+            _ = Parser.Parse(query, new ParserOptions { MaxDepth = 2 });
+        }
+
         [Theory]
         [InlineData(IgnoreOptions.None)]
         //[InlineData(IgnoreOptions.Comments)]
