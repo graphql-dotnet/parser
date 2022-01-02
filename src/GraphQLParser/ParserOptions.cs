@@ -12,7 +12,7 @@ namespace GraphQLParser
         public IgnoreOptions Ignore { get; set; }
 
         /// <summary>
-        /// Maximum recursion depth during parsing.
+        /// Maximum allowed recursion depth during parsing.
         /// Defaults to 64 if not set.
         /// </summary>
         public int? MaxDepth { get; set; }
