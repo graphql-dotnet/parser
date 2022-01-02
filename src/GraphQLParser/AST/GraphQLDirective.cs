@@ -3,17 +3,20 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// Represents a directive, applied to some GraphQL element.
+    /// AST node for <see cref="ASTNodeKind.Directive"/>.
     /// </summary>
-    public class GraphQLDirective : ASTNode, INamedNode
+    public class GraphQLDirective : ASTNode, INamedNode, IHasArgumentsNode
     {
-        public List<GraphQLArgument>? Arguments { get; set; }
-
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Directive;
 
         /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
+
+        /// <summary>
+        /// List of arguments for this directive.
+        /// </summary>
+        public List<GraphQLArgument>? Arguments { get; set; }
     }
 
     internal sealed class GraphQLDirectiveWithLocation : GraphQLDirective

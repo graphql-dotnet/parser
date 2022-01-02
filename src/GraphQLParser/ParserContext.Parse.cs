@@ -29,23 +29,18 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#TypeCondition
-        private GraphQLNamedType? ParseTypeCondition(bool optional)
+        private GraphQLTypeCondition? ParseTypeCondition(bool optional)
         {
-            if (optional)
-            {
-                GraphQLNamedType? typeCondition = null;
-                if (_currentToken.Value == "on")
-                {
-                    Advance();
-                    typeCondition = ParseNamedType();
-                }
-                return typeCondition;
-            }
-            else
-            {
-                ExpectKeyword("on");
-                return ParseNamedType();
-            }
+            if (optional && _currentToken.Value != "on")
+                return null;
+
+            int start = _currentToken.Start;
+            var condition = NodeHelper.CreateGraphQLTypeCondition(_ignoreOptions);
+            condition.Comment = GetComment();
+            ExpectKeyword("on");
+            condition.Type = ParseNamedType();
+            condition.Location = GetLocation(start);
+            return condition;
         }
 
         // http://spec.graphql.org/October2021/#Argument
@@ -405,32 +400,57 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#Field
+        // http://spec.graphql.org/October2021/#Alias
         private GraphQLField ParseField()
         {
+            // start of alias (if exists) equals start of field
             int start = _currentToken.Start;
-            var comment = GetComment();
+
+            var nameOrAliasComment = GetComment();
             var nameOrAlias = ParseName();
+
             GraphQLName name;
             GraphQLName? alias;
 
+            GraphQLComment? nameComment;
+            GraphQLComment? aliasComment;
+
+            GraphQLLocation aliasLocation = default;
+
             if (Skip(TokenKind.COLON))
             {
+                aliasLocation = GetLocation(start);
+
+                nameComment = GetComment();
+                aliasComment = nameOrAliasComment;
+
                 name = ParseName();
                 alias = nameOrAlias;
             }
             else
             {
+                aliasComment = null;
+                nameComment = nameOrAliasComment;
+
                 alias = null;
                 name = nameOrAlias;
             }
 
             var field = NodeHelper.CreateGraphQLField(_ignoreOptions);
-            field.Alias = alias;
+            if (alias != null)
+            {
+                var aliasNode = NodeHelper.CreateGraphQLAlias(_ignoreOptions);
+                aliasNode.Comment = aliasComment;
+                aliasNode.Name = alias;
+                aliasNode.Location = aliasLocation;
+
+                field.Alias = aliasNode;
+            }
+            field.Comment = nameComment;
             field.Name = name;
             field.Arguments = ParseArguments();
             field.Directives = ParseDirectives();
             field.SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null;
-            field.Comment = comment;
             field.Location = GetLocation(start);
             return field;
         }
@@ -633,7 +653,7 @@ namespace GraphQLParser
             ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseValueLiteral(true);
             ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueLiteral(false);
 
-            var val = NodeHelper.CreateGraphQLListValue(_ignoreOptions, ASTNodeKind.ListValue);
+            var val = NodeHelper.CreateGraphQLListValue(_ignoreOptions);
             val.Values = ZeroOrMore(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R);
             val.AstValue = _source.Slice(start, _currentToken.End - start - 1);
             val.Comment = comment;
@@ -1149,6 +1169,7 @@ namespace GraphQLParser
 
             def.Type = ParseType();
             def.DefaultValue = Skip(TokenKind.EQUALS) ? ParseValueLiteral(true) : null;
+            def.Directives = ParseDirectives();
             def.Comment = comment;
             def.Location = GetLocation(start);
             return def;

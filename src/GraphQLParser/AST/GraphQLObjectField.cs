@@ -1,5 +1,8 @@
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.ObjectField"/>.
+    /// </summary>
     public class GraphQLObjectField : ASTNode, INamedNode
     {
         /// <inheritdoc/>

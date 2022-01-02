@@ -1,15 +1,23 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST
 {
-    public class GraphQLVariableDefinition : ASTNode
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.VariableDefinition"/>.
+    /// </summary>
+    public class GraphQLVariableDefinition : ASTNode, IHasDirectivesNode
     {
-        public object? DefaultValue { get; set; }
-
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.VariableDefinition;
 
+        public GraphQLVariable? Variable { get; set; }
+
         public GraphQLType? Type { get; set; }
 
-        public GraphQLVariable? Variable { get; set; }
+        public GraphQLValue? DefaultValue { get; set; }
+
+        /// <inheritdoc/>
+        public List<GraphQLDirective>? Directives { get; set; }
     }
 
     internal sealed class GraphQLVariableDefinitionWithLocation : GraphQLVariableDefinition

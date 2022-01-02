@@ -296,8 +296,10 @@ namespace GraphQLParser.AST
         /// </summary>
         InputObjectTypeDefinition,
 
-        // TODO: change
-        TypeExtensionDefinition,
+        /// <summary>
+        /// TO BE DONE
+        /// </summary>
+        TypeExtensionDefinition, // TODO: change
 
         /// <summary>
         /// Directive definition. Directives provide a way to describe alternate runtime execution
@@ -325,5 +327,21 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#Description"/>
         /// </summary>
         Description,
+
+        /// <summary>
+        /// Fragments must specify the type they apply to.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#TypeCondition"/>
+        /// </summary>
+        TypeCondition,
+
+        /// <summary>
+        /// By default a field's response key in the response object will use that
+        /// field's name. However, you can define a different response key by
+        /// specifying an alias.Fragments must specify the type they apply to.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#Alias"/>
+        /// </summary>
+        Alias,
     }
 }

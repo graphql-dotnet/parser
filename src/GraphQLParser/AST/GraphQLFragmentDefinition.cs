@@ -1,5 +1,8 @@
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.FragmentDefinition"/>.
+    /// </summary>
     public class GraphQLFragmentDefinition : GraphQLInlineFragment, INamedNode
     {
         /// <inheritdoc/>

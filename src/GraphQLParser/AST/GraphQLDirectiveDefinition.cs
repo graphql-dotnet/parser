@@ -3,19 +3,17 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// Represents a directive definition.
+    /// AST node for <see cref="ASTNodeKind.DirectiveDefinition"/>.
     /// </summary>
     public class GraphQLDirectiveDefinition : GraphQLTypeDefinition
     {
-        public List<GraphQLInputValueDefinition>? Arguments { get; set; }
-
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.DirectiveDefinition;
 
         /// <summary>
-        /// Returns a list of locations representing the valid locations this directive may be placed.
+        /// List of arguments for this directive definition.
         /// </summary>
-        public List<GraphQLName>? Locations { get; set; }
+        public List<GraphQLInputValueDefinition>? Arguments { get; set; }
 
         /// <summary>
         /// Indicates if the directive may be used repeatedly at a single location.
@@ -26,6 +24,11 @@ namespace GraphQLParser.AST
         /// provided to a type or schema extension via a directive
         /// </summary>
         public bool Repeatable { get; set; }
+
+        /// <summary>
+        /// Returns a list of locations representing the valid locations this directive may be placed.
+        /// </summary>
+        public List<GraphQLName>? Locations { get; set; }
     }
 
     internal sealed class GraphQLDirectiveDefinitionWithLocation : GraphQLDirectiveDefinition

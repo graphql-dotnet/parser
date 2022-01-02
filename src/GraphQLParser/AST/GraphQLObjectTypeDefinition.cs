@@ -2,17 +2,20 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
-    public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.ObjectTypeDefinition"/>.
+    /// </summary>
+    public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasInterfacesNode
     {
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
-        public List<GraphQLFieldDefinition>? Fields { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeDefinition;
 
         public List<GraphQLNamedType>? Interfaces { get; set; }
 
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeDefinition;
+        public List<GraphQLDirective>? Directives { get; set; }
+
+        public List<GraphQLFieldDefinition>? Fields { get; set; }
     }
 
     internal sealed class GraphQLObjectTypeDefinitionWithLocation : GraphQLObjectTypeDefinition

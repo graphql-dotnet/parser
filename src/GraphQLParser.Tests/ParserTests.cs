@@ -168,7 +168,7 @@ namespace GraphQLParser.Tests
             var def1 = document.Definitions[0] as GraphQLOperationDefinition;
             var field = def1.SelectionSet.Selections[0] as GraphQLField;
             var frag = field.SelectionSet.Selections[0] as GraphQLInlineFragment;
-            frag.TypeCondition.Comment.Text.ShouldBe("comment for named type from TypeCondition");
+            frag.TypeCondition.Type.Comment.Text.ShouldBe("comment for named type from TypeCondition");
 
             var def2 = document.Definitions[1] as GraphQLObjectTypeDefinition;
             def2.Interfaces[0].Comment.Text.ShouldBe("comment for named type from ImplementsInterfaces");
@@ -244,6 +244,29 @@ namespace GraphQLParser.Tests
             def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
             def.Fields[2].Type.Comment.Text.ShouldBe("comment for list type");
             (def.Fields[2].Type as GraphQLListType).Type.Comment.Text.ShouldBe("comment for item type");
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        //[InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        //[InlineData(IgnoreOptions.All)]
+        public void Comments_on_Alias_Should_Read_Correctly(IgnoreOptions options)
+        {
+            string query = "CommentsOnAlias".ReadGraphQLFile();
+
+            using var document = query.Parse(new ParserOptions { Ignore = options });
+            document.Definitions.Count.ShouldBe(1);
+            var def = document.Definitions[0] as GraphQLOperationDefinition;
+            def.SelectionSet.Selections.Count.ShouldBe(1);
+            var field = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
+            field.Name.Value.ShouldBe("name");
+            field.Comment.Text.ShouldBe("field comment");
+            field.Alias.Name.Value.ShouldBe("a");
+            field.Alias.Comment.Text.ShouldBe("alias comment");
+
+            document.UnattachedComments.Count.ShouldBe(1);
+            document.UnattachedComments[0].Text.ShouldBe("colon comment");
         }
 
         [Theory]
@@ -544,6 +567,25 @@ scalar JSON
         {
             using ("{ field(complex: { a: { b: [ $var ] } }) }".Parse(new ParserOptions { Ignore = options }))
             {
+            }
+        }
+
+        [Theory]
+        [InlineData(IgnoreOptions.None)]
+        [InlineData(IgnoreOptions.Comments)]
+        [InlineData(IgnoreOptions.Locations)]
+        [InlineData(IgnoreOptions.All)]
+        public void Should_Read_Directives_on_VariableDefinition(IgnoreOptions options)
+        {
+            using (var document = "query A($id: String @a @b(priority: 1, managed: true)) { name }".Parse(new ParserOptions { Ignore = options }))
+            {
+                document.Definitions.Count.ShouldBe(1);
+                var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLOperationDefinition>();
+                def.VariableDefinitions.Count.ShouldBe(1);
+                def.VariableDefinitions[0].Directives.Count.ShouldBe(2);
+                def.VariableDefinitions[0].Directives[0].Name.Value.ShouldBe("a");
+                def.VariableDefinitions[0].Directives[1].Name.Value.ShouldBe("b");
+                def.VariableDefinitions[0].Directives[1].Arguments.Count.ShouldBe(2);
             }
         }
 

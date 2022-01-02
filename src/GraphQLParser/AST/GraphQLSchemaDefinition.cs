@@ -2,16 +2,19 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.SchemaDefinition"/>.
+    /// </summary>
     public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHasDescriptionNode
     {
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.SchemaDefinition;
 
         /// <inheritdoc/>
         public GraphQLDescription? Description { get; set; }
 
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.SchemaDefinition;
+        public List<GraphQLDirective>? Directives { get; set; }
 
         public List<GraphQLRootOperationTypeDefinition>? OperationTypes { get; set; }
     }

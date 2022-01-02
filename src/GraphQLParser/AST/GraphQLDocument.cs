@@ -5,14 +5,12 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// Represents the root of AST (Abstract Syntax Tree) for GraphQL document.
+    /// AST node for <see cref="ASTNodeKind.Document"/>.
     /// </summary>
     public class GraphQLDocument : ASTNode, IDisposable
     {
-        // In some cases, the parser is forced to change the text (escape symbols, comments),
-        // so it is impossible to simply point to the desired section (span) of the source text.
-        // In this case, array pools are used, memory from which then need to be returned to the pool.
-        internal List<(IMemoryOwner<char> owner, ASTNode rentedBy)>? RentedMemoryTracker { get; set; }
+        /// <inheritdoc/>
+        public override ASTNodeKind Kind => ASTNodeKind.Document;
 
         public List<ASTNode>? Definitions { get; set; }
 
@@ -21,8 +19,10 @@ namespace GraphQLParser.AST
         /// </summary>
         public List<GraphQLComment>? UnattachedComments { get; set; }
 
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.Document;
+        // In some cases, the parser is forced to change the text (escape symbols, comments),
+        // so it is impossible to simply point to the desired section (span) of the source text.
+        // In this case, array pools are used, memory from which then need to be returned to the pool.
+        internal List<(IMemoryOwner<char> owner, ASTNode rentedBy)>? RentedMemoryTracker { get; set; }
 
         protected virtual void Dispose(bool disposing)
         {

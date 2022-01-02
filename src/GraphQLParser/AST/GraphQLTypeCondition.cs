@@ -1,19 +1,20 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.ObjectValue"/>.
+    /// AST node for <see cref="ASTNodeKind.TypeCondition"/>.
     /// </summary>
-    public class GraphQLObjectValue : GraphQLValue
+    public class GraphQLTypeCondition : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
+        public override ASTNodeKind Kind => ASTNodeKind.TypeCondition;
 
-        public List<GraphQLObjectField>? Fields { get; set; }
+        /// <summary>
+        /// Type to which this condition is applied.
+        /// </summary>
+        public GraphQLNamedType? Type { get; set; }
     }
 
-    internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue
+    internal sealed class GraphQLTypeConditionWithLocation : GraphQLTypeCondition
     {
         private GraphQLLocation _location;
 
@@ -24,7 +25,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectValueWithComment : GraphQLObjectValue
+    internal sealed class GraphQLTypeConditionWithComment : GraphQLTypeCondition
     {
         private GraphQLComment? _comment;
 
@@ -35,7 +36,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectValueFull : GraphQLObjectValue
+    internal sealed class GraphQLTypeConditionFull : GraphQLTypeCondition
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

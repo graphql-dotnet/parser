@@ -2,22 +2,25 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.OperationDefinition"/>.
+    /// </summary>
     public class GraphQLOperationDefinition : ASTNode, IHasDirectivesNode, INamedNode
     {
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
-        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
+
+        public OperationType Operation { get; set; }
 
         /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
 
-        public OperationType Operation { get; set; }
+        public List<GraphQLVariableDefinition>? VariableDefinitions { get; set; }
+
+        /// <inheritdoc/>
+        public List<GraphQLDirective>? Directives { get; set; }
 
         public GraphQLSelectionSet? SelectionSet { get; set; }
-
-        public List<GraphQLVariableDefinition>? VariableDefinitions { get; set; }
     }
 
     internal sealed class GraphQLOperationDefinitionWithLocation : GraphQLOperationDefinition

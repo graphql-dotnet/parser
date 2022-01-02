@@ -1,5 +1,8 @@
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.NamedType"/>.
+    /// </summary>
     public class GraphQLNamedType : GraphQLType, INamedNode
     {
         /// <inheritdoc/>

@@ -1,19 +1,20 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.ObjectValue"/>.
+    /// AST node for <see cref="ASTNodeKind.Alias"/>.
     /// </summary>
-    public class GraphQLObjectValue : GraphQLValue
+    public class GraphQLAlias : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
+        public override ASTNodeKind Kind => ASTNodeKind.TypeCondition;
 
-        public List<GraphQLObjectField>? Fields { get; set; }
+        /// <summary>
+        /// Alias name.
+        /// </summary>
+        public GraphQLName? Name { get; set; }
     }
 
-    internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue
+    internal sealed class GraphQLAliasWithLocation : GraphQLAlias
     {
         private GraphQLLocation _location;
 
@@ -24,7 +25,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectValueWithComment : GraphQLObjectValue
+    internal sealed class GraphQLAliasWithComment : GraphQLAlias
     {
         private GraphQLComment? _comment;
 
@@ -35,7 +36,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectValueFull : GraphQLObjectValue
+    internal sealed class GraphQLAliasFull : GraphQLAlias
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

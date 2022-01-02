@@ -2,16 +2,19 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.FragmentSpread"/>.
+    /// </summary>
     public class GraphQLFragmentSpread : ASTNode, IHasDirectivesNode, INamedNode
     {
-        /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
 
         /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
+
+        /// <inheritdoc/>
+        public List<GraphQLDirective>? Directives { get; set; }
     }
 
     internal sealed class GraphQLFragmentSpreadWithLocation : GraphQLFragmentSpread

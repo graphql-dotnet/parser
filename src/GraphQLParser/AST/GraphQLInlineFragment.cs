@@ -2,17 +2,20 @@ using System.Collections.Generic;
 
 namespace GraphQLParser.AST
 {
+    /// <summary>
+    /// AST node for <see cref="ASTNodeKind.InlineFragment"/>.
+    /// </summary>
     public class GraphQLInlineFragment : ASTNode, IHasDirectivesNode
     {
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
-        /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InlineFragment;
 
-        public GraphQLSelectionSet? SelectionSet { get; set; }
+        public GraphQLTypeCondition? TypeCondition { get; set; }
 
-        public GraphQLNamedType? TypeCondition { get; set; }
+        /// <inheritdoc/>
+        public List<GraphQLDirective>? Directives { get; set; }
+
+        public GraphQLSelectionSet? SelectionSet { get; set; }
     }
 
     internal sealed class GraphQLInlineFragmentWithLocation : GraphQLInlineFragment
