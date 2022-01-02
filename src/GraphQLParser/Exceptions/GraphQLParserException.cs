@@ -5,7 +5,7 @@ using System.Text;
 namespace GraphQLParser.Exceptions
 {
     /// <summary>
-    /// An exception representing a GraphQL document syntax error.
+    /// An exception representing a GraphQL document parsing error.
     /// </summary>
     public class GraphQLParserException : Exception
     {
