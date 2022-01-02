@@ -145,6 +145,7 @@ namespace GraphQLParser
         private List<ASTNode> ParseDefinitionsIfNotEOF()
         {
             var result = new List<ASTNode>();
+            IncreaseDepth();
 
             if (_currentToken.Kind != TokenKind.EOF)
             {
@@ -155,6 +156,7 @@ namespace GraphQLParser
                 while (!Skip(TokenKind.EOF));
             }
 
+            DecreaseDepth();
             return result;
         }
 
@@ -826,11 +828,13 @@ namespace GraphQLParser
         private List<GraphQLObjectField> ParseObjectFields(bool isConstant)
         {
             var fields = new List<GraphQLObjectField>();
+            IncreaseDepth();
 
             Expect(TokenKind.BRACE_L);
             while (!Skip(TokenKind.BRACE_R))
                 fields.Add(ParseObjectField(isConstant));
 
+            DecreaseDepth();
             return fields;
         }
 
