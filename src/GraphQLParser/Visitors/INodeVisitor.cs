@@ -185,11 +185,6 @@ namespace GraphQLParser.Visitors
         /// </summary>
         ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context);
 
-        // <summary>
-        // Visits <see cref=""/> node.
-        // </summary>
-        //ValueTask VisitTypeExtensionDefinition(); //TODO
-
         /// <summary>
         /// Visits <see cref="GraphQLDirectiveDefinition"/> node.
         /// </summary>
@@ -214,5 +209,35 @@ namespace GraphQLParser.Visitors
         /// Visits <see cref="GraphQLAlias"/> node.
         /// </summary>
         ValueTask VisitAlias(GraphQLAlias alias, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLScalarTypeExtension"/> node.
+        /// </summary>
+        ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLObjectTypeExtension"/> node.
+        /// </summary>
+        ValueTask VisitObjectTypeExtension(GraphQLObjectTypeExtension objectTypeExtension, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLInterfaceTypeExtension"/> node.
+        /// </summary>
+        ValueTask VisitInterfaceTypeExtension(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLUnionTypeExtension"/> node.
+        /// </summary>
+        ValueTask VisitUnionTypeExtension(GraphQLUnionTypeExtension unionTypeExtension, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLEnumTypeExtension"/> node.
+        /// </summary>
+        ValueTask VisitEnumTypeExtension(GraphQLEnumTypeExtension enumTypeExtension, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLInputObjectTypeExtension"/> node.
+        /// </summary>
+        ValueTask VisitInputObjectTypeExtension(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context);
     }
 }

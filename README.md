@@ -15,10 +15,8 @@
 ![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
 
 [![codecov](https://codecov.io/gh/graphql-dotnet/parser/branch/master/graph/badge.svg?token=GEjwg1by60)](https://codecov.io/gh/graphql-dotnet/parser)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/graphql-dotnet/parser.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/graphql-dotnet/parser/alerts/)
-[![Language grade: C#](https://img.shields.io/lgtm/grade/csharp/g/graphql-dotnet/parser.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/graphql-dotnet/parser/context:csharp)
 
-This library contains a lexer and parser classes as well as the complete GraphQL AST model.
+This library contains a lexer and parser classes as well as the complete [GraphQL AST model](http://spec.graphql.org/October2021/#sec-Appendix-Grammar-Summary).
 
 The parser from this library is used in [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet).
 

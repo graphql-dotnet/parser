@@ -297,9 +297,14 @@ namespace GraphQLParser.AST
         InputObjectTypeDefinition,
 
         /// <summary>
-        /// TO BE DONE
+        /// Object type extensions are used to represent a type which has been
+        /// extended from some original type. For example, this might be used
+        /// to represent local data, or by a GraphQL service which is itself
+        /// an extension of another GraphQL service.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#ObjectTypeExtension"/>
         /// </summary>
-        TypeExtensionDefinition, // TODO: change
+        ObjectTypeExtension,
 
         /// <summary>
         /// Directive definition. Directives provide a way to describe alternate runtime execution
@@ -343,5 +348,53 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#Alias"/>
         /// </summary>
         Alias,
+
+        /// <summary>
+        /// Scalar type extensions are used to represent a scalar type which has been
+        /// extended from some original scalar type. For example, this might be used by
+        /// a GraphQL tool or service which adds directives to an existing scalar.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#ScalarTypeExtension"/>
+        /// </summary>
+        ScalarTypeExtension,
+
+        /// <summary>
+        /// Interface type extensions are used to represent an interface which has been
+        /// extended from some original interface. For example, this might be used
+        /// to represent common local data on many types, or by a GraphQL service which is itself
+        /// an extension of another GraphQL service.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#InterfaceTypeExtension"/>
+        /// </summary>
+        InterfaceTypeExtension,
+
+        /// <summary>
+        /// Union type extensions are used to represent a union type which has been
+        /// extended from some original union type. For example, this might be used
+        /// to represent additional local data, or by a GraphQL service which is itself
+        /// an extension of another GraphQL service.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#UnionTypeExtension"/>
+        /// </summary>
+        UnionTypeExtension,
+
+        /// <summary>
+        /// Enum type extensions are used to represent an enum type which has been
+        /// extended from some original enum type. For example, this might be used
+        /// to represent additional local data, or by a GraphQL service which is itself
+        /// an extension of another GraphQL service.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#EnumTypeExtension"/>
+        /// </summary>
+        EnumTypeExtension,
+
+        /// <summary>
+        /// Input object type extensions are used to represent an input object type which has been
+        /// extended from some original input object type. For example, this might be used
+        /// by a GraphQL service which is itself an extension of another GraphQL service.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#InputObjectTypeExtension"/>
+        /// </summary>
+        InputObjectTypeExtension,
     }
 }
