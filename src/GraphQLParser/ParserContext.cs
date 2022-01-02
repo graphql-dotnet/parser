@@ -17,7 +17,7 @@ namespace GraphQLParser
         private Token _currentToken;
         private Token _prevToken;
         private readonly GraphQLDocument _document;
-        private int _currentDepth = 0;
+        private int _currentDepth;
         private readonly int _maxDepth;
 
         public ParserContext(ROM source, ParserOptions options)
@@ -26,6 +26,7 @@ namespace GraphQLParser
             _unattachedComments = null;
             _source = source;
             _ignoreOptions = options.Ignore;
+            _currentDepth = 0;
             _maxDepth = options.MaxDepth ?? 64;
             // should create document beforehand to use RentedMemoryTracker while parsing comments
             _document = NodeHelper.CreateGraphQLDocument(options.Ignore);
