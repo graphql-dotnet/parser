@@ -21,7 +21,7 @@ namespace GraphQLParser.Tests
                 sb.Append("{a");
             sb.Append(new string('}', count));
             var query = sb.ToString();
-            Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse()).Description.ShouldBe("Maximum depth exceeded.");
+            Should.Throw<GraphQLMaxDepthExceededException>(() => query.Parse());
         }
 
         [Fact]
@@ -36,28 +36,28 @@ namespace GraphQLParser.Tests
             sb.Append(new string('}', count));
             sb.Append(")}");
             var query = sb.ToString();
-            Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse()).Description.ShouldBe("Maximum depth exceeded.");
+            Should.Throw<GraphQLMaxDepthExceededException>(() => query.Parse());
         }
 
         [Fact]
         public void Should_Throw_With_MaxDepth_0_On_SimpleQuery()
         {
             var query = "{a}";
-            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 })).Description.ShouldBe("Maximum depth exceeded.");
+            Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 }));
         }
 
         [Fact]
         public void Should_Throw_With_MaxDepth_0_On_TypeDefinition()
         {
             var query = "scalar Test";
-            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 })).Description.ShouldBe("Maximum depth exceeded.");
+            Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 }));
         }
 
         [Fact]
         public void Should_Throw_With_MaxDepth_1_On_SimpleQuery()
         {
             var query = "{a}";
-            Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 1 })).Description.ShouldBe("Maximum depth exceeded.");
+            Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 1 }));
         }
 
         [Fact]

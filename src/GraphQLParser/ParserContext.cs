@@ -50,7 +50,7 @@ namespace GraphQLParser
 
         private void ThrowMaxDepthException()
         {
-            throw new GraphQLSyntaxErrorException("Maximum depth exceeded.", _source, _currentToken.Start);
+            throw new GraphQLMaxDepthExceededException(_source, _currentToken.Start);
         }
 
         private void DecreaseDepth()
