@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.Visitors;
 using Shouldly;
@@ -15,6 +16,7 @@ namespace GraphQLParser.Tests.Visitors
         {
             var visitor = new CountVisitor<DefaultCountContext>();
             var context = new DefaultCountContext(_ => true);
+            context.CancellationToken.ShouldBe(CancellationToken.None);
 
             using (var document = text.Parse())
             {
@@ -32,6 +34,7 @@ namespace GraphQLParser.Tests.Visitors
         {
             var visitor = new CountVisitor<DefaultCountContext>();
             var context = new DefaultCountContext(_ => false);
+            context.CancellationToken.ShouldBe(CancellationToken.None);
 
             using (var document = text.Parse())
             {

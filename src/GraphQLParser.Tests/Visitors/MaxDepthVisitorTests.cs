@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.Visitors;
 using Shouldly;
@@ -20,6 +21,7 @@ namespace GraphQLParser.Tests.Visitors
         {
             var visitor = new MaxDepthVisitor<DefaultMaxDepthContext>();
             var context = new DefaultMaxDepthContext();
+            context.CancellationToken.ShouldBe(CancellationToken.None);
 
             using (var document = text.Parse())
             {
