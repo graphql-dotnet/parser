@@ -42,7 +42,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Parse_With_Almost_Deep_Query()
         {
-            var count = 63;
+            var count = 30;
             var sb = new System.Text.StringBuilder(count * 3);
             for (int i = 0; i < count; i++)
                 sb.Append("{a");
@@ -54,7 +54,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Parse_With_Almost_Deep_Literal()
         {
-            var count = 60;
+            var count = 28;
             var sb = new System.Text.StringBuilder(count * 4 + 10);
             sb.Append("{a(b:");
             for (int i = 0; i < count; i++)
@@ -87,31 +87,31 @@ namespace GraphQLParser.Tests
         }
 
         [Fact]
-        public void Should_Throw_With_MaxDepth_0_On_TypeDefinition()
+        public void Should_Throw_With_MaxDepth_2_On_TypeDefinition()
         {
             var query = "scalar Test";
-            Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 }));
+            Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 2 }));
         }
 
         [Fact]
-        public void Should_Throw_With_MaxDepth_1_On_SimpleQuery()
+        public void Should_Throw_With_MaxDepth_4_On_SimpleQuery()
         {
             var query = "{a}";
-            Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 1 }));
+            Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 4 }));
         }
 
         [Fact]
-        public void Should_Parse_With_MaxDepth_1_On_TypeDefinition()
+        public void Should_Parse_With_MaxDepth_3_On_TypeDefinition()
         {
             var query = "scalar Test";
-            _ = Parser.Parse(query, new ParserOptions { MaxDepth = 1 });
+            _ = Parser.Parse(query, new ParserOptions { MaxDepth = 3 });
         }
 
         [Fact]
-        public void Should_Parse_With_MaxDepth_2_On_SimpleQuery()
+        public void Should_Parse_With_MaxDepth_5_On_SimpleQuery()
         {
             var query = "{a}";
-            _ = Parser.Parse(query, new ParserOptions { MaxDepth = 2 });
+            _ = Parser.Parse(query, new ParserOptions { MaxDepth = 5 });
         }
 
         [Theory]

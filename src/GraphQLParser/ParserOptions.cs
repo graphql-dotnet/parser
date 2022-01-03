@@ -13,6 +13,8 @@ namespace GraphQLParser
 
         /// <summary>
         /// Maximum allowed recursion depth during parsing.
+        /// Depth is calculated in terms of AST nodes.
+        /// <br/>
         /// Defaults to 64 if not set.
         /// Minimum value is 1.
         /// </summary>

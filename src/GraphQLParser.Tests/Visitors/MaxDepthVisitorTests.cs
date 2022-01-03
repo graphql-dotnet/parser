@@ -14,6 +14,7 @@ namespace GraphQLParser.Tests.Visitors
         /// </summary>
         [Theory]
         [InlineData("query a { name age }", 5)]
+        [InlineData("scalar Test", 3)]
         [InlineData("scalar JSON @exportable", 5)]
         [InlineData("{a}", 5)] // Document->OperationDefinition->SelectionSet->Field->Name
         [InlineData("{ a { b { c } d { e { f } } g { h { i { k } } } } }", 13)]

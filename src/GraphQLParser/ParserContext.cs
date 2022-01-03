@@ -26,7 +26,7 @@ namespace GraphQLParser
             _unattachedComments = null;
             _source = source;
             _ignoreOptions = options.Ignore;
-            _currentDepth = 0;
+            _currentDepth = 1; // GraphQLDocument created here
             _maxDepth = options.MaxDepth ?? 64;
             // should create document beforehand to use RentedMemoryTracker while parsing comments
             _document = NodeHelper.CreateGraphQLDocument(options.Ignore);
@@ -44,18 +44,15 @@ namespace GraphQLParser
         private void IncreaseDepth()
         {
             // Encourage compiler inlining of this method by moving exception to a separate method
-            if (_currentDepth++ >= _maxDepth)
+            if (++_currentDepth > _maxDepth)
                 ThrowMaxDepthException();
         }
+
+        private void DecreaseDepth() => --_currentDepth;
 
         private void ThrowMaxDepthException()
         {
             throw new GraphQLMaxDepthExceededException(_source, _currentToken.Start);
-        }
-
-        private void DecreaseDepth()
-        {
-            _currentDepth--;
         }
 
         private readonly GraphQLLocation GetLocation(int start)
@@ -71,13 +68,11 @@ namespace GraphQLParser
             where T : ASTNode
         {
             Expect(open);
-            IncreaseDepth();
 
             List<T>? nodes = null;
             while (!Skip(close))
                 (nodes ??= new List<T>()).Add(next(ref this));
 
-            DecreaseDepth();
             return nodes;
         }
 
@@ -85,13 +80,11 @@ namespace GraphQLParser
              where T : ASTNode
         {
             Expect(open);
-            IncreaseDepth();
 
             var nodes = new List<T> { next(ref this) };
             while (!Skip(close))
                 nodes.Add(next(ref this));
 
-            DecreaseDepth();
             return nodes;
         }
 
