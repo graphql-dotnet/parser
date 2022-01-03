@@ -17,6 +17,8 @@ namespace GraphQLParser
         private Token _currentToken;
         private Token _prevToken;
         private readonly GraphQLDocument _document;
+        private int _currentDepth;
+        private readonly int _maxDepth;
 
         public ParserContext(ROM source, ParserOptions options)
         {
@@ -24,6 +26,8 @@ namespace GraphQLParser
             _unattachedComments = null;
             _source = source;
             _ignoreOptions = options.Ignore;
+            _currentDepth = 0;
+            _maxDepth = options.MaxDepth ?? 64;
             // should create document beforehand to use RentedMemoryTracker while parsing comments
             _document = NodeHelper.CreateGraphQLDocument(options.Ignore);
             _currentToken = _prevToken = new Token
@@ -35,6 +39,23 @@ namespace GraphQLParser
             );
 
             Advance();
+        }
+
+        private void IncreaseDepth()
+        {
+            // Encourage compiler inlining of this method by moving exception to a separate method
+            if (_currentDepth++ >= _maxDepth)
+                ThrowMaxDepthException();
+        }
+
+        private void ThrowMaxDepthException()
+        {
+            throw new GraphQLMaxDepthExceededException(_source, _currentToken.Start);
+        }
+
+        private void DecreaseDepth()
+        {
+            _currentDepth--;
         }
 
         private readonly GraphQLLocation GetLocation(int start)
@@ -50,11 +71,13 @@ namespace GraphQLParser
             where T : ASTNode
         {
             Expect(open);
+            IncreaseDepth();
 
             List<T>? nodes = null;
             while (!Skip(close))
                 (nodes ??= new List<T>()).Add(next(ref this));
 
+            DecreaseDepth();
             return nodes;
         }
 
@@ -62,11 +85,13 @@ namespace GraphQLParser
              where T : ASTNode
         {
             Expect(open);
+            IncreaseDepth();
 
             var nodes = new List<T> { next(ref this) };
             while (!Skip(close))
                 nodes.Add(next(ref this));
 
+            DecreaseDepth();
             return nodes;
         }
 

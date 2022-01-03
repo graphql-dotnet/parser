@@ -475,12 +475,20 @@ namespace GraphQLParser.AST
 }
 namespace GraphQLParser.Exceptions
 {
-    public class GraphQLSyntaxErrorException : System.Exception
+    public class GraphQLMaxDepthExceededException : GraphQLParser.Exceptions.GraphQLParserException
     {
-        public GraphQLSyntaxErrorException(string description, GraphQLParser.ROM source, int location) { }
+        public GraphQLMaxDepthExceededException(GraphQLParser.ROM source, int location) { }
+    }
+    public class GraphQLParserException : System.Exception
+    {
+        public GraphQLParserException(string description, GraphQLParser.ROM source, int location) { }
         public int Column { get; }
         public string Description { get; }
         public int Line { get; }
+    }
+    public class GraphQLSyntaxErrorException : GraphQLParser.Exceptions.GraphQLParserException
+    {
+        public GraphQLSyntaxErrorException(string description, GraphQLParser.ROM source, int location) { }
     }
 }
 namespace GraphQLParser
@@ -510,6 +518,7 @@ namespace GraphQLParser
     public struct ParserOptions
     {
         public GraphQLParser.IgnoreOptions Ignore { get; set; }
+        public int? MaxDepth { get; set; }
     }
     public readonly struct ROM : System.IEquatable<GraphQLParser.ROM>
     {
