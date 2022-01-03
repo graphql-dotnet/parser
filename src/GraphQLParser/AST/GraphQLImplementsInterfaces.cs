@@ -1,22 +1,19 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.InterfaceTypeExtension"/>.
+    /// AST node for <see cref="ASTNodeKind.ImplementsInterfaces"/>.
     /// </summary>
-    public class GraphQLInterfaceTypeExtension : GraphQLTypeExtension, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
+    public class GraphQLImplementsInterfaces : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.InterfaceTypeExtension;
+        public override ASTNodeKind Kind => ASTNodeKind.ImplementsInterfaces;
 
-        public GraphQLImplementsInterfaces? Interfaces { get; set; }
-
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
-
-        public GraphQLFieldsDefinition? Fields { get; set; }
+        public List<GraphQLNamedType> Items { get; set; } = null!;
     }
 
-    internal sealed class GraphQLInterfaceTypeExtensionWithLocation : GraphQLInterfaceTypeExtension
+    internal sealed class GraphQLImplementsInterfacesWithLocation : GraphQLImplementsInterfaces
     {
         private GraphQLLocation _location;
 
@@ -27,7 +24,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLInterfaceTypeExtensionWithComment : GraphQLInterfaceTypeExtension
+    internal sealed class GraphQLImplementsInterfacesWithComment : GraphQLImplementsInterfaces
     {
         private GraphQLComment? _comment;
 
@@ -38,7 +35,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLInterfaceTypeExtensionFull : GraphQLInterfaceTypeExtension
+    internal sealed class GraphQLImplementsInterfacesFull : GraphQLImplementsInterfaces
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

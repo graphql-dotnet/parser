@@ -142,6 +142,12 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public virtual async ValueTask VisitImplementsInterfaces(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
+        {
+            await Visit(implementsInterfaces.Items, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public virtual async ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
         {
             await Visit(fragmentDefinition.Comment, context).ConfigureAwait(false);
@@ -503,6 +509,7 @@ namespace GraphQLParser.Visitors
                     GraphQLVariablesDefinition varsDef => VisitVariablesDefinition(varsDef, context),
                     GraphQLEnumValuesDefinition enumValuesDef => VisitEnumValuesDefinition(enumValuesDef, context),
                     GraphQLFieldsDefinition fieldsDef => VisitFieldsDefinition(fieldsDef, context),
+                    GraphQLImplementsInterfaces implements => VisitImplementsInterfaces(implements, context),
                     _ => throw new NotSupportedException($"Unknown node '{node.GetType().Name}'."),
                 };
         }

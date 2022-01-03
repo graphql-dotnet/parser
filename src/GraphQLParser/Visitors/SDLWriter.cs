@@ -214,6 +214,19 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public override async ValueTask VisitImplementsInterfaces(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
+        {
+            await context.Write(" implements ").ConfigureAwait(false);
+
+            for (int i = 0; i < implementsInterfaces.Items.Count; ++i)
+            {
+                await Visit(implementsInterfaces.Items[i], context).ConfigureAwait(false);
+                if (i < implementsInterfaces.Items.Count - 1)
+                    await context.Write(" & ").ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc/>
         public override async ValueTask VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
         {
             await Visit(selectionSet.Comment, context).ConfigureAwait(false);
@@ -476,7 +489,7 @@ namespace GraphQLParser.Visitors
             await Visit(objectTypeDefinition.Description, context).ConfigureAwait(false);
             await context.Write("type ").ConfigureAwait(false);
             await Visit(objectTypeDefinition.Name, context).ConfigureAwait(false);
-            await VisitInterfaces(objectTypeDefinition, context).ConfigureAwait(false);
+            await Visit(objectTypeDefinition.Interfaces, context).ConfigureAwait(false);
             await Visit(objectTypeDefinition.Directives, context).ConfigureAwait(false);
             await Visit(objectTypeDefinition.Fields, context).ConfigureAwait(false);
             if (objectTypeDefinition.Fields == null)
@@ -489,7 +502,7 @@ namespace GraphQLParser.Visitors
             await Visit(objectTypeExtension.Comment, context).ConfigureAwait(false);
             await context.Write("extend type ").ConfigureAwait(false);
             await Visit(objectTypeExtension.Name, context).ConfigureAwait(false);
-            await VisitInterfaces(objectTypeExtension, context).ConfigureAwait(false);
+            await Visit(objectTypeExtension.Interfaces, context).ConfigureAwait(false);
             await Visit(objectTypeExtension.Directives, context).ConfigureAwait(false);
             await Visit(objectTypeExtension.Fields, context).ConfigureAwait(false);
             if (objectTypeExtension.Fields == null)
@@ -503,7 +516,7 @@ namespace GraphQLParser.Visitors
             await Visit(interfaceTypeDefinition.Description, context).ConfigureAwait(false);
             await context.Write("interface ").ConfigureAwait(false);
             await Visit(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
-            await VisitInterfaces(interfaceTypeDefinition, context).ConfigureAwait(false);
+            await Visit(interfaceTypeDefinition.Interfaces, context).ConfigureAwait(false);
             await Visit(interfaceTypeDefinition.Directives, context).ConfigureAwait(false);
             await Visit(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
         }
@@ -514,7 +527,7 @@ namespace GraphQLParser.Visitors
             await Visit(interfaceTypeExtension.Comment, context).ConfigureAwait(false);
             await context.Write("extend interface ").ConfigureAwait(false);
             await Visit(interfaceTypeExtension.Name, context).ConfigureAwait(false);
-            await VisitInterfaces(interfaceTypeExtension, context).ConfigureAwait(false);
+            await Visit(interfaceTypeExtension.Interfaces, context).ConfigureAwait(false);
             await Visit(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
             await Visit(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
         }
@@ -809,21 +822,6 @@ namespace GraphQLParser.Visitors
             await base.Visit(node, context).ConfigureAwait(false);
 
             context.Parents.Pop();
-        }
-
-        private async ValueTask VisitInterfaces(IHasInterfacesNode node, TContext context) //TODO: remove
-        {
-            if (node.Interfaces?.Count > 0)
-            {
-                await context.Write(" implements ").ConfigureAwait(false);
-
-                for (int i = 0; i < node.Interfaces.Count; ++i)
-                {
-                    await Visit(node.Interfaces[i], context).ConfigureAwait(false);
-                    if (i < node.Interfaces.Count - 1)
-                        await context.Write(" & ").ConfigureAwait(false);
-                }
-            }
         }
 
         private string GetOperationType(OperationType type) => type switch

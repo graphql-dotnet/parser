@@ -588,6 +588,17 @@ namespace GraphQLParser
             };
         }
 
+        public static GraphQLImplementsInterfaces CreateGraphQLImplementsInterfaces(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLImplementsInterfaces(),
+                IgnoreOptions.Comments => new GraphQLImplementsInterfacesWithLocation(),
+                IgnoreOptions.Locations => new GraphQLImplementsInterfacesWithComment(),
+                _ => new GraphQLImplementsInterfacesFull(),
+            };
+        }
+
         #endregion
     }
 }

@@ -571,26 +571,26 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#ImplementsInterfaces
-        private List<GraphQLNamedType>? ParseImplementsInterfaces()
+        private GraphQLImplementsInterfaces ParseImplementsInterfaces()
         {
-            List<GraphQLNamedType>? types = null;
-            if (_currentToken.Value == "implements")
+            ExpectKeyword("implements");
+
+            var implementsInterfaces = NodeHelper.CreateGraphQLImplementsInterfaces(_ignoreOptions);
+
+            List<GraphQLNamedType> types = new();
+
+            // Objects that implement interfaces may be defined with an optional leading & character
+            // to aid formatting when representing a longer list of implemented interfaces
+            Skip(TokenKind.AMPERSAND);
+
+            do
             {
-                types = new List<GraphQLNamedType>();
-                Advance();
-
-                // Objects that implement interfaces may be defined with an optional leading & character
-                // to aid formatting when representing a longer list of implemented interfaces
-                Skip(TokenKind.AMPERSAND);
-
-                do
-                {
-                    types.Add(ParseNamedType());
-                }
-                while (Skip(TokenKind.AMPERSAND));
+                types.Add(ParseNamedType());
             }
+            while (Skip(TokenKind.AMPERSAND));
 
-            return types;
+            implementsInterfaces.Items = types;
+            return implementsInterfaces;
         }
 
         // http://spec.graphql.org/October2021/#InputObjectTypeDefinition
@@ -690,7 +690,7 @@ namespace GraphQLParser
             def.Comment = GetComment();
             ExpectKeyword("interface");
             def.Name = ParseName();
-            def.Interfaces = ParseImplementsInterfaces();
+            def.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
             def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
             def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             def.Description = description;
@@ -710,7 +710,7 @@ namespace GraphQLParser
             extension.Comment = GetComment();
             ExpectKeyword("interface");
             extension.Name = ParseName();
-            extension.Interfaces = ParseImplementsInterfaces();
+            extension.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
             extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
             extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             extension.Location = GetLocation(start);
@@ -948,7 +948,7 @@ namespace GraphQLParser
             def.Comment = GetComment();
             ExpectKeyword("type");
             def.Name = ParseName();
-            def.Interfaces = ParseImplementsInterfaces();
+            def.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
             def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
             def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             def.Description = description;
@@ -968,7 +968,7 @@ namespace GraphQLParser
             extension.Comment = GetComment();
             ExpectKeyword("type");
             extension.Name = ParseName();
-            extension.Interfaces = ParseImplementsInterfaces();
+            extension.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
             extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
             extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             extension.Location = GetLocation(start);

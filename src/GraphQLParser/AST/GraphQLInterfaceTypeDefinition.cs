@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -10,7 +8,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InterfaceTypeDefinition;
 
-        public List<GraphQLNamedType>? Interfaces { get; set; }
+        public GraphQLImplementsInterfaces? Interfaces { get; set; }
 
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }

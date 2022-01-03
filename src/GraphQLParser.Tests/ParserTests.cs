@@ -171,7 +171,7 @@ namespace GraphQLParser.Tests
             frag.TypeCondition.Type.Comment.Text.ShouldBe("comment for named type from TypeCondition");
 
             var def2 = document.Definitions[1] as GraphQLObjectTypeDefinition;
-            def2.Interfaces[0].Comment.Text.ShouldBe("comment for named type from ImplementsInterfaces");
+            def2.Interfaces.Items[0].Comment.Text.ShouldBe("comment for named type from ImplementsInterfaces");
 
             var def3 = document.Definitions[2] as GraphQLSchemaDefinition;
             def3.OperationTypes[0].Type.Comment.Text.ShouldBe("comment for named type from RootOperationTypeDefinition");
@@ -722,20 +722,20 @@ FIELD_DEFINITION
 
             var def2 = document.Definitions[1].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
             def2.Name.Value.ShouldBe("Dog");
-            def2.Interfaces.Count.ShouldBe(1);
-            def2.Interfaces[0].Name.Value.ShouldBe("Eat");
+            def2.Interfaces.Items.Count.ShouldBe(1);
+            def2.Interfaces.Items[0].Name.Value.ShouldBe("Eat");
 
             var def3 = document.Definitions[2].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
             def3.Name.Value.ShouldBe("Dog");
-            def3.Interfaces.Count.ShouldBe(2);
-            def3.Interfaces[0].Name.Value.ShouldBe("Eat");
-            def3.Interfaces[1].Name.Value.ShouldBe("Sleep");
+            def3.Interfaces.Items.Count.ShouldBe(2);
+            def3.Interfaces.Items[0].Name.Value.ShouldBe("Eat");
+            def3.Interfaces.Items[1].Name.Value.ShouldBe("Sleep");
 
             var def4 = document.Definitions[3].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
             def4.Name.Value.ShouldBe("Dog");
-            def4.Interfaces.Count.ShouldBe(2);
-            def4.Interfaces[0].Name.Value.ShouldBe("Eat");
-            def4.Interfaces[1].Name.Value.ShouldBe("Sleep");
+            def4.Interfaces.Items.Count.ShouldBe(2);
+            def4.Interfaces.Items[0].Name.Value.ShouldBe("Eat");
+            def4.Interfaces.Items[1].Name.Value.ShouldBe("Sleep");
             def4.Fields.Items.Count.ShouldBe(1);
             def4.Fields.Items[0].Name.Value.ShouldBe("name");
         }
