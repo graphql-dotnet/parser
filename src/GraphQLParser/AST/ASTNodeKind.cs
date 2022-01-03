@@ -405,5 +405,13 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#ArgumentsDefinition"/>
         /// </summary>
         ArgumentsDefinition,
+
+        /// <summary>
+        /// Fields are conceptually functions which return values, and occasionally
+        /// accept arguments which alter their behavior.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#Arguments"/>
+        /// </summary>
+        Arguments
     }
 }

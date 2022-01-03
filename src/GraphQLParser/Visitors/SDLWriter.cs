@@ -256,12 +256,7 @@ namespace GraphQLParser.Visitors
                 await WriteIndent(context, level).ConfigureAwait(false);
             }
             await Visit(field.Name, context).ConfigureAwait(false);
-            if (field.Arguments != null)
-            {
-                await context.Write("(").ConfigureAwait(false);
-                await VisitArguments(field, context).ConfigureAwait(false);
-                await context.Write(")").ConfigureAwait(false);
-            }
+            await Visit(field.Arguments, context).ConfigureAwait(false);
             await VisitDirectives(field, context).ConfigureAwait(false);
 
             if (field.SelectionSet == null)
@@ -714,12 +709,7 @@ namespace GraphQLParser.Visitors
             await Visit(directive.Comment, context).ConfigureAwait(false);
             await context.Write("@").ConfigureAwait(false);
             await Visit(directive.Name, context).ConfigureAwait(false);
-            if (directive.Arguments != null)
-            {
-                await context.Write("(").ConfigureAwait(false);
-                await VisitArguments(directive, context).ConfigureAwait(false);
-                await context.Write(")").ConfigureAwait(false);
-            }
+            await Visit(directive.Arguments, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -731,13 +721,27 @@ namespace GraphQLParser.Visitors
             await Visit(argument.Value, context).ConfigureAwait(false);
         }
 
+        /// <inheritdoc/>
         public override async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
         {
             await context.Write("(").ConfigureAwait(false);
-            for (int i = 0; i < argumentsDefinition.InputValueDefinitions.Count; ++i)
+            for (int i = 0; i < argumentsDefinition.Items.Count; ++i)
             {
-                await Visit(argumentsDefinition.InputValueDefinitions[i], context).ConfigureAwait(false);
-                if (i < argumentsDefinition.InputValueDefinitions.Count - 1)
+                await Visit(argumentsDefinition.Items[i], context).ConfigureAwait(false);
+                if (i < argumentsDefinition.Items.Count - 1)
+                    await context.Write(", ").ConfigureAwait(false);
+            }
+            await context.Write(")").ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitArguments(GraphQLArguments arguments, TContext context)
+        {
+            await context.Write("(").ConfigureAwait(false);
+            for (int i = 0; i < arguments.Items.Count; ++i)
+            {
+                await Visit(arguments.Items[i], context).ConfigureAwait(false);
+                if (i < arguments.Items.Count - 1)
                     await context.Write(", ").ConfigureAwait(false);
             }
             await context.Write(")").ConfigureAwait(false);
@@ -860,19 +864,6 @@ namespace GraphQLParser.Visitors
             await base.Visit(node, context).ConfigureAwait(false);
 
             context.Parents.Pop();
-        }
-
-        private async ValueTask VisitArguments(IHasArgumentsNode node, TContext context)
-        {
-            if (node.Arguments?.Count > 0)
-            {
-                for (int i = 0; i < node.Arguments.Count; ++i)
-                {
-                    await Visit(node.Arguments[i], context).ConfigureAwait(false);
-                    if (i < node.Arguments.Count - 1)
-                        await context.Write(", ").ConfigureAwait(false);
-                }
-            }
         }
 
         private async ValueTask VisitInterfaces(IHasInterfacesNode node, TContext context)

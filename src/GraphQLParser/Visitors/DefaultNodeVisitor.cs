@@ -30,7 +30,15 @@ namespace GraphQLParser.Visitors
         /// <inheritdoc/>
         public virtual async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
         {
-            await Visit(argumentsDefinition.InputValueDefinitions, context).ConfigureAwait(false);
+            await Visit(argumentsDefinition.Items, context).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Visits <see cref="GraphQLArguments"/> node.
+        /// </summary>
+        public virtual async ValueTask VisitArguments(GraphQLArguments arguments, TContext context)
+        {
+            await Visit(arguments.Items, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>

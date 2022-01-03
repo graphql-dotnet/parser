@@ -515,6 +515,19 @@ namespace GraphQLParser
             };
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLArguments CreateGraphQLArguments(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLArguments(),
+                IgnoreOptions.Comments => new GraphQLArgumentsWithLocation(),
+                IgnoreOptions.Locations => new GraphQLArgumentsWithComment(),
+                _ => new GraphQLArgumentsFull(),
+            };
+        }
+
         #endregion
     }
 }

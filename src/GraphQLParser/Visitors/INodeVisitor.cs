@@ -56,6 +56,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLArguments"/> node.
+        /// </summary>
+        ValueTask VisitArguments(GraphQLArguments arguments, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLFragmentSpread"/> node.
         /// </summary>
         ValueTask VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context);

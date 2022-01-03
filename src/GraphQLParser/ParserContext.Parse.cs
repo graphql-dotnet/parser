@@ -62,16 +62,18 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#Arguments
-        private List<GraphQLArgument> ParseArguments()
+        private GraphQLArguments ParseArguments()
         {
-            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
+            var args = NodeHelper.CreateGraphQLArguments(_ignoreOptions);
+            args.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
+            return args;
         }
 
         // http://spec.graphql.org/October2021/#ArgumentsDefinition
         private GraphQLArgumentsDefinition ParseArgumentsDefinition()
         {
             var argsDef = NodeHelper.CreateGraphQLArgumentsDefinition(_ignoreOptions);
-            argsDef.InputValueDefinitions = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
+            argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
             return argsDef;
         }
 

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -8,8 +6,8 @@ namespace GraphQLParser.AST
     public interface IHasArgumentsNode
     {
         /// <summary>
-        /// Arguments of the node represented as a list of nested nodes.
+        /// Arguments of the node represented as a nested node.
         /// </summary>
-        List<GraphQLArgument>? Arguments { get; set; }
+        GraphQLArguments? Arguments { get; set; }
     }
 }

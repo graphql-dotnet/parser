@@ -6,7 +6,7 @@ namespace GraphQLParser.AST
     public interface IHasArgumentsDefinitionNode
     {
         /// <summary>
-        /// Arguments definition of the node represented as a list of nested nodes.
+        /// Arguments definition of the node represented as a nested node.
         /// </summary>
         GraphQLArgumentsDefinition? Arguments { get; set; }
     }

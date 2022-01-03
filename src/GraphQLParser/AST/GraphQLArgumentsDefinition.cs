@@ -13,7 +13,7 @@ namespace GraphQLParser.AST
         /// <summary>
         /// List of arguments definitions for this node.
         /// </summary>
-        public List<GraphQLInputValueDefinition> InputValueDefinitions { get; set; } = null!;
+        public List<GraphQLInputValueDefinition> Items { get; set; } = null!;
     }
 
     internal sealed class GraphQLArgumentsDefinitionWithLocation : GraphQLArgumentsDefinition

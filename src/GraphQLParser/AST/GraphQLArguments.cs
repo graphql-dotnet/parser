@@ -1,23 +1,22 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.Directive"/>.
+    /// AST node for <see cref="ASTNodeKind.Arguments"/>.
     /// </summary>
-    public class GraphQLDirective : ASTNode, INamedNode, IHasArgumentsNode
+    public class GraphQLArguments : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.Directive;
-
-        /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.Arguments;
 
         /// <summary>
-        /// Arguments for this directive.
+        /// List of arguments for this node.
         /// </summary>
-        public GraphQLArguments? Arguments { get; set; }
+        public List<GraphQLArgument> Items { get; set; } = null!;
     }
 
-    internal sealed class GraphQLDirectiveWithLocation : GraphQLDirective
+    internal sealed class GraphQLArgumentsWithLocation : GraphQLArguments
     {
         private GraphQLLocation _location;
 
@@ -28,7 +27,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLDirectiveWithComment : GraphQLDirective
+    internal sealed class GraphQLArgumentsWithComment : GraphQLArguments
     {
         private GraphQLComment? _comment;
 
@@ -39,7 +38,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLDirectiveFull : GraphQLDirective
+    internal sealed class GraphQLArgumentsFull : GraphQLArguments
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;
