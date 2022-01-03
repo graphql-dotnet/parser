@@ -67,6 +67,19 @@ namespace GraphQLParser.Tests
         }
 
         [Fact]
+        public void Should_Parse_With_Shallow_Long_Query()
+        {
+            var count = 200;
+            var sb = new System.Text.StringBuilder(count * 5);
+            sb.Append('{');
+            for (int i = 0; i < count; i++)
+                sb.Append(" a" + i);
+            sb.Append('}');
+            var query = sb.ToString();
+            _ = query.Parse();
+        }
+
+        [Fact]
         public void Should_Throw_With_MaxDepth_0_On_SimpleQuery()
         {
             var query = "{a}";
