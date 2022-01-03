@@ -421,6 +421,14 @@ namespace GraphQLParser.AST
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#InputFieldsDefinition"/>
         /// </summary>
-        InputFieldsDefinition
+        InputFieldsDefinition,
+
+        /// <summary>
+        /// A GraphQL operation can be parameterized with variables, maximizing reuse,
+        /// and avoiding costly string building in clients at runtime.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#VariableDefinitions"/>
+        /// </summary>
+        VariablesDefinition, // https://github.com/graphql/graphql-spec/issues/915
     }
 }

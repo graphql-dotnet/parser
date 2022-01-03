@@ -58,7 +58,7 @@ namespace GraphQLParser.Visitors
         {
             await Visit(operationDefinition.Comment, context).ConfigureAwait(false);
             await Visit(operationDefinition.Name, context).ConfigureAwait(false);
-            await Visit(operationDefinition.VariableDefinitions, context).ConfigureAwait(false);
+            await Visit(operationDefinition.Variables, context).ConfigureAwait(false);
             await Visit(operationDefinition.Directives, context).ConfigureAwait(false);
             await Visit(operationDefinition.SelectionSet, context).ConfigureAwait(false);
         }
@@ -77,6 +77,12 @@ namespace GraphQLParser.Visitors
             await Visit(variableDefinition.Type, context).ConfigureAwait(false);
             await Visit(variableDefinition.DefaultValue, context).ConfigureAwait(false);
             await Visit(variableDefinition.Directives, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public virtual async ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context)
+        {
+            await Visit(variablesDefinition.Items, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>

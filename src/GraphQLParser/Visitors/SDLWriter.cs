@@ -269,29 +269,13 @@ namespace GraphQLParser.Visitors
         public override async ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
         {
             await Visit(operationDefinition.Comment, context).ConfigureAwait(false);
-
             if (operationDefinition.Name != null)
             {
                 await context.Write(GetOperationType(operationDefinition.Operation)).ConfigureAwait(false);
                 await context.Write(" ").ConfigureAwait(false);
                 await Visit(operationDefinition.Name, context).ConfigureAwait(false);
             }
-
-            if (operationDefinition.VariableDefinitions?.Count > 0)
-            {
-                await context.Write("(").ConfigureAwait(false);
-                if (operationDefinition.VariableDefinitions?.Count > 0)
-                {
-                    for (int i = 0; i < operationDefinition.VariableDefinitions.Count; ++i)
-                    {
-                        await Visit(operationDefinition.VariableDefinitions[i], context).ConfigureAwait(false);
-                        if (i < operationDefinition.VariableDefinitions.Count - 1)
-                            await context.Write(", ").ConfigureAwait(false);
-                    }
-                }
-                await context.Write(")").ConfigureAwait(false);
-            }
-
+            await Visit(operationDefinition.Variables, context).ConfigureAwait(false);
             await VisitDirectives(operationDefinition, context).ConfigureAwait(false);
             await Visit(operationDefinition.SelectionSet, context).ConfigureAwait(false);
         }
@@ -319,6 +303,21 @@ namespace GraphQLParser.Visitors
                 await Visit(variableDefinition.DefaultValue, context).ConfigureAwait(false);
             }
             await VisitDirectives(variableDefinition, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context)
+        {
+            await context.Write("(").ConfigureAwait(false);
+
+            for (int i = 0; i < variablesDefinition.Items.Count; ++i)
+            {
+                await Visit(variablesDefinition.Items[i], context).ConfigureAwait(false);
+                if (i < variablesDefinition.Items.Count - 1)
+                    await context.Write(", ").ConfigureAwait(false);
+            }
+
+            await context.Write(")").ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -710,12 +709,14 @@ namespace GraphQLParser.Visitors
         public override async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
         {
             await context.Write("(").ConfigureAwait(false);
+
             for (int i = 0; i < argumentsDefinition.Items.Count; ++i)
             {
                 await Visit(argumentsDefinition.Items[i], context).ConfigureAwait(false);
                 if (i < argumentsDefinition.Items.Count - 1)
                     await context.Write(", ").ConfigureAwait(false);
             }
+
             await context.Write(")").ConfigureAwait(false);
         }
 

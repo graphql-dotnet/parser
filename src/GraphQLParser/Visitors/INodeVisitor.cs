@@ -31,6 +31,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLVariablesDefinition"/> node.
+        /// </summary>
+        ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLVariable"/> node.
         /// </summary>
         ValueTask VisitVariable(GraphQLVariable variable, TContext context);

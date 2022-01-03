@@ -540,6 +540,18 @@ namespace GraphQLParser
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLVariablesDefinition CreateGraphQLVariablesDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLVariablesDefinition(),
+                IgnoreOptions.Comments => new GraphQLVariablesDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLVariablesDefinitionWithComment(),
+                _ => new GraphQLVariablesDefinitionFull(),
+            };
+        }
+
         #endregion
     }
 }

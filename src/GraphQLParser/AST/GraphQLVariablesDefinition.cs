@@ -3,27 +3,17 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.OperationDefinition"/>.
+    /// AST node for <see cref="ASTNodeKind.VariablesDefinition"/>.
     /// </summary>
-    public class GraphQLOperationDefinition : ASTNode, IHasDirectivesNode, INamedNode
+    public class GraphQLVariablesDefinition : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
+        public override ASTNodeKind Kind => ASTNodeKind.VariablesDefinition;
 
-        public OperationType Operation { get; set; }
-
-        /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
-
-        public GraphQLVariablesDefinition? Variables { get; set; }
-
-        /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
-        public GraphQLSelectionSet? SelectionSet { get; set; }
+        public List<GraphQLVariableDefinition> Items { get; set; } = null!;
     }
 
-    internal sealed class GraphQLOperationDefinitionWithLocation : GraphQLOperationDefinition
+    internal sealed class GraphQLVariablesDefinitionWithLocation : GraphQLVariablesDefinition
     {
         private GraphQLLocation _location;
 
@@ -34,7 +24,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLOperationDefinitionWithComment : GraphQLOperationDefinition
+    internal sealed class GraphQLVariablesDefinitionWithComment : GraphQLVariablesDefinition
     {
         private GraphQLComment? _comment;
 
@@ -45,7 +35,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLOperationDefinitionFull : GraphQLOperationDefinition
+    internal sealed class GraphQLVariablesDefinitionFull : GraphQLVariablesDefinition
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

@@ -98,9 +98,11 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#VariableDefinitions
-        private List<GraphQLVariableDefinition> ParseVariableDefinitions()
+        private GraphQLVariablesDefinition ParseVariablesDefinition()
         {
-            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R);
+            var variablesDef = NodeHelper.CreateGraphQLVariablesDefinition(_ignoreOptions);
+            variablesDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R);
+            return variablesDef;
         }
 
         // http://spec.graphql.org/October2021/#BooleanValue
@@ -988,7 +990,7 @@ namespace GraphQLParser
             {
                 def.Operation = ParseOperationType();
                 def.Name = Peek(TokenKind.NAME) ? ParseName() : null; // Peek(TokenKind.NAME) because of anonymous query
-                def.VariableDefinitions = Peek(TokenKind.PAREN_L) ? ParseVariableDefinitions() : null;
+                def.Variables = Peek(TokenKind.PAREN_L) ? ParseVariablesDefinition() : null;
                 def.Directives = ParseDirectives();
                 def.SelectionSet = ParseSelectionSet();
                 def.Location = GetLocation(start);
