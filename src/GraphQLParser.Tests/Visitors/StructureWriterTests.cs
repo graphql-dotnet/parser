@@ -31,6 +31,10 @@ namespace GraphQLParser.Tests.Visitors
       Field
         Name [age]
 ")]
+        [InlineData("scalar Test", @"Document
+  ScalarTypeDefinition
+    Name [Test]
+")]
         [InlineData("scalar JSON @exportable", @"Document
   ScalarTypeDefinition
     Name [JSON]
