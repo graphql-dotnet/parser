@@ -1,16 +1,12 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.Directives"/>.
     /// </summary>
-    public class GraphQLDirectives : ASTNode
+    public class GraphQLDirectives : ASTListNode<GraphQLDirective>
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Directives;
-
-        public List<GraphQLDirective> Items { get; set; } = null!;
     }
 
     internal sealed class GraphQLDirectivesWithLocation : GraphQLDirectives

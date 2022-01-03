@@ -1,16 +1,12 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.FieldsDefinition"/>.
     /// </summary>
-    public class GraphQLFieldsDefinition : ASTNode
+    public class GraphQLFieldsDefinition : ASTListNode<GraphQLFieldDefinition>
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.FieldsDefinition;
-
-        public List<GraphQLFieldDefinition> Items { get; set; } = null!;
     }
 
     internal sealed class GraphQLFieldsDefinitionWithLocation : GraphQLFieldsDefinition

@@ -1,19 +1,12 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.Arguments"/>.
     /// </summary>
-    public class GraphQLArguments : ASTNode
+    public class GraphQLArguments : ASTListNode<GraphQLArgument>
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Arguments;
-
-        /// <summary>
-        /// List of arguments for this node.
-        /// </summary>
-        public List<GraphQLArgument> Items { get; set; } = null!;
     }
 
     internal sealed class GraphQLArgumentsWithLocation : GraphQLArguments

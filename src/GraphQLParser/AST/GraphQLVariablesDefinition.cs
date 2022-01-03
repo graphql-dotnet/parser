@@ -1,16 +1,12 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.VariablesDefinition"/>.
     /// </summary>
-    public class GraphQLVariablesDefinition : ASTNode
+    public class GraphQLVariablesDefinition : ASTListNode<GraphQLVariableDefinition>
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.VariablesDefinition;
-
-        public List<GraphQLVariableDefinition> Items { get; set; } = null!;
     }
 
     internal sealed class GraphQLVariablesDefinitionWithLocation : GraphQLVariablesDefinition

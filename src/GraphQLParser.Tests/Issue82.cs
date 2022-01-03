@@ -23,14 +23,14 @@ namespace GraphQLParser.Tests
             using var document = _query.Parse(new ParserOptions { Ignore = options });
 
             var def = document.Definitions[0] as GraphQLOperationDefinition;
-            def.Variables.Items.Count.ShouldBe(1);
-            def.Variables.Items[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
-            def.Variables.Items[0].Variable.Name.Value.ShouldBe("username");
+            def.Variables.Count.ShouldBe(1);
+            def.Variables[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
+            def.Variables[0].Variable.Name.Value.ShouldBe("username");
 
             var selection = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
-            selection.Arguments.Items.Count.ShouldBe(2);
-            selection.Arguments.Items[0].Value.ShouldBeAssignableTo<GraphQLVariable>().Name.Value.ShouldBe("username");
-            selection.Arguments.Items[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>().Value.ShouldBe("Pete");
+            selection.Arguments.Count.ShouldBe(2);
+            selection.Arguments[0].Value.ShouldBeAssignableTo<GraphQLVariable>().Name.Value.ShouldBe("username");
+            selection.Arguments[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>().Value.ShouldBe("Pete");
         }
     }
 }

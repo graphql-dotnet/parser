@@ -1,19 +1,12 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.ArgumentsDefinition"/>.
     /// </summary>
-    public class GraphQLArgumentsDefinition : ASTNode
+    public class GraphQLArgumentsDefinition : ASTListNode<GraphQLInputValueDefinition>
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.ArgumentsDefinition;
-
-        /// <summary>
-        /// List of arguments definitions for this node.
-        /// </summary>
-        public List<GraphQLInputValueDefinition> Items { get; set; } = null!;
     }
 
     internal sealed class GraphQLArgumentsDefinitionWithLocation : GraphQLArgumentsDefinition

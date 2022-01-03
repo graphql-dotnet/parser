@@ -1,16 +1,12 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.ImplementsInterfaces"/>.
     /// </summary>
-    public class GraphQLImplementsInterfaces : ASTNode
+    public class GraphQLImplementsInterfaces : ASTListNode<GraphQLNamedType>
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.ImplementsInterfaces;
-
-        public List<GraphQLNamedType> Items { get; set; } = null!;
     }
 
     internal sealed class GraphQLImplementsInterfacesWithLocation : GraphQLImplementsInterfaces
