@@ -61,22 +61,24 @@ namespace GraphQLParser
             return arg;
         }
 
-        // http://spec.graphql.org/October2021/#ArgumentsDefinition
-        private List<GraphQLInputValueDefinition> ParseArgumentsDefinition()
+        // http://spec.graphql.org/October2021/#Arguments
+        private List<GraphQLArgument> ParseArguments()
         {
-            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
+            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
+        }
+
+        // http://spec.graphql.org/October2021/#ArgumentsDefinition
+        private GraphQLArgumentsDefinition ParseArgumentsDefinition()
+        {
+            var argsDef = NodeHelper.CreateGraphQLArgumentsDefinition(_ignoreOptions);
+            argsDef.InputValueDefinitions = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
+            return argsDef;
         }
 
         // http://spec.graphql.org/October2021/#InputFieldsDefinition
         private List<GraphQLInputValueDefinition> ParseInputFieldsDefinition()
         {
             return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
-        }
-
-        // http://spec.graphql.org/October2021/#Arguments
-        private List<GraphQLArgument> ParseArguments()
-        {
-            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
         }
 
         // http://spec.graphql.org/October2021/#FieldsDefinition

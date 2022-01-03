@@ -3,25 +3,20 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.FieldDefinition"/>.
+    /// AST node for <see cref="ASTNodeKind.ArgumentsDefinition"/>.
     /// </summary>
-    public class GraphQLFieldDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasArgumentsDefinitionNode
+    public class GraphQLArgumentsDefinition : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.FieldDefinition;
+        public override ASTNodeKind Kind => ASTNodeKind.ArgumentsDefinition;
 
         /// <summary>
-        /// Arguments for this field definition.
+        /// List of arguments definitions for this node.
         /// </summary>
-        public GraphQLArgumentsDefinition? Arguments { get; set; }
-
-        public GraphQLType? Type { get; set; }
-
-        /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public List<GraphQLInputValueDefinition> InputValueDefinitions { get; set; } = null!;
     }
 
-    internal sealed class GraphQLFieldDefinitionWithLocation : GraphQLFieldDefinition
+    internal sealed class GraphQLArgumentsDefinitionWithLocation : GraphQLArgumentsDefinition
     {
         private GraphQLLocation _location;
 
@@ -32,7 +27,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFieldDefinitionWithComment : GraphQLFieldDefinition
+    internal sealed class GraphQLArgumentsDefinitionWithComment : GraphQLArgumentsDefinition
     {
         private GraphQLComment? _comment;
 
@@ -43,7 +38,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFieldDefinitionFull : GraphQLFieldDefinition
+    internal sealed class GraphQLArgumentsDefinitionFull : GraphQLArgumentsDefinition
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

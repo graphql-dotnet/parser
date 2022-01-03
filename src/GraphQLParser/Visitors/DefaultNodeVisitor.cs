@@ -28,6 +28,12 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public virtual async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
+        {
+            await Visit(argumentsDefinition.InputValueDefinitions, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public virtual ValueTask VisitComment(GraphQLComment comment, TContext context)
         {
             return new ValueTask(Task.CompletedTask);
@@ -333,6 +339,7 @@ namespace GraphQLParser.Visitors
             await Visit(directiveDefinition.Description, context).ConfigureAwait(false);
             await Visit(directiveDefinition.Name, context).ConfigureAwait(false);
             await Visit(directiveDefinition.Arguments, context).ConfigureAwait(false);
+            //TODO: add locations node
         }
 
         /// <inheritdoc/>

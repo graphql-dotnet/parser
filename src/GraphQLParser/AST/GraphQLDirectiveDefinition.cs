@@ -5,15 +5,15 @@ namespace GraphQLParser.AST
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.DirectiveDefinition"/>.
     /// </summary>
-    public class GraphQLDirectiveDefinition : GraphQLTypeDefinition
+    public class GraphQLDirectiveDefinition : GraphQLTypeDefinition, IHasArgumentsDefinitionNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.DirectiveDefinition;
 
         /// <summary>
-        /// List of arguments for this directive definition.
+        /// Arguments for this directive definition.
         /// </summary>
-        public List<GraphQLInputValueDefinition>? Arguments { get; set; }
+        public GraphQLArgumentsDefinition? Arguments { get; set; }
 
         /// <summary>
         /// Indicates if the directive may be used repeatedly at a single location.

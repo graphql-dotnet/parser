@@ -125,7 +125,7 @@ namespace GraphQLParser.AST
         /// <summary>
         /// Boolean value. The two keywords true and false represent the two boolean values.
         /// <br/>
-        /// <see href="http://spec.graphql.org/October2021/#ObjectField"/>
+        /// <see href="http://spec.graphql.org/October2021/#BooleanValue"/>
         /// </summary>
         BooleanValue,
 
@@ -396,5 +396,14 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#InputObjectTypeExtension"/>
         /// </summary>
         InputObjectTypeExtension,
+
+        /// <summary>
+        /// Occasionally object fields/directives can accept arguments to further specify
+        /// the return value. Object field arguments are defined as a list of all possible
+        /// argument names and their expected input types.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#ArgumentsDefinition"/>
+        /// </summary>
+        ArgumentsDefinition,
     }
 }
