@@ -409,18 +409,13 @@ namespace GraphQLParser.AST
         Subscription = 2,
     }
 }
-namespace GraphQLParser.Exceptions
-{
-    public class GraphQLSyntaxErrorException : System.Exception
-    {
-        public GraphQLSyntaxErrorException(string description, GraphQLParser.ROM source, int location) { }
-        public int Column { get; }
-        public string Description { get; }
-        public int Line { get; }
-    }
-}
 namespace GraphQLParser
 {
+    public static class ASTNodeExtensions
+    {
+        public static int Count(this GraphQLParser.AST.ASTNode node) { }
+        public static int MaxDepth(this GraphQLParser.AST.ASTNode node) { }
+    }
     [System.Flags]
     public enum IgnoreOptions
     {
@@ -507,8 +502,38 @@ namespace GraphQLParser
         AMPERSAND = 21,
     }
 }
+namespace GraphQLParser.Exceptions
+{
+    public class GraphQLSyntaxErrorException : System.Exception
+    {
+        public GraphQLSyntaxErrorException(string description, GraphQLParser.ROM source, int location) { }
+        public int Column { get; }
+        public string Description { get; }
+        public int Line { get; }
+    }
+}
 namespace GraphQLParser.Visitors
 {
+    public class CountVisitor<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
+        where TContext : GraphQLParser.Visitors.ICountContext
+    {
+        public CountVisitor() { }
+        public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
+    }
+    public class DefaultCountContext : GraphQLParser.Visitors.ICountContext, GraphQLParser.Visitors.INodeVisitorContext
+    {
+        public DefaultCountContext(System.Func<GraphQLParser.AST.ASTNode, bool> shouldInclude) { }
+        public System.Threading.CancellationToken CancellationToken { get; set; }
+        public int Count { get; set; }
+        public System.Func<GraphQLParser.AST.ASTNode, bool> ShouldInclude { get; }
+    }
+    public class DefaultMaxDepthContext : GraphQLParser.Visitors.IMaxDepthContext, GraphQLParser.Visitors.INodeVisitorContext
+    {
+        public DefaultMaxDepthContext() { }
+        public System.Threading.CancellationToken CancellationToken { get; set; }
+        public int MaxDepth { get; set; }
+        public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
+    }
     public class DefaultNodeVisitor<TContext> : GraphQLParser.Visitors.INodeVisitor<TContext>
         where TContext : GraphQLParser.Visitors.INodeVisitorContext
     {
@@ -562,6 +587,16 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask VisitUnionTypeExtension(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitVariableDefinition(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
+    }
+    public interface ICountContext : GraphQLParser.Visitors.INodeVisitorContext
+    {
+        int Count { get; set; }
+        System.Func<GraphQLParser.AST.ASTNode, bool> ShouldInclude { get; }
+    }
+    public interface IMaxDepthContext : GraphQLParser.Visitors.INodeVisitorContext
+    {
+        int MaxDepth { get; set; }
+        System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
     }
     public interface INodeVisitorContext
     {
@@ -621,6 +656,12 @@ namespace GraphQLParser.Visitors
     {
         System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
         System.IO.TextWriter Writer { get; }
+    }
+    public class MaxDepthVisitor<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
+        where TContext : GraphQLParser.Visitors.IMaxDepthContext
+    {
+        public MaxDepthVisitor() { }
+        public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
     }
     public class SDLWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
         where TContext : GraphQLParser.Visitors.IWriteContext
