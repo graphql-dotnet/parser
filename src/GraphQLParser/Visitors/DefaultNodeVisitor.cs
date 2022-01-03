@@ -343,6 +343,12 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public virtual async ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
+        {
+            await Visit(enumValuesDefinition.Items, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public virtual async ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
         {
             await Visit(inputObjectTypeDefinition.Comment, context).ConfigureAwait(false);
@@ -490,7 +496,7 @@ namespace GraphQLParser.Visitors
         /// sibling nodes of some parent node, for example, argument nodes for
         /// parent field node or value nodes for parent list node.
         /// </summary>
-        protected async ValueTask Visit<T>(List<T>? nodes, TContext context)
+        protected async ValueTask Visit<T>(List<T>? nodes, TContext context) // TODO: remove
             where T : ASTNode
         {
             if (nodes != null)

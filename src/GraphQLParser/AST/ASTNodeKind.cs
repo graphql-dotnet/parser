@@ -430,5 +430,13 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#VariableDefinitions"/>
         /// </summary>
         VariablesDefinition, // https://github.com/graphql/graphql-spec/issues/915
+
+        /// <summary>
+        /// GraphQL Enum types, like Scalar types, also represent leaf values in
+        /// a GraphQL type system. However Enum types describe the set of possible values.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#EnumValuesDefinition"/>
+        /// </summary>
+        EnumValuesDefinition
     }
 }

@@ -201,6 +201,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLEnumValuesDefinition"/> node.
+        /// </summary>
+        ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLInputObjectTypeDefinition"/> node.
         /// </summary>
         ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context);

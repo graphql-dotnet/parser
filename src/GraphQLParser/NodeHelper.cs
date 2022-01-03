@@ -552,6 +552,18 @@ namespace GraphQLParser
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLEnumValuesDefinition CreateGraphQLEnumValuesDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLEnumValuesDefinition(),
+                IgnoreOptions.Comments => new GraphQLEnumValuesDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLEnumValuesDefinitionWithComment(),
+                _ => new GraphQLEnumValuesDefinitionFull(),
+            };
+        }
+
         #endregion
     }
 }

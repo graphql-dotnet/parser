@@ -13,7 +13,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
-        public List<GraphQLEnumValueDefinition>? Values { get; set; }
+        public GraphQLEnumValuesDefinition? Values { get; set; }
     }
 
     internal sealed class GraphQLEnumTypeDefinitionWithLocation : GraphQLEnumTypeDefinition

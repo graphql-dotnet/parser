@@ -92,9 +92,11 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#EnumValuesDefinition
-        private List<GraphQLEnumValueDefinition> ParseEnumValuesDefinition()
+        private GraphQLEnumValuesDefinition ParseEnumValuesDefinition()
         {
-            return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R);
+            var enumValuesDef = NodeHelper.CreateGraphQLEnumValuesDefinition(_ignoreOptions);
+            enumValuesDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R);
+            return enumValuesDef;
         }
 
         // http://spec.graphql.org/October2021/#VariableDefinitions

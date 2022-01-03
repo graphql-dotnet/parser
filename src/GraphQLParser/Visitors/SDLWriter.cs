@@ -364,19 +364,7 @@ namespace GraphQLParser.Visitors
             await context.Write("enum ").ConfigureAwait(false);
             await Visit(enumTypeDefinition.Name, context).ConfigureAwait(false);
             await VisitDirectives(enumTypeDefinition, context).ConfigureAwait(false);
-            if (enumTypeDefinition.Values?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-                for (int i = 0; i < enumTypeDefinition.Values.Count; ++i)
-                {
-                    await Visit(enumTypeDefinition.Values[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(enumTypeDefinition.Values, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -386,19 +374,7 @@ namespace GraphQLParser.Visitors
             await context.Write("extend enum ").ConfigureAwait(false);
             await Visit(enumTypeExtension.Name, context).ConfigureAwait(false);
             await VisitDirectives(enumTypeExtension, context).ConfigureAwait(false);
-            if (enumTypeExtension.Values?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-                for (int i = 0; i < enumTypeExtension.Values.Count; ++i)
-                {
-                    await Visit(enumTypeExtension.Values[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(enumTypeExtension.Values, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -412,6 +388,23 @@ namespace GraphQLParser.Visitors
 
             await Visit(enumValueDefinition.Name, context).ConfigureAwait(false);
             await VisitDirectives(enumValueDefinition, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
+        {
+            await context.WriteLine().ConfigureAwait(false);
+            await context.Write("{").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+
+            for (int i = 0; i < enumValuesDefinition.Items.Count; ++i)
+            {
+                await Visit(enumValuesDefinition.Items[i], context).ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+
+            await context.Write("}").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
         }
 
         /// <inheritdoc/>

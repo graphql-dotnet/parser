@@ -3,20 +3,17 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.EnumTypeExtension"/>.
+    /// AST node for <see cref="ASTNodeKind.EnumValuesDefinition"/>.
     /// </summary>
-    public class GraphQLEnumTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
+    public class GraphQLEnumValuesDefinition : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.EnumTypeExtension;
+        public override ASTNodeKind Kind => ASTNodeKind.EnumValuesDefinition;
 
-        /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
-
-        public GraphQLEnumValuesDefinition? Values { get; set; }
+        public List<GraphQLEnumValueDefinition> Items { get; set; } = null!;
     }
 
-    internal sealed class GraphQLEnumTypeExtensionWithLocation : GraphQLEnumTypeExtension
+    internal sealed class GraphQLEnumValuesDefinitionWithLocation : GraphQLEnumValuesDefinition
     {
         private GraphQLLocation _location;
 
@@ -27,7 +24,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLEnumTypeExtensionWithComment : GraphQLEnumTypeExtension
+    internal sealed class GraphQLEnumValuesDefinitionWithComment : GraphQLEnumValuesDefinition
     {
         private GraphQLComment? _comment;
 
@@ -38,7 +35,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLEnumTypeExtensionFull : GraphQLEnumTypeExtension
+    internal sealed class GraphQLEnumValuesDefinitionFull : GraphQLEnumValuesDefinition
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;
