@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -8,8 +6,8 @@ namespace GraphQLParser.AST
     public interface IHasDirectivesNode
     {
         /// <summary>
-        /// Directives of the node represented as a list of nested nodes.
+        /// Directives of the node represented as a nested node.
         /// </summary>
-        List<GraphQLDirective>? Directives { get; set; }
+        GraphQLDirectives? Directives { get; set; }
     }
 }

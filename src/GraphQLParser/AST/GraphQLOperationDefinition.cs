@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -15,10 +13,10 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public GraphQLName? Name { get; set; }
 
-        public List<GraphQLVariableDefinition>? VariableDefinitions { get; set; }
+        public GraphQLVariablesDefinition? Variables { get; set; }
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
 
         public GraphQLSelectionSet? SelectionSet { get; set; }
     }

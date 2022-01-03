@@ -503,6 +503,102 @@ namespace GraphQLParser
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLArgumentsDefinition CreateGraphQLArgumentsDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLArgumentsDefinition(),
+                IgnoreOptions.Comments => new GraphQLArgumentsDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLArgumentsDefinitionWithComment(),
+                _ => new GraphQLArgumentsDefinitionFull(),
+            };
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLArguments CreateGraphQLArguments(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLArguments(),
+                IgnoreOptions.Comments => new GraphQLArgumentsWithLocation(),
+                IgnoreOptions.Locations => new GraphQLArgumentsWithComment(),
+                _ => new GraphQLArgumentsFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLInputFieldsDefinition CreateGraphQLInputFieldsDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLInputFieldsDefinition(),
+                IgnoreOptions.Comments => new GraphQLInputFieldsDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLInputFieldsDefinitionWithComment(),
+                _ => new GraphQLInputFieldsDefinitionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLVariablesDefinition CreateGraphQLVariablesDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLVariablesDefinition(),
+                IgnoreOptions.Comments => new GraphQLVariablesDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLVariablesDefinitionWithComment(),
+                _ => new GraphQLVariablesDefinitionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLEnumValuesDefinition CreateGraphQLEnumValuesDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLEnumValuesDefinition(),
+                IgnoreOptions.Comments => new GraphQLEnumValuesDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLEnumValuesDefinitionWithComment(),
+                _ => new GraphQLEnumValuesDefinitionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLFieldsDefinition CreateGraphQLFieldsDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLFieldsDefinition(),
+                IgnoreOptions.Comments => new GraphQLFieldsDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLFieldsDefinitionWithComment(),
+                _ => new GraphQLFieldsDefinitionFull(),
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLDirectives CreateGraphQLDirectives(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLDirectives(),
+                IgnoreOptions.Comments => new GraphQLDirectivesWithLocation(),
+                IgnoreOptions.Locations => new GraphQLDirectivesWithComment(),
+                _ => new GraphQLDirectivesFull(),
+            };
+        }
+
+        public static GraphQLImplementsInterfaces CreateGraphQLImplementsInterfaces(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLImplementsInterfaces(),
+                IgnoreOptions.Comments => new GraphQLImplementsInterfacesWithLocation(),
+                IgnoreOptions.Locations => new GraphQLImplementsInterfacesWithComment(),
+                _ => new GraphQLImplementsInterfacesFull(),
+            };
+        }
+
         #endregion
     }
 }

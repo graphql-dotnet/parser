@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -17,7 +15,7 @@ namespace GraphQLParser.AST
         public GraphQLValue? DefaultValue { get; set; }
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
     }
 
     internal sealed class GraphQLVariableDefinitionWithLocation : GraphQLVariableDefinition

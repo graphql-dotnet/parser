@@ -14,7 +14,7 @@ namespace GraphQLParser.Tests.Visitors
         /// </summary>
         [Theory]
         [InlineData("query a { name age }", 5)]
-        [InlineData("scalar JSON @exportable", 4)]
+        [InlineData("scalar JSON @exportable", 5)]
         [InlineData("{a}", 5)] // Document->OperationDefinition->SelectionSet->Field->Name
         [InlineData("{ a { b { c } d { e { f } } g { h { i { k } } } } }", 13)]
         public async Task MaxDepthVisitor_Should_Work(string text, int expectedMaxDepth)

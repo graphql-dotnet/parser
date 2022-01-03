@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -8,8 +6,8 @@ namespace GraphQLParser.AST
     public interface IHasInterfacesNode
     {
         /// <summary>
-        /// Implemented interfaces of the node represented as a list of nested nodes.
+        /// Implemented interfaces of the node represented as a nested node.
         /// </summary>
-        List<GraphQLNamedType>? Interfaces { get; set; }
+        GraphQLImplementsInterfaces? Interfaces { get; set; }
     }
 }

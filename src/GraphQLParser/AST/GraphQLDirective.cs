@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -14,9 +12,9 @@ namespace GraphQLParser.AST
         public GraphQLName? Name { get; set; }
 
         /// <summary>
-        /// List of arguments for this directive.
+        /// Arguments for this directive.
         /// </summary>
-        public List<GraphQLArgument>? Arguments { get; set; }
+        public GraphQLArguments? Arguments { get; set; }
     }
 
     internal sealed class GraphQLDirectiveWithLocation : GraphQLDirective

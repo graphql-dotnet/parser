@@ -34,8 +34,9 @@ namespace GraphQLParser.Tests.Visitors
         [InlineData("scalar JSON @exportable", @"Document
   ScalarTypeDefinition
     Name [JSON]
-    Directive
-      Name [exportable]
+    Directives
+      Directive
+        Name [exportable]
 ")]
         [InlineData("{a}", @"Document
   OperationDefinition

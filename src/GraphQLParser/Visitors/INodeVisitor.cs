@@ -31,6 +31,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLVariablesDefinition"/> node.
+        /// </summary>
+        ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLVariable"/> node.
         /// </summary>
         ValueTask VisitVariable(GraphQLVariable variable, TContext context);
@@ -49,6 +54,16 @@ namespace GraphQLParser.Visitors
         /// Visits <see cref="GraphQLArgument"/> node.
         /// </summary>
         ValueTask VisitArgument(GraphQLArgument argument, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLArgumentsDefinition"/> node.
+        /// </summary>
+        ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLArguments"/> node.
+        /// </summary>
+        ValueTask VisitArguments(GraphQLArguments arguments, TContext context);
 
         /// <summary>
         /// Visits <see cref="GraphQLFragmentSpread"/> node.
@@ -111,6 +126,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitDirective(GraphQLDirective directive, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLDirectives"/> node.
+        /// </summary>
+        ValueTask VisitDirectives(GraphQLDirectives directives, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLNamedType"/> node.
         /// </summary>
         ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context);
@@ -156,9 +176,19 @@ namespace GraphQLParser.Visitors
         ValueTask VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLFieldsDefinition"/> node.
+        /// </summary>
+        ValueTask VisitFieldsDefinition(GraphQLFieldsDefinition fieldsDefinition, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLInputValueDefinition"/> node.
         /// </summary>
         ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLInputFieldsDefinition"/> node.
+        /// </summary>
+        ValueTask VisitInputFieldsDefinition(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context);
 
         /// <summary>
         /// Visits <see cref="GraphQLInterfaceTypeDefinition"/> node.
@@ -179,6 +209,11 @@ namespace GraphQLParser.Visitors
         /// Visits <see cref="GraphQLEnumValueDefinition"/> node.
         /// </summary>
         ValueTask VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLEnumValuesDefinition"/> node.
+        /// </summary>
+        ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context);
 
         /// <summary>
         /// Visits <see cref="GraphQLInputObjectTypeDefinition"/> node.
@@ -204,6 +239,11 @@ namespace GraphQLParser.Visitors
         /// Visits <see cref="GraphQLTypeCondition"/> node.
         /// </summary>
         ValueTask VisitTypeCondition(GraphQLTypeCondition typeCondition, TContext context);
+
+        /// <summary>
+        /// Visits <see cref="GraphQLImplementsInterfaces"/> node.
+        /// </summary>
+        ValueTask VisitImplementsInterfaces(GraphQLImplementsInterfaces implementsInterfaces, TContext context);
 
         /// <summary>
         /// Visits <see cref="GraphQLAlias"/> node.
