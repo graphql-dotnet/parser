@@ -61,27 +61,32 @@ namespace GraphQLParser
             return arg;
         }
 
-        private List<GraphQLInputValueDefinition> ParseArgumentDefs()
+        // http://spec.graphql.org/October2021/#ArgumentsDefinition
+        private List<GraphQLInputValueDefinition> ParseArgumentsDefinition()
         {
             return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
         }
 
-        private List<GraphQLInputValueDefinition> ParseInputValueDefs()
+        // http://spec.graphql.org/October2021/#InputFieldsDefinition
+        private List<GraphQLInputValueDefinition> ParseInputFieldsDefinition()
         {
             return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
         }
 
+        // http://spec.graphql.org/October2021/#Arguments
         private List<GraphQLArgument> ParseArguments()
         {
             return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
         }
 
-        private List<GraphQLFieldDefinition> ParseFieldDefinitions()
+        // http://spec.graphql.org/October2021/#FieldsDefinition
+        private List<GraphQLFieldDefinition> ParseFieldsDefinition()
         {
             return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R);
         }
 
-        private List<GraphQLEnumValueDefinition> ParseEnumValueDefinitions()
+        // http://spec.graphql.org/October2021/#EnumValuesDefinition
+        private List<GraphQLEnumValueDefinition> ParseEnumValuesDefinition()
         {
             return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R);
         }
@@ -251,7 +256,7 @@ namespace GraphQLParser
             var def = NodeHelper.CreateGraphQLDirectiveDefinition(_ignoreOptions);
 
             def.Name = ParseName();
-            def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentDefs() : null;
+            def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentsDefinition() : null;
             def.Repeatable = Peek(TokenKind.NAME) ? ParseRepeatable() : false;
             ExpectKeyword("on");
             def.Locations = ParseDirectiveLocations();
@@ -319,7 +324,7 @@ namespace GraphQLParser
             var def = NodeHelper.CreateGraphQLEnumTypeDefinition(_ignoreOptions);
             def.Name = ParseName();
             def.Directives = ParseDirectives();
-            def.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValueDefinitions() : null;
+            def.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValuesDefinition() : null;
             def.Description = description;
             def.Comment = comment;
             def.Location = GetLocation(start);
@@ -339,7 +344,7 @@ namespace GraphQLParser
 
             extension.Name = ParseName();
             extension.Directives = ParseDirectives();
-            extension.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValueDefinitions() : null;
+            extension.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValuesDefinition() : null;
             extension.Comment = comment;
             extension.Location = GetLocation(start);
 
@@ -399,7 +404,7 @@ namespace GraphQLParser
 
             def.Comment = GetComment();
             def.Name = ParseName();
-            def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentDefs() : null;
+            def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentsDefinition() : null;
             Expect(TokenKind.COLON);
             def.Type = ParseType();
             def.Directives = ParseDirectives();
@@ -588,7 +593,7 @@ namespace GraphQLParser
             ExpectKeyword("input");
             def.Name = ParseName();
             def.Directives = ParseDirectives();
-            def.Fields = Peek(TokenKind.BRACE_L) ? ParseInputValueDefs() : null;
+            def.Fields = Peek(TokenKind.BRACE_L) ? ParseInputFieldsDefinition() : null;
             def.Description = description;
             def.Location = GetLocation(start);
 
@@ -607,7 +612,7 @@ namespace GraphQLParser
             ExpectKeyword("input");
             extension.Name = ParseName();
             extension.Directives = ParseDirectives();
-            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseInputValueDefs() : null;
+            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseInputFieldsDefinition() : null;
             extension.Location = GetLocation(start);
 
             if (extension.Directives == null && extension.Fields == null)
@@ -671,7 +676,7 @@ namespace GraphQLParser
             def.Name = ParseName();
             def.Interfaces = ParseImplementsInterfaces();
             def.Directives = ParseDirectives();
-            def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
+            def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             def.Description = description;
             def.Location = GetLocation(start);
 
@@ -691,7 +696,7 @@ namespace GraphQLParser
             extension.Name = ParseName();
             extension.Interfaces = ParseImplementsInterfaces();
             extension.Directives = ParseDirectives();
-            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
+            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             extension.Location = GetLocation(start);
 
             if (extension.Directives == null && extension.Fields == null && extension.Interfaces == null)
@@ -929,7 +934,7 @@ namespace GraphQLParser
             def.Name = ParseName();
             def.Interfaces = ParseImplementsInterfaces();
             def.Directives = ParseDirectives();
-            def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
+            def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             def.Description = description;
             def.Location = GetLocation(start);
 
@@ -949,7 +954,7 @@ namespace GraphQLParser
             extension.Name = ParseName();
             extension.Interfaces = ParseImplementsInterfaces();
             extension.Directives = ParseDirectives();
-            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
+            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
             extension.Location = GetLocation(start);
 
             if (extension.Directives == null && extension.Fields == null && extension.Interfaces == null)
