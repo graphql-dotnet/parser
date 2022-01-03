@@ -126,6 +126,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitDirective(GraphQLDirective directive, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLDirectives"/> node.
+        /// </summary>
+        ValueTask VisitDirectives(GraphQLDirectives directives, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLNamedType"/> node.
         /// </summary>
         ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context);

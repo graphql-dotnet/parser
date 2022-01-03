@@ -61,6 +61,7 @@ namespace GraphQLParser.AST
         VariablesDefinition = 49,
         EnumValuesDefinition = 50,
         FieldsDefinition = 51,
+        Directives = 52,
     }
     public class GraphQLAlias : GraphQLParser.AST.ASTNode
     {
@@ -114,6 +115,12 @@ namespace GraphQLParser.AST
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLName>? Locations { get; set; }
         public bool Repeatable { get; set; }
     }
+    public class GraphQLDirectives : GraphQLParser.AST.ASTNode
+    {
+        public GraphQLDirectives() { }
+        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective> Items { get; set; }
+        public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+    }
     public class GraphQLDocument : GraphQLParser.AST.ASTNode, System.IDisposable
     {
         public GraphQLDocument() { }
@@ -126,21 +133,21 @@ namespace GraphQLParser.AST
     public class GraphQLEnumTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLEnumTypeDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLEnumValuesDefinition? Values { get; set; }
     }
     public class GraphQLEnumTypeExtension : GraphQLParser.AST.GraphQLTypeExtension, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLEnumTypeExtension() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLEnumValuesDefinition? Values { get; set; }
     }
     public class GraphQLEnumValueDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLEnumValueDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLEnumValuesDefinition : GraphQLParser.AST.ASTNode
@@ -154,7 +161,7 @@ namespace GraphQLParser.AST
         public GraphQLField() { }
         public GraphQLParser.AST.GraphQLAlias? Alias { get; set; }
         public GraphQLParser.AST.GraphQLArguments? Arguments { get; set; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
         public GraphQLParser.AST.GraphQLSelectionSet? SelectionSet { get; set; }
@@ -163,7 +170,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLFieldDefinition() { }
         public GraphQLParser.AST.GraphQLArgumentsDefinition? Arguments { get; set; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType? Type { get; set; }
     }
@@ -182,14 +189,14 @@ namespace GraphQLParser.AST
     public class GraphQLFragmentSpread : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.INamedNode
     {
         public GraphQLFragmentSpread() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
     }
     public class GraphQLInlineFragment : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLInlineFragment() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLSelectionSet? SelectionSet { get; set; }
         public GraphQLParser.AST.GraphQLTypeCondition? TypeCondition { get; set; }
@@ -203,14 +210,14 @@ namespace GraphQLParser.AST
     public class GraphQLInputObjectTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLInputObjectTypeDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLInputFieldsDefinition? Fields { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLInputObjectTypeExtension : GraphQLParser.AST.GraphQLTypeExtension, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLInputObjectTypeExtension() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLInputFieldsDefinition? Fields { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
@@ -218,14 +225,14 @@ namespace GraphQLParser.AST
     {
         public GraphQLInputValueDefinition() { }
         public GraphQLParser.AST.GraphQLValue? DefaultValue { get; set; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType? Type { get; set; }
     }
     public class GraphQLInterfaceTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasFieldsDefinitionNode, GraphQLParser.AST.IHasInterfacesNode
     {
         public GraphQLInterfaceTypeDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLFieldsDefinition? Fields { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Interfaces { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
@@ -233,7 +240,7 @@ namespace GraphQLParser.AST
     public class GraphQLInterfaceTypeExtension : GraphQLParser.AST.GraphQLTypeExtension, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasFieldsDefinitionNode, GraphQLParser.AST.IHasInterfacesNode
     {
         public GraphQLInterfaceTypeExtension() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLFieldsDefinition? Fields { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Interfaces { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
@@ -295,7 +302,7 @@ namespace GraphQLParser.AST
     public class GraphQLObjectTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasFieldsDefinitionNode, GraphQLParser.AST.IHasInterfacesNode
     {
         public GraphQLObjectTypeDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLFieldsDefinition? Fields { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Interfaces { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
@@ -303,7 +310,7 @@ namespace GraphQLParser.AST
     public class GraphQLObjectTypeExtension : GraphQLParser.AST.GraphQLTypeExtension, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasFieldsDefinitionNode, GraphQLParser.AST.IHasInterfacesNode
     {
         public GraphQLObjectTypeExtension() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLFieldsDefinition? Fields { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Interfaces { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
@@ -317,7 +324,7 @@ namespace GraphQLParser.AST
     public class GraphQLOperationDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.INamedNode
     {
         public GraphQLOperationDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
         public GraphQLParser.AST.OperationType Operation { get; set; }
@@ -334,13 +341,13 @@ namespace GraphQLParser.AST
     public class GraphQLScalarTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLScalarTypeDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLScalarTypeExtension : GraphQLParser.AST.GraphQLTypeExtension, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLScalarTypeExtension() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLScalarValue : GraphQLParser.AST.GraphQLValue
@@ -354,7 +361,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLSchemaDefinition() { }
         public GraphQLParser.AST.GraphQLDescription? Description { get; set; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLRootOperationTypeDefinition>? OperationTypes { get; set; }
     }
@@ -388,14 +395,14 @@ namespace GraphQLParser.AST
     public class GraphQLUnionTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLUnionTypeDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Types { get; set; }
     }
     public class GraphQLUnionTypeExtension : GraphQLParser.AST.GraphQLTypeExtension, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLUnionTypeExtension() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Types { get; set; }
     }
@@ -413,7 +420,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLVariableDefinition() { }
         public GraphQLParser.AST.GraphQLValue? DefaultValue { get; set; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType? Type { get; set; }
         public GraphQLParser.AST.GraphQLVariable? Variable { get; set; }
@@ -438,7 +445,7 @@ namespace GraphQLParser.AST
     }
     public interface IHasDirectivesNode
     {
-        System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
+        GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
     }
     public interface IHasFieldsDefinitionNode
     {
@@ -575,6 +582,7 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask VisitDescription(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitDirective(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitDirectiveDefinition(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
+        public virtual System.Threading.Tasks.ValueTask VisitDirectives(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitDocument(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitEnumTypeDefinition(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitEnumTypeExtension(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context) { }
@@ -635,6 +643,7 @@ namespace GraphQLParser.Visitors
         System.Threading.Tasks.ValueTask VisitDescription(GraphQLParser.AST.GraphQLDescription description, TContext context);
         System.Threading.Tasks.ValueTask VisitDirective(GraphQLParser.AST.GraphQLDirective directive, TContext context);
         System.Threading.Tasks.ValueTask VisitDirectiveDefinition(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context);
+        System.Threading.Tasks.ValueTask VisitDirectives(GraphQLParser.AST.GraphQLDirectives directives, TContext context);
         System.Threading.Tasks.ValueTask VisitDocument(GraphQLParser.AST.GraphQLDocument document, TContext context);
         System.Threading.Tasks.ValueTask VisitEnumTypeDefinition(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context);
         System.Threading.Tasks.ValueTask VisitEnumTypeExtension(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context);
@@ -698,6 +707,7 @@ namespace GraphQLParser.Visitors
         public override System.Threading.Tasks.ValueTask VisitDescription(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitDirective(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitDirectiveDefinition(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
+        public override System.Threading.Tasks.ValueTask VisitDirectives(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitDocument(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitEnumTypeDefinition(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitEnumTypeExtension(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context) { }

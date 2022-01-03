@@ -1,21 +1,19 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.FragmentSpread"/>.
+    /// AST node for <see cref="ASTNodeKind.Directives"/>.
     /// </summary>
-    public class GraphQLFragmentSpread : ASTNode, IHasDirectivesNode, INamedNode
+    public class GraphQLDirectives : ASTNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
+        public override ASTNodeKind Kind => ASTNodeKind.Directives;
 
-        /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
-
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
+        public List<GraphQLDirective> Items { get; set; } = null!;
     }
 
-    internal sealed class GraphQLFragmentSpreadWithLocation : GraphQLFragmentSpread
+    internal sealed class GraphQLDirectivesWithLocation : GraphQLDirectives
     {
         private GraphQLLocation _location;
 
@@ -26,7 +24,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFragmentSpreadWithComment : GraphQLFragmentSpread
+    internal sealed class GraphQLDirectivesWithComment : GraphQLDirectives
     {
         private GraphQLComment? _comment;
 
@@ -37,7 +35,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFragmentSpreadFull : GraphQLFragmentSpread
+    internal sealed class GraphQLDirectivesFull : GraphQLDirectives
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

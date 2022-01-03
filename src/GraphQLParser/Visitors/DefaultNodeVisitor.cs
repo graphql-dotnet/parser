@@ -212,6 +212,12 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public virtual async ValueTask VisitDirectives(GraphQLDirectives directives, TContext context)
+        {
+            await Visit(directives.Items, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public virtual async ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context)
         {
             await Visit(namedType.Comment, context).ConfigureAwait(false);
@@ -493,6 +499,10 @@ namespace GraphQLParser.Visitors
                     GraphQLArgumentsDefinition argsDef => VisitArgumentsDefinition(argsDef, context),
                     GraphQLArguments args => VisitArguments(args, context),
                     GraphQLInputFieldsDefinition inputFieldsDef => VisitInputFieldsDefinition(inputFieldsDef, context),
+                    GraphQLDirectives directives => VisitDirectives(directives, context),
+                    GraphQLVariablesDefinition varsDef => VisitVariablesDefinition(varsDef, context),
+                    GraphQLEnumValuesDefinition enumValuesDef => VisitEnumValuesDefinition(enumValuesDef, context),
+                    GraphQLFieldsDefinition fieldsDef => VisitFieldsDefinition(fieldsDef, context),
                     _ => throw new NotSupportedException($"Unknown node '{node.GetType().Name}'."),
                 };
         }
@@ -502,7 +512,7 @@ namespace GraphQLParser.Visitors
         /// sibling nodes of some parent node, for example, argument nodes for
         /// parent field node or value nodes for parent list node.
         /// </summary>
-        protected async ValueTask Visit<T>(List<T>? nodes, TContext context) // TODO: remove
+        protected async ValueTask Visit<T>(List<T>? nodes, TContext context)
             where T : ASTNode
         {
             if (nodes != null)

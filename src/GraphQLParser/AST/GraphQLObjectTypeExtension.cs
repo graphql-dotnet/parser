@@ -13,7 +13,7 @@ namespace GraphQLParser.AST
         public List<GraphQLNamedType>? Interfaces { get; set; }
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
 
         public GraphQLFieldsDefinition? Fields { get; set; }
     }

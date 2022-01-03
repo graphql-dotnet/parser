@@ -411,6 +411,8 @@ namespace GraphQLParser.AST
         /// accept arguments which alter their behavior.
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#Arguments"/>
+        /// <br/>
+        /// This node represents a list of <see cref="Argument"/>.
         /// </summary>
         Arguments,
 
@@ -420,6 +422,8 @@ namespace GraphQLParser.AST
         /// to accept arbitrarily complex structs.
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#InputFieldsDefinition"/>
+        /// <br/>
+        /// This node represents a list of <see cref="InputValueDefinition"/>.
         /// </summary>
         InputFieldsDefinition,
 
@@ -428,14 +432,18 @@ namespace GraphQLParser.AST
         /// and avoiding costly string building in clients at runtime.
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#VariableDefinitions"/>
+        /// <br/>
+        /// This node represents a list of <see cref="VariableDefinition"/>.
         /// </summary>
-        VariablesDefinition, // https://github.com/graphql/graphql-spec/issues/915
+        VariablesDefinition, // TODO: https://github.com/graphql/graphql-spec/issues/915
 
         /// <summary>
         /// GraphQL Enum types, like Scalar types, also represent leaf values in
         /// a GraphQL type system. However Enum types describe the set of possible values.
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#EnumValuesDefinition"/>
+        /// <br/>
+        /// This node represents a list of <see cref="EnumValueDefinition"/>.
         /// </summary>
         EnumValuesDefinition,
 
@@ -444,7 +452,20 @@ namespace GraphQLParser.AST
         /// each of which yield a value of a specific type.
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#FieldsDefinition"/>
+        /// <br/>
+        /// This node represents a list of <see cref="FieldDefinition"/>.
         /// </summary>
-        FieldsDefinition
+        FieldsDefinition,
+
+        /// <summary>
+        /// Applied directive. Directives provide a way to describe alternate runtime execution
+        /// and type validation behavior in a GraphQL document. Directives can be used to describe
+        /// additional information for types, fields, fragments, operations, etc.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#Directives"/>
+        /// <br/>
+        /// This node represents a list of <see cref="Directive"/>.
+        /// </summary>
+        Directives
     }
 }

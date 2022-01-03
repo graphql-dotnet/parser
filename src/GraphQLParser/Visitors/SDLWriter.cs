@@ -173,7 +173,7 @@ namespace GraphQLParser.Visitors
             await Visit(fragmentDefinition.Name, context).ConfigureAwait(false);
             await context.Write(" ").ConfigureAwait(false);
             await Visit(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
-            await VisitDirectives(fragmentDefinition, context).ConfigureAwait(false);
+            await Visit(fragmentDefinition.Directives, context).ConfigureAwait(false);
             await Visit(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
         }
 
@@ -187,7 +187,7 @@ namespace GraphQLParser.Visitors
 
             await context.Write("...").ConfigureAwait(false);
             await Visit(fragmentSpread.Name, context).ConfigureAwait(false);
-            await VisitDirectives(fragmentSpread, context).ConfigureAwait(false);
+            await Visit(fragmentSpread.Directives, context).ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
         }
 
@@ -201,7 +201,7 @@ namespace GraphQLParser.Visitors
 
             await context.Write("... ").ConfigureAwait(false);
             await Visit(inlineFragment.TypeCondition, context).ConfigureAwait(false);
-            await VisitDirectives(inlineFragment, context).ConfigureAwait(false);
+            await Visit(inlineFragment.Directives, context).ConfigureAwait(false);
             await Visit(inlineFragment.SelectionSet, context).ConfigureAwait(false);
         }
 
@@ -257,7 +257,7 @@ namespace GraphQLParser.Visitors
             }
             await Visit(field.Name, context).ConfigureAwait(false);
             await Visit(field.Arguments, context).ConfigureAwait(false);
-            await VisitDirectives(field, context).ConfigureAwait(false);
+            await Visit(field.Directives, context).ConfigureAwait(false);
 
             if (field.SelectionSet == null)
                 await context.WriteLine().ConfigureAwait(false);
@@ -276,7 +276,7 @@ namespace GraphQLParser.Visitors
                 await Visit(operationDefinition.Name, context).ConfigureAwait(false);
             }
             await Visit(operationDefinition.Variables, context).ConfigureAwait(false);
-            await VisitDirectives(operationDefinition, context).ConfigureAwait(false);
+            await Visit(operationDefinition.Directives, context).ConfigureAwait(false);
             await Visit(operationDefinition.SelectionSet, context).ConfigureAwait(false);
         }
 
@@ -302,7 +302,7 @@ namespace GraphQLParser.Visitors
                 await context.Write(" = ").ConfigureAwait(false);
                 await Visit(variableDefinition.DefaultValue, context).ConfigureAwait(false);
             }
-            await VisitDirectives(variableDefinition, context).ConfigureAwait(false);
+            await Visit(variableDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -342,7 +342,7 @@ namespace GraphQLParser.Visitors
             await Visit(scalarTypeDefinition.Description, context).ConfigureAwait(false);
             await context.Write("scalar ").ConfigureAwait(false);
             await Visit(scalarTypeDefinition.Name, context).ConfigureAwait(false);
-            await VisitDirectives(scalarTypeDefinition, context).ConfigureAwait(false);
+            await Visit(scalarTypeDefinition.Directives, context).ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
         }
 
@@ -352,7 +352,7 @@ namespace GraphQLParser.Visitors
             await Visit(scalarTypeExtension.Comment, context).ConfigureAwait(false);
             await context.Write("extend scalar ").ConfigureAwait(false);
             await Visit(scalarTypeExtension.Name, context).ConfigureAwait(false);
-            await VisitDirectives(scalarTypeExtension, context).ConfigureAwait(false);
+            await Visit(scalarTypeExtension.Directives, context).ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
         }
 
@@ -363,7 +363,7 @@ namespace GraphQLParser.Visitors
             await Visit(enumTypeDefinition.Description, context).ConfigureAwait(false);
             await context.Write("enum ").ConfigureAwait(false);
             await Visit(enumTypeDefinition.Name, context).ConfigureAwait(false);
-            await VisitDirectives(enumTypeDefinition, context).ConfigureAwait(false);
+            await Visit(enumTypeDefinition.Directives, context).ConfigureAwait(false);
             await Visit(enumTypeDefinition.Values, context).ConfigureAwait(false);
         }
 
@@ -373,7 +373,7 @@ namespace GraphQLParser.Visitors
             await Visit(enumTypeExtension.Comment, context).ConfigureAwait(false);
             await context.Write("extend enum ").ConfigureAwait(false);
             await Visit(enumTypeExtension.Name, context).ConfigureAwait(false);
-            await VisitDirectives(enumTypeExtension, context).ConfigureAwait(false);
+            await Visit(enumTypeExtension.Directives, context).ConfigureAwait(false);
             await Visit(enumTypeExtension.Values, context).ConfigureAwait(false);
         }
 
@@ -387,7 +387,7 @@ namespace GraphQLParser.Visitors
             await WriteIndent(context, level).ConfigureAwait(false);
 
             await Visit(enumValueDefinition.Name, context).ConfigureAwait(false);
-            await VisitDirectives(enumValueDefinition, context).ConfigureAwait(false);
+            await Visit(enumValueDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -414,7 +414,7 @@ namespace GraphQLParser.Visitors
             await Visit(inputObjectTypeDefinition.Description, context).ConfigureAwait(false);
             await context.Write("input ").ConfigureAwait(false);
             await Visit(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
-            await VisitDirectives(inputObjectTypeDefinition, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeDefinition.Directives, context).ConfigureAwait(false);
             await Visit(inputObjectTypeDefinition.Fields, context).ConfigureAwait(false);
             if (inputObjectTypeDefinition.Fields == null)
                 await context.WriteLine().ConfigureAwait(false); // TODO: ???
@@ -426,7 +426,7 @@ namespace GraphQLParser.Visitors
             await Visit(inputObjectTypeExtension.Comment, context).ConfigureAwait(false);
             await context.Write("extend input ").ConfigureAwait(false);
             await Visit(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
-            await VisitDirectives(inputObjectTypeExtension, context).ConfigureAwait(false);
+            await Visit(inputObjectTypeExtension.Directives, context).ConfigureAwait(false);
             await Visit(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);
             if (inputObjectTypeExtension.Fields == null)
                 await context.WriteLine().ConfigureAwait(false); // TODO: ???
@@ -449,7 +449,7 @@ namespace GraphQLParser.Visitors
                 await context.Write(" = ").ConfigureAwait(false);
                 await Visit(inputValueDefinition.DefaultValue, context).ConfigureAwait(false);
             }
-            await VisitDirectives(inputValueDefinition, context).ConfigureAwait(false);
+            await Visit(inputValueDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -477,7 +477,7 @@ namespace GraphQLParser.Visitors
             await context.Write("type ").ConfigureAwait(false);
             await Visit(objectTypeDefinition.Name, context).ConfigureAwait(false);
             await VisitInterfaces(objectTypeDefinition, context).ConfigureAwait(false);
-            await VisitDirectives(objectTypeDefinition, context).ConfigureAwait(false);
+            await Visit(objectTypeDefinition.Directives, context).ConfigureAwait(false);
             await Visit(objectTypeDefinition.Fields, context).ConfigureAwait(false);
             if (objectTypeDefinition.Fields == null)
                 await context.WriteLine().ConfigureAwait(false); //TODO: ???
@@ -490,7 +490,7 @@ namespace GraphQLParser.Visitors
             await context.Write("extend type ").ConfigureAwait(false);
             await Visit(objectTypeExtension.Name, context).ConfigureAwait(false);
             await VisitInterfaces(objectTypeExtension, context).ConfigureAwait(false);
-            await VisitDirectives(objectTypeExtension, context).ConfigureAwait(false);
+            await Visit(objectTypeExtension.Directives, context).ConfigureAwait(false);
             await Visit(objectTypeExtension.Fields, context).ConfigureAwait(false);
             if (objectTypeExtension.Fields == null)
                 await context.WriteLine().ConfigureAwait(false); // TODO: ???
@@ -504,7 +504,7 @@ namespace GraphQLParser.Visitors
             await context.Write("interface ").ConfigureAwait(false);
             await Visit(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
             await VisitInterfaces(interfaceTypeDefinition, context).ConfigureAwait(false);
-            await VisitDirectives(interfaceTypeDefinition, context).ConfigureAwait(false);
+            await Visit(interfaceTypeDefinition.Directives, context).ConfigureAwait(false);
             await Visit(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
         }
 
@@ -515,7 +515,7 @@ namespace GraphQLParser.Visitors
             await context.Write("extend interface ").ConfigureAwait(false);
             await Visit(interfaceTypeExtension.Name, context).ConfigureAwait(false);
             await VisitInterfaces(interfaceTypeExtension, context).ConfigureAwait(false);
-            await VisitDirectives(interfaceTypeExtension, context).ConfigureAwait(false);
+            await Visit(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
             await Visit(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
         }
 
@@ -532,7 +532,7 @@ namespace GraphQLParser.Visitors
             await Visit(fieldDefinition.Arguments, context).ConfigureAwait(false);
             await context.Write(": ").ConfigureAwait(false);
             await Visit(fieldDefinition.Type, context).ConfigureAwait(false);
-            await VisitDirectives(fieldDefinition, context).ConfigureAwait(false);
+            await Visit(fieldDefinition.Directives, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -558,7 +558,7 @@ namespace GraphQLParser.Visitors
             await Visit(schemaDefinition.Comment, context).ConfigureAwait(false);
             await Visit(schemaDefinition.Description, context).ConfigureAwait(false);
             await context.Write("schema").ConfigureAwait(false);
-            await VisitDirectives(schemaDefinition, context).ConfigureAwait(false);
+            await Visit(schemaDefinition.Directives, context).ConfigureAwait(false);
 
             await context.WriteLine().ConfigureAwait(false);
             await context.Write("{").ConfigureAwait(false);
@@ -597,7 +597,7 @@ namespace GraphQLParser.Visitors
             await Visit(unionTypeDefinition.Description, context).ConfigureAwait(false);
             await context.Write("union ").ConfigureAwait(false);
             await Visit(unionTypeDefinition.Name, context).ConfigureAwait(false);
-            await VisitDirectives(unionTypeDefinition, context).ConfigureAwait(false);
+            await Visit(unionTypeDefinition.Directives, context).ConfigureAwait(false);
 
             if (unionTypeDefinition.Types?.Count > 0)
             {
@@ -618,7 +618,7 @@ namespace GraphQLParser.Visitors
             await Visit(unionTypeExtension.Comment, context).ConfigureAwait(false);
             await context.Write("extend union ").ConfigureAwait(false);
             await Visit(unionTypeExtension.Name, context).ConfigureAwait(false);
-            await VisitDirectives(unionTypeExtension, context).ConfigureAwait(false);
+            await Visit(unionTypeExtension.Directives, context).ConfigureAwait(false);
 
             if (unionTypeExtension.Types?.Count > 0)
             {
@@ -640,6 +640,19 @@ namespace GraphQLParser.Visitors
             await context.Write("@").ConfigureAwait(false);
             await Visit(directive.Name, context).ConfigureAwait(false);
             await Visit(directive.Arguments, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitDirectives(GraphQLDirectives directives, TContext context)
+        {
+            await context.Write(" ").ConfigureAwait(false);
+
+            for (int i = 0; i < directives.Items.Count; ++i)
+            {
+                await Visit(directives.Items[i], context).ConfigureAwait(false);
+                if (i < directives.Items.Count - 1)
+                    await context.Write(" ").ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc/>
@@ -798,7 +811,7 @@ namespace GraphQLParser.Visitors
             context.Parents.Pop();
         }
 
-        private async ValueTask VisitInterfaces(IHasInterfacesNode node, TContext context)
+        private async ValueTask VisitInterfaces(IHasInterfacesNode node, TContext context) //TODO: remove
         {
             if (node.Interfaces?.Count > 0)
             {
@@ -809,21 +822,6 @@ namespace GraphQLParser.Visitors
                     await Visit(node.Interfaces[i], context).ConfigureAwait(false);
                     if (i < node.Interfaces.Count - 1)
                         await context.Write(" & ").ConfigureAwait(false);
-                }
-            }
-        }
-
-        private async ValueTask VisitDirectives(IHasDirectivesNode node, TContext context)
-        {
-            if (node.Directives?.Count > 0)
-            {
-                await context.Write(" ").ConfigureAwait(false);
-
-                for (int i = 0; i < node.Directives.Count; ++i)
-                {
-                    await Visit(node.Directives[i], context).ConfigureAwait(false);
-                    if (i < node.Directives.Count - 1)
-                        await context.Write(" ").ConfigureAwait(false);
                 }
             }
         }

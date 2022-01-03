@@ -576,6 +576,18 @@ namespace GraphQLParser
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLDirectives CreateGraphQLDirectives(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLDirectives(),
+                IgnoreOptions.Comments => new GraphQLDirectivesWithLocation(),
+                IgnoreOptions.Locations => new GraphQLDirectivesWithComment(),
+                _ => new GraphQLDirectivesFull(),
+            };
+        }
+
         #endregion
     }
 }
