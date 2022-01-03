@@ -478,26 +478,9 @@ namespace GraphQLParser.Visitors
             await Visit(objectTypeDefinition.Name, context).ConfigureAwait(false);
             await VisitInterfaces(objectTypeDefinition, context).ConfigureAwait(false);
             await VisitDirectives(objectTypeDefinition, context).ConfigureAwait(false);
-
-            if (objectTypeDefinition.Fields?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-
-                for (int i = 0; i < objectTypeDefinition.Fields.Count; ++i)
-                {
-                    await Visit(objectTypeDefinition.Fields[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
-            else
-            {
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(objectTypeDefinition.Fields, context).ConfigureAwait(false);
+            if (objectTypeDefinition.Fields == null)
+                await context.WriteLine().ConfigureAwait(false); //TODO: ???
         }
 
         /// <inheritdoc/>
@@ -508,26 +491,9 @@ namespace GraphQLParser.Visitors
             await Visit(objectTypeExtension.Name, context).ConfigureAwait(false);
             await VisitInterfaces(objectTypeExtension, context).ConfigureAwait(false);
             await VisitDirectives(objectTypeExtension, context).ConfigureAwait(false);
-
-            if (objectTypeExtension.Fields?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-
-                for (int i = 0; i < objectTypeExtension.Fields.Count; ++i)
-                {
-                    await Visit(objectTypeExtension.Fields[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
-            else
-            {
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(objectTypeExtension.Fields, context).ConfigureAwait(false);
+            if (objectTypeExtension.Fields == null)
+                await context.WriteLine().ConfigureAwait(false); // TODO: ???
         }
 
         /// <inheritdoc/>
@@ -539,22 +505,7 @@ namespace GraphQLParser.Visitors
             await Visit(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
             await VisitInterfaces(interfaceTypeDefinition, context).ConfigureAwait(false);
             await VisitDirectives(interfaceTypeDefinition, context).ConfigureAwait(false);
-
-            if (interfaceTypeDefinition.Fields?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-
-                for (int i = 0; i < interfaceTypeDefinition.Fields.Count; ++i)
-                {
-                    await Visit(interfaceTypeDefinition.Fields[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -565,22 +516,7 @@ namespace GraphQLParser.Visitors
             await Visit(interfaceTypeExtension.Name, context).ConfigureAwait(false);
             await VisitInterfaces(interfaceTypeExtension, context).ConfigureAwait(false);
             await VisitDirectives(interfaceTypeExtension, context).ConfigureAwait(false);
-
-            if (interfaceTypeExtension.Fields?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-
-                for (int i = 0; i < interfaceTypeExtension.Fields.Count; ++i)
-                {
-                    await Visit(interfaceTypeExtension.Fields[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -597,6 +533,23 @@ namespace GraphQLParser.Visitors
             await context.Write(": ").ConfigureAwait(false);
             await Visit(fieldDefinition.Type, context).ConfigureAwait(false);
             await VisitDirectives(fieldDefinition, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitFieldsDefinition(GraphQLFieldsDefinition fieldsDefinition, TContext context)
+        {
+            await context.WriteLine().ConfigureAwait(false);
+            await context.Write("{").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+
+            for (int i = 0; i < fieldsDefinition.Items.Count; ++i)
+            {
+                await Visit(fieldsDefinition.Items[i], context).ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+
+            await context.Write("}").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
         }
 
         /// <inheritdoc/>

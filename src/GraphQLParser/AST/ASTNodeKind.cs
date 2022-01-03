@@ -437,6 +437,14 @@ namespace GraphQLParser.AST
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#EnumValuesDefinition"/>
         /// </summary>
-        EnumValuesDefinition
+        EnumValuesDefinition,
+
+        /// <summary>
+        /// GraphQL Objects represent a list of named fields,
+        /// each of which yield a value of a specific type.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#FieldsDefinition"/>
+        /// </summary>
+        FieldsDefinition
     }
 }

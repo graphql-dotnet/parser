@@ -286,6 +286,12 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public virtual async ValueTask VisitFieldsDefinition(GraphQLFieldsDefinition fieldsDefinition, TContext context)
+        {
+            await Visit(fieldsDefinition.Items, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public virtual async ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context)
         {
             await Visit(inputValueDefinition.Comment, context).ConfigureAwait(false);

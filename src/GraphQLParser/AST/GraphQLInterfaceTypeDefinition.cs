@@ -5,7 +5,7 @@ namespace GraphQLParser.AST
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.InterfaceTypeDefinition"/>.
     /// </summary>
-    public class GraphQLInterfaceTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasInterfacesNode
+    public class GraphQLInterfaceTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InterfaceTypeDefinition;
@@ -15,7 +15,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
-        public List<GraphQLFieldDefinition>? Fields { get; set; }
+        public GraphQLFieldsDefinition? Fields { get; set; }
     }
 
     internal sealed class GraphQLInterfaceTypeDefinitionWithLocation : GraphQLInterfaceTypeDefinition
