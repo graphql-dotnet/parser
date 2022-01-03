@@ -27,7 +27,7 @@ namespace GraphQLParser.Tests.Visitors
             {
                 await visitor.Visit(document, context).ConfigureAwait(false);
                 context.MaxDepth.ShouldBe(expectedMaxDepth);
-                document.MaxDepth().ShouldBe(expectedMaxDepth);
+                document.MaxNestedDepth().ShouldBe(expectedMaxDepth);
             }
         }
     }

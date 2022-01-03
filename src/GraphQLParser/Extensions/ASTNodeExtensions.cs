@@ -13,7 +13,7 @@ namespace GraphQLParser
         /// </summary>
         /// <param name="node">Parent node.</param>
         /// <returns>The number of nodes.</returns>
-        public static int Count(this ASTNode node)
+        public static int AllNestedCount(this ASTNode node)
         {
             var visitor = new CountVisitor<DefaultCountContext>();
             var context = new DefaultCountContext(_ => true);
@@ -22,11 +22,11 @@ namespace GraphQLParser
         }
 
         /// <summary>
-        /// Gets the maximum depth for this AST node.
+        /// Gets the maximum depth of all nested nodes' chains for this AST node.
         /// </summary>
         /// <param name="node">Parent node.</param>
         /// <returns>Maximum depth. Minimum depth is 1.</returns>
-        public static int MaxDepth(this ASTNode node)
+        public static int MaxNestedDepth(this ASTNode node)
         {
             var visitor = new MaxDepthVisitor<DefaultMaxDepthContext>();
             var context = new DefaultMaxDepthContext();

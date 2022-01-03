@@ -22,7 +22,7 @@ namespace GraphQLParser.Tests.Visitors
             {
                 await visitor.Visit(document, context).ConfigureAwait(false);
                 context.Count.ShouldBe(expectedCount);
-                document.Count().ShouldBe(expectedCount);
+                document.AllNestedCount().ShouldBe(expectedCount);
             }
         }
 

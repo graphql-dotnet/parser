@@ -477,8 +477,8 @@ namespace GraphQLParser
 {
     public static class ASTNodeExtensions
     {
-        public static int Count(this GraphQLParser.AST.ASTNode node) { }
-        public static int MaxDepth(this GraphQLParser.AST.ASTNode node) { }
+        public static int AllNestedCount(this GraphQLParser.AST.ASTNode node) { }
+        public static int MaxNestedDepth(this GraphQLParser.AST.ASTNode node) { }
     }
     [System.Flags]
     public enum IgnoreOptions
