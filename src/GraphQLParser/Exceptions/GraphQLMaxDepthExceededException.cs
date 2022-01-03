@@ -1,7 +1,7 @@
 namespace GraphQLParser.Exceptions
 {
     /// <summary>
-    /// An exception representing a GraphQL document syntax error.
+    /// An exception representing a 'maximum depth exceeded' parser error.
     /// </summary>
     public class GraphQLMaxDepthExceededException : GraphQLParserException
     {
