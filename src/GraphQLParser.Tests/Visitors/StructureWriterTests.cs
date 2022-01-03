@@ -34,8 +34,9 @@ namespace GraphQLParser.Tests.Visitors
         [InlineData("scalar JSON @exportable", @"Document
   ScalarTypeDefinition
     Name [JSON]
-    Directive
-      Name [exportable]
+    Directives
+      Directive
+        Name [exportable]
 ")]
         public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
         {

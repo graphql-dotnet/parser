@@ -383,10 +383,10 @@ namespace GraphQLParser.Tests
             using var document = query.Parse(new ParserOptions { Ignore = options });
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
-            def.VariableDefinitions.Count.ShouldBe(3);
-            def.VariableDefinitions.First().Comment.ShouldNotBeNull().Text.ShouldBe("comment1");
-            def.VariableDefinitions.Skip(1).First().Comment.ShouldBeNull();
-            def.VariableDefinitions.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("comment3");
+            def.Variables.Count.ShouldBe(3);
+            def.Variables.First().Comment.ShouldNotBeNull().Text.ShouldBe("comment1");
+            def.Variables.Skip(1).First().Comment.ShouldBeNull();
+            def.Variables.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("comment3");
         }
 
         [Theory]
@@ -683,11 +683,11 @@ scalar JSON
             {
                 document.Definitions.Count.ShouldBe(1);
                 var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLOperationDefinition>();
-                def.VariableDefinitions.Count.ShouldBe(1);
-                def.VariableDefinitions[0].Directives.Count.ShouldBe(2);
-                def.VariableDefinitions[0].Directives[0].Name.Value.ShouldBe("a");
-                def.VariableDefinitions[0].Directives[1].Name.Value.ShouldBe("b");
-                def.VariableDefinitions[0].Directives[1].Arguments.Count.ShouldBe(2);
+                def.Variables.Count.ShouldBe(1);
+                def.Variables[0].Directives.Count.ShouldBe(2);
+                def.Variables[0].Directives[0].Name.Value.ShouldBe("a");
+                def.Variables[0].Directives[1].Name.Value.ShouldBe("b");
+                def.Variables[0].Directives[1].Arguments.Count.ShouldBe(2);
             }
         }
 

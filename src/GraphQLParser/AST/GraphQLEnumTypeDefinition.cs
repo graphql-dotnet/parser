@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -11,9 +9,9 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.EnumTypeDefinition;
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
 
-        public List<GraphQLEnumValueDefinition>? Values { get; set; }
+        public GraphQLEnumValuesDefinition? Values { get; set; }
     }
 
     internal sealed class GraphQLEnumTypeDefinitionWithLocation : GraphQLEnumTypeDefinition

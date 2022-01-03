@@ -125,7 +125,7 @@ namespace GraphQLParser.AST
         /// <summary>
         /// Boolean value. The two keywords true and false represent the two boolean values.
         /// <br/>
-        /// <see href="http://spec.graphql.org/October2021/#ObjectField"/>
+        /// <see href="http://spec.graphql.org/October2021/#BooleanValue"/>
         /// </summary>
         BooleanValue,
 
@@ -396,5 +396,85 @@ namespace GraphQLParser.AST
         /// <see href="http://spec.graphql.org/October2021/#InputObjectTypeExtension"/>
         /// </summary>
         InputObjectTypeExtension,
+
+        /// <summary>
+        /// Occasionally object fields/directives can accept arguments to further specify
+        /// the return value. Object field arguments are defined as a list of all possible
+        /// argument names and their expected input types.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#ArgumentsDefinition"/>
+        /// </summary>
+        ArgumentsDefinition,
+
+        /// <summary>
+        /// Fields are conceptually functions which return values, and occasionally
+        /// accept arguments which alter their behavior.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#Arguments"/>
+        /// <br/>
+        /// This node represents a list of <see cref="Argument"/>.
+        /// </summary>
+        Arguments,
+
+        /// <summary>
+        /// A GraphQL Input Object defines a set of input fields; the input fields
+        /// are either scalars, enums, or other input objects. This allows arguments
+        /// to accept arbitrarily complex structs.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#InputFieldsDefinition"/>
+        /// <br/>
+        /// This node represents a list of <see cref="InputValueDefinition"/>.
+        /// </summary>
+        InputFieldsDefinition,
+
+        /// <summary>
+        /// A GraphQL operation can be parameterized with variables, maximizing reuse,
+        /// and avoiding costly string building in clients at runtime.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#VariableDefinitions"/>
+        /// <br/>
+        /// This node represents a list of <see cref="VariableDefinition"/>.
+        /// </summary>
+        VariablesDefinition, // TODO: https://github.com/graphql/graphql-spec/issues/915
+
+        /// <summary>
+        /// GraphQL Enum types, like Scalar types, also represent leaf values in
+        /// a GraphQL type system. However Enum types describe the set of possible values.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#EnumValuesDefinition"/>
+        /// <br/>
+        /// This node represents a list of <see cref="EnumValueDefinition"/>.
+        /// </summary>
+        EnumValuesDefinition,
+
+        /// <summary>
+        /// GraphQL Objects represent a list of named fields,
+        /// each of which yield a value of a specific type.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#FieldsDefinition"/>
+        /// <br/>
+        /// This node represents a list of <see cref="FieldDefinition"/>.
+        /// </summary>
+        FieldsDefinition,
+
+        /// <summary>
+        /// Applied directive. Directives provide a way to describe alternate runtime execution
+        /// and type validation behavior in a GraphQL document. Directives can be used to describe
+        /// additional information for types, fields, fragments, operations, etc.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#Directives"/>
+        /// <br/>
+        /// This node represents a list of <see cref="Directive"/>.
+        /// </summary>
+        Directives,
+
+        /// <summary>
+        /// A list of implemented interfaces.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#ImplementsInterfaces"/>
+        /// <br/>
+        /// This node represents a list of <see cref="NamedType"/>.
+        /// </summary>
+        ImplementsInterfaces
     }
 }

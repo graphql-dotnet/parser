@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -13,7 +11,7 @@ namespace GraphQLParser.AST
         public GraphQLTypeCondition? TypeCondition { get; set; }
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
 
         public GraphQLSelectionSet? SelectionSet { get; set; }
     }

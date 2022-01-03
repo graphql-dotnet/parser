@@ -1,21 +1,15 @@
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.FragmentSpread"/>.
+    /// AST node for <see cref="ASTNodeKind.Arguments"/>.
     /// </summary>
-    public class GraphQLFragmentSpread : ASTNode, IHasDirectivesNode, INamedNode
+    public class GraphQLArguments : ASTListNode<GraphQLArgument>
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
-
-        /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
-
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.Arguments;
     }
 
-    internal sealed class GraphQLFragmentSpreadWithLocation : GraphQLFragmentSpread
+    internal sealed class GraphQLArgumentsWithLocation : GraphQLArguments
     {
         private GraphQLLocation _location;
 
@@ -26,7 +20,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFragmentSpreadWithComment : GraphQLFragmentSpread
+    internal sealed class GraphQLArgumentsWithComment : GraphQLArguments
     {
         private GraphQLComment? _comment;
 
@@ -37,7 +31,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLFragmentSpreadFull : GraphQLFragmentSpread
+    internal sealed class GraphQLArgumentsFull : GraphQLArguments
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

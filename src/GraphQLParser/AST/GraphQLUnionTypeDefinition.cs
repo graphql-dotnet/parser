@@ -11,7 +11,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.UnionTypeDefinition;
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
 
         public List<GraphQLNamedType>? Types { get; set; }
     }

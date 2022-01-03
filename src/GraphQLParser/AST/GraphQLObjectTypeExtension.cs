@@ -1,21 +1,19 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.ObjectTypeExtension"/>.
     /// </summary>
-    public class GraphQLObjectTypeExtension : GraphQLTypeExtension, IHasDirectivesNode, IHasInterfacesNode
+    public class GraphQLObjectTypeExtension : GraphQLTypeExtension, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeExtension;
 
-        public List<GraphQLNamedType>? Interfaces { get; set; }
+        public GraphQLImplementsInterfaces? Interfaces { get; set; }
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
 
-        public List<GraphQLFieldDefinition>? Fields { get; set; }
+        public GraphQLFieldsDefinition? Fields { get; set; }
     }
 
     internal sealed class GraphQLObjectTypeExtensionWithLocation : GraphQLObjectTypeExtension

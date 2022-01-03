@@ -14,7 +14,7 @@ namespace GraphQLParser.AST
         public GraphQLDescription? Description { get; set; }
 
         /// <inheritdoc/>
-        public List<GraphQLDirective>? Directives { get; set; }
+        public GraphQLDirectives? Directives { get; set; }
 
         public List<GraphQLRootOperationTypeDefinition>? OperationTypes { get; set; }
     }
