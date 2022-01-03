@@ -78,9 +78,11 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#InputFieldsDefinition
-        private List<GraphQLInputValueDefinition> ParseInputFieldsDefinition()
+        private GraphQLInputFieldsDefinition ParseInputFieldsDefinition()
         {
-            return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
+            var inputFieldsDef = NodeHelper.CreateGraphQLInputFieldsDefinition(_ignoreOptions);
+            inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
+            return inputFieldsDef;
         }
 
         // http://spec.graphql.org/October2021/#FieldsDefinition

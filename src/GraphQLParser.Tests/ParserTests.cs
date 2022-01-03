@@ -350,8 +350,8 @@ scalar JSON
             var d2 = document.Definitions.Skip(1).First() as GraphQLInputObjectTypeDefinition;
             d2.Name.Value.ShouldBe("Parameter");
             d2.Comment.ShouldBeNull();
-            d2.Fields.Count.ShouldBe(1);
-            d2.Fields.First().Comment.Text.ShouldBe("any value");
+            d2.Fields.Items.Count.ShouldBe(1);
+            d2.Fields.Items.First().Comment.Text.ShouldBe("any value");
         }
 
         [Theory]
@@ -971,10 +971,10 @@ directive @TestDirective (
             var inputDef = defs.Single(x => x is GraphQLInputObjectTypeDefinition) as GraphQLInputObjectTypeDefinition;
             inputDef.Name.Value.ShouldBe("TestInputObject");
             inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
-            inputDef.Fields.Count.ShouldBe(1);
-            inputDef.Fields[0].Name.Value.ShouldBe("Value");
-            inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
-            inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
+            inputDef.Fields.Items.Count.ShouldBe(1);
+            inputDef.Fields.Items[0].Name.Value.ShouldBe("Value");
+            inputDef.Fields.Items[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
+            inputDef.Fields.Items[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
 
             var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
             directiveDef.Name.Value.ShouldBe("TestDirective");
@@ -1165,12 +1165,12 @@ directive @TestDirective (
             inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
             if (parseComments)
                 inputDef.Comment.Text.ShouldBe(" comment 24");
-            inputDef.Fields.Count.ShouldBe(1);
-            inputDef.Fields[0].Name.Value.ShouldBe("Value");
-            inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
-            inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
+            inputDef.Fields.Items.Count.ShouldBe(1);
+            inputDef.Fields.Items[0].Name.Value.ShouldBe("Value");
+            inputDef.Fields.Items[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
+            inputDef.Fields.Items[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
             if (parseComments)
-                inputDef.Fields[0].Comment.Text.ShouldBe(" comment 26");
+                inputDef.Fields.Items[0].Comment.Text.ShouldBe(" comment 26");
 
             var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
             directiveDef.Name.Value.ShouldBe("TestDirective");
@@ -1349,12 +1349,12 @@ directive @TestDirective (
             inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
             if (parseComments)
                 inputDef.Comment.Text.ShouldBe(" comment 24");
-            inputDef.Fields.Count.ShouldBe(1);
-            inputDef.Fields[0].Name.Value.ShouldBe("Value");
-            inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
-            inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
+            inputDef.Fields.Items.Count.ShouldBe(1);
+            inputDef.Fields.Items[0].Name.Value.ShouldBe("Value");
+            inputDef.Fields.Items[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
+            inputDef.Fields.Items[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
             if (parseComments)
-                inputDef.Fields[0].Comment.Text.ShouldBe(" comment 26");
+                inputDef.Fields.Items[0].Comment.Text.ShouldBe(" comment 26");
 
             var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
             directiveDef.Name.Value.ShouldBe("TestDirective");
@@ -1533,12 +1533,12 @@ directive @TestDirective (
             inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
             if (parseComments)
                 inputDef.Comment.Text.ShouldBe(" comment 23");
-            inputDef.Fields.Count.ShouldBe(1);
-            inputDef.Fields[0].Name.Value.ShouldBe("Value");
-            inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
-            inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
+            inputDef.Fields.Items.Count.ShouldBe(1);
+            inputDef.Fields.Items[0].Name.Value.ShouldBe("Value");
+            inputDef.Fields.Items[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
+            inputDef.Fields.Items[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
             if (parseComments)
-                inputDef.Fields[0].Comment.Text.ShouldBe(" comment 25");
+                inputDef.Fields.Items[0].Comment.Text.ShouldBe(" comment 25");
 
             var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
             directiveDef.Name.Value.ShouldBe("TestDirective");

@@ -528,6 +528,18 @@ namespace GraphQLParser
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static GraphQLInputFieldsDefinition CreateGraphQLInputFieldsDefinition(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLInputFieldsDefinition(),
+                IgnoreOptions.Comments => new GraphQLInputFieldsDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLInputFieldsDefinitionWithComment(),
+                _ => new GraphQLInputFieldsDefinitionFull(),
+            };
+        }
+
         #endregion
     }
 }

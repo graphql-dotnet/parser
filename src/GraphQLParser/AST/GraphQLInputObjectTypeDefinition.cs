@@ -13,7 +13,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public List<GraphQLDirective>? Directives { get; set; }
 
-        public List<GraphQLInputValueDefinition>? Fields { get; set; }
+        public GraphQLInputFieldsDefinition? Fields { get; set; }
     }
 
     internal sealed class GraphQLInputObjectTypeDefinitionWithLocation : GraphQLInputObjectTypeDefinition

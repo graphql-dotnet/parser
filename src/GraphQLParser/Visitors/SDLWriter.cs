@@ -423,25 +423,9 @@ namespace GraphQLParser.Visitors
             await context.Write("input ").ConfigureAwait(false);
             await Visit(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
             await VisitDirectives(inputObjectTypeDefinition, context).ConfigureAwait(false);
-            if (inputObjectTypeDefinition.Fields?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-
-                for (int i = 0; i < inputObjectTypeDefinition.Fields.Count; ++i)
-                {
-                    await Visit(inputObjectTypeDefinition.Fields[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
-            else
-            {
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(inputObjectTypeDefinition.Fields, context).ConfigureAwait(false);
+            if (inputObjectTypeDefinition.Fields == null)
+                await context.WriteLine().ConfigureAwait(false); // TODO: ???
         }
 
         /// <inheritdoc/>
@@ -451,25 +435,9 @@ namespace GraphQLParser.Visitors
             await context.Write("extend input ").ConfigureAwait(false);
             await Visit(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
             await VisitDirectives(inputObjectTypeExtension, context).ConfigureAwait(false);
-            if (inputObjectTypeExtension.Fields?.Count > 0)
-            {
-                await context.WriteLine().ConfigureAwait(false);
-                await context.Write("{").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-
-                for (int i = 0; i < inputObjectTypeExtension.Fields.Count; ++i)
-                {
-                    await Visit(inputObjectTypeExtension.Fields[i], context).ConfigureAwait(false);
-                    await context.WriteLine().ConfigureAwait(false);
-                }
-
-                await context.Write("}").ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
-            }
-            else
-            {
-                await context.WriteLine().ConfigureAwait(false);
-            }
+            await Visit(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);
+            if (inputObjectTypeExtension.Fields == null)
+                await context.WriteLine().ConfigureAwait(false); // TODO: ???
         }
 
         /// <inheritdoc/>
@@ -490,6 +458,23 @@ namespace GraphQLParser.Visitors
                 await Visit(inputValueDefinition.DefaultValue, context).ConfigureAwait(false);
             }
             await VisitDirectives(inputValueDefinition, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitInputFieldsDefinition(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
+        {
+            await context.WriteLine().ConfigureAwait(false);
+            await context.Write("{").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+
+            for (int i = 0; i < inputFieldsDefinition.Items.Count; ++i)
+            {
+                await Visit(inputFieldsDefinition.Items[i], context).ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+
+            await context.Write("}").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
         }
 
         /// <inheritdoc/>

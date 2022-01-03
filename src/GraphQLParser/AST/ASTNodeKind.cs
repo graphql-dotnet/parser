@@ -412,6 +412,15 @@ namespace GraphQLParser.AST
         /// <br/>
         /// <see href="http://spec.graphql.org/October2021/#Arguments"/>
         /// </summary>
-        Arguments
+        Arguments,
+
+        /// <summary>
+        /// A GraphQL Input Object defines a set of input fields; the input fields
+        /// are either scalars, enums, or other input objects. This allows arguments
+        /// to accept arbitrarily complex structs.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#InputFieldsDefinition"/>
+        /// </summary>
+        InputFieldsDefinition
     }
 }

@@ -171,6 +171,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLInputFieldsDefinition"/> node.
+        /// </summary>
+        ValueTask VisitInputFieldsDefinition(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLInterfaceTypeDefinition"/> node.
         /// </summary>
         ValueTask VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context);
