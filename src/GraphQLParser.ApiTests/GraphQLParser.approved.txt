@@ -56,6 +56,7 @@ namespace GraphQLParser.AST
         EnumTypeExtension = 44,
         InputObjectTypeExtension = 45,
         ArgumentsDefinition = 46,
+        Arguments = 47,
     }
     public class GraphQLAlias : GraphQLParser.AST.ASTNode
     {
@@ -70,10 +71,16 @@ namespace GraphQLParser.AST
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
         public GraphQLParser.AST.GraphQLValue? Value { get; set; }
     }
+    public class GraphQLArguments : GraphQLParser.AST.ASTNode
+    {
+        public GraphQLArguments() { }
+        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLArgument> Items { get; set; }
+        public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+    }
     public class GraphQLArgumentsDefinition : GraphQLParser.AST.ASTNode
     {
         public GraphQLArgumentsDefinition() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLInputValueDefinition> InputValueDefinitions { get; set; }
+        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLInputValueDefinition> Items { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLComment : GraphQLParser.AST.ASTNode
@@ -91,7 +98,7 @@ namespace GraphQLParser.AST
     public class GraphQLDirective : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.INamedNode
     {
         public GraphQLDirective() { }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLArgument>? Arguments { get; set; }
+        public GraphQLParser.AST.GraphQLArguments? Arguments { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
     }
@@ -136,7 +143,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLField() { }
         public GraphQLParser.AST.GraphQLAlias? Alias { get; set; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLArgument>? Arguments { get; set; }
+        public GraphQLParser.AST.GraphQLArguments? Arguments { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLDirective>? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
@@ -395,7 +402,7 @@ namespace GraphQLParser.AST
     }
     public interface IHasArgumentsNode
     {
-        System.Collections.Generic.List<GraphQLParser.AST.GraphQLArgument>? Arguments { get; set; }
+        GraphQLParser.AST.GraphQLArguments? Arguments { get; set; }
     }
     public interface IHasDescriptionNode
     {
@@ -529,6 +536,7 @@ namespace GraphQLParser.Visitors
             where T : GraphQLParser.AST.ASTNode { }
         public virtual System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitArgument(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
+        public virtual System.Threading.Tasks.ValueTask VisitArguments(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitArgumentsDefinition(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitBooleanValue(GraphQLParser.AST.GraphQLScalarValue booleanValue, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitComment(GraphQLParser.AST.GraphQLComment comment, TContext context) { }
@@ -584,6 +592,7 @@ namespace GraphQLParser.Visitors
     {
         System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context);
         System.Threading.Tasks.ValueTask VisitArgument(GraphQLParser.AST.GraphQLArgument argument, TContext context);
+        System.Threading.Tasks.ValueTask VisitArguments(GraphQLParser.AST.GraphQLArguments arguments, TContext context);
         System.Threading.Tasks.ValueTask VisitArgumentsDefinition(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context);
         System.Threading.Tasks.ValueTask VisitBooleanValue(GraphQLParser.AST.GraphQLScalarValue booleanValue, TContext context);
         System.Threading.Tasks.ValueTask VisitComment(GraphQLParser.AST.GraphQLComment comment, TContext context);
@@ -642,6 +651,7 @@ namespace GraphQLParser.Visitors
         public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitArgument(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
+        public override System.Threading.Tasks.ValueTask VisitArguments(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitArgumentsDefinition(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitBooleanValue(GraphQLParser.AST.GraphQLScalarValue booleanValue, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitComment(GraphQLParser.AST.GraphQLComment comment, TContext context) { }

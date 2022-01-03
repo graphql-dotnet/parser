@@ -466,6 +466,8 @@ namespace GraphQLParser.Visitors
                     GraphQLUnionTypeDefinition unionTypeDefinition => VisitUnionTypeDefinition(unionTypeDefinition, context),
                     GraphQLVariable variable => VisitVariable(variable, context),
                     GraphQLVariableDefinition variableDefinition => VisitVariableDefinition(variableDefinition, context),
+                    GraphQLArgumentsDefinition argsDef => VisitArgumentsDefinition(argsDef, context),
+                    GraphQLArguments args => VisitArguments(args, context),
                     _ => throw new NotSupportedException($"Unknown node '{node.GetType().Name}'."),
                 };
         }

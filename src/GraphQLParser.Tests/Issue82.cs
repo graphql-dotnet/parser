@@ -28,9 +28,9 @@ namespace GraphQLParser.Tests
             def.VariableDefinitions[0].Variable.Name.Value.ShouldBe("username");
 
             var selection = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
-            selection.Arguments.Count.ShouldBe(2);
-            selection.Arguments[0].Value.ShouldBeAssignableTo<GraphQLVariable>().Name.Value.ShouldBe("username");
-            selection.Arguments[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>().Value.ShouldBe("Pete");
+            selection.Arguments.Items.Count.ShouldBe(2);
+            selection.Arguments.Items[0].Value.ShouldBeAssignableTo<GraphQLVariable>().Name.Value.ShouldBe("username");
+            selection.Arguments.Items[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>().Value.ShouldBe("Pete");
         }
     }
 }
