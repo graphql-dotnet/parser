@@ -15,7 +15,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Throw_With_Deep_Query()
         {
-            var count = 200;
+            var count = 65;
             var sb = new System.Text.StringBuilder(count * 3);
             for (int i = 0; i < count; i++)
                 sb.Append("{a");
@@ -27,7 +27,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Throw_With_Deep_Literal()
         {
-            var count = 200;
+            var count = 65;
             var sb = new System.Text.StringBuilder(count * 4 + 10);
             sb.Append("{a(b:");
             for (int i = 0; i < count; i++)
@@ -37,6 +37,33 @@ namespace GraphQLParser.Tests
             sb.Append(")}");
             var query = sb.ToString();
             Should.Throw<GraphQLMaxDepthExceededException>(() => query.Parse());
+        }
+
+        [Fact]
+        public void Should_Parse_With_Almost_Deep_Query()
+        {
+            var count = 63;
+            var sb = new System.Text.StringBuilder(count * 3);
+            for (int i = 0; i < count; i++)
+                sb.Append("{a");
+            sb.Append(new string('}', count));
+            var query = sb.ToString();
+            _ = query.Parse();
+        }
+
+        [Fact]
+        public void Should_Parse_With_Almost_Deep_Literal()
+        {
+            var count = 60;
+            var sb = new System.Text.StringBuilder(count * 4 + 10);
+            sb.Append("{a(b:");
+            for (int i = 0; i < count; i++)
+                sb.Append("{c:");
+            sb.Append("{}");
+            sb.Append(new string('}', count));
+            sb.Append(")}");
+            var query = sb.ToString();
+            _ = query.Parse();
         }
 
         [Fact]
