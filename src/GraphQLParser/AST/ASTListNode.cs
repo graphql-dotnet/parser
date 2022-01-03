@@ -6,7 +6,7 @@ namespace GraphQLParser.AST
     /// <summary>
     /// Represents a AST node that holds a list of other (nested) AST nodes.
     /// </summary>
-    public abstract class ASTListNode<TNode> : ASTNode, IEnumerable<TNode>
+    public abstract class ASTListNode<TNode> : ASTNode, IReadOnlyList<TNode>
     {
         /// <summary>
         /// A list of nested AST nodes.
