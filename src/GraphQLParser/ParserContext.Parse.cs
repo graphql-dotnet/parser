@@ -61,39 +61,35 @@ namespace GraphQLParser
             return arg;
         }
 
-        private List<GraphQLInputValueDefinition>? ParseArgumentDefs()
+        private List<GraphQLInputValueDefinition> ParseArgumentDefs()
         {
-            return Peek(TokenKind.PAREN_L)
-                ? OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R)
-                : null;
+            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
         }
 
-        private List<GraphQLInputValueDefinition>? ParseInputValueDefs()
+        private List<GraphQLInputValueDefinition> ParseInputValueDefs()
         {
-            return Peek(TokenKind.BRACE_L)
-                ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R)
-                : null;
+            return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
         }
 
-        private List<GraphQLArgument>? ParseArguments()
+        private List<GraphQLArgument> ParseArguments()
         {
-            return Peek(TokenKind.PAREN_L)
-                ? OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R)
-                : null;
+            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
         }
 
-        private List<GraphQLFieldDefinition>? ParseFieldDefinitions()
+        private List<GraphQLFieldDefinition> ParseFieldDefinitions()
         {
-            return Peek(TokenKind.BRACE_L)
-                ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R)
-                : null;
+            return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R);
         }
 
-        private List<GraphQLEnumValueDefinition>? ParseEnumValueDefinitions()
+        private List<GraphQLEnumValueDefinition> ParseEnumValueDefinitions()
         {
-            return Peek(TokenKind.BRACE_L)
-                ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R)
-                : null;
+            return OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R);
+        }
+
+        // http://spec.graphql.org/October2021/#VariableDefinitions
+        private List<GraphQLVariableDefinition> ParseVariableDefinitions()
+        {
+            return OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R);
         }
 
         // http://spec.graphql.org/October2021/#BooleanValue
@@ -228,7 +224,7 @@ namespace GraphQLParser
             dir.Comment = GetComment();
             Expect(TokenKind.AT);
             dir.Name = ParseName();
-            dir.Arguments = ParseArguments();
+            dir.Arguments = Peek(TokenKind.PAREN_L) ? ParseArguments() : null;
             dir.Location = GetLocation(start);
 
             return dir;
@@ -255,8 +251,8 @@ namespace GraphQLParser
             var def = NodeHelper.CreateGraphQLDirectiveDefinition(_ignoreOptions);
 
             def.Name = ParseName();
-            def.Arguments = ParseArgumentDefs();
-            def.Repeatable = ParseRepeatable();
+            def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentDefs() : null;
+            def.Repeatable = Peek(TokenKind.NAME) ? ParseRepeatable() : false;
             ExpectKeyword("on");
             def.Locations = ParseDirectiveLocations();
             def.Description = description;
@@ -268,21 +264,17 @@ namespace GraphQLParser
 
         private bool ParseRepeatable()
         {
-            if (Peek(TokenKind.NAME))
+            if (_currentToken.Value == "on")
+                return false;
+
+            if (_currentToken.Value == "repeatable")
             {
-                if (_currentToken.Value == "on")
-                    return false;
-
-                if (_currentToken.Value == "repeatable")
-                {
-                    Advance();
-                    return true;
-                }
-
-                Throw_Unexpected_Token();
+                Advance();
+                return true;
             }
 
-            return false;
+            Throw_Unexpected_Token();
+            return false; // for compiler
         }
 
         private List<GraphQLName> ParseDirectiveLocations()
@@ -327,7 +319,7 @@ namespace GraphQLParser
             var def = NodeHelper.CreateGraphQLEnumTypeDefinition(_ignoreOptions);
             def.Name = ParseName();
             def.Directives = ParseDirectives();
-            def.Values = ParseEnumValueDefinitions();
+            def.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValueDefinitions() : null;
             def.Description = description;
             def.Comment = comment;
             def.Location = GetLocation(start);
@@ -347,7 +339,7 @@ namespace GraphQLParser
 
             extension.Name = ParseName();
             extension.Directives = ParseDirectives();
-            extension.Values = ParseEnumValueDefinitions();
+            extension.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValueDefinitions() : null;
             extension.Comment = comment;
             extension.Location = GetLocation(start);
 
@@ -407,7 +399,7 @@ namespace GraphQLParser
 
             def.Comment = GetComment();
             def.Name = ParseName();
-            def.Arguments = ParseArgumentDefs();
+            def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentDefs() : null;
             Expect(TokenKind.COLON);
             def.Type = ParseType();
             def.Directives = ParseDirectives();
@@ -467,7 +459,7 @@ namespace GraphQLParser
             }
             field.Comment = nameComment;
             field.Name = name;
-            field.Arguments = ParseArguments();
+            field.Arguments = Peek(TokenKind.PAREN_L) ? ParseArguments() : null;
             field.Directives = ParseDirectives();
             field.SelectionSet = Peek(TokenKind.BRACE_L) ? ParseSelectionSet() : null;
             field.Location = GetLocation(start);
@@ -596,7 +588,7 @@ namespace GraphQLParser
             ExpectKeyword("input");
             def.Name = ParseName();
             def.Directives = ParseDirectives();
-            def.Fields = ParseInputValueDefs();
+            def.Fields = Peek(TokenKind.BRACE_L) ? ParseInputValueDefs() : null;
             def.Description = description;
             def.Location = GetLocation(start);
 
@@ -615,7 +607,7 @@ namespace GraphQLParser
             ExpectKeyword("input");
             extension.Name = ParseName();
             extension.Directives = ParseDirectives();
-            extension.Fields = ParseInputValueDefs();
+            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseInputValueDefs() : null;
             extension.Location = GetLocation(start);
 
             if (extension.Directives == null && extension.Fields == null)
@@ -679,7 +671,7 @@ namespace GraphQLParser
             def.Name = ParseName();
             def.Interfaces = ParseImplementsInterfaces();
             def.Directives = ParseDirectives();
-            def.Fields = ParseFieldDefinitions();
+            def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
             def.Description = description;
             def.Location = GetLocation(start);
 
@@ -699,7 +691,7 @@ namespace GraphQLParser
             extension.Name = ParseName();
             extension.Interfaces = ParseImplementsInterfaces();
             extension.Directives = ParseDirectives();
-            extension.Fields = ParseFieldDefinitions();
+            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
             extension.Location = GetLocation(start);
 
             if (extension.Directives == null && extension.Fields == null && extension.Interfaces == null)
@@ -937,7 +929,7 @@ namespace GraphQLParser
             def.Name = ParseName();
             def.Interfaces = ParseImplementsInterfaces();
             def.Directives = ParseDirectives();
-            def.Fields = ParseFieldDefinitions();
+            def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
             def.Description = description;
             def.Location = GetLocation(start);
 
@@ -957,7 +949,7 @@ namespace GraphQLParser
             extension.Name = ParseName();
             extension.Interfaces = ParseImplementsInterfaces();
             extension.Directives = ParseDirectives();
-            extension.Fields = ParseFieldDefinitions();
+            extension.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldDefinitions() : null;
             extension.Location = GetLocation(start);
 
             if (extension.Directives == null && extension.Fields == null && extension.Interfaces == null)
@@ -985,7 +977,7 @@ namespace GraphQLParser
             {
                 def.Operation = ParseOperationType();
                 def.Name = Peek(TokenKind.NAME) ? ParseName() : null; // Peek(TokenKind.NAME) because of anonymous query
-                def.VariableDefinitions = ParseVariableDefinitions();
+                def.VariableDefinitions = Peek(TokenKind.PAREN_L) ? ParseVariableDefinitions() : null;
                 def.Directives = ParseDirectives();
                 def.SelectionSet = ParseSelectionSet();
                 def.Location = GetLocation(start);
@@ -1313,14 +1305,6 @@ namespace GraphQLParser
             def.Location = GetLocation(start);
 
             return def;
-        }
-
-        // http://spec.graphql.org/October2021/#VariableDefinitions
-        private List<GraphQLVariableDefinition>? ParseVariableDefinitions()
-        {
-            return Peek(TokenKind.PAREN_L) ?
-                OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R) :
-                null;
         }
     }
 }
