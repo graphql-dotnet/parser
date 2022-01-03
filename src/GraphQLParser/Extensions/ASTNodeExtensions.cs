@@ -17,7 +17,7 @@ namespace GraphQLParser
         {
             var visitor = new CountVisitor<DefaultCountContext>();
             var context = new DefaultCountContext(_ => true);
-            visitor.Visit(node, context).GetAwaiter().GetResult();
+            visitor.Visit(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
             return context.Count;
         }
 
@@ -30,7 +30,7 @@ namespace GraphQLParser
         {
             var visitor = new MaxDepthVisitor<DefaultMaxDepthContext>();
             var context = new DefaultMaxDepthContext();
-            visitor.Visit(node, context).GetAwaiter().GetResult();
+            visitor.Visit(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
             return context.MaxDepth;
         }
     }
