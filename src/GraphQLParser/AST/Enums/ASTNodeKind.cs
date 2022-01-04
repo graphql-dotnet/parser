@@ -475,6 +475,15 @@ namespace GraphQLParser.AST
         /// <br/>
         /// This node represents a list of <see cref="NamedType"/>.
         /// </summary>
-        ImplementsInterfaces
+        ImplementsInterfaces,
+
+        /// <summary>
+        /// A list of directive locations.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#DirectiveLocations"/>
+        /// <br/>
+        /// This node represents a list of <see cref="DirectiveLocation"/>.
+        /// </summary>
+        DirectiveLocations,
     }
 }

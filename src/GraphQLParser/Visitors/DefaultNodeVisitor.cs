@@ -44,13 +44,13 @@ namespace GraphQLParser.Visitors
         /// <inheritdoc/>
         public virtual ValueTask VisitComment(GraphQLComment comment, TContext context)
         {
-            return new ValueTask(Task.CompletedTask);
+            return default;
         }
 
         /// <inheritdoc/>
         public virtual ValueTask VisitDescription(GraphQLDescription description, TContext context)
         {
-            return new ValueTask(Task.CompletedTask);
+            return default;
         }
 
         /// <inheritdoc/>
@@ -383,7 +383,15 @@ namespace GraphQLParser.Visitors
             await Visit(directiveDefinition.Description, context).ConfigureAwait(false);
             await Visit(directiveDefinition.Name, context).ConfigureAwait(false);
             await Visit(directiveDefinition.Arguments, context).ConfigureAwait(false);
-            //TODO: add locations node
+            await Visit(directiveDefinition.Locations, context).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Visits <see cref="GraphQLDirectiveLocations"/> node.
+        /// </summary>
+        public virtual ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context)
+        {
+            return default;
         }
 
         /// <inheritdoc/>
@@ -457,6 +465,7 @@ namespace GraphQLParser.Visitors
                     GraphQLDescription description => VisitDescription(description, context),
                     GraphQLDirective directive => VisitDirective(directive, context),
                     GraphQLDirectiveDefinition directiveDefinition => VisitDirectiveDefinition(directiveDefinition, context),
+                    GraphQLDirectiveLocations directiveLocations => VisitDirectiveLocations(directiveLocations, context),
                     GraphQLDocument document => VisitDocument(document, context),
                     GraphQLEnumTypeDefinition enumTypeDefinition => VisitEnumTypeDefinition(enumTypeDefinition, context),
                     GraphQLEnumValueDefinition enumValueDefinition => VisitEnumValueDefinition(enumValueDefinition, context),

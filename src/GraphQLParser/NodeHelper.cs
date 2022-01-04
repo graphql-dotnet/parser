@@ -599,6 +599,17 @@ namespace GraphQLParser
             };
         }
 
+        public static GraphQLDirectiveLocations CreateGraphQLDirectiveLocations(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLDirectiveLocations(),
+                IgnoreOptions.Comments => new GraphQLDirectiveLocationsWithLocation(),
+                IgnoreOptions.Locations => new GraphQLDirectiveLocationsWithComment(),
+                _ => new GraphQLDirectiveLocationsFull(),
+            };
+        }
+
         #endregion
     }
 }

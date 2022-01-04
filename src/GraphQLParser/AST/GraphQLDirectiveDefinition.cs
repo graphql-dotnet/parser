@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -26,9 +24,9 @@ namespace GraphQLParser.AST
         public bool Repeatable { get; set; }
 
         /// <summary>
-        /// Returns a list of locations representing the valid locations this directive may be placed.
+        /// Returns a node with a list of locations representing the valid locations this directive may be placed.
         /// </summary>
-        public List<GraphQLName>? Locations { get; set; }
+        public GraphQLDirectiveLocations Locations { get; set; } = null!;
     }
 
     internal sealed class GraphQLDirectiveDefinitionWithLocation : GraphQLDirectiveDefinition

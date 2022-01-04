@@ -24,6 +24,11 @@ namespace GraphQLParser.Tests.Visitors
         private static readonly SDLWriter<TestContext> _sdlWriter = new();
 
         [Theory]
+        [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT", @"directive @skip(
+  if: Boolean!
+) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+        [InlineData("directive @exportable on | SCHEMA", @"directive @exportable on SCHEMA")]
+        [InlineData("directive @exportable on | SCHEMA | ENUM", @"directive @exportable on SCHEMA | ENUM")]
         [InlineData("extend scalar Foo @exportable", @"extend scalar Foo @exportable
 ")]
         [InlineData("extend type Foo @exportable", @"extend type Foo @exportable
