@@ -518,6 +518,15 @@ scalar JSON
             GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Query);
         }
 
+        [Fact]
+        public void Should_Throw_On_Unknown_OperationType()
+        {
+            var ex = Should.Throw<GraphQLSyntaxErrorException>(() => "superquery { a }".Parse());
+            ex.Description.ShouldBe("Expected \"query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive\", found Name \"superquery\"");
+            ex.Line.ShouldBe(1);
+            ex.Column.ShouldBe(1);
+        }
+
         [Theory]
         [InlineData(IgnoreOptions.None)]
         [InlineData(IgnoreOptions.Comments)]
@@ -976,6 +985,28 @@ Cat
             ex.Line.ShouldBe(line);
             ex.Column.ShouldBe(column);
             ex.Message.ShouldContain("Expected Name, found }");
+        }
+
+        [Theory]
+        [InlineData(@"
+""misplaced description""
+query { a }")]
+        [InlineData(@"
+""misplaced description""
+mutation m { a }")]
+        [InlineData(@"
+""misplaced description""
+subscription s { a }")]
+        [InlineData(@"
+""misplaced description""
+fragment x on User { name }")]
+        [InlineData(@"
+""misplaced description""
+extend type User implements Person")]
+        public void Should_Throw_If_Descriptions_Not_Allowed(string query)
+        {
+            var ex = Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse());
+            ex.Description.ShouldBe("Unexpected String \"misplaced description\"");
         }
 
         [Theory]
