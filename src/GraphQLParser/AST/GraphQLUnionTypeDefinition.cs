@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST
 {
     /// <summary>
@@ -13,7 +11,7 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }
 
-        public List<GraphQLNamedType>? Types { get; set; }
+        public GraphQLUnionMemberTypes? Types { get; set; }
     }
 
     internal sealed class GraphQLUnionTypeDefinitionWithLocation : GraphQLUnionTypeDefinition

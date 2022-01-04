@@ -1,20 +1,15 @@
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.UnionTypeExtension"/>.
+    /// AST node for <see cref="ASTNodeKind.UnionMemberTypes"/>.
     /// </summary>
-    public class GraphQLUnionTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
+    public class GraphQLUnionMemberTypes : ASTListNode<GraphQLNamedType>
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.UnionTypeExtension;
-
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
-
-        public GraphQLUnionMemberTypes? Types { get; set; }
+        public override ASTNodeKind Kind => ASTNodeKind.UnionMemberTypes;
     }
 
-    internal sealed class GraphQLUnionTypeExtensionWithLocation : GraphQLUnionTypeExtension
+    internal sealed class GraphQLUnionMemberTypesWithLocation : GraphQLUnionMemberTypes
     {
         private GraphQLLocation _location;
 
@@ -25,7 +20,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLUnionTypeExtensionWithComment : GraphQLUnionTypeExtension
+    internal sealed class GraphQLUnionMemberTypesWithComment : GraphQLUnionMemberTypes
     {
         private GraphQLComment? _comment;
 
@@ -36,7 +31,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLUnionTypeExtensionFull : GraphQLUnionTypeExtension
+    internal sealed class GraphQLUnionMemberTypesFull : GraphQLUnionMemberTypes
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

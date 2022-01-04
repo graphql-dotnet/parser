@@ -201,6 +201,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLUnionMemberTypes"/> node.
+        /// </summary>
+        ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLEnumTypeDefinition"/> node.
         /// </summary>
         ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context);
