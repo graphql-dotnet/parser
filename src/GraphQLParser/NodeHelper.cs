@@ -610,6 +610,17 @@ namespace GraphQLParser
             };
         }
 
+        public static GraphQLUnionMemberTypes CreateGraphQLUnionMemberTypes(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLUnionMemberTypes(),
+                IgnoreOptions.Comments => new GraphQLUnionMemberTypesWithLocation(),
+                IgnoreOptions.Locations => new GraphQLUnionMemberTypesWithComment(),
+                _ => new GraphQLUnionMemberTypesFull(),
+            };
+        }
+
         #endregion
     }
 }

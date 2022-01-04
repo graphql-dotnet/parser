@@ -627,18 +627,7 @@ namespace GraphQLParser.Visitors
             await context.Write("union ").ConfigureAwait(false);
             await Visit(unionTypeDefinition.Name, context).ConfigureAwait(false);
             await Visit(unionTypeDefinition.Directives, context).ConfigureAwait(false);
-
-            if (unionTypeDefinition.Types?.Count > 0)
-            {
-                await context.Write(" = ").ConfigureAwait(false);
-
-                for (int i = 0; i < unionTypeDefinition.Types.Count; ++i)
-                {
-                    await Visit(unionTypeDefinition.Types[i], context).ConfigureAwait(false);
-                    if (i < unionTypeDefinition.Types.Count - 1)
-                        await context.Write(" | ").ConfigureAwait(false);
-                }
-            }
+            await Visit(unionTypeDefinition.Types, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -648,17 +637,19 @@ namespace GraphQLParser.Visitors
             await context.Write("extend union ").ConfigureAwait(false);
             await Visit(unionTypeExtension.Name, context).ConfigureAwait(false);
             await Visit(unionTypeExtension.Directives, context).ConfigureAwait(false);
+            await Visit(unionTypeExtension.Types, context).ConfigureAwait(false);
+        }
 
-            if (unionTypeExtension.Types?.Count > 0)
+        /// <inheritdoc/>
+        public override async ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
+        {
+            await context.Write(" = ").ConfigureAwait(false);
+
+            for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
             {
-                await context.Write(" = ").ConfigureAwait(false);
-
-                for (int i = 0; i < unionTypeExtension.Types.Count; ++i)
-                {
-                    await Visit(unionTypeExtension.Types[i], context).ConfigureAwait(false);
-                    if (i < unionTypeExtension.Types.Count - 1)
-                        await context.Write(" | ").ConfigureAwait(false);
-                }
+                await Visit(unionMemberTypes.Items[i], context).ConfigureAwait(false);
+                if (i < unionMemberTypes.Items.Count - 1)
+                    await context.Write(" | ").ConfigureAwait(false);
             }
         }
 

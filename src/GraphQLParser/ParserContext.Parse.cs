@@ -1451,11 +1451,17 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#UnionMemberTypes
-        private List<GraphQLNamedType> ParseUnionMemberTypes() //TODO: add new node + set location
+        private GraphQLUnionMemberTypes ParseUnionMemberTypes()
         {
+            IncreaseDepth();
+
+            int start = _currentToken.Start;
+
             Expect(TokenKind.EQUALS);
 
-            var members = new List<GraphQLNamedType>();
+            var unionMemberTypes = NodeHelper.CreateGraphQLUnionMemberTypes(_ignoreOptions);
+
+            List<GraphQLNamedType> types = new();
 
             // Union members may be defined with an optional leading | character
             // to aid formatting when representing a longer list of possible types
@@ -1463,11 +1469,15 @@ namespace GraphQLParser
 
             do
             {
-                members.Add(ParseNamedType());
+                types.Add(ParseNamedType());
             }
             while (Skip(TokenKind.PIPE));
 
-            return members;
+            unionMemberTypes.Items = types;
+            unionMemberTypes.Location = GetLocation(start);
+
+            DecreaseDepth();
+            return unionMemberTypes;
         }
 
         // http://spec.graphql.org/October2021/#UnionTypeDefinition

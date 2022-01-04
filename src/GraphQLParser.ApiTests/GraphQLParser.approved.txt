@@ -72,6 +72,7 @@ namespace GraphQLParser.AST
         Directives = 52,
         ImplementsInterfaces = 53,
         DirectiveLocations = 54,
+        UnionMemberTypes = 55,
     }
     public enum DirectiveLocation
     {
@@ -448,19 +449,24 @@ namespace GraphQLParser.AST
         protected GraphQLTypeExtension() { }
         public GraphQLParser.AST.GraphQLName? Name { get; set; }
     }
+    public class GraphQLUnionMemberTypes : GraphQLParser.AST.ASTListNode<GraphQLParser.AST.GraphQLNamedType>
+    {
+        public GraphQLUnionMemberTypes() { }
+        public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+    }
     public class GraphQLUnionTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLUnionTypeDefinition() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Types { get; set; }
+        public GraphQLParser.AST.GraphQLUnionMemberTypes? Types { get; set; }
     }
     public class GraphQLUnionTypeExtension : GraphQLParser.AST.GraphQLTypeExtension, GraphQLParser.AST.IHasDirectivesNode
     {
         public GraphQLUnionTypeExtension() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLNamedType>? Types { get; set; }
+        public GraphQLParser.AST.GraphQLUnionMemberTypes? Types { get; set; }
     }
     public abstract class GraphQLValue : GraphQLParser.AST.ASTNode
     {
@@ -712,6 +718,7 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask VisitSelectionSet(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitStringValue(GraphQLParser.AST.GraphQLScalarValue stringValue, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitTypeCondition(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context) { }
+        public virtual System.Threading.Tasks.ValueTask VisitUnionMemberTypes(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitUnionTypeDefinition(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitUnionTypeExtension(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
@@ -785,6 +792,7 @@ namespace GraphQLParser.Visitors
         System.Threading.Tasks.ValueTask VisitSelectionSet(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context);
         System.Threading.Tasks.ValueTask VisitStringValue(GraphQLParser.AST.GraphQLScalarValue stringValue, TContext context);
         System.Threading.Tasks.ValueTask VisitTypeCondition(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context);
+        System.Threading.Tasks.ValueTask VisitUnionMemberTypes(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context);
         System.Threading.Tasks.ValueTask VisitUnionTypeDefinition(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context);
         System.Threading.Tasks.ValueTask VisitUnionTypeExtension(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context);
         System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context);
@@ -857,6 +865,7 @@ namespace GraphQLParser.Visitors
         public override System.Threading.Tasks.ValueTask VisitSelectionSet(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitStringValue(GraphQLParser.AST.GraphQLScalarValue stringValue, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitTypeCondition(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context) { }
+        public override System.Threading.Tasks.ValueTask VisitUnionMemberTypes(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitUnionTypeDefinition(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitUnionTypeExtension(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }

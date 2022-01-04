@@ -485,5 +485,14 @@ namespace GraphQLParser.AST
         /// This node represents a list of <see cref="DirectiveLocation"/>.
         /// </summary>
         DirectiveLocations,
+
+        /// <summary>
+        /// A list of union members.
+        /// <br/>
+        /// <see href="http://spec.graphql.org/October2021/#UnionMemberTypes"/>
+        /// <br/>
+        /// This node represents a list of <see cref="NamedType"/>.
+        /// </summary>
+        UnionMemberTypes,
     }
 }

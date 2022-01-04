@@ -342,6 +342,12 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
+        public virtual async ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
+        {
+            await Visit(unionMemberTypes.Items, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public virtual async ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
         {
             await Visit(enumTypeDefinition.Comment, context).ConfigureAwait(false);
@@ -509,6 +515,7 @@ namespace GraphQLParser.Visitors
                     GraphQLEnumTypeExtension enumEx => VisitEnumTypeExtension(enumEx, context),
                     GraphQLInputObjectTypeExtension inputEx => VisitInputObjectTypeExtension(inputEx, context),
                     GraphQLUnionTypeDefinition unionTypeDefinition => VisitUnionTypeDefinition(unionTypeDefinition, context),
+                    GraphQLUnionMemberTypes unionMembers => VisitUnionMemberTypes(unionMembers, context),
                     GraphQLVariable variable => VisitVariable(variable, context),
                     GraphQLVariableDefinition variableDefinition => VisitVariableDefinition(variableDefinition, context),
                     GraphQLArgumentsDefinition argsDef => VisitArgumentsDefinition(argsDef, context),
