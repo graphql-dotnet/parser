@@ -27,7 +27,7 @@ namespace GraphQLParser
             _source = source;
             _ignoreOptions = options.Ignore;
             _currentDepth = 1; // GraphQLDocument created here
-            _maxDepth = options.MaxDepth ?? 64;
+            _maxDepth = options.MaxDepth ?? 128;
             // should create document beforehand to use RentedMemoryTracker while parsing comments
             _document = NodeHelper.CreateGraphQLDocument(options.Ignore);
             _currentToken = _prevToken = new Token

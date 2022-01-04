@@ -15,7 +15,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Throw_With_Deep_Query()
         {
-            var count = 65;
+            var count = 63;
             var sb = new System.Text.StringBuilder(count * 3);
             for (int i = 0; i < count; i++)
                 sb.Append("{a");
@@ -27,7 +27,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Throw_With_Deep_Literal()
         {
-            var count = 65;
+            var count = 61;
             var sb = new System.Text.StringBuilder(count * 4 + 10);
             sb.Append("{a(b:");
             for (int i = 0; i < count; i++)
@@ -42,7 +42,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Parse_With_Almost_Deep_Query()
         {
-            var count = 30;
+            var count = 62;
             var sb = new System.Text.StringBuilder(count * 3);
             for (int i = 0; i < count; i++)
                 sb.Append("{a");
@@ -54,7 +54,7 @@ namespace GraphQLParser.Tests
         [Fact]
         public void Should_Parse_With_Almost_Deep_Literal()
         {
-            var count = 28;
+            var count = 60;
             var sb = new System.Text.StringBuilder(count * 4 + 10);
             sb.Append("{a(b:");
             for (int i = 0; i < count; i++)
