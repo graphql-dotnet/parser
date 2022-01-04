@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+usnig System.Diagnostics;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
 
@@ -25,6 +26,9 @@ namespace GraphQLParser
             );
             _document.Definitions = definitions;
             _document.UnattachedComments = _unattachedComments;
+
+            Debug.Assert(_currentDepth == 1);
+
             return _document;
         }
 
@@ -45,7 +49,7 @@ namespace GraphQLParser
             condition.Type = ParseNamedType();
             condition.Location = GetLocation(start);
 
-            DecreaseDepth();
+            //DecreaseDepth();
             return condition;
         }
 
