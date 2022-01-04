@@ -1331,7 +1331,6 @@ namespace GraphQLParser
                 return type;
             }
 
-            IncreaseDepth();
             var nonNull = NodeHelper.CreateGraphQLNonNullType(_ignoreOptions);
 
             nonNull.Type = type;
