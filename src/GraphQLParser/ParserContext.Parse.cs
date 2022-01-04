@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-usnig System.Diagnostics;
+using System.Diagnostics;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
 
