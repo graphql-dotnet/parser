@@ -8,6 +8,30 @@ namespace GraphQLParser
     // WARNING: mutable struct, pass it by reference to those methods that will change it
     internal partial struct ParserContext
     {
+        private static string[] TopLevelKeywordOneOf { get; set; } = new[]
+        {
+            "query",
+            "mutation",
+            "subscription",
+            "fragment",
+            "schema",
+            "scalar",
+            "type",
+            "interface",
+            "union",
+            "enum",
+            "input",
+            "extend",
+            "directive",
+        };
+
+        private static string[] OperationTypeOneOf { get; set; } = new[]
+        {
+            "query",
+            "mutation",
+            "subscription",
+        };
+
         private static string[] DirectiveLocationOneOf { get; set; } = new[]
         {
             // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
@@ -172,14 +196,15 @@ namespace GraphQLParser
             throw new GraphQLSyntaxErrorException($"Expected \"{keyword}\", found {_currentToken}", _source, _currentToken.Start);
         }
 
-        private string ExpectOneOf(string[] oneOf)
+        private string ExpectOneOf(string[] oneOf, bool advance = true)
         {
             if (_currentToken.Kind == TokenKind.NAME)
             {
                 var found = IsAny(_currentToken, oneOf);
                 if (found != null)
                 {
-                    Advance();
+                    if (advance)
+                        Advance();
                     return found;
                 }
             }

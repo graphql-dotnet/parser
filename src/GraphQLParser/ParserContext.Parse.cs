@@ -908,50 +908,28 @@ namespace GraphQLParser
 
         private ASTNode? ParseNamedDefinition()
         {
-            var value = _currentToken.Value;
+            return ExpectOneOf(TopLevelKeywordOneOf, advance: false) switch
+            {
+                "query" => ParseOperationDefinition(),
+                "mutation" => ParseOperationDefinition(),
+                "subscription" => ParseOperationDefinition(),
+                "fragment" => ParseFragmentDefinition(),
+                "schema" => ParseSchemaDefinition(),
+                "scalar" => ParseScalarTypeDefinition(),
+                "type" => ParseObjectTypeDefinition(),
+                "interface" => ParseInterfaceTypeDefinition(),
+                "union" => ParseUnionTypeDefinition(),
+                "enum" => ParseEnumTypeDefinition(),
+                "input" => ParseInputObjectTypeDefinition(),
+                "extend" => ParseTypeExtension(),
+                "directive" => ParseDirectiveDefinition(),
 
-            if (value == "query")
-                return ParseOperationDefinition();
-
-            if (value == "mutation")
-                return ParseOperationDefinition();
-
-            if (value == "subscription")
-                return ParseOperationDefinition();
-
-            if (value == "fragment")
-                return ParseFragmentDefinition();
-
-            if (value == "schema")
-                return ParseSchemaDefinition();
-
-            if (value == "scalar")
-                return ParseScalarTypeDefinition();
-
-            if (value == "type")
-                return ParseObjectTypeDefinition();
-
-            if (value == "interface")
-                return ParseInterfaceTypeDefinition();
-
-            if (value == "union")
-                return ParseUnionTypeDefinition();
-
-            if (value == "enum")
-                return ParseEnumTypeDefinition();
-
-            if (value == "input")
-                return ParseInputObjectTypeDefinition();
-
-            if (value == "extend")
-                return ParseTypeExtension();
-
-            if (value == "directive")
-                return ParseDirectiveDefinition();
-
-            return null;
+                _ => throw new NotSupportedException("Compiler never gets here since ExpectOneOf throws.")
+            };
         }
 
+        // TODO: 1. May be changed to use ExpectOneOf, or
+        // TODO: 2. https://github.com/graphql/graphql-spec/pull/892 which allow to remove this method
         private ASTNode? ParseNamedDefinitionWithDescription()
         {
             // look-ahead to next token (_currentToken remains unchanged)
@@ -1084,7 +1062,8 @@ namespace GraphQLParser
             return field;
         }
 
-        private List<GraphQLObjectField> ParseObjectFields(bool isConstant) //TODO: check for new node + set location
+        // No special AST node for the list of ObjectField
+        private List<GraphQLObjectField> ParseObjectFields(bool isConstant)
         {
             var fields = new List<GraphQLObjectField>();
 
@@ -1181,16 +1160,14 @@ namespace GraphQLParser
         // http://spec.graphql.org/October2021/#OperationType
         private OperationType ParseOperationType()
         {
-            var token = _currentToken;
-            Expect(TokenKind.NAME); //TODO: ExpectOneOf - fix unknown and call Expect after success parse as it done in ParseDirectiveLocation
+            return ExpectOneOf(OperationTypeOneOf) switch
+            {
+                "query" => OperationType.Query,
+                "mutation" => OperationType.Mutation,
+                "subscription" => OperationType.Subscription,
 
-            if (token.Value == "mutation")
-                return OperationType.Mutation;
-
-            if (token.Value == "subscription")
-                return OperationType.Subscription;
-
-            return OperationType.Query;
+                _ => throw new NotSupportedException("Compiler never gets here since ExpectOneOf throws.")
+            };
         }
 
         // http://spec.graphql.org/June2018/#DirectiveLocation

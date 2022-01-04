@@ -143,10 +143,10 @@ namespace GraphQLParser.Tests.Validation
             var exception = Should.Throw<GraphQLSyntaxErrorException>(() => "notanoperation Foo { field }".Parse(new ParserOptions { Ignore = options }));
 
             exception.Message.ShouldBe(
-                "Syntax Error GraphQL (1:1) Unexpected Name " + "\"notanoperation\"\n" +
+                "Syntax Error GraphQL (1:1) Expected \"query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive\", found Name \"notanoperation\"\n" +
                 "1: notanoperation Foo { field }\n" +
                 "   ^\n");
-            exception.Description.ShouldBe("Unexpected Name \"notanoperation\"");
+            exception.Description.ShouldBe("Expected \"query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive\", found Name \"notanoperation\"");
             exception.Line.ShouldBe(1);
             exception.Column.ShouldBe(1);
         }
