@@ -1062,7 +1062,8 @@ namespace GraphQLParser
             return field;
         }
 
-        private List<GraphQLObjectField> ParseObjectFields(bool isConstant) //TODO: check for new node + set location
+        // No special AST node for the list of ObjectField
+        private List<GraphQLObjectField> ParseObjectFields(bool isConstant)
         {
             var fields = new List<GraphQLObjectField>();
 
