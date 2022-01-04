@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
 
@@ -26,6 +27,9 @@ namespace GraphQLParser
             );
             _document.Definitions = definitions;
             _document.UnattachedComments = _unattachedComments;
+
+            Debug.Assert(_currentDepth == 1, "Depth has not returned to 1 after parsing document");
+
             return _document;
         }
 
@@ -1406,7 +1410,6 @@ namespace GraphQLParser
                 return type;
             }
 
-            IncreaseDepth();
             var nonNull = NodeHelper.CreateGraphQLNonNullType(_ignoreOptions);
 
             nonNull.Type = type;
