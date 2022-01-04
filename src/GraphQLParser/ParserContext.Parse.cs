@@ -49,7 +49,7 @@ namespace GraphQLParser
             condition.Type = ParseNamedType();
             condition.Location = GetLocation(start);
 
-            //DecreaseDepth();
+            DecreaseDepth();
             return condition;
         }
 
