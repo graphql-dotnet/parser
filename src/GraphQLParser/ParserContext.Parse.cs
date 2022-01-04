@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
@@ -72,8 +73,13 @@ namespace GraphQLParser
         private GraphQLArguments ParseArguments()
         {
             IncreaseDepth();
+
+            int start = _currentToken.Start;
+
             var args = NodeHelper.CreateGraphQLArguments(_ignoreOptions);
             args.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
+            args.Location = GetLocation(start);
+
             DecreaseDepth();
             return args;
         }
@@ -82,8 +88,13 @@ namespace GraphQLParser
         private GraphQLArgumentsDefinition ParseArgumentsDefinition()
         {
             IncreaseDepth();
+
+            int start = _currentToken.Start;
+
             var argsDef = NodeHelper.CreateGraphQLArgumentsDefinition(_ignoreOptions);
             argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
+            argsDef.Location = GetLocation(start);
+
             DecreaseDepth();
             return argsDef;
         }
@@ -92,8 +103,13 @@ namespace GraphQLParser
         private GraphQLInputFieldsDefinition ParseInputFieldsDefinition()
         {
             IncreaseDepth();
+
+            int start = _currentToken.Start;
+
             var inputFieldsDef = NodeHelper.CreateGraphQLInputFieldsDefinition(_ignoreOptions);
             inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
+            inputFieldsDef.Location = GetLocation(start);
+
             DecreaseDepth();
             return inputFieldsDef;
         }
@@ -102,8 +118,13 @@ namespace GraphQLParser
         private GraphQLFieldsDefinition ParseFieldsDefinition()
         {
             IncreaseDepth();
+
+            int start = _currentToken.Start;
+
             var fieldsDef = NodeHelper.CreateGraphQLFieldsDefinition(_ignoreOptions);
             fieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R);
+            fieldsDef.Location = GetLocation(start);
+
             DecreaseDepth();
             return fieldsDef;
         }
@@ -112,8 +133,13 @@ namespace GraphQLParser
         private GraphQLEnumValuesDefinition ParseEnumValuesDefinition()
         {
             IncreaseDepth();
+
+            int start = _currentToken.Start;
+
             var enumValuesDef = NodeHelper.CreateGraphQLEnumValuesDefinition(_ignoreOptions);
             enumValuesDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R);
+            enumValuesDef.Location = GetLocation(start);
+
             DecreaseDepth();
             return enumValuesDef;
         }
@@ -122,8 +148,13 @@ namespace GraphQLParser
         private GraphQLVariablesDefinition ParseVariablesDefinition()
         {
             IncreaseDepth();
+
+            int start = _currentToken.Start;
+
             var variablesDef = NodeHelper.CreateGraphQLVariablesDefinition(_ignoreOptions);
             variablesDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R);
+            variablesDef.Location = GetLocation(start);
+
             DecreaseDepth();
             return variablesDef;
         }
@@ -326,9 +357,15 @@ namespace GraphQLParser
             return false; // for compiler
         }
 
-        private List<GraphQLName> ParseDirectiveLocations()
+        private GraphQLDirectiveLocations ParseDirectiveLocations()
         {
-            var locations = new List<GraphQLName>();
+            IncreaseDepth();
+
+            int start = _currentToken.Start;
+
+            var directiveLocations = NodeHelper.CreateGraphQLDirectiveLocations(_ignoreOptions);
+
+            var items = new List<DirectiveLocation>();
 
             // Directive locations may be defined with an optional leading | character
             // to aid formatting when representing a longer list of possible locations
@@ -336,17 +373,23 @@ namespace GraphQLParser
 
             do
             {
-                locations.Add(ParseName());
+                items.Add(ParseDirectiveLocation());
             }
             while (Skip(TokenKind.PIPE));
 
-            return locations;
+            directiveLocations.Items = items;
+            directiveLocations.Location = GetLocation(start);
+
+            DecreaseDepth();
+            return directiveLocations;
         }
 
         // http://spec.graphql.org/October2021/#Directives
         private GraphQLDirectives ParseDirectives()
         {
             IncreaseDepth();
+
+            int start = _currentToken.Start;
 
             var directives = NodeHelper.CreateGraphQLDirectives(_ignoreOptions);
 
@@ -357,6 +400,7 @@ namespace GraphQLParser
                 items.Add(ParseDirective());
 
             directives.Items = items;
+            directives.Location = GetLocation(start);
 
             DecreaseDepth();
             return directives;
@@ -645,6 +689,8 @@ namespace GraphQLParser
         {
             IncreaseDepth();
 
+            int start = _currentToken.Start;
+
             ExpectKeyword("implements");
 
             var implementsInterfaces = NodeHelper.CreateGraphQLImplementsInterfaces(_ignoreOptions);
@@ -662,6 +708,7 @@ namespace GraphQLParser
             while (Skip(TokenKind.AMPERSAND));
 
             implementsInterfaces.Items = types;
+            implementsInterfaces.Location = GetLocation(start);
 
             DecreaseDepth();
             return implementsInterfaces;
@@ -1033,7 +1080,7 @@ namespace GraphQLParser
             return field;
         }
 
-        private List<GraphQLObjectField> ParseObjectFields(bool isConstant)
+        private List<GraphQLObjectField> ParseObjectFields(bool isConstant) //TODO: check for new node + set location
         {
             var fields = new List<GraphQLObjectField>();
 
@@ -1131,7 +1178,7 @@ namespace GraphQLParser
         private OperationType ParseOperationType()
         {
             var token = _currentToken;
-            Expect(TokenKind.NAME);
+            Expect(TokenKind.NAME); //TODO: ExpectOneOf - fix unknown and call Expect after success parse as it done in ParseDirectiveLocation
 
             if (token.Value == "mutation")
                 return OperationType.Mutation;
@@ -1140,6 +1187,38 @@ namespace GraphQLParser
                 return OperationType.Subscription;
 
             return OperationType.Query;
+        }
+
+        // http://spec.graphql.org/June2018/#DirectiveLocation
+        private DirectiveLocation ParseDirectiveLocation()
+        {
+            return ExpectOneOf(DirectiveLocationOneOf) switch
+            {
+                // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
+                "QUERY" => DirectiveLocation.Query,
+                "MUTATION" => DirectiveLocation.Mutation,
+                "SUBSCRIPTION" => DirectiveLocation.Subscription,
+                "FIELD" => DirectiveLocation.Field,
+                "FRAGMENT_DEFINITION" => DirectiveLocation.FragmentDefinition,
+                "FRAGMENT_SPREAD" => DirectiveLocation.FragmentSpread,
+                "INLINE_FRAGMENT" => DirectiveLocation.InlineFragment,
+                "VARIABLE_DEFINITION" => DirectiveLocation.VariableDefinition,
+
+                // http://spec.graphql.org/June2018/#TypeSystemDirectiveLocation
+                "SCHEMA" => DirectiveLocation.Schema,
+                "SCALAR" => DirectiveLocation.Scalar,
+                "OBJECT" => DirectiveLocation.Object,
+                "FIELD_DEFINITION" => DirectiveLocation.FieldDefinition,
+                "ARGUMENT_DEFINITION" => DirectiveLocation.ArgumentDefinition,
+                "INTERFACE" => DirectiveLocation.Interface,
+                "UNION" => DirectiveLocation.Union,
+                "ENUM" => DirectiveLocation.Enum,
+                "ENUM_VALUE" => DirectiveLocation.EnumValue,
+                "INPUT_OBJECT" => DirectiveLocation.InputObject,
+                "INPUT_FIELD_DEFINITION" => DirectiveLocation.InputFieldDefinition,
+
+                _ => throw new NotSupportedException("Compiler never gets here since ExpectOneOf throws.")
+            };
         }
 
         // http://spec.graphql.org/October2021/#RootOperationTypeDefinition
@@ -1369,7 +1448,7 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#UnionMemberTypes
-        private List<GraphQLNamedType> ParseUnionMemberTypes()
+        private List<GraphQLNamedType> ParseUnionMemberTypes() //TODO: add new node + set location
         {
             Expect(TokenKind.EQUALS);
 

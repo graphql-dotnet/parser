@@ -226,6 +226,11 @@ namespace GraphQLParser.Visitors
         ValueTask VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context);
 
         /// <summary>
+        /// Visits <see cref="GraphQLDirectiveLocations"/> node.
+        /// </summary>
+        ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context);
+
+        /// <summary>
         /// Visits <see cref="GraphQLComment"/> node.
         /// </summary>
         ValueTask VisitComment(GraphQLComment comment, TContext context);

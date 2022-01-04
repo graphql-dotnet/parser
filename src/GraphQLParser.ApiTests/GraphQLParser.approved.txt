@@ -71,6 +71,48 @@ namespace GraphQLParser.AST
         FieldsDefinition = 51,
         Directives = 52,
         ImplementsInterfaces = 53,
+        DirectiveLocations = 54,
+    }
+    public enum DirectiveLocation
+    {
+        [System.ComponentModel.Description("Location adjacent to a query operation.")]
+        Query = 0,
+        [System.ComponentModel.Description("Location adjacent to a mutation operation.")]
+        Mutation = 1,
+        [System.ComponentModel.Description("Location adjacent to a subscription operation.")]
+        Subscription = 2,
+        [System.ComponentModel.Description("Location adjacent to a field.")]
+        Field = 3,
+        [System.ComponentModel.Description("Location adjacent to a fragment definition.")]
+        FragmentDefinition = 4,
+        [System.ComponentModel.Description("Location adjacent to a fragment spread.")]
+        FragmentSpread = 5,
+        [System.ComponentModel.Description("Location adjacent to an inline fragment.")]
+        InlineFragment = 6,
+        [System.ComponentModel.Description("Location adjacent to a variable definition.")]
+        VariableDefinition = 7,
+        [System.ComponentModel.Description("Location adjacent to a schema definition.")]
+        Schema = 8,
+        [System.ComponentModel.Description("Location adjacent to a scalar definition.")]
+        Scalar = 9,
+        [System.ComponentModel.Description("Location adjacent to an object type definition.")]
+        Object = 10,
+        [System.ComponentModel.Description("Location adjacent to a field definition.")]
+        FieldDefinition = 11,
+        [System.ComponentModel.Description("Location adjacent to an argument definition.")]
+        ArgumentDefinition = 12,
+        [System.ComponentModel.Description("Location adjacent to an interface definition.")]
+        Interface = 13,
+        [System.ComponentModel.Description("Location adjacent to a union definition.")]
+        Union = 14,
+        [System.ComponentModel.Description("Location adjacent to an enum definition")]
+        Enum = 15,
+        [System.ComponentModel.Description("Location adjacent to an enum value definition")]
+        EnumValue = 16,
+        [System.ComponentModel.Description("Location adjacent to an input object type definition.")]
+        InputObject = 17,
+        [System.ComponentModel.Description("Location adjacent to an input object field definition.")]
+        InputFieldDefinition = 18,
     }
     public class GraphQLAlias : GraphQLParser.AST.ASTNode
     {
@@ -119,8 +161,14 @@ namespace GraphQLParser.AST
         public GraphQLDirectiveDefinition() { }
         public GraphQLParser.AST.GraphQLArgumentsDefinition? Arguments { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLName>? Locations { get; set; }
+        public GraphQLParser.AST.GraphQLDirectiveLocations Locations { get; set; }
         public bool Repeatable { get; set; }
+    }
+    public class GraphQLDirectiveLocations : GraphQLParser.AST.ASTNode
+    {
+        public GraphQLDirectiveLocations() { }
+        public System.Collections.Generic.List<GraphQLParser.AST.DirectiveLocation> Items { get; set; }
+        public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLDirectives : GraphQLParser.AST.ASTListNode<GraphQLParser.AST.GraphQLDirective>
     {
@@ -623,6 +671,7 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask VisitDescription(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitDirective(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitDirectiveDefinition(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
+        public virtual System.Threading.Tasks.ValueTask VisitDirectiveLocations(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitDirectives(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitDocument(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitEnumTypeDefinition(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }
@@ -695,6 +744,7 @@ namespace GraphQLParser.Visitors
         System.Threading.Tasks.ValueTask VisitDescription(GraphQLParser.AST.GraphQLDescription description, TContext context);
         System.Threading.Tasks.ValueTask VisitDirective(GraphQLParser.AST.GraphQLDirective directive, TContext context);
         System.Threading.Tasks.ValueTask VisitDirectiveDefinition(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context);
+        System.Threading.Tasks.ValueTask VisitDirectiveLocations(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context);
         System.Threading.Tasks.ValueTask VisitDirectives(GraphQLParser.AST.GraphQLDirectives directives, TContext context);
         System.Threading.Tasks.ValueTask VisitDocument(GraphQLParser.AST.GraphQLDocument document, TContext context);
         System.Threading.Tasks.ValueTask VisitEnumTypeDefinition(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context);
@@ -766,6 +816,7 @@ namespace GraphQLParser.Visitors
         public override System.Threading.Tasks.ValueTask VisitDescription(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitDirective(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitDirectiveDefinition(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
+        public override System.Threading.Tasks.ValueTask VisitDirectiveLocations(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitDirectives(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitDocument(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitEnumTypeDefinition(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }

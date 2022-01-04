@@ -8,6 +8,31 @@ namespace GraphQLParser
     // WARNING: mutable struct, pass it by reference to those methods that will change it
     internal partial struct ParserContext
     {
+        private static string[] DirectiveLocationOneOf { get; set; } = new[]
+        {
+            // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
+            "QUERY",
+            "MUTATION",
+            "SUBSCRIPTION",
+            "FIELD",
+            "FRAGMENT_DEFINITION",
+            "FRAGMENT_SPREAD",
+            "INLINE_FRAGMENT",
+            "VARIABLE_DEFINITION",
+            // http://spec.graphql.org/June2018/#TypeSystemDirectiveLocation
+            "SCHEMA",
+            "SCALAR",
+            "OBJECT",
+            "FIELD_DEFINITION",
+            "ARGUMENT_DEFINITION",
+            "INTERFACE",
+            "UNION",
+            "ENUM",
+            "ENUM_VALUE",
+            "INPUT_OBJECT",
+            "INPUT_FIELD_DEFINITION",
+        };
+
         private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
         private readonly ROM _source;
@@ -144,7 +169,36 @@ namespace GraphQLParser
 
         private void Throw_From_ExpectKeyword(string keyword)
         {
-            throw new GraphQLSyntaxErrorException($"Expected \"{keyword}\", found Name \"{_currentToken.Value}\"", _source, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Expected \"{keyword}\", found {_currentToken}", _source, _currentToken.Start);
+        }
+
+        private string ExpectOneOf(string[] oneOf)
+        {
+            if (_currentToken.Kind == TokenKind.NAME)
+            {
+                var found = IsAny(_currentToken, oneOf);
+                if (found != null)
+                {
+                    Advance();
+                    return found;
+                }
+            }
+
+            return Throw_From_ExpectOneOf(oneOf);
+
+            static string? IsAny(Token token, string[] oneOf)
+            {
+                foreach (string item in oneOf)
+                    if (token.Value == item)
+                        return item;
+
+                return null;
+            }
+        }
+
+        private string Throw_From_ExpectOneOf(string[] oneOf)
+        {
+            throw new GraphQLSyntaxErrorException($"Expected \"{string.Join("/", oneOf)}\", found {_currentToken}", _source, _currentToken.Start);
         }
     }
 }

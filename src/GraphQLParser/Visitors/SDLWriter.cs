@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using GraphQLParser.AST;
@@ -298,9 +299,24 @@ namespace GraphQLParser.Visitors
         {
             await Visit(directiveDefinition.Comment, context).ConfigureAwait(false);
             await Visit(directiveDefinition.Description, context).ConfigureAwait(false);
-            await context.Write("directive ").ConfigureAwait(false);
+            await context.Write("directive @").ConfigureAwait(false);
             await Visit(directiveDefinition.Name, context).ConfigureAwait(false);
             await Visit(directiveDefinition.Arguments, context).ConfigureAwait(false);
+            if (directiveDefinition.Repeatable)
+                await context.Write(" repeatable").ConfigureAwait(false);
+            await Visit(directiveDefinition.Locations, context).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public override async ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context)
+        {
+            await context.Write(" on ").ConfigureAwait(false);
+            for (int i = 0; i < directiveLocations.Items.Count; ++i)
+            {
+                await context.Write(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
+                if (i < directiveLocations.Items.Count - 1)
+                    await context.Write(" | ").ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc/>
@@ -681,6 +697,7 @@ namespace GraphQLParser.Visitors
         public override async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
         {
             await context.Write("(").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
 
             for (int i = 0; i < argumentsDefinition.Items.Count; ++i)
             {
@@ -689,6 +706,7 @@ namespace GraphQLParser.Visitors
                     await context.Write(", ").ConfigureAwait(false);
             }
 
+            await context.WriteLine().ConfigureAwait(false);
             await context.Write(")").ConfigureAwait(false);
         }
 
@@ -824,11 +842,41 @@ namespace GraphQLParser.Visitors
             context.Parents.Pop();
         }
 
-        private string GetOperationType(OperationType type) => type switch
+        private static string GetOperationType(OperationType type) => type switch
         {
+            OperationType.Query => "query",
             OperationType.Mutation => "mutation",
             OperationType.Subscription => "subscription",
-            _ => "query",
+
+            _ => throw new NotSupportedException(type.ToString()),
+        };
+
+        private static string GetDirectiveLocation(DirectiveLocation location) => location switch
+        {
+            // http://spec.graphql.org/October2021/#ExecutableDirectiveLocation
+            DirectiveLocation.Query => "QUERY",
+            DirectiveLocation.Mutation => "MUTATION",
+            DirectiveLocation.Subscription => "SUBSCRIPTION",
+            DirectiveLocation.Field => "FIELD",
+            DirectiveLocation.FragmentDefinition => "FRAGMENT_DEFINITION",
+            DirectiveLocation.FragmentSpread => "FRAGMENT_SPREAD",
+            DirectiveLocation.InlineFragment => "INLINE_FRAGMENT",
+            DirectiveLocation.VariableDefinition => "VARIABLE_DEFINITION",
+
+            // http://spec.graphql.org/October2021/#TypeSystemDirectiveLocation
+            DirectiveLocation.Schema => "SCHEMA",
+            DirectiveLocation.Scalar => "SCALAR",
+            DirectiveLocation.Object => "OBJECT",
+            DirectiveLocation.FieldDefinition => "FIELD_DEFINITION",
+            DirectiveLocation.ArgumentDefinition => "ARGUMENT_DEFINITION",
+            DirectiveLocation.Interface => "INTERFACE",
+            DirectiveLocation.Union => "UNION",
+            DirectiveLocation.Enum => "ENUM",
+            DirectiveLocation.EnumValue => "ENUM_VALUE",
+            DirectiveLocation.InputObject => "INPUT_OBJECT",
+            DirectiveLocation.InputFieldDefinition => "INPUT_FIELD_DEFINITION",
+
+            _ => throw new NotSupportedException(location.ToString()),
         };
 
         private async ValueTask WriteIndent(TContext context, int level)
@@ -854,7 +902,7 @@ namespace GraphQLParser.Visitors
                         ++level;
                 }
 
-                if (currentNode is GraphQLDescription)
+                if (currentNode is GraphQLDescription || currentNode is GraphQLDirectiveDefinition)
                     --level;
                 else if (currentNode is GraphQLComment && context.Parents.Peek() is GraphQLTypeDefinition)
                     --level;

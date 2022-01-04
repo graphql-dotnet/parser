@@ -779,6 +779,30 @@ FIELD_DEFINITION
             document.Definitions[0].ShouldBeAssignableTo<GraphQLDirectiveDefinition>().Repeatable.ShouldBe(repeatable);
         }
 
+        [Theory]
+        [InlineData("directive @dir repeatable on OOPS", 1, 30)]
+        [InlineData("directive @dir(a: Int) repeatable on OOPS", 1, 38)]
+        [InlineData("directive @dir on FIELD_DEFINITION | OOPS", 1, 38)]
+        [InlineData("directive @dir on | OOPS | ENUM_VALUE", 1, 21)]
+        [InlineData(@"directive @dir on
+FIELD_DEFINITION | OOPS", 2, 20)]
+        [InlineData(@"directive @dir on
+OOPS
+| ENUM_VALUE", 2, 1)]
+        [InlineData(@"directive @dir on
+| OOPS
+| ENUM_VALUE", 2, 3)]
+        [InlineData(@"directive @dir on
+|  FIELD_DEFINITION
+|          OOPS", 3, 12)]
+        public void Should_Throw_On_Unknown_DirectiveLocation(string text, int line, int column)
+        {
+            var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
+            ex.Description.ShouldBe("Expected \"QUERY/MUTATION/SUBSCRIPTION/FIELD/FRAGMENT_DEFINITION/FRAGMENT_SPREAD/INLINE_FRAGMENT/VARIABLE_DEFINITION/SCHEMA/SCALAR/OBJECT/FIELD_DEFINITION/ARGUMENT_DEFINITION/INTERFACE/UNION/ENUM/ENUM_VALUE/INPUT_OBJECT/INPUT_FIELD_DEFINITION\", found Name \"OOPS\"");
+            ex.Line.ShouldBe(line);
+            ex.Column.ShouldBe(column);
+        }
+
         // http://spec.graphql.org/October2021/#sec--specifiedBy
         [Fact]
         public void Should_Parse_SpecifiedBy()
