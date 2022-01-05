@@ -10,7 +10,12 @@ namespace GraphQLParser.AST
 
         public OperationType Operation { get; set; }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Name of the operation represented as a nested node.
+        /// <br/>
+        /// Note that name may be <see langword="null"/> for anonymous query.
+        /// Therefore, the compiler shows CS8766 warning about nullability mismatch.
+        /// </summary>
         public GraphQLName? Name { get; set; }
 
         public GraphQLVariablesDefinition? Variables { get; set; }

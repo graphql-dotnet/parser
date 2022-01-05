@@ -9,7 +9,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.NamedType;
 
         /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public GraphQLName Name { get; set; } = null!;
 
         /// <inheritdoc/>
         public override string ToString() => Name?.Value.ToString()!;

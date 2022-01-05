@@ -248,6 +248,7 @@ namespace GraphQLParser.Visitors
             await context.WriteLine().ConfigureAwait(false);
         }
 
+        /// <inheritdoc/>
         public override async ValueTask VisitAlias(GraphQLAlias alias, TContext context)
         {
             await Visit(alias.Comment, context).ConfigureAwait(false);
@@ -870,13 +871,13 @@ namespace GraphQLParser.Visitors
             _ => throw new NotSupportedException(location.ToString()),
         };
 
-        private async ValueTask WriteIndent(TContext context, int level)
+        private static async ValueTask WriteIndent(TContext context, int level)
         {
             for (int i = 0; i < level; ++i)
                 await context.Write("  ").ConfigureAwait(false);
         }
 
-        private int GetLevel(TContext context)
+        private static int GetLevel(TContext context)
         {
             int level = 0;
 
@@ -905,7 +906,7 @@ namespace GraphQLParser.Visitors
         }
 
         // http://spec.graphql.org/October2021/#StringCharacter
-        private async ValueTask WriteEncodedString(TContext context, ROM value)
+        private static async ValueTask WriteEncodedString(TContext context, ROM value)
         {
             await context.Write("\"").ConfigureAwait(false);
 

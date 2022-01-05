@@ -18,6 +18,6 @@ namespace GraphQLParser.AST
     public abstract class GraphQLTypeExtension : ASTNode, INamedNode
     {
         /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public GraphQLName Name { get; set; } = null!;
     }
 }

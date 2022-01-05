@@ -335,7 +335,7 @@ namespace GraphQLParser
 
             def.Name = ParseName();
             def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentsDefinition() : null;
-            def.Repeatable = Peek(TokenKind.NAME) ? ParseRepeatable() : false;
+            def.Repeatable = Peek(TokenKind.NAME) && ParseRepeatable();
             ExpectKeyword("on");
             def.Locations = ParseDirectiveLocations();
             def.Description = description;

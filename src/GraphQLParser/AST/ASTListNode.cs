@@ -23,6 +23,7 @@ namespace GraphQLParser.AST
         /// </summary>
         public TNode this[int index] => Items[index];
 
+        /// <inheritdoc />
         public IEnumerator<TNode> GetEnumerator() => Items.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();

@@ -8,6 +8,6 @@ namespace GraphQLParser.AST
         /// <summary>
         /// Name of the node represented as a nested node.
         /// </summary>
-        GraphQLName? Name { get; set; }
+        GraphQLName Name { get; set; }
     }
 }

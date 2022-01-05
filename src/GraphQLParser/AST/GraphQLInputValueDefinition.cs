@@ -3,13 +3,17 @@ namespace GraphQLParser.AST
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.InputValueDefinition"/>.
     /// </summary>
-    public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
+    public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasDefaultValueNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InputValueDefinition;
 
-        public GraphQLType? Type { get; set; }
+        /// <summary>
+        /// Nested <see cref="GraphQLType"/> AST node with input value type.
+        /// </summary>
+        public GraphQLType Type { get; set; } = null!;
 
+        /// <inheritdoc />
         public GraphQLValue? DefaultValue { get; set; }
 
         /// <inheritdoc/>
