@@ -8,7 +8,10 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.NonNullType;
 
-        public GraphQLType? Type { get; set; }
+        /// <summary>
+        /// Nested <see cref="GraphQLType"/> AST node with wrapped type.
+        /// </summary>
+        public GraphQLType Type { get; set; } = null!;
 
         /// <inheritdoc/>
         public override string ToString() => Type + "!";

@@ -9,6 +9,6 @@ namespace GraphQLParser.AST
         public GraphQLDescription? Description { get; set; }
 
         /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public GraphQLName Name { get; set; } = null!;
     }
 }

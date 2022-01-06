@@ -9,7 +9,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.Directive;
 
         /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public GraphQLName Name { get; set; } = null!;
 
         /// <summary>
         /// Arguments for this directive.

@@ -242,7 +242,7 @@ type Dog implements Animal
                 var actual = context.Writer.ToString();
                 actual.ShouldBe(expected);
 
-                using (var parsedBack = actual.Parse())
+                using (actual.Parse())
                 {
                     // should be parsed back
                 }
@@ -288,10 +288,9 @@ type Dog implements Animal
             expected = expected.Replace("___", new string('_', 9000));
 
             input = "\"\"\"" + input + "\"\"\"";
-            if (isBlockString)
-                expected = "\"\"\"" + expected + "\"\"\"";
-            else
-                expected = "\"" + expected + "\"";
+            expected = isBlockString
+                ? "\"\"\"" + expected + "\"\"\""
+                : "\"" + expected + "\"";
 
             var context = new TestContext();
 
@@ -305,7 +304,7 @@ type Dog implements Animal
                 renderedDescription = renderedDescription.Replace("\r\n", "\n");
                 renderedDescription.ShouldBe(expected);
 
-                using (var parsedBack = renderedOriginal.Parse())
+                using (renderedOriginal.Parse())
                 {
                     // should be parsed back
                 }
@@ -334,7 +333,7 @@ type Dog implements Animal
                 var rendered = context.Writer.ToString();
                 rendered.ShouldBe(expected);
 
-                using (var parsedBack = rendered.Parse())
+                using (rendered.Parse())
                 {
                     // should be parsed back
                 }

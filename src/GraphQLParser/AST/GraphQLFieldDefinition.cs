@@ -13,7 +13,10 @@ namespace GraphQLParser.AST
         /// </summary>
         public GraphQLArgumentsDefinition? Arguments { get; set; }
 
-        public GraphQLType? Type { get; set; }
+        /// <summary>
+        /// Nested <see cref="GraphQLType"/> AST node with field type.
+        /// </summary>
+        public GraphQLType Type { get; set; } = null!;
 
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }

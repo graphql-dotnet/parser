@@ -8,10 +8,13 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Field;
 
+        /// <summary>
+        /// Nested <see cref="GraphQLAlias"/> AST node with field alias (if any).
+        /// </summary>
         public GraphQLAlias? Alias { get; set; }
 
         /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public GraphQLName Name { get; set; } = null!;
 
         /// <summary>
         /// Arguments for this field.

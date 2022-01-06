@@ -384,7 +384,7 @@ namespace GraphQLParser.Tests
             document.Definitions.Count.ShouldBe(1);
             var def = document.Definitions.First() as GraphQLOperationDefinition;
             def.Variables.Count.ShouldBe(3);
-            def.Variables.First().Comment.ShouldNotBeNull().Text.ShouldBe("comment1");
+            def.Variables[0].Comment.ShouldNotBeNull().Text.ShouldBe("comment1");
             def.Variables.Skip(1).First().Comment.ShouldBeNull();
             def.Variables.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("comment3");
         }
@@ -443,9 +443,9 @@ scalar JSON
             var d1 = document.Definitions.First() as GraphQLEnumTypeDefinition;
             d1.Name.Value.ShouldBe("Animal");
             d1.Comment.ShouldNotBeNull().Text.ShouldBe(" different animals");
-            d1.Values.First().Name.Value.ShouldBe("Cat");
-            d1.Values.First().Comment.ShouldNotBeNull();
-            d1.Values.First().Comment.Text.ShouldBe("a cat");
+            d1.Values[0].Name.Value.ShouldBe("Cat");
+            d1.Values[0].Comment.ShouldNotBeNull();
+            d1.Values[0].Comment.Text.ShouldBe("a cat");
             d1.Values.Skip(2).First().Name.Value.ShouldBe("Octopus");
             d1.Values.Skip(2).First().Comment.ShouldBeNull();
 
@@ -453,7 +453,7 @@ scalar JSON
             d2.Name.Value.ShouldBe("Parameter");
             d2.Comment.ShouldBeNull();
             d2.Fields.Count.ShouldBe(1);
-            d2.Fields.First().Comment.Text.ShouldBe("any value");
+            d2.Fields[0].Comment.Text.ShouldBe("any value");
         }
 
         [Theory]
@@ -936,26 +936,27 @@ Cat
         }
 
         [Theory]
-        [InlineData("extend")]
-        [InlineData("extend scalar")]
-        [InlineData("extend scalar A")]
-        [InlineData("extend scalar A B")]
-        [InlineData("extend type")]
-        [InlineData("extend type A")]
-        [InlineData("extend type A B")]
-        [InlineData("extend interface")]
-        [InlineData("extend interface A")]
-        [InlineData("extend interface A B")]
-        [InlineData("extend union")]
-        [InlineData("extend union A")]
-        [InlineData("extend enum")]
-        [InlineData("extend enum A")]
-        [InlineData("extend input")]
-        [InlineData("extend input A")]
-        [InlineData("extend variable")]
-        public void Should_Throw_Extensions(string text)
+        [InlineData("extend", "Unexpected EOF")]
+        [InlineData("extend scalar", "Expected Name, found EOF")]
+        [InlineData("extend scalar A", "Unexpected EOF")]
+        [InlineData("extend scalar A B", "Unexpected Name \"B\"")]
+        [InlineData("extend type", "Expected Name, found EOF")]
+        [InlineData("extend type A", "Unexpected EOF")]
+        [InlineData("extend type A B", "Unexpected Name \"B\"")]
+        [InlineData("extend interface", "Expected Name, found EOF")]
+        [InlineData("extend interface A", "Unexpected EOF")]
+        [InlineData("extend interface A B", "Unexpected Name \"B\"")]
+        [InlineData("extend union", "Expected Name, found EOF")]
+        [InlineData("extend union A", "Unexpected EOF")]
+        [InlineData("extend enum", "Expected Name, found EOF")]
+        [InlineData("extend enum A", "Unexpected EOF")]
+        [InlineData("extend input", "Expected Name, found EOF")]
+        [InlineData("extend input A", "Unexpected EOF")]
+        [InlineData("extend variable", "Unexpected Name \"variable\"")]
+        public void Should_Throw_Extensions(string text, string description)
         {
             var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
+            ex.Description.ShouldBe(description);
         }
 
         [Theory]

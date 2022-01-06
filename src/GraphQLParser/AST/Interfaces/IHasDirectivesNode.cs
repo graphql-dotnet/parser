@@ -6,7 +6,7 @@ namespace GraphQLParser.AST
     public interface IHasDirectivesNode
     {
         /// <summary>
-        /// Directives of the node represented as a nested node.
+        /// Directives of the AST node represented as a nested node.
         /// </summary>
         GraphQLDirectives? Directives { get; set; }
     }

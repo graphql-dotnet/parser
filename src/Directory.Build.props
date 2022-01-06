@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>CS8766</WarningsNotAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Marek Magdziak</Authors>
     <Copyright>Copyright 2016-2019 $(Authors) et al. All rights reserved.</Copyright>

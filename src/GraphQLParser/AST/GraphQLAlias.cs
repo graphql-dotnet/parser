@@ -3,15 +3,13 @@ namespace GraphQLParser.AST
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.Alias"/>.
     /// </summary>
-    public class GraphQLAlias : ASTNode
+    public class GraphQLAlias : ASTNode, INamedNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.TypeCondition;
 
-        /// <summary>
-        /// Alias name.
-        /// </summary>
-        public GraphQLName? Name { get; set; }
+        /// <inheritdoc/>
+        public GraphQLName Name { get; set; } = null!;
     }
 
     internal sealed class GraphQLAliasWithLocation : GraphQLAlias

@@ -9,7 +9,7 @@ namespace GraphQLParser.AST
         public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
 
         /// <inheritdoc/>
-        public GraphQLName? Name { get; set; }
+        public GraphQLName Name { get; set; } = null!;
 
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }

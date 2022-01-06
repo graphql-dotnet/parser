@@ -3,15 +3,22 @@ namespace GraphQLParser.AST
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.VariableDefinition"/>.
     /// </summary>
-    public class GraphQLVariableDefinition : ASTNode, IHasDirectivesNode
+    public class GraphQLVariableDefinition : ASTNode, IHasDirectivesNode, IHasDefaultValueNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.VariableDefinition;
 
-        public GraphQLVariable? Variable { get; set; }
+        /// <summary>
+        /// Nested <see cref="GraphQLVariable"/> AST node with variable name.
+        /// </summary>
+        public GraphQLVariable Variable { get; set; } = null!;
 
-        public GraphQLType? Type { get; set; }
+        /// <summary>
+        /// Nested <see cref="GraphQLType"/> AST node with variable type.
+        /// </summary>
+        public GraphQLType Type { get; set; } = null!;
 
+        /// <inheritdoc />
         public GraphQLValue? DefaultValue { get; set; }
 
         /// <inheritdoc/>

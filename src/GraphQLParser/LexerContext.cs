@@ -112,7 +112,7 @@ namespace GraphQLParser
                     code = NextCode();
                 }
 
-                code = ReadDigitsFromOwnSource(code);
+                _ = ReadDigitsFromOwnSource(code);
             }
 
             return isFloat ? CreateFloatToken(start) : CreateIntToken(start);
