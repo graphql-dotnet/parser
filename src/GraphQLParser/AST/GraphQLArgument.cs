@@ -11,7 +11,10 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public GraphQLName Name { get; set; } = null!;
 
-        public GraphQLValue? Value { get; set; }
+        /// <summary>
+        /// Nested <see cref="GraphQLValue"/> AST node with argument value.
+        /// </summary>
+        public GraphQLValue Value { get; set; } = null!;
     }
 
     internal sealed class GraphQLArgumentWithLocation : GraphQLArgument

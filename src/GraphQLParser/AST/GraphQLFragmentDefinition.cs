@@ -3,13 +3,21 @@ namespace GraphQLParser.AST
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.FragmentDefinition"/>.
     /// </summary>
-    public class GraphQLFragmentDefinition : GraphQLInlineFragment, INamedNode
+    public class GraphQLFragmentDefinition : GraphQLExecutableDefinition, INamedNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.FragmentDefinition;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Name of the fragment represented as a nested AST node.
+        /// http://spec.graphql.org/October2021/#FragmentName
+        /// </summary>
         public GraphQLName Name { get; set; } = null!;
+
+        /// <summary>
+        /// Nested <see cref="GraphQLTypeCondition"/> AST node with type condition of this fragment.
+        /// </summary>
+        public GraphQLTypeCondition TypeCondition { get; set; } = null!;
     }
 
     internal sealed class GraphQLFragmentDefinitionWithLocation : GraphQLFragmentDefinition

@@ -6,7 +6,7 @@ namespace GraphQLParser.AST
     public interface IHasFieldsDefinitionNode
     {
         /// <summary>
-        /// Fields definition of the node represented as a nested node.
+        /// Nested <see cref="GraphQLFieldsDefinition"/> AST node with fields definition of this AST node.
         /// </summary>
         GraphQLFieldsDefinition? Fields { get; set; }
     }

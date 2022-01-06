@@ -3,11 +3,14 @@ namespace GraphQLParser.AST
     /// <summary>
     /// AST node for <see cref="ASTNodeKind.OperationDefinition"/>.
     /// </summary>
-    public class GraphQLOperationDefinition : ASTNode, IHasDirectivesNode, INamedNode
+    public class GraphQLOperationDefinition : GraphQLExecutableDefinition, INamedNode
     {
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
 
+        /// <summary>
+        /// Type of operation definition.
+        /// </summary>
         public OperationType Operation { get; set; }
 
         /// <summary>
@@ -16,14 +19,14 @@ namespace GraphQLParser.AST
         /// Note that name may be <see langword="null"/> for anonymous query.
         /// Therefore, the compiler shows CS8766 warning about nullability mismatch.
         /// </summary>
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
         public GraphQLName? Name { get; set; }
+#pragma warning restore CS8766
 
+        /// <summary>
+        /// Nested <see cref="GraphQLVariablesDefinition"/> AST node with operation variables (if any).
+        /// </summary>
         public GraphQLVariablesDefinition? Variables { get; set; }
-
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
-
-        public GraphQLSelectionSet? SelectionSet { get; set; }
     }
 
     internal sealed class GraphQLOperationDefinitionWithLocation : GraphQLOperationDefinition

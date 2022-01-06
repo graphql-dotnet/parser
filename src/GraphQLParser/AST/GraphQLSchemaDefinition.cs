@@ -16,7 +16,10 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }
 
-        public List<GraphQLRootOperationTypeDefinition>? OperationTypes { get; set; }
+        /// <summary>
+        /// All root operation type definitions in this schema represented as a list of nested AST nodes.
+        /// </summary>
+        public List<GraphQLRootOperationTypeDefinition> OperationTypes { get; set; } = null!;
     }
 
     internal sealed class GraphQLSchemaDefinitionWithLocation : GraphQLSchemaDefinition

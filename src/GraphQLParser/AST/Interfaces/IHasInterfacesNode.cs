@@ -6,7 +6,7 @@ namespace GraphQLParser.AST
     public interface IHasInterfacesNode
     {
         /// <summary>
-        /// Implemented interfaces of the node represented as a nested node.
+        /// Nested <see cref="GraphQLImplementsInterfaces"/> AST node with interfaces implemented by this AST node.
         /// </summary>
         GraphQLImplementsInterfaces? Interfaces { get; set; }
     }

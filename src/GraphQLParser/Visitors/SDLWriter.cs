@@ -594,7 +594,7 @@ namespace GraphQLParser.Visitors
             await context.Write("{").ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
 
-            if (schemaDefinition.OperationTypes?.Count > 0)
+            if (schemaDefinition.OperationTypes.Count > 0)
             {
                 for (int i = 0; i < schemaDefinition.OperationTypes.Count; ++i)
                 {
