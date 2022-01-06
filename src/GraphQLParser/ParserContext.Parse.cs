@@ -668,9 +668,7 @@ namespace GraphQLParser
             def.Comment = GetComment();
             ExpectKeyword("fragment");
             def.Name = ParseFragmentName();
-#pragma warning disable CS8601 // Possible null reference assignment.
-            def.TypeCondition = ParseTypeCondition(optional: false); // never returns null
-#pragma warning restore CS8601
+            def.TypeCondition = ParseTypeCondition(optional: false)!; // never returns null
             def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
             def.SelectionSet = ParseSelectionSet();
             def.Location = GetLocation(start);
