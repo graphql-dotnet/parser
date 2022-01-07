@@ -1,20 +1,20 @@
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.ObjectField"/>.
+    /// AST node for <see cref="ASTNodeKind.StringValue"/>.
     /// </summary>
-    public class GraphQLObjectField : ASTNode, INamedNode
+    public class GraphQLStringValue : GraphQLValue
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectField;
+        public override ASTNodeKind Kind => ASTNodeKind.StringValue;
 
-        /// <inheritdoc/>
-        public GraphQLName Name { get; set; } = null!;
-
-        public GraphQLValue Value { get; set; } = null!;
+        /// <summary>
+        /// Value represented as <see cref="ROM"/>.
+        /// </summary>
+        public ROM Value { get; set; }
     }
 
-    internal sealed class GraphQLObjectFieldWithLocation : GraphQLObjectField
+    internal sealed class GraphQLStringValueWithLocation : GraphQLStringValue
     {
         private GraphQLLocation _location;
 
@@ -25,7 +25,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectFieldWithComment : GraphQLObjectField
+    internal sealed class GraphQLStringValueWithComment : GraphQLStringValue
     {
         private GraphQLComment? _comment;
 
@@ -36,7 +36,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectFieldFull : GraphQLObjectField
+    internal sealed class GraphQLStringValueFull : GraphQLStringValue
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

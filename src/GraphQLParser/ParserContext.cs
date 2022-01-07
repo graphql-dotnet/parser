@@ -166,7 +166,7 @@ namespace GraphQLParser
             }
         }
 
-        private void Expect(TokenKind kind)
+        private void Expect(TokenKind kind, string? description = null)
         {
             if (_currentToken.Kind == kind)
             {
@@ -174,13 +174,13 @@ namespace GraphQLParser
             }
             else
             {
-                Throw_From_Expect(kind);
+                Throw_From_Expect(kind, description);
             }
         }
 
-        private void Throw_From_Expect(TokenKind kind)
+        private void Throw_From_Expect(TokenKind kind, string? description = null)
         {
-            throw new GraphQLSyntaxErrorException($"Expected {Token.GetTokenKindDescription(kind)}, found {_currentToken}", _source, _currentToken.Start);
+            throw new GraphQLSyntaxErrorException($"Expected {Token.GetTokenKindDescription(kind)}, found {_currentToken}{description}", _source, _currentToken.Start);
         }
 
         private void ExpectKeyword(string keyword)

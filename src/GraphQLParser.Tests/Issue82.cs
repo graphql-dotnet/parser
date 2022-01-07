@@ -30,7 +30,7 @@ namespace GraphQLParser.Tests
             var selection = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
             selection.Arguments.Count.ShouldBe(2);
             selection.Arguments[0].Value.ShouldBeAssignableTo<GraphQLVariable>().Name.Value.ShouldBe("username");
-            selection.Arguments[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>().Value.ShouldBe("Pete");
+            selection.Arguments[1].Value.ShouldBeAssignableTo<GraphQLStringValue>().Value.ShouldBe("Pete");
         }
     }
 }

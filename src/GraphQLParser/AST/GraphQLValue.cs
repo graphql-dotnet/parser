@@ -1,15 +1,9 @@
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// Base AST node for four value nodes:
+    /// Base AST node for all value nodes.
     /// <br/>
-    /// <see cref="GraphQLScalarValue">Scalar</see>
-    /// <br/>
-    /// <see cref="ASTNodeKind.ListValue">List</see>
-    /// <br/>
-    /// <see cref="ASTNodeKind.ObjectValue">Object</see>
-    /// <br/>
-    /// <see cref="ASTNodeKind.Variable">Variable</see>
+    /// <see href="http://spec.graphql.org/October2021/#Value"/>
     /// </summary>
     public abstract class GraphQLValue : ASTNode
     {

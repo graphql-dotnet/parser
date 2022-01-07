@@ -2,6 +2,7 @@ namespace GraphQLParser.AST
 {
     /// <summary>
     /// Base AST node for <see cref="GraphQLOperationDefinition"/> and <see cref="GraphQLFragmentDefinition"/>.
+    /// <br/>
     /// http://spec.graphql.org/October2021/#ExecutableDefinition
     /// </summary>
     public abstract class GraphQLExecutableDefinition : ASTNode, IHasDirectivesNode

@@ -158,33 +158,34 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
-        public virtual async ValueTask VisitIntValue(GraphQLScalarValue intValue, TContext context)
+        public virtual async ValueTask VisitIntValue(GraphQLIntValue intValue, TContext context)
         {
             await Visit(intValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public virtual async ValueTask VisitFloatValue(GraphQLScalarValue floatValue, TContext context)
+        public virtual async ValueTask VisitFloatValue(GraphQLFloatValue floatValue, TContext context)
         {
             await Visit(floatValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public virtual async ValueTask VisitStringValue(GraphQLScalarValue stringValue, TContext context)
+        public virtual async ValueTask VisitStringValue(GraphQLStringValue stringValue, TContext context)
         {
             await Visit(stringValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public virtual async ValueTask VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context)
+        public virtual async ValueTask VisitBooleanValue(GraphQLBooleanValue booleanValue, TContext context)
         {
             await Visit(booleanValue.Comment, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public virtual async ValueTask VisitEnumValue(GraphQLScalarValue enumValue, TContext context)
+        public virtual async ValueTask VisitEnumValue(GraphQLEnumValue enumValue, TContext context)
         {
             await Visit(enumValue.Comment, context).ConfigureAwait(false);
+            await Visit(enumValue.Name, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -245,7 +246,7 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
-        public virtual async ValueTask VisitNullValue(GraphQLScalarValue nullValue, TContext context)
+        public virtual async ValueTask VisitNullValue(GraphQLNullValue nullValue, TContext context)
         {
             await Visit(nullValue.Comment, context).ConfigureAwait(false);
         }
@@ -362,7 +363,7 @@ namespace GraphQLParser.Visitors
         {
             await Visit(enumValueDefinition.Comment, context).ConfigureAwait(false);
             await Visit(enumValueDefinition.Description, context).ConfigureAwait(false);
-            await Visit(enumValueDefinition.Name, context).ConfigureAwait(false);
+            await Visit(enumValueDefinition.EnumValue, context).ConfigureAwait(false);
             await Visit(enumValueDefinition.Directives, context).ConfigureAwait(false);
         }
 
@@ -496,16 +497,12 @@ namespace GraphQLParser.Visitors
                     GraphQLOperationDefinition operationDefinition => VisitOperationDefinition(operationDefinition, context),
                     GraphQLRootOperationTypeDefinition rootOperationTypeDefinition => VisitRootOperationTypeDefinition(rootOperationTypeDefinition, context),
                     GraphQLScalarTypeDefinition scalarTypeDefinition => VisitScalarTypeDefinition(scalarTypeDefinition, context),
-                    GraphQLScalarValue scalarValue => scalarValue.Kind switch
-                    {
-                        ASTNodeKind.BooleanValue => VisitBooleanValue(scalarValue, context),
-                        ASTNodeKind.EnumValue => VisitEnumValue(scalarValue, context),
-                        ASTNodeKind.FloatValue => VisitFloatValue(scalarValue, context),
-                        ASTNodeKind.IntValue => VisitIntValue(scalarValue, context),
-                        ASTNodeKind.NullValue => VisitNullValue(scalarValue, context),
-                        ASTNodeKind.StringValue => VisitStringValue(scalarValue, context),
-                        _ => throw new NotSupportedException($"Unknown GraphQLScalarValue of kind '{scalarValue.Kind}'."),
-                    },
+                    GraphQLBooleanValue boolValue => VisitBooleanValue(boolValue, context),
+                    GraphQLEnumValue enumValue => VisitEnumValue(enumValue, context),
+                    GraphQLFloatValue floatValue => VisitFloatValue(floatValue, context),
+                    GraphQLIntValue intValue => VisitIntValue(intValue, context),
+                    GraphQLNullValue nullValue => VisitNullValue(nullValue, context),
+                    GraphQLStringValue stringValue => VisitStringValue(stringValue, context),
                     GraphQLSchemaDefinition schemaDefinition => VisitSchemaDefinition(schemaDefinition, context),
                     GraphQLSelectionSet selectionSet => VisitSelectionSet(selectionSet, context),
                     GraphQLScalarTypeExtension scalarEx => VisitScalarTypeExtension(scalarEx, context),

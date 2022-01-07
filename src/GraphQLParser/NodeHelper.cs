@@ -96,18 +96,6 @@ namespace GraphQLParser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GraphQLScalarValue CreateGraphQLScalarValue(IgnoreOptions options, ASTNodeKind kind)
-        {
-            return options switch
-            {
-                IgnoreOptions.All => new GraphQLScalarValue(kind),
-                IgnoreOptions.Comments => new GraphQLScalarValueWithLocation(kind),
-                IgnoreOptions.Locations => new GraphQLScalarValueWithComment(kind),
-                _ => new GraphQLScalarValueFull(kind),
-            };
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static GraphQLEnumValueDefinition CreateGraphQLEnumValueDefinition(IgnoreOptions options)
         {
             return options switch
@@ -618,6 +606,72 @@ namespace GraphQLParser
                 IgnoreOptions.Comments => new GraphQLUnionMemberTypesWithLocation(),
                 IgnoreOptions.Locations => new GraphQLUnionMemberTypesWithComment(),
                 _ => new GraphQLUnionMemberTypesFull(),
+            };
+        }
+
+        public static GraphQLEnumValue CreateGraphQLEnumValue(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLEnumValue(),
+                IgnoreOptions.Comments => new GraphQLEnumValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLEnumValueWithComment(),
+                _ => new GraphQLEnumValueFull(),
+            };
+        }
+
+        public static GraphQLNullValue CreateGraphQLNullValue(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLNullValue(),
+                IgnoreOptions.Comments => new GraphQLNullValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLNullValueWithComment(),
+                _ => new GraphQLNullValueFull(),
+            };
+        }
+
+        public static GraphQLBooleanValue CreateGraphQLBooleanValue(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLBooleanValue(),
+                IgnoreOptions.Comments => new GraphQLBooleanValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLBooleanValueWithComment(),
+                _ => new GraphQLBooleanValueFull(),
+            };
+        }
+
+        public static GraphQLFloatValue CreateGraphQLFloatValue(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLFloatValue(),
+                IgnoreOptions.Comments => new GraphQLFloatValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLFloatValueWithComment(),
+                _ => new GraphQLFloatValueFull(),
+            };
+        }
+
+        public static GraphQLIntValue CreateGraphQLIntValue(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLIntValue(),
+                IgnoreOptions.Comments => new GraphQLIntValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLIntValueWithComment(),
+                _ => new GraphQLIntValueFull(),
+            };
+        }
+
+        public static GraphQLStringValue CreateGraphQLStringValue(IgnoreOptions options)
+        {
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLStringValue(),
+                IgnoreOptions.Comments => new GraphQLStringValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLStringValueWithComment(),
+                _ => new GraphQLStringValueFull(),
             };
         }
 

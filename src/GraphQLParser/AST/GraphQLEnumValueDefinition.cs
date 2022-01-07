@@ -8,6 +8,13 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.EnumValueDefinition;
 
+        /// <summary>
+        /// Enum value represented as a nested AST node. Alas, inherited
+        /// <see cref="GraphQLTypeDefinition.Name"/> property holds almost
+        /// the same data and should be set as well.
+        /// </summary>
+        public GraphQLEnumValue EnumValue { get; set; } = null!;
+
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }
     }
