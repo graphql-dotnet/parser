@@ -359,7 +359,7 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
-        public override async ValueTask VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context)
+        public override async ValueTask VisitBooleanValue(GraphQLBooleanValue booleanValue, TContext context)
         {
             await Visit(booleanValue.Comment, context).ConfigureAwait(false);
             await context.Write(booleanValue.Value).ConfigureAwait(false);
@@ -750,38 +750,38 @@ namespace GraphQLParser.Visitors
         }
 
         /// <inheritdoc/>
-        public override async ValueTask VisitNullValue(GraphQLScalarValue nullValue, TContext context)
+        public override async ValueTask VisitNullValue(GraphQLNullValue nullValue, TContext context)
         {
             await Visit(nullValue.Comment, context).ConfigureAwait(false);
             await context.Write("null").ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public override async ValueTask VisitStringValue(GraphQLScalarValue stringValue, TContext context)
+        public override async ValueTask VisitStringValue(GraphQLStringValue stringValue, TContext context)
         {
             await Visit(stringValue.Comment, context).ConfigureAwait(false);
             await WriteEncodedString(context, stringValue.Value);
         }
 
         /// <inheritdoc/>
-        public override async ValueTask VisitIntValue(GraphQLScalarValue intValue, TContext context)
+        public override async ValueTask VisitIntValue(GraphQLIntValue intValue, TContext context)
         {
             await Visit(intValue.Comment, context).ConfigureAwait(false);
             await context.Write(intValue.Value).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public override async ValueTask VisitFloatValue(GraphQLScalarValue floatValue, TContext context)
+        public override async ValueTask VisitFloatValue(GraphQLFloatValue floatValue, TContext context)
         {
             await Visit(floatValue.Comment, context).ConfigureAwait(false);
             await context.Write(floatValue.Value).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public override async ValueTask VisitEnumValue(GraphQLScalarValue enumValue, TContext context)
+        public override async ValueTask VisitEnumValue(GraphQLEnumValue enumValue, TContext context)
         {
             await Visit(enumValue.Comment, context).ConfigureAwait(false);
-            await context.Write(enumValue.Value).ConfigureAwait(false);
+            await Visit(enumValue.Name, context).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>

@@ -208,13 +208,13 @@ namespace GraphQLParser.Tests
             field.SelectionSet.Selections.Count.ShouldBe(1);
             field.Arguments.Count.ShouldBe(9);
 
-            var boolValue = field.Arguments[0].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            var boolValue = field.Arguments[0].Value.ShouldBeAssignableTo<GraphQLBooleanValue>();
             boolValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for bool");
 
-            var nullValue = field.Arguments[1].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            var nullValue = field.Arguments[1].Value.ShouldBeAssignableTo<GraphQLNullValue>();
             nullValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for null");
 
-            var enumValue = field.Arguments[2].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            var enumValue = field.Arguments[2].Value.ShouldBeAssignableTo<GraphQLEnumValue>();
             enumValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for enum");
 
             var listValue = field.Arguments[3].Value.ShouldBeAssignableTo<GraphQLListValue>();
@@ -223,13 +223,13 @@ namespace GraphQLParser.Tests
             var objValue = field.Arguments[4].Value.ShouldBeAssignableTo<GraphQLObjectValue>();
             objValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for object");
 
-            var intValue = field.Arguments[5].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            var intValue = field.Arguments[5].Value.ShouldBeAssignableTo<GraphQLIntValue>();
             intValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for int");
 
-            var floatValue = field.Arguments[6].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            var floatValue = field.Arguments[6].Value.ShouldBeAssignableTo<GraphQLFloatValue>();
             floatValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for float");
 
-            var stringValue = field.Arguments[7].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            var stringValue = field.Arguments[7].Value.ShouldBeAssignableTo<GraphQLStringValue>();
             stringValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for string");
 
             var varValue = field.Arguments[8].Value.ShouldBeAssignableTo<GraphQLVariable>();
@@ -525,6 +525,18 @@ scalar JSON
             ex.Description.ShouldBe("Expected \"query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive\", found Name \"superquery\"");
             ex.Line.ShouldBe(1);
             ex.Column.ShouldBe(1);
+        }
+
+        [Theory]
+        [InlineData("enum E { true A }", "Unexpected Name \"true\"; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.", 1, 10)]
+        [InlineData("enum E { B false }", "Unexpected Name \"false\"; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.", 1, 12)]
+        [InlineData("enum E { A null B }", "Unexpected Name \"null\"; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.", 1, 12)]
+        public void Should_Throw_On_Invalid_EnumValue(string query, string description, int line, int column)
+        {
+            var ex = Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse());
+            ex.Description.ShouldBe(description);
+            ex.Line.ShouldBe(line);
+            ex.Column.ShouldBe(column);
         }
 
         [Theory]
@@ -825,7 +837,7 @@ OOPS
             def.Directives[0].Name.Value.ShouldBe("specifiedBy");
             def.Directives[0].Arguments.Count.ShouldBe(1);
             def.Directives[0].Arguments[0].Name.Value.ShouldBe("url");
-            var value = def.Directives[0].Arguments[0].Value.ShouldBeAssignableTo<GraphQLScalarValue>();
+            var value = def.Directives[0].Arguments[0].Value.ShouldBeAssignableTo<GraphQLStringValue>();
             value.Value.ShouldBe("https://tools.ietf.org/html/rfc4122");
         }
 
@@ -936,23 +948,23 @@ Cat
         }
 
         [Theory]
-        [InlineData("extend", "Unexpected EOF")]
-        [InlineData("extend scalar", "Expected Name, found EOF")]
-        [InlineData("extend scalar A", "Unexpected EOF")]
-        [InlineData("extend scalar A B", "Unexpected Name \"B\"")]
-        [InlineData("extend type", "Expected Name, found EOF")]
-        [InlineData("extend type A", "Unexpected EOF")]
-        [InlineData("extend type A B", "Unexpected Name \"B\"")]
-        [InlineData("extend interface", "Expected Name, found EOF")]
-        [InlineData("extend interface A", "Unexpected EOF")]
-        [InlineData("extend interface A B", "Unexpected Name \"B\"")]
-        [InlineData("extend union", "Expected Name, found EOF")]
-        [InlineData("extend union A", "Unexpected EOF")]
-        [InlineData("extend enum", "Expected Name, found EOF")]
-        [InlineData("extend enum A", "Unexpected EOF")]
-        [InlineData("extend input", "Expected Name, found EOF")]
-        [InlineData("extend input A", "Unexpected EOF")]
-        [InlineData("extend variable", "Unexpected Name \"variable\"")]
+        [InlineData("extend", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#TypeExtension")]
+        [InlineData("extend scalar", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
+        [InlineData("extend scalar A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
+        [InlineData("extend scalar A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
+        [InlineData("extend type", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension")]
+        [InlineData("extend type A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension")]
+        [InlineData("extend type A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension")]
+        [InlineData("extend interface", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension")]
+        [InlineData("extend interface A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension")]
+        [InlineData("extend interface A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension")]
+        [InlineData("extend union", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#UnionTypeExtension")]
+        [InlineData("extend union A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#UnionTypeExtension")]
+        [InlineData("extend enum", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#EnumTypeExtension")]
+        [InlineData("extend enum A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#EnumTypeExtension")]
+        [InlineData("extend input", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension")]
+        [InlineData("extend input A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension")]
+        [InlineData("extend variable", "Unexpected Name \"variable\"; for more information see http://spec.graphql.org/October2021/#TypeExtension")]
         public void Should_Throw_Extensions(string text, string description)
         {
             var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());

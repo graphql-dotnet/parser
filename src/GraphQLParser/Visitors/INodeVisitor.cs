@@ -81,29 +81,29 @@ namespace GraphQLParser.Visitors
         ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context);
 
         /// <summary>
-        /// Visits <see cref="GraphQLScalarValue"/> node.
+        /// Visits <see cref="GraphQLIntValue"/> node.
         /// </summary>
-        ValueTask VisitIntValue(GraphQLScalarValue intValue, TContext context);
+        ValueTask VisitIntValue(GraphQLIntValue intValue, TContext context);
 
         /// <summary>
-        /// Visits <see cref="GraphQLScalarValue"/> node.
+        /// Visits <see cref="GraphQLFloatValue"/> node.
         /// </summary>
-        ValueTask VisitFloatValue(GraphQLScalarValue floatValue, TContext context);
+        ValueTask VisitFloatValue(GraphQLFloatValue floatValue, TContext context);
 
         /// <summary>
-        /// Visits <see cref="GraphQLScalarValue"/> node.
+        /// Visits <see cref="GraphQLStringValue"/> node.
         /// </summary>
-        ValueTask VisitStringValue(GraphQLScalarValue stringValue, TContext context);
+        ValueTask VisitStringValue(GraphQLStringValue stringValue, TContext context);
 
         /// <summary>
-        /// Visits <see cref="GraphQLScalarValue"/> node.
+        /// Visits <see cref="GraphQLBooleanValue"/> node.
         /// </summary>
-        ValueTask VisitBooleanValue(GraphQLScalarValue booleanValue, TContext context);
+        ValueTask VisitBooleanValue(GraphQLBooleanValue booleanValue, TContext context);
 
         /// <summary>
-        /// Visits <see cref="GraphQLScalarValue"/> node.
+        /// Visits <see cref="GraphQLEnumValue"/> node.
         /// </summary>
-        ValueTask VisitEnumValue(GraphQLScalarValue enumValue, TContext context);
+        ValueTask VisitEnumValue(GraphQLEnumValue enumValue, TContext context);
 
         /// <summary>
         /// Visits <see cref="GraphQLListValue"/> node.
@@ -146,9 +146,9 @@ namespace GraphQLParser.Visitors
         ValueTask VisitNonNullType(GraphQLNonNullType nonNullType, TContext context);
 
         /// <summary>
-        /// Visits <see cref="GraphQLScalarValue"/> node.
+        /// Visits <see cref="GraphQLNullValue"/> node.
         /// </summary>
-        ValueTask VisitNullValue(GraphQLScalarValue nullValue, TContext context);
+        ValueTask VisitNullValue(GraphQLNullValue nullValue, TContext context);
 
         /// <summary>
         /// Visits <see cref="GraphQLSchemaDefinition"/> node.

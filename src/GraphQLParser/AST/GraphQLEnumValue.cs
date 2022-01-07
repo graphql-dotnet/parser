@@ -1,20 +1,18 @@
 namespace GraphQLParser.AST
 {
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.ObjectField"/>.
+    /// AST node for <see cref="ASTNodeKind.EnumValue"/>.
     /// </summary>
-    public class GraphQLObjectField : ASTNode, INamedNode
+    public class GraphQLEnumValue : GraphQLValue, INamedNode
     {
         /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectField;
+        public override ASTNodeKind Kind => ASTNodeKind.EnumValue;
 
         /// <inheritdoc/>
         public GraphQLName Name { get; set; } = null!;
-
-        public GraphQLValue Value { get; set; } = null!;
     }
 
-    internal sealed class GraphQLObjectFieldWithLocation : GraphQLObjectField
+    internal sealed class GraphQLEnumValueWithLocation : GraphQLEnumValue
     {
         private GraphQLLocation _location;
 
@@ -25,7 +23,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectFieldWithComment : GraphQLObjectField
+    internal sealed class GraphQLEnumValueWithComment : GraphQLEnumValue
     {
         private GraphQLComment? _comment;
 
@@ -36,7 +34,7 @@ namespace GraphQLParser.AST
         }
     }
 
-    internal sealed class GraphQLObjectFieldFull : GraphQLObjectField
+    internal sealed class GraphQLEnumValueFull : GraphQLEnumValue
     {
         private GraphQLLocation _location;
         private GraphQLComment? _comment;

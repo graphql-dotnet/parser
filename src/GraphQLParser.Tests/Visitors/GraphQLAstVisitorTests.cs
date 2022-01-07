@@ -13,13 +13,13 @@ namespace GraphQLParser.Tests.Visitors
     {
         public class CountVisitor : DefaultNodeVisitor<CountContext>
         {
-            public override async ValueTask VisitBooleanValue(GraphQLScalarValue booleanValue, CountContext context)
+            public override async ValueTask VisitBooleanValue(GraphQLBooleanValue booleanValue, CountContext context)
             {
                 context.VisitedBooleanValues.Add(booleanValue);
                 await base.VisitBooleanValue(booleanValue, context);
             }
 
-            public override async ValueTask VisitIntValue(GraphQLScalarValue intValue, CountContext context)
+            public override async ValueTask VisitIntValue(GraphQLIntValue intValue, CountContext context)
             {
                 context.VisitedIntValues.Add(intValue);
                 await base.VisitIntValue(intValue, context);
@@ -55,13 +55,13 @@ namespace GraphQLParser.Tests.Visitors
                 await base.VisitDirective(directive, context);
             }
 
-            public override async ValueTask VisitEnumValue(GraphQLScalarValue enumValue, CountContext context)
+            public override async ValueTask VisitEnumValue(GraphQLEnumValue enumValue, CountContext context)
             {
                 context.VisitedEnumValues.Add(enumValue);
                 await base.VisitEnumValue(enumValue, context);
             }
 
-            public override async ValueTask VisitStringValue(GraphQLScalarValue stringValue, CountContext context)
+            public override async ValueTask VisitStringValue(GraphQLStringValue stringValue, CountContext context)
             {
                 context.VisitedStringValues.Add(stringValue);
                 await base.VisitStringValue(stringValue, context);
@@ -81,7 +81,7 @@ namespace GraphQLParser.Tests.Visitors
                 await base.VisitField(field, context);
             }
 
-            public override async ValueTask VisitFloatValue(GraphQLScalarValue floatValue, CountContext context)
+            public override async ValueTask VisitFloatValue(GraphQLFloatValue floatValue, CountContext context)
             {
                 context.VisitedFloatValues.Add(floatValue);
                 await base.VisitFloatValue(floatValue, context);
@@ -192,19 +192,19 @@ namespace GraphQLParser.Tests.Visitors
             public List<GraphQLArgument> VisitedArguments = new();
             public List<ASTNode> VisitedDefinitions = new();
             public List<GraphQLDirective> VisitedDirectives = new();
-            public List<GraphQLScalarValue> VisitedEnumValues = new();
+            public List<GraphQLEnumValue> VisitedEnumValues = new();
             public List<GraphQLField> VisitedFields = new();
-            public List<GraphQLScalarValue> VisitedFloatValues = new();
+            public List<GraphQLFloatValue> VisitedFloatValues = new();
             public List<GraphQLFragmentDefinition> VisitedFragmentDefinitions = new();
             public List<GraphQLFragmentSpread> VisitedFragmentSpreads = new();
             public List<GraphQLTypeCondition> VisitedFragmentTypeConditions = new();
             public List<GraphQLInlineFragment> VisitedInlineFragments = new();
-            public List<GraphQLScalarValue> VisitedIntValues = new();
+            public List<GraphQLIntValue> VisitedIntValues = new();
             public List<GraphQLName> VisitedNames = new();
             public List<GraphQLSelectionSet> VisitedSelectionSets = new();
-            public List<GraphQLScalarValue> VisitedStringValues = new();
+            public List<GraphQLStringValue> VisitedStringValues = new();
             public List<GraphQLVariable> VisitedVariables = new();
-            public List<GraphQLScalarValue> VisitedBooleanValues = new();
+            public List<GraphQLBooleanValue> VisitedBooleanValues = new();
 
             public CancellationToken CancellationToken { get; set; }
         }
