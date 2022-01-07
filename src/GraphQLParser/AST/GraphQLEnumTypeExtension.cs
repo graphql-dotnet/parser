@@ -11,6 +11,9 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }
 
+        /// <summary>
+        /// Nested <see cref="GraphQLEnumValuesDefinition"/> AST node with enum values.
+        /// </summary>
         public GraphQLEnumValuesDefinition? Values { get; set; }
     }
 

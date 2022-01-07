@@ -464,7 +464,7 @@ namespace GraphQLParser
         }
 
         // http://spec.graphql.org/October2021/#EnumValue
-        private GraphQLValue ParseEnumValue()
+        private GraphQLValue ParseEnumValue() // TODO: deal with enum value as ValueNode vs NameNode
         {
             IncreaseDepth();
 
@@ -668,7 +668,7 @@ namespace GraphQLParser
             def.Comment = GetComment();
             ExpectKeyword("fragment");
             def.Name = ParseFragmentName();
-            def.TypeCondition = ParseTypeCondition(optional: false);
+            def.TypeCondition = ParseTypeCondition(optional: false)!; // never returns null
             def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
             def.SelectionSet = ParseSelectionSet();
             def.Location = GetLocation(start);

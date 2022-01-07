@@ -8,11 +8,13 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.InterfaceTypeDefinition;
 
+        /// <inheritdoc/>
         public GraphQLImplementsInterfaces? Interfaces { get; set; }
 
         /// <inheritdoc/>
         public GraphQLDirectives? Directives { get; set; }
 
+        /// <inheritdoc/>
         public GraphQLFieldsDefinition? Fields { get; set; }
     }
 

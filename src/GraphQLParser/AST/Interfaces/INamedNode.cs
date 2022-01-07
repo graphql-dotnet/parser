@@ -6,7 +6,7 @@ namespace GraphQLParser.AST
     public interface INamedNode
     {
         /// <summary>
-        /// Name of the node represented as a nested node.
+        /// Name of the node represented as a nested AST node.
         /// </summary>
         GraphQLName Name { get; set; }
     }

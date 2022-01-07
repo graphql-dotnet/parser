@@ -12,7 +12,10 @@ namespace GraphQLParser.AST
         /// <inheritdoc/>
         public override ASTNodeKind Kind => ASTNodeKind.Document;
 
-        public List<ASTNode>? Definitions { get; set; }
+        /// <summary>
+        /// All definitions in this document represented as a list of nested AST nodes.
+        /// </summary>
+        public List<ASTNode> Definitions { get; set; } = null!;
 
         /// <summary>
         /// Comments that have not been correlated to any AST node of GraphQL document.
@@ -24,6 +27,7 @@ namespace GraphQLParser.AST
         // In this case, array pools are used, memory from which then need to be returned to the pool.
         internal List<(IMemoryOwner<char> owner, ASTNode rentedBy)>? RentedMemoryTracker { get; set; }
 
+        /// <inheritdoc cref="Dispose()"/>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
