@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
@@ -709,6 +710,9 @@ scalar JSON
             def.Variables[0].Directives[0].Name.Value.ShouldBe("a");
             def.Variables[0].Directives[1].Name.Value.ShouldBe("b");
             def.Variables[0].Directives[1].Arguments.Count.ShouldBe(2);
+
+            // ASTListNode small test
+            def.Variables.GetEnumerator().ShouldBe(((IEnumerable)def.Variables).GetEnumerator());
         }
     }
 

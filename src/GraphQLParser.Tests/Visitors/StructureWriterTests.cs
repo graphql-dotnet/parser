@@ -315,15 +315,17 @@ field: Int }", @"Document
     }
 
     [Theory]
-    //           01234567890123456789
-    [InlineData("query a { name age }", @"Document (0,20)
-  OperationDefinition (0,20)
+    //           01234567890123456789012
+    [InlineData("query a { name a: age }", @"Document (0,23)
+  OperationDefinition (0,23)
     Name [a] (6,7)
-    SelectionSet (8,20)
+    SelectionSet (8,23)
       Field (10,14)
         Name [name] (10,14)
-      Field (15,18)
-        Name [age] (15,18)
+      Field (15,21)
+        Alias (15,17)
+          Name [a] (15,16)
+        Name [age] (18,21)
 ")]
     //           01234567890123456789
     [InlineData("directive @a on ENUM", @"Document (0,20)
@@ -342,6 +344,17 @@ field: Int }", @"Document
       EnumValueDefinition (13,18)
         EnumValue (13,18)
           Name [GREEN] (13,18)
+")]
+    //           01234567890123456789012
+    [InlineData("{ f(x:10) }", @"Document (0,11)
+  OperationDefinition (0,11)
+    SelectionSet (0,11)
+      Field (2,9)
+        Name [f] (2,3)
+        Arguments (3,9)
+          Argument (4,8)
+            Name [x] (4,5)
+            IntValue (6,8)
 ")]
     public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
     {

@@ -6,7 +6,7 @@ namespace GraphQLParser.AST;
 public class GraphQLAlias : ASTNode, INamedNode
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.TypeCondition;
+    public override ASTNodeKind Kind => ASTNodeKind.Alias;
 
     /// <inheritdoc/>
     public GraphQLName Name { get; set; } = null!;
