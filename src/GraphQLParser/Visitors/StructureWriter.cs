@@ -44,7 +44,6 @@ public class StructureWriter<TContext> : DefaultNodeVisitor<TContext>
             await context.Write(" ").ConfigureAwait(false);
             await context.Write(node.Location.ToString()).ConfigureAwait(false); //TODO: allocations
         }
-
         await context.WriteLine().ConfigureAwait(false);
         await base.Visit(node, context).ConfigureAwait(false);
         context.Parents.Pop();

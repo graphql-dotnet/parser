@@ -331,15 +331,30 @@ field: Int }", @"Document
     Name [a] (11,12)
     DirectiveLocations (16,20)
 ")]
+    //           01234567890123456789
+    [InlineData("enum A { RED GREEN }", @"Document (0,20)
+  EnumTypeDefinition (0,20)
+    Name [A] (5,6)
+    EnumValuesDefinition (7,20)
+      EnumValueDefinition (9,12)
+        EnumValue (9,12)
+          Name [RED] (9,12)
+      EnumValueDefinition (13,18)
+        EnumValue (13,18)
+          Name [GREEN] (13,18)
+")]
     public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
     {
-        var context = new TestContext();
-
-        using (var document = text.Parse())
+        foreach (var option in new[] { IgnoreOptions.None, IgnoreOptions.Comments })
         {
-            await _structWriter3.Visit(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
-            actual.ShouldBe(expected);
+            var context = new TestContext();
+
+            using (var document = text.Parse(new ParserOptions { Ignore = option }))
+            {
+                await _structWriter3.Visit(document, context).ConfigureAwait(false);
+                var actual = context.Writer.ToString();
+                actual.ShouldBe(expected);
+            }
         }
     }
 }
