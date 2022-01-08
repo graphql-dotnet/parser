@@ -1,23 +1,22 @@
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// An enumeration of the GraphQL operation types.
+/// </summary>
+public enum OperationType
 {
     /// <summary>
-    /// An enumeration of the GraphQL operation types.
+    /// A query operation.
     /// </summary>
-    public enum OperationType
-    {
-        /// <summary>
-        /// A query operation.
-        /// </summary>
-        Query,
+    Query,
 
-        /// <summary>
-        /// A mutation operation.
-        /// </summary>
-        Mutation,
+    /// <summary>
+    /// A mutation operation.
+    /// </summary>
+    Mutation,
 
-        /// <summary>
-        /// A subscription operation.
-        /// </summary>
-        Subscription
-    }
+    /// <summary>
+    /// A subscription operation.
+    /// </summary>
+    Subscription
 }

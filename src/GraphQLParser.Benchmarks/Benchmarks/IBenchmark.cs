@@ -1,9 +1,8 @@
-namespace GraphQLParser.Benchmarks
-{
-    internal interface IBenchmark
-    {
-        void GlobalSetup();
+namespace GraphQLParser.Benchmarks;
 
-        void Run();
-    }
+internal interface IBenchmark
+{
+    void GlobalSetup();
+
+    void Run();
 }

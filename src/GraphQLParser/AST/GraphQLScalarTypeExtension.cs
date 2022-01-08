@@ -1,54 +1,53 @@
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// AST node for <see cref="ASTNodeKind.ScalarTypeExtension"/>.
+/// </summary>
+public class GraphQLScalarTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
 {
-    /// <summary>
-    /// AST node for <see cref="ASTNodeKind.ScalarTypeExtension"/>.
-    /// </summary>
-    public class GraphQLScalarTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
-    {
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ScalarTypeExtension;
+    /// <inheritdoc/>
+    public override ASTNodeKind Kind => ASTNodeKind.ScalarTypeExtension;
 
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
+    /// <inheritdoc/>
+    public GraphQLDirectives? Directives { get; set; }
+}
+
+internal sealed class GraphQLScalarTypeExtensionWithLocation : GraphQLScalarTypeExtension
+{
+    private GraphQLLocation _location;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
+    }
+}
+
+internal sealed class GraphQLScalarTypeExtensionWithComment : GraphQLScalarTypeExtension
+{
+    private GraphQLComment? _comment;
+
+    public override GraphQLComment? Comment
+    {
+        get => _comment;
+        set => _comment = value;
+    }
+}
+
+internal sealed class GraphQLScalarTypeExtensionFull : GraphQLScalarTypeExtension
+{
+    private GraphQLLocation _location;
+    private GraphQLComment? _comment;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
     }
 
-    internal sealed class GraphQLScalarTypeExtensionWithLocation : GraphQLScalarTypeExtension
+    public override GraphQLComment? Comment
     {
-        private GraphQLLocation _location;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-    }
-
-    internal sealed class GraphQLScalarTypeExtensionWithComment : GraphQLScalarTypeExtension
-    {
-        private GraphQLComment? _comment;
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
-    }
-
-    internal sealed class GraphQLScalarTypeExtensionFull : GraphQLScalarTypeExtension
-    {
-        private GraphQLLocation _location;
-        private GraphQLComment? _comment;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
+        get => _comment;
+        set => _comment = value;
     }
 }

@@ -1,59 +1,58 @@
 using System.Diagnostics;
 
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// AST node for <see cref="ASTNodeKind.Name"/>.
+/// </summary>
+[DebuggerDisplay("{Value}")]
+public class GraphQLName : ASTNode
 {
+    /// <inheritdoc/>
+    public override ASTNodeKind Kind => ASTNodeKind.Name;
+
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.Name"/>.
+    /// Name value represented as <see cref="ROM"/>.
     /// </summary>
-    [DebuggerDisplay("{Value}")]
-    public class GraphQLName : ASTNode
-    {
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.Name;
+    public ROM Value { get; set; }
+}
 
-        /// <summary>
-        /// Name value represented as <see cref="ROM"/>.
-        /// </summary>
-        public ROM Value { get; set; }
+internal sealed class GraphQLNameWithLocation : GraphQLName
+{
+    private GraphQLLocation _location;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
+    }
+}
+
+internal sealed class GraphQLNameWithComment : GraphQLName
+{
+    private GraphQLComment? _comment;
+
+    public override GraphQLComment? Comment
+    {
+        get => _comment;
+        set => _comment = value;
+    }
+}
+
+internal sealed class GraphQLNameFull : GraphQLName
+{
+    private GraphQLLocation _location;
+    private GraphQLComment? _comment;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
     }
 
-    internal sealed class GraphQLNameWithLocation : GraphQLName
+    public override GraphQLComment? Comment
     {
-        private GraphQLLocation _location;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-    }
-
-    internal sealed class GraphQLNameWithComment : GraphQLName
-    {
-        private GraphQLComment? _comment;
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
-    }
-
-    internal sealed class GraphQLNameFull : GraphQLName
-    {
-        private GraphQLLocation _location;
-        private GraphQLComment? _comment;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
+        get => _comment;
+        set => _comment = value;
     }
 }

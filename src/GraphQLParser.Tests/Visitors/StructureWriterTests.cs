@@ -6,23 +6,23 @@ using GraphQLParser.Visitors;
 using Shouldly;
 using Xunit;
 
-namespace GraphQLParser.Tests.Visitors
+namespace GraphQLParser.Tests.Visitors;
+
+public class StructureWriterTests
 {
-    public class StructureWriterTests
+    private class TestContext : IWriteContext
     {
-        private class TestContext : IWriteContext
-        {
-            public TextWriter Writer { get; set; } = new StringWriter();
+        public TextWriter Writer { get; set; } = new StringWriter();
 
-            public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
+        public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
 
-            public CancellationToken CancellationToken { get; set; }
-        }
+        public CancellationToken CancellationToken { get; set; }
+    }
 
-        private static readonly StructureWriter<TestContext> _structWriter = new(new StructureWriterOptions());
+    private static readonly StructureWriter<TestContext> _structWriter = new(new StructureWriterOptions());
 
-        [Theory]
-        [InlineData("query a { name age }", @"Document
+    [Theory]
+    [InlineData("query a { name age }", @"Document
   OperationDefinition
     Name [a]
     SelectionSet
@@ -31,24 +31,24 @@ namespace GraphQLParser.Tests.Visitors
       Field
         Name [age]
 ")]
-        [InlineData("scalar Test", @"Document
+    [InlineData("scalar Test", @"Document
   ScalarTypeDefinition
     Name [Test]
 ")]
-        [InlineData("scalar JSON @exportable", @"Document
+    [InlineData("scalar JSON @exportable", @"Document
   ScalarTypeDefinition
     Name [JSON]
     Directives
       Directive
         Name [exportable]
 ")]
-        [InlineData("{a}", @"Document
+    [InlineData("{a}", @"Document
   OperationDefinition
     SelectionSet
       Field
         Name [a]
 ")]
-        [InlineData(@"{
+    [InlineData(@"{
   a {
     b {
       c
@@ -97,16 +97,15 @@ namespace GraphQLParser.Tests.Visitors
                       Field
                         Name [k]
 ")]
-        public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
-        {
-            var context = new TestContext();
+    public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
+    {
+        var context = new TestContext();
 
-            using (var document = text.Parse())
-            {
-                await _structWriter.Visit(document, context).ConfigureAwait(false);
-                var actual = context.Writer.ToString();
-                actual.ShouldBe(expected);
-            }
+        using (var document = text.Parse())
+        {
+            await _structWriter.Visit(document, context).ConfigureAwait(false);
+            var actual = context.Writer.ToString();
+            actual.ShouldBe(expected);
         }
     }
 }
