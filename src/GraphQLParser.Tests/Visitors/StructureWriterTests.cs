@@ -97,6 +97,184 @@ public class StructureWriterTests
                       Field
                         Name [k]
 ")]
+    [InlineData(@"
+""""""Very good type""""""
+type T {
+# the best field ever
+field: Int }", @"Document
+  ObjectTypeDefinition
+    Description
+    Name [T]
+    FieldsDefinition
+      FieldDefinition
+        Comment
+        Name [field]
+        NamedType
+          Name [Int]
+")]
+    [InlineData("mutation add($a: Int!, $b: [Int]) { result }", @"Document
+  OperationDefinition
+    Name [add]
+    VariablesDefinition
+      VariableDefinition
+        Variable
+          Name [a]
+        NonNullType
+          NamedType
+            Name [Int]
+      VariableDefinition
+        Variable
+          Name [b]
+        ListType
+          NamedType
+            Name [Int]
+    SelectionSet
+      Field
+        Name [result]
+")]
+    [InlineData("type T implements I & K { f: ID }", @"Document
+  ObjectTypeDefinition
+    Name [T]
+    ImplementsInterfaces
+      NamedType
+        Name [I]
+      NamedType
+        Name [K]
+    FieldsDefinition
+      FieldDefinition
+        Name [f]
+        NamedType
+          Name [ID]
+")]
+    [InlineData("interface I implements K", @"Document
+  InterfaceTypeDefinition
+    Name [I]
+    ImplementsInterfaces
+      NamedType
+        Name [K]
+")]
+    [InlineData("query { field(list: [1, null, 2], obj: { x: true }) }", @"Document
+  OperationDefinition
+    SelectionSet
+      Field
+        Name [field]
+        Arguments
+          Argument
+            Name [list]
+            ListValue
+              IntValue
+              NullValue
+              IntValue
+          Argument
+            Name [obj]
+            ObjectValue
+              ObjectField
+                Name [x]
+                BooleanValue
+")]
+    [InlineData("schema @exportable { query: Q mutation: M subscription: S }", @"Document
+  SchemaDefinition
+    Directives
+      Directive
+        Name [exportable]
+    RootOperationTypeDefinition
+      NamedType
+        Name [Q]
+    RootOperationTypeDefinition
+      NamedType
+        Name [M]
+    RootOperationTypeDefinition
+      NamedType
+        Name [S]
+")]
+    [InlineData("union U = A | B", @"Document
+  UnionTypeDefinition
+    Name [U]
+    UnionMemberTypes
+      NamedType
+        Name [A]
+      NamedType
+        Name [B]
+")]
+    [InlineData("enum Color { RED GREEN }", @"Document
+  EnumTypeDefinition
+    Name [Color]
+    EnumValuesDefinition
+      EnumValueDefinition
+        EnumValue
+          Name [RED]
+      EnumValueDefinition
+        EnumValue
+          Name [GREEN]
+")]
+    [InlineData("input UserData { Login: String! Password: String! }", @"Document
+  InputObjectTypeDefinition
+    Name [UserData]
+    InputFieldsDefinition
+      InputValueDefinition
+        Name [Login]
+        NonNullType
+          NamedType
+            Name [String]
+      InputValueDefinition
+        Name [Password]
+        NonNullType
+          NamedType
+            Name [String]
+")]
+    [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT", @"Document
+  DirectiveDefinition
+    Name [skip]
+    ArgumentsDefinition
+      InputValueDefinition
+        Name [if]
+        NonNullType
+          NamedType
+            Name [Boolean]
+    DirectiveLocations
+")]
+    [InlineData("extend scalar S @dir", @"Document
+  ScalarTypeExtension
+    Name [S]
+    Directives
+      Directive
+        Name [dir]
+")]
+    [InlineData("extend type T @dir", @"Document
+  ObjectTypeExtension
+    Name [T]
+    Directives
+      Directive
+        Name [dir]
+")]
+    [InlineData("extend interface I @dir", @"Document
+  InterfaceTypeExtension
+    Name [I]
+    Directives
+      Directive
+        Name [dir]
+")]
+    [InlineData("extend union U @dir", @"Document
+  UnionTypeExtension
+    Name [U]
+    Directives
+      Directive
+        Name [dir]
+")]
+    [InlineData("extend enum E @dir", @"Document
+  EnumTypeExtension
+    Name [E]
+    Directives
+      Directive
+        Name [dir]
+")]
+    [InlineData("extend input P @dir", @"Document
+  InputObjectTypeExtension
+    Name [P]
+    Directives
+      Directive
+        Name [dir]
+")]
     public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
     {
         var context = new TestContext();
