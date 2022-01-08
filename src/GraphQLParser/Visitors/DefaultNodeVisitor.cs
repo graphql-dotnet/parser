@@ -464,7 +464,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     public virtual ValueTask Visit(ASTNode? node, TContext context)
     {
         return node == null
-            ? new ValueTask(Task.CompletedTask)
+            ? default
             : node switch
             {
                 GraphQLArgument argument => VisitArgument(argument, context),
