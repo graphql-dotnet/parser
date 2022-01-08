@@ -1028,10 +1028,14 @@ internal partial struct ParserContext
 
         int start = _currentToken.Start;
 
+        // the compiler caches these delegates in the generated code
+        ParseCallback<GraphQLObjectField> constant = (ref ParserContext context) => context.ParseObjectField(true);
+        ParseCallback<GraphQLObjectField> value = (ref ParserContext context) => context.ParseObjectField(false);
+
         var val = NodeHelper.CreateGraphQLObjectValue(_ignoreOptions);
 
         val.Comment = GetComment();
-        val.Fields = ParseObjectFields(isConstant);
+        val.Fields = ZeroOrMore(TokenKind.BRACE_L, isConstant ? constant : value, TokenKind.BRACE_R);
         val.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1073,18 +1077,6 @@ internal partial struct ParserContext
 
         DecreaseDepth();
         return field;
-    }
-
-    // No special AST node for the list of ObjectField
-    private List<GraphQLObjectField> ParseObjectFields(bool isConstant)
-    {
-        var fields = new List<GraphQLObjectField>();
-
-        Expect(TokenKind.BRACE_L);
-        while (!Skip(TokenKind.BRACE_R))
-            fields.Add(ParseObjectField(isConstant));
-
-        return fields;
     }
 
     // http://spec.graphql.org/October2021/#ObjectTypeDefinition

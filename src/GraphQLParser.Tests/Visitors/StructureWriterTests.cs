@@ -19,7 +19,8 @@ public class StructureWriterTests
         public CancellationToken CancellationToken { get; set; }
     }
 
-    private static readonly StructureWriter<TestContext> _structWriter = new(new StructureWriterOptions());
+    private static readonly StructureWriter<TestContext> _structWriter1 = new(new StructureWriterOptions { WriteNames = true });
+    private static readonly StructureWriter<TestContext> _structWriter2 = new(new StructureWriterOptions { WriteNames = false });
 
     [Theory]
     [InlineData("query a { name age }", @"Document
@@ -153,7 +154,7 @@ field: Int }", @"Document
       NamedType
         Name [K]
 ")]
-    [InlineData("query { field(list: [1, null, 2], obj: { x: true }) }", @"Document
+    [InlineData("query { field(list: [1, null, 2], obj: { x: true }, empty: { }) }", @"Document
   OperationDefinition
     SelectionSet
       Field
@@ -171,6 +172,9 @@ field: Int }", @"Document
               ObjectField
                 Name [x]
                 BooleanValue
+          Argument
+            Name [empty]
+            ObjectValue
 ")]
     [InlineData("schema @exportable { query: Q mutation: M subscription: S }", @"Document
   SchemaDefinition
@@ -281,7 +285,29 @@ field: Int }", @"Document
 
         using (var document = text.Parse())
         {
-            await _structWriter.Visit(document, context).ConfigureAwait(false);
+            await _structWriter1.Visit(document, context).ConfigureAwait(false);
+            var actual = context.Writer.ToString();
+            actual.ShouldBe(expected);
+        }
+    }
+
+    [Theory]
+    [InlineData("query a { name age }", @"Document
+  OperationDefinition
+    Name
+    SelectionSet
+      Field
+        Name
+      Field
+        Name
+")]
+    public async Task WriteTreeVisitor_Should_Print_Tree_Without_Names(string text, string expected)
+    {
+        var context = new TestContext();
+
+        using (var document = text.Parse())
+        {
+            await _structWriter2.Visit(document, context).ConfigureAwait(false);
             var actual = context.Writer.ToString();
             actual.ShouldBe(expected);
         }

@@ -10,7 +10,17 @@ public class GraphQLSelectionSet : ASTNode
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.SelectionSet;
 
-    public List<ASTNode>? Selections { get; set; }
+    /// <summary>
+    /// All selections in this set represented as a list of nested AST nodes.
+    /// <br/>
+    /// Available nodes:
+    /// <list type="number">
+    /// <item><see cref="GraphQLField"/></item>
+    /// <item><see cref="GraphQLFragmentSpread"/></item>
+    /// <item><see cref="GraphQLInlineFragment"/></item>
+    /// </list>
+    /// </summary>
+    public List<ASTNode> Selections { get; set; } = null!;
 }
 
 internal sealed class GraphQLSelectionSetWithLocation : GraphQLSelectionSet
