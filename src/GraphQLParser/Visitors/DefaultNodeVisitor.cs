@@ -480,7 +480,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
                 GraphQLField field => VisitField(field, context),
                 GraphQLFieldDefinition fieldDefinition => VisitFieldDefinition(fieldDefinition, context),
                 GraphQLFragmentDefinition fragmentDefinition => VisitFragmentDefinition(fragmentDefinition, context), // inherits from GraphQLInlineFragment so should be above
-                    GraphQLFragmentSpread fragmentSpread => VisitFragmentSpread(fragmentSpread, context),
+                GraphQLFragmentSpread fragmentSpread => VisitFragmentSpread(fragmentSpread, context),
                 GraphQLInlineFragment inlineFragment => VisitInlineFragment(inlineFragment, context),
                 GraphQLTypeCondition typeCondition => VisitTypeCondition(typeCondition, context),
                 GraphQLInputObjectTypeDefinition inputObjectTypeDefinition => VisitInputObjectTypeDefinition(inputObjectTypeDefinition, context),
