@@ -15,7 +15,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitDocument(GraphQLDocument document, TContext context)
     {
-        if (document.Definitions?.Count > 0)
+        if (document.Definitions.Count > 0)
         {
             for (int i = 0; i < document.Definitions.Count; ++i)
             {
@@ -237,11 +237,8 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await context.Write("{").ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
 
-        if (selectionSet.Selections?.Count > 0)
-        {
-            foreach (var selection in selectionSet.Selections)
-                await Visit(selection, context).ConfigureAwait(false);
-        }
+        foreach (var selection in selectionSet.Selections)
+            await Visit(selection, context).ConfigureAwait(false);
 
         await WriteIndent(context, level).ConfigureAwait(false);
         await context.Write("}").ConfigureAwait(false);
@@ -695,7 +692,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         {
             await Visit(argumentsDefinition.Items[i], context).ConfigureAwait(false);
             if (i < argumentsDefinition.Items.Count - 1)
-                await context.Write(", ").ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
         }
 
         await context.WriteLine().ConfigureAwait(false);
@@ -736,17 +733,17 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     public override async ValueTask VisitListValue(GraphQLListValue listValue, TContext context)
     {
         await Visit(listValue.Comment, context).ConfigureAwait(false);
+        await context.Write("[").ConfigureAwait(false);
         if (listValue.Values?.Count > 0)
         {
-            await context.Write("[").ConfigureAwait(false);
             for (int i = 0; i < listValue.Values.Count; ++i)
             {
                 await Visit(listValue.Values[i], context).ConfigureAwait(false);
                 if (i < listValue.Values.Count - 1)
                     await context.Write(", ").ConfigureAwait(false);
             }
-            await context.Write("]").ConfigureAwait(false);
         }
+        await context.Write("]").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -788,22 +785,17 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     public override async ValueTask VisitObjectValue(GraphQLObjectValue objectValue, TContext context)
     {
         await Visit(objectValue.Comment, context).ConfigureAwait(false);
-
+        await context.Write("{").ConfigureAwait(false);
         if (objectValue.Fields?.Count > 0)
         {
-            await context.Write("{ ").ConfigureAwait(false);
             for (int i = 0; i < objectValue.Fields.Count; ++i)
             {
                 await Visit(objectValue.Fields[i], context).ConfigureAwait(false);
                 if (i < objectValue.Fields.Count - 1)
                     await context.Write(", ").ConfigureAwait(false);
             }
-            await context.Write(" }").ConfigureAwait(false);
         }
-        else
-        {
-            await context.Write("{ }").ConfigureAwait(false);
-        }
+        await context.Write("}").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>

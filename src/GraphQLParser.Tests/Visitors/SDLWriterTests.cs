@@ -24,9 +24,18 @@ public class SDLWriterTests
     private static readonly SDLWriter<TestContext> _sdlWriter = new();
 
     [Theory]
+    [InlineData("{ a(list: [], obj: {}) }", @"
+{
+  a(list: [], obj: {})
+}
+")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT", @"directive @skip(
   if: Boolean!
 ) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    [InlineData("directive @twoArgs(a: Int, b: String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRAGMENT_SPREAD|INLINE_FRAGMENT|VARIABLE_DEFINITION|SCHEMA|SCALAR|OBJECT|FIELD_DEFINITION|ARGUMENT_DEFINITION|INTERFACE|UNION|ENUM|ENUM_VALUE|INPUT_OBJECT|INPUT_FIELD_DEFINITION", @"directive @twoArgs(
+  a: Int
+  b: String!
+) repeatable on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | VARIABLE_DEFINITION | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION")]
     [InlineData("directive @exportable on | SCHEMA", @"directive @exportable on SCHEMA")]
     [InlineData("directive @exportable on | SCHEMA | ENUM", @"directive @exportable on SCHEMA | ENUM")]
     [InlineData("extend scalar Foo @exportable", @"extend scalar Foo @exportable
@@ -143,7 +152,7 @@ fragment Frag on Query
   c: age
 }
 ")]
-    [InlineData(@"schema @checked { mutation: MyMutation subscription: MySub }", @"schema @checked
+    [InlineData(@"schema @checked @documented { mutation: MyMutation subscription: MySub }", @"schema @checked @documented
 {
   mutation: MyMutation
   subscription: MySub
@@ -166,7 +175,7 @@ BLUE }",
 {
   RED
   #good color
-  GREEN @directive(list: [1, 2, 3, null, { }, { name: ""tom"", age: 42 }])
+  GREEN @directive(list: [1, 2, 3, null, {}, {name: ""tom"", age: 42}])
   ""another good color""
   BLUE
 }
@@ -174,14 +183,14 @@ BLUE }",
     [InlineData(@"# super query
 #
 # multiline
-query summary($id: ID!) { name(full:true,kind: UPPER) age1:age address { street @short(length:5,x:""a"", pi: 3.14)
+query summary($id: ID!, $detailed: Boolean! = true) { name(full:true,kind: UPPER) age1:age address { street @short(length:5,x:""a"", pi: 3.14)
 #need
 building } }",
 
 @"# super query
 #
 # multiline
-query summary($id: ID!)
+query summary($id: ID!, $detailed: Boolean! = true)
 {
   name(full: true, kind: UPPER)
   age1: age

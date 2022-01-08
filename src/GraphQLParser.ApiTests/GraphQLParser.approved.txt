@@ -455,7 +455,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLSelectionSet() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.Collections.Generic.List<GraphQLParser.AST.ASTNode>? Selections { get; set; }
+        public System.Collections.Generic.List<GraphQLParser.AST.ASTNode> Selections { get; set; }
     }
     public class GraphQLStringValue : GraphQLParser.AST.GraphQLValue
     {
