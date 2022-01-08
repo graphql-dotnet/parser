@@ -565,7 +565,7 @@ internal partial struct ParserContext
 
         GraphQLLocation aliasLocation = default;
 
-        if (Skip(TokenKind.COLON))
+        if (Skip(TokenKind.COLON)) // alias exists
         {
             aliasLocation = GetLocation(start);
 
@@ -573,9 +573,9 @@ internal partial struct ParserContext
             aliasComment = nameOrAliasComment;
 
             name = ParseName("; for more information see http://spec.graphql.org/October2021/#Field");
-            alias = nameOrAlias; // TODO: should add Alias AST node + check depth
+            alias = nameOrAlias;
         }
-        else
+        else // no alias
         {
             aliasComment = null;
             nameComment = nameOrAliasComment;
