@@ -39,6 +39,12 @@ public class StructureWriter<TContext> : DefaultNodeVisitor<TContext>
             await context.Write(name.Value).ConfigureAwait(false);
             await context.Write("]").ConfigureAwait(false);
         }
+        if (Options.WriteLocations)
+        {
+            await context.Write(" ").ConfigureAwait(false);
+            await context.Write(node.Location.ToString()).ConfigureAwait(false); //TODO: allocations
+        }
+
         await context.WriteLine().ConfigureAwait(false);
         await base.Visit(node, context).ConfigureAwait(false);
         context.Parents.Pop();
@@ -54,4 +60,9 @@ public class StructureWriterOptions
     /// Write <see cref="GraphQLName.Value"/> into the output.
     /// </summary>
     public bool WriteNames { get; set; } = true;
+
+    /// <summary>
+    /// Write <see cref="ASTNode.Location"/> into the output.
+    /// </summary>
+    public bool WriteLocations { get; set; }
 }

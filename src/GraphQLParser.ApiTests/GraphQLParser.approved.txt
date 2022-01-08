@@ -914,6 +914,7 @@ namespace GraphQLParser.Visitors
     public class StructureWriterOptions
     {
         public StructureWriterOptions() { }
+        public bool WriteLocations { get; set; }
         public bool WriteNames { get; set; }
     }
     public class StructureWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>

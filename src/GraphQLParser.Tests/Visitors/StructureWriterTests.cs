@@ -21,6 +21,7 @@ public class StructureWriterTests
 
     private static readonly StructureWriter<TestContext> _structWriter1 = new(new StructureWriterOptions { WriteNames = true });
     private static readonly StructureWriter<TestContext> _structWriter2 = new(new StructureWriterOptions { WriteNames = false });
+    private static readonly StructureWriter<TestContext> _structWriter3 = new(new StructureWriterOptions { WriteNames = true, WriteLocations = true });
 
     [Theory]
     [InlineData("query a { name age }", @"Document
@@ -308,6 +309,35 @@ field: Int }", @"Document
         using (var document = text.Parse())
         {
             await _structWriter2.Visit(document, context).ConfigureAwait(false);
+            var actual = context.Writer.ToString();
+            actual.ShouldBe(expected);
+        }
+    }
+
+    [Theory]
+    //           01234567890123456789
+    [InlineData("query a { name age }", @"Document (0,20)
+  OperationDefinition (0,20)
+    Name [a] (6,7)
+    SelectionSet (8,20)
+      Field (10,14)
+        Name [name] (10,14)
+      Field (15,18)
+        Name [age] (15,18)
+")]
+    //           01234567890123456789
+    [InlineData("directive @a on ENUM", @"Document (0,20)
+  DirectiveDefinition (0,20)
+    Name [a] (11,12)
+    DirectiveLocations (16,20)
+")]
+    public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
+    {
+        var context = new TestContext();
+
+        using (var document = text.Parse())
+        {
+            await _structWriter3.Visit(document, context).ConfigureAwait(false);
             var actual = context.Writer.ToString();
             actual.ShouldBe(expected);
         }
