@@ -1,56 +1,55 @@
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// AST node for <see cref="ASTNodeKind.BooleanValue"/>.
+/// </summary>
+public class GraphQLFloatValue : GraphQLValue
 {
+    /// <inheritdoc/>
+    public override ASTNodeKind Kind => ASTNodeKind.BooleanValue;
+
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.BooleanValue"/>.
+    /// Value represented as <see cref="ROM"/>.
     /// </summary>
-    public class GraphQLFloatValue : GraphQLValue
-    {
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.BooleanValue;
+    public ROM Value { get; set; }
+}
 
-        /// <summary>
-        /// Value represented as <see cref="ROM"/>.
-        /// </summary>
-        public ROM Value { get; set; }
+internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue
+{
+    private GraphQLLocation _location;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
+    }
+}
+
+internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
+{
+    private GraphQLComment? _comment;
+
+    public override GraphQLComment? Comment
+    {
+        get => _comment;
+        set => _comment = value;
+    }
+}
+
+internal sealed class GraphQLFloatValueFull : GraphQLFloatValue
+{
+    private GraphQLLocation _location;
+    private GraphQLComment? _comment;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
     }
 
-    internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue
+    public override GraphQLComment? Comment
     {
-        private GraphQLLocation _location;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-    }
-
-    internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
-    {
-        private GraphQLComment? _comment;
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
-    }
-
-    internal sealed class GraphQLFloatValueFull : GraphQLFloatValue
-    {
-        private GraphQLLocation _location;
-        private GraphQLComment? _comment;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
+        get => _comment;
+        set => _comment = value;
     }
 }

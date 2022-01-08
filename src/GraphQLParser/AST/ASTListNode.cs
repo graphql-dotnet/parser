@@ -1,31 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// Represents a AST node that holds a list of other (nested) AST nodes.
+/// </summary>
+public abstract class ASTListNode<TNode> : ASTNode, IReadOnlyList<TNode>
 {
     /// <summary>
-    /// Represents a AST node that holds a list of other (nested) AST nodes.
+    /// A list of nested AST nodes.
     /// </summary>
-    public abstract class ASTListNode<TNode> : ASTNode, IReadOnlyList<TNode>
-    {
-        /// <summary>
-        /// A list of nested AST nodes.
-        /// </summary>
-        public List<TNode> Items { get; set; } = null!;
+    public List<TNode> Items { get; set; } = null!;
 
-        /// <summary>
-        /// Get the number of AST nodes in the list.
-        /// </summary>
-        public int Count => Items.Count;
+    /// <summary>
+    /// Get the number of AST nodes in the list.
+    /// </summary>
+    public int Count => Items.Count;
 
-        /// <summary>
-        /// Gets nested AST node by its index in the list.
-        /// </summary>
-        public TNode this[int index] => Items[index];
+    /// <summary>
+    /// Gets nested AST node by its index in the list.
+    /// </summary>
+    public TNode this[int index] => Items[index];
 
-        /// <inheritdoc />
-        public IEnumerator<TNode> GetEnumerator() => Items.GetEnumerator();
+    /// <inheritdoc />
+    public IEnumerator<TNode> GetEnumerator() => Items.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
 }

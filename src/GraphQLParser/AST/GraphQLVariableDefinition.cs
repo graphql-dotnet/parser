@@ -1,66 +1,65 @@
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// AST node for <see cref="ASTNodeKind.VariableDefinition"/>.
+/// </summary>
+public class GraphQLVariableDefinition : ASTNode, IHasDirectivesNode, IHasDefaultValueNode
 {
+    /// <inheritdoc/>
+    public override ASTNodeKind Kind => ASTNodeKind.VariableDefinition;
+
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.VariableDefinition"/>.
+    /// Nested <see cref="GraphQLVariable"/> AST node with variable name.
     /// </summary>
-    public class GraphQLVariableDefinition : ASTNode, IHasDirectivesNode, IHasDefaultValueNode
+    public GraphQLVariable Variable { get; set; } = null!;
+
+    /// <summary>
+    /// Nested <see cref="GraphQLType"/> AST node with variable type.
+    /// </summary>
+    public GraphQLType Type { get; set; } = null!;
+
+    /// <inheritdoc />
+    public GraphQLValue? DefaultValue { get; set; }
+
+    /// <inheritdoc/>
+    public GraphQLDirectives? Directives { get; set; }
+}
+
+internal sealed class GraphQLVariableDefinitionWithLocation : GraphQLVariableDefinition
+{
+    private GraphQLLocation _location;
+
+    public override GraphQLLocation Location
     {
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.VariableDefinition;
+        get => _location;
+        set => _location = value;
+    }
+}
 
-        /// <summary>
-        /// Nested <see cref="GraphQLVariable"/> AST node with variable name.
-        /// </summary>
-        public GraphQLVariable Variable { get; set; } = null!;
+internal sealed class GraphQLVariableDefinitionWithComment : GraphQLVariableDefinition
+{
+    private GraphQLComment? _comment;
 
-        /// <summary>
-        /// Nested <see cref="GraphQLType"/> AST node with variable type.
-        /// </summary>
-        public GraphQLType Type { get; set; } = null!;
+    public override GraphQLComment? Comment
+    {
+        get => _comment;
+        set => _comment = value;
+    }
+}
+internal sealed class GraphQLVariableDefinitionFull : GraphQLVariableDefinition
+{
+    private GraphQLLocation _location;
+    private GraphQLComment? _comment;
 
-        /// <inheritdoc />
-        public GraphQLValue? DefaultValue { get; set; }
-
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
     }
 
-    internal sealed class GraphQLVariableDefinitionWithLocation : GraphQLVariableDefinition
+    public override GraphQLComment? Comment
     {
-        private GraphQLLocation _location;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-    }
-
-    internal sealed class GraphQLVariableDefinitionWithComment : GraphQLVariableDefinition
-    {
-        private GraphQLComment? _comment;
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
-    }
-    internal sealed class GraphQLVariableDefinitionFull : GraphQLVariableDefinition
-    {
-        private GraphQLLocation _location;
-        private GraphQLComment? _comment;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
+        get => _comment;
+        set => _comment = value;
     }
 }

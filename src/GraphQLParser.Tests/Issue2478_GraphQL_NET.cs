@@ -3,18 +3,18 @@ using GraphQLParser.AST;
 using Shouldly;
 using Xunit;
 
-namespace GraphQLParser.Tests
+namespace GraphQLParser.Tests;
+
+public class Issue2478_GraphQL_NET
 {
-    public class Issue2478_GraphQL_NET
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    [InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    [InlineData(IgnoreOptions.All)]
+    public void TestSchemaWithTwoInterfaceImplemented(IgnoreOptions options)
     {
-        [Theory]
-        [InlineData(IgnoreOptions.None)]
-        [InlineData(IgnoreOptions.Comments)]
-        [InlineData(IgnoreOptions.Locations)]
-        [InlineData(IgnoreOptions.All)]
-        public void TestSchemaWithTwoInterfaceImplemented(IgnoreOptions options)
-        {
-            string query = @"
+        string query = @"
             type Query {
               me: Account
             }
@@ -33,10 +33,9 @@ namespace GraphQLParser.Tests
             }
         ";
 
-            using var document = query.Parse(new ParserOptions { Ignore = options });
-            document.Definitions.Count.ShouldBe(4);
-            var def = document.Definitions.Last() as GraphQLObjectTypeDefinition;
-            def.Interfaces.Count.ShouldBe(2);
-        }
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(4);
+        var def = document.Definitions.Last() as GraphQLObjectTypeDefinition;
+        def.Interfaces.Count.ShouldBe(2);
     }
 }

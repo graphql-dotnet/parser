@@ -1,58 +1,57 @@
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// AST node for <see cref="ASTNodeKind.ObjectTypeExtension"/>.
+/// </summary>
+public class GraphQLObjectTypeExtension : GraphQLTypeExtension, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
 {
-    /// <summary>
-    /// AST node for <see cref="ASTNodeKind.ObjectTypeExtension"/>.
-    /// </summary>
-    public class GraphQLObjectTypeExtension : GraphQLTypeExtension, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
+    /// <inheritdoc/>
+    public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeExtension;
+
+    public GraphQLImplementsInterfaces? Interfaces { get; set; }
+
+    /// <inheritdoc/>
+    public GraphQLDirectives? Directives { get; set; }
+
+    public GraphQLFieldsDefinition? Fields { get; set; }
+}
+
+internal sealed class GraphQLObjectTypeExtensionWithLocation : GraphQLObjectTypeExtension
+{
+    private GraphQLLocation _location;
+
+    public override GraphQLLocation Location
     {
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeExtension;
+        get => _location;
+        set => _location = value;
+    }
+}
 
-        public GraphQLImplementsInterfaces? Interfaces { get; set; }
+internal sealed class GraphQLObjectTypeExtensionWithComment : GraphQLObjectTypeExtension
+{
+    private GraphQLComment? _comment;
 
-        /// <inheritdoc/>
-        public GraphQLDirectives? Directives { get; set; }
+    public override GraphQLComment? Comment
+    {
+        get => _comment;
+        set => _comment = value;
+    }
+}
 
-        public GraphQLFieldsDefinition? Fields { get; set; }
+internal sealed class GraphQLObjectTypeExtensionFull : GraphQLObjectTypeExtension
+{
+    private GraphQLLocation _location;
+    private GraphQLComment? _comment;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
     }
 
-    internal sealed class GraphQLObjectTypeExtensionWithLocation : GraphQLObjectTypeExtension
+    public override GraphQLComment? Comment
     {
-        private GraphQLLocation _location;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-    }
-
-    internal sealed class GraphQLObjectTypeExtensionWithComment : GraphQLObjectTypeExtension
-    {
-        private GraphQLComment? _comment;
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
-    }
-
-    internal sealed class GraphQLObjectTypeExtensionFull : GraphQLObjectTypeExtension
-    {
-        private GraphQLLocation _location;
-        private GraphQLComment? _comment;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
+        get => _comment;
+        set => _comment = value;
     }
 }

@@ -1,61 +1,60 @@
-namespace GraphQLParser.AST
+namespace GraphQLParser.AST;
+
+/// <summary>
+/// AST node for <see cref="ASTNodeKind.RootOperationTypeDefinition"/>.
+/// </summary>
+public class GraphQLRootOperationTypeDefinition : ASTNode
 {
+    /// <inheritdoc/>
+    public override ASTNodeKind Kind => ASTNodeKind.RootOperationTypeDefinition;
+
     /// <summary>
-    /// AST node for <see cref="ASTNodeKind.RootOperationTypeDefinition"/>.
+    /// Kind of operation: query, mutation or subscription.
     /// </summary>
-    public class GraphQLRootOperationTypeDefinition : ASTNode
+    public OperationType Operation { get; set; }
+
+    /// <summary>
+    /// Type of this root operation.
+    /// </summary>
+    public GraphQLNamedType? Type { get; set; }
+}
+
+internal sealed class GraphQLRootOperationTypeDefinitionWithLocation : GraphQLRootOperationTypeDefinition
+{
+    private GraphQLLocation _location;
+
+    public override GraphQLLocation Location
     {
-        /// <inheritdoc/>
-        public override ASTNodeKind Kind => ASTNodeKind.RootOperationTypeDefinition;
+        get => _location;
+        set => _location = value;
+    }
+}
 
-        /// <summary>
-        /// Kind of operation: query, mutation or subscription.
-        /// </summary>
-        public OperationType Operation { get; set; }
+internal sealed class GraphQLRootOperationTypeDefinitionWithComment : GraphQLRootOperationTypeDefinition
+{
+    private GraphQLComment? _comment;
 
-        /// <summary>
-        /// Type of this root operation.
-        /// </summary>
-        public GraphQLNamedType? Type { get; set; }
+    public override GraphQLComment? Comment
+    {
+        get => _comment;
+        set => _comment = value;
+    }
+}
+
+internal sealed class GraphQLRootOperationTypeDefinitionFull : GraphQLRootOperationTypeDefinition
+{
+    private GraphQLLocation _location;
+    private GraphQLComment? _comment;
+
+    public override GraphQLLocation Location
+    {
+        get => _location;
+        set => _location = value;
     }
 
-    internal sealed class GraphQLRootOperationTypeDefinitionWithLocation : GraphQLRootOperationTypeDefinition
+    public override GraphQLComment? Comment
     {
-        private GraphQLLocation _location;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-    }
-
-    internal sealed class GraphQLRootOperationTypeDefinitionWithComment : GraphQLRootOperationTypeDefinition
-    {
-        private GraphQLComment? _comment;
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
-    }
-
-    internal sealed class GraphQLRootOperationTypeDefinitionFull : GraphQLRootOperationTypeDefinition
-    {
-        private GraphQLLocation _location;
-        private GraphQLComment? _comment;
-
-        public override GraphQLLocation Location
-        {
-            get => _location;
-            set => _location = value;
-        }
-
-        public override GraphQLComment? Comment
-        {
-            get => _comment;
-            set => _comment = value;
-        }
+        get => _comment;
+        set => _comment = value;
     }
 }
