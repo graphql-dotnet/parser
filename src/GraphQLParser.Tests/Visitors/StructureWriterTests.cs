@@ -370,9 +370,9 @@ field: Int }", @"Document
           InputValueDefinition (10,14)
             Name [x] (10,11)
             NamedType (12,14)
-                Name [Id] (12,14)
+              Name [Id] (12,14)
         NamedType (16,19)
-            Name [Int] (16,19)
+          Name [Int] (16,19)
 ")]
     //            012345678  note that document node does not include comment node, comments are "out of grammar"
     [InlineData(@"#obsolete
@@ -383,6 +383,14 @@ scalar S", @"Document (10,30)
     Description (10,21)
     Name [S] (29,30)
 ", false)]
+    //           0123456789012
+    [InlineData("scalar A @vip", @"Document (0,13)
+  ScalarTypeDefinition (0,13)
+    Name [A] (7,8)
+    Directives (9,13)
+      Directive (9,13)
+        Name [vip] (10,13)
+")]
     public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected, bool ignoreComments = true)
     {
         text = text.Replace("\r\n", "\n");
