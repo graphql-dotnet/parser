@@ -166,7 +166,7 @@ fragment Frag on Query
 ")]
     [InlineData(@"enum Color { RED,
 #good color
-GREEN @directive(list: [1,2,3,null,{}, {name:""tom"" age:42}]),
+GREEN @directive(list: [1,2.7,3,null,{}, {name:""tom"" age:42}]),
 """"""
 another good color
 """"""
@@ -175,7 +175,7 @@ BLUE }",
 {
   RED
   #good color
-  GREEN @directive(list: [1, 2, 3, null, {}, {name: ""tom"", age: 42}])
+  GREEN @directive(list: [1, 2.7, 3, null, {}, {name: ""tom"", age: 42}])
   ""another good color""
   BLUE
 }

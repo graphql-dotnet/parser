@@ -1,12 +1,12 @@
 namespace GraphQLParser.AST;
 
 /// <summary>
-/// AST node for <see cref="ASTNodeKind.BooleanValue"/>.
+/// AST node for <see cref="ASTNodeKind.FloatValue"/>.
 /// </summary>
 public class GraphQLFloatValue : GraphQLValue
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.BooleanValue;
+    public override ASTNodeKind Kind => ASTNodeKind.FloatValue;
 
     /// <summary>
     /// Float value represented as <see cref="ROM"/>.
