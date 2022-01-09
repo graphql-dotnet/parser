@@ -377,17 +377,23 @@ scalar S", @"Document (10,30)
     Comment (0,10)
     Description (10,21)
     Name [S] (29,30)
-")]
-    public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
+", false)]
+    public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected, bool ignoreComments = true)
     {
         text = text.Replace("\r\n", "\n");
-        var context = new TestContext();
-
-        using (var document = text.Parse(new ParserOptions { Ignore = IgnoreOptions.None }))
+        foreach (var option in new[] { IgnoreOptions.None, IgnoreOptions.Comments })
         {
-            await _structWriter3.Visit(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
-            actual.ShouldBe(expected);
+            if (option == IgnoreOptions.Comments && !ignoreComments)
+                continue;
+
+            var context = new TestContext();
+
+            using (var document = text.Parse(new ParserOptions { Ignore = option }))
+            {
+                await _structWriter3.Visit(document, context).ConfigureAwait(false);
+                var actual = context.Writer.ToString();
+                actual.ShouldBe(expected);
+            }
         }
     }
 }
