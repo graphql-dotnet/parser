@@ -10,12 +10,15 @@ public class GraphQLListValue : GraphQLValue
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ListValue;
 
-    public ROM AstValue { get; set; }
+    /// <summary>
+    /// List value represented as <see cref="ROM"/>.
+    /// </summary>
+    public ROM Value { get; set; }
 
+    /// <summary>
+    /// Values of the list represented as a list of nested <see cref="GraphQLValue"/> nodes.
+    /// </summary>
     public List<GraphQLValue>? Values { get; set; }
-
-    /// <inheritdoc/>
-    public override string ToString() => AstValue.ToString();
 }
 
 internal sealed class GraphQLListValueWithLocation : GraphQLListValue

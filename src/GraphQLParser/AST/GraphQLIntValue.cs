@@ -9,7 +9,7 @@ public class GraphQLIntValue : GraphQLValue
     public override ASTNodeKind Kind => ASTNodeKind.IntValue;
 
     /// <summary>
-    /// Value represented as <see cref="ROM"/>.
+    /// Integer value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
 }

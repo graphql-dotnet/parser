@@ -9,7 +9,7 @@ public class GraphQLBooleanValue : GraphQLValue
     public override ASTNodeKind Kind => ASTNodeKind.BooleanValue;
 
     /// <summary>
-    /// Value represented as <see cref="ROM"/>.
+    /// Boolean value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
 }

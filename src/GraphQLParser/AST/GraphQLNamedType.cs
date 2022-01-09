@@ -10,9 +10,6 @@ public class GraphQLNamedType : GraphQLType, INamedNode
 
     /// <inheritdoc/>
     public GraphQLName Name { get; set; } = null!;
-
-    /// <inheritdoc/>
-    public override string ToString() => Name?.Value.ToString()!;
 }
 
 internal sealed class GraphQLNamedTypeWithLocation : GraphQLNamedType

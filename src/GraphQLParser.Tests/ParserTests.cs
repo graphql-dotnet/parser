@@ -8,7 +8,6 @@ using Xunit;
 
 namespace GraphQLParser.Tests;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "Tests")]
 public class ParserTests
 {
     private static readonly string _nl = Environment.NewLine;
@@ -254,6 +253,23 @@ public class ParserTests
         field.SelectionSet.Selections.Count.ShouldBe(1);
         var fragment = field.SelectionSet.Selections.First() as GraphQLInlineFragment;
         fragment.Comment.ShouldNotBeNull().Text.ShouldBe("comment");
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    //[InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    //[InlineData(IgnoreOptions.All)]
+    public void Comments_on_Arguments_Should_Read_Correctly(IgnoreOptions options)
+    {
+        string query = "CommentsOnArguments".ReadGraphQLFile();
+
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(1);
+        var def = document.Definitions[0] as GraphQLOperationDefinition;
+        def.SelectionSet.Selections.Count.ShouldBe(1);
+        var field = def.SelectionSet.Selections.First() as GraphQLField;
+        field.Arguments.Comment.ShouldNotBeNull().Text.ShouldBe("arguments comment");
     }
 
     [Theory]

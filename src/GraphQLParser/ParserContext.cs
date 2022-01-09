@@ -104,14 +104,7 @@ internal partial struct ParserContext
         throw new GraphQLMaxDepthExceededException(_source, _currentToken.Start);
     }
 
-    private readonly GraphQLLocation GetLocation(int start)
-    {
-        return new GraphQLLocation
-        (
-            start,
-            _prevToken.End
-        );
-    }
+    private readonly GraphQLLocation GetLocation(int start) => new(start, _prevToken.End);
 
     private List<T>? ZeroOrMore<T>(TokenKind open, ParseCallback<T> next, TokenKind close)
         where T : ASTNode

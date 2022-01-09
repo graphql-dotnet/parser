@@ -345,21 +345,47 @@ field: Int }", @"Document
         EnumValue (13,18)
           Name [GREEN] (13,18)
 ")]
-    //           01234567890123456789012
-    [InlineData("{ f(x:10) }", @"Document (0,11)
-  OperationDefinition (0,11)
-    SelectionSet (0,11)
-      Field (2,9)
+    //           012345678901234567
+    [InlineData("{ f(x:10,y:true) }", @"Document (0,18)
+  OperationDefinition (0,18)
+    SelectionSet (0,18)
+      Field (2,16)
         Name [f] (2,3)
-        Arguments (3,9)
+        Arguments (3,16)
           Argument (4,8)
             Name [x] (4,5)
             IntValue (6,8)
+          Argument (9,15)
+            Name [y] (9,10)
+            BooleanValue (11,15)
 ")]
-    public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
+    //           01234567890123456
+    [InlineData("type T { f: Int }", @"Document (0,17)
+  ObjectTypeDefinition (0,17)
+    Name [T] (5,6)
+    FieldsDefinition (7,17)
+      FieldDefinition (9,15)
+        Name [f] (9,10)
+        NamedType (12,15)
+          Name [Int] (12,15)
+")]
+    //            012345678  note that document node does not include comment node, comments are "out of grammar"
+    [InlineData(@"#obsolete
+""obsolete!""
+scalar S", @"Document (10,30)
+  ScalarTypeDefinition (10,30)
+    Comment (0,10)
+    Description (10,21)
+    Name [S] (29,30)
+", false)]
+    public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected, bool ignoreComments = true)
     {
+        text = text.Replace("\r\n", "\n");
         foreach (var option in new[] { IgnoreOptions.None, IgnoreOptions.Comments })
         {
+            if (option == IgnoreOptions.Comments && !ignoreComments)
+                continue;
+
             var context = new TestContext();
 
             using (var document = text.Parse(new ParserOptions { Ignore = option }))

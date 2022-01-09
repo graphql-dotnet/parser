@@ -16,6 +16,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitDocument(GraphQLDocument document, TContext context)
     {
+        await Visit(document.Comment, context).ConfigureAwait(false); // Comment always null
         await Visit(document.Definitions, context).ConfigureAwait(false);
     }
 
@@ -30,6 +31,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
     {
+        await Visit(argumentsDefinition.Comment, context).ConfigureAwait(false);
         await Visit(argumentsDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -38,6 +40,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// </summary>
     public virtual async ValueTask VisitArguments(GraphQLArguments arguments, TContext context)
     {
+        await Visit(arguments.Comment, context).ConfigureAwait(false);
         await Visit(arguments.Items, context).ConfigureAwait(false);
     }
 
@@ -82,6 +85,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context)
     {
+        await Visit(variablesDefinition.Comment, context).ConfigureAwait(false);
         await Visit(variablesDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -144,6 +148,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitImplementsInterfaces(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
     {
+        await Visit(implementsInterfaces.Comment, context).ConfigureAwait(false);
         await Visit(implementsInterfaces.Items, context).ConfigureAwait(false);
     }
 
@@ -221,6 +226,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitDirectives(GraphQLDirectives directives, TContext context)
     {
+        await Visit(directives.Comment, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
         await Visit(directives.Items, context).ConfigureAwait(false);
     }
 
@@ -301,6 +307,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitFieldsDefinition(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
+        await Visit(fieldsDefinition.Comment, context).ConfigureAwait(false);
         await Visit(fieldsDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -318,6 +325,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitInputFieldsDefinition(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
+        await Visit(inputFieldsDefinition.Comment, context).ConfigureAwait(false);
         await Visit(inputFieldsDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -345,6 +353,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
     {
+        await Visit(unionMemberTypes.Comment, context).ConfigureAwait(false);
         await Visit(unionMemberTypes.Items, context).ConfigureAwait(false);
     }
 
@@ -370,6 +379,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <inheritdoc/>
     public virtual async ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
+        await Visit(enumValuesDefinition.Comment, context).ConfigureAwait(false);
         await Visit(enumValuesDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -396,9 +406,9 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     /// <summary>
     /// Visits <see cref="GraphQLDirectiveLocations"/> node.
     /// </summary>
-    public virtual ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context)
+    public virtual async ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context)
     {
-        return default;
+        await Visit(directiveLocations.Comment, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>

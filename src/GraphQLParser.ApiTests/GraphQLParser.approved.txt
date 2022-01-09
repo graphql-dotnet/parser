@@ -339,15 +339,13 @@ namespace GraphQLParser.AST
         public GraphQLListType() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType Type { get; set; }
-        public override string ToString() { }
     }
     public class GraphQLListValue : GraphQLParser.AST.GraphQLValue
     {
         public GraphQLListValue() { }
-        public GraphQLParser.ROM AstValue { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public GraphQLParser.ROM Value { get; set; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLValue>? Values { get; set; }
-        public override string ToString() { }
     }
     public readonly struct GraphQLLocation : System.IEquatable<GraphQLParser.AST.GraphQLLocation>
     {
@@ -372,14 +370,12 @@ namespace GraphQLParser.AST
         public GraphQLNamedType() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
-        public override string ToString() { }
     }
     public class GraphQLNonNullType : GraphQLParser.AST.GraphQLType
     {
         public GraphQLNonNullType() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType Type { get; set; }
-        public override string ToString() { }
     }
     public class GraphQLNullValue : GraphQLParser.AST.GraphQLValue
     {

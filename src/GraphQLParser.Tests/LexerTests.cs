@@ -3,7 +3,6 @@ using Xunit;
 
 namespace GraphQLParser.Tests;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "Tests")]
 public class LexerTests
 {
     [Fact]

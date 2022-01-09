@@ -46,7 +46,7 @@ public class StructureWriter<TContext> : DefaultNodeVisitor<TContext>
         }
         await context.WriteLine().ConfigureAwait(false);
         await base.Visit(node, context).ConfigureAwait(false);
-        context.Parents.Pop();
+        _ = context.Parents.Pop();
     }
 }
 
