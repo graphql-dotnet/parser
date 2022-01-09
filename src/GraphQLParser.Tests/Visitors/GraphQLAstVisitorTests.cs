@@ -9,6 +9,7 @@ using Xunit;
 
 namespace GraphQLParser.Tests.Visitors;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2012:Use ValueTasks correctly", Justification = "CountVisitor is sync")]
 public class GraphQLAstVisitorTests
 {
     public class CountVisitor : DefaultNodeVisitor<CountContext>

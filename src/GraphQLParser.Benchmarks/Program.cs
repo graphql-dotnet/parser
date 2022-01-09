@@ -36,7 +36,7 @@ internal static class Program
             Thread.Sleep(10);
 
             if (++index % count == 0)
-                Console.ReadLine();
+                _ = Console.ReadLine();
         }
     }
 }

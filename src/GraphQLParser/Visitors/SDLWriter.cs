@@ -15,7 +15,9 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitDocument(GraphQLDocument document, TContext context)
     {
-        if (document.Definitions.Count > 0)
+        await Visit(document.Comment, context).ConfigureAwait(false); // Comment always null
+
+        if (document.Definitions.Count > 0) // Definitions always > 0
         {
             for (int i = 0; i < document.Definitions.Count; ++i)
             {
@@ -217,6 +219,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitImplementsInterfaces(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
     {
+        await Visit(implementsInterfaces.Comment, context).ConfigureAwait(false);
         await context.Write(" implements ").ConfigureAwait(false);
 
         for (int i = 0; i < implementsInterfaces.Items.Count; ++i)
@@ -308,6 +311,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context)
     {
+        await Visit(directiveLocations.Comment, context).ConfigureAwait(false);
         await context.Write(" on ").ConfigureAwait(false);
         for (int i = 0; i < directiveLocations.Items.Count; ++i)
         {
@@ -335,6 +339,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context)
     {
+        await Visit(variablesDefinition.Comment, context).ConfigureAwait(false);
         await context.Write("(").ConfigureAwait(false);
 
         for (int i = 0; i < variablesDefinition.Items.Count; ++i)
@@ -420,6 +425,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
+        await Visit(enumValuesDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
         await context.Write("{").ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
@@ -482,6 +488,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitInputFieldsDefinition(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
+        await Visit(inputFieldsDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
         await context.Write("{").ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
@@ -565,6 +572,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitFieldsDefinition(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
+        await Visit(fieldsDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
         await context.Write("{").ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
@@ -641,6 +649,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
     {
+        await Visit(unionMemberTypes.Comment, context).ConfigureAwait(false);
         await context.Write(" = ").ConfigureAwait(false);
 
         for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
@@ -663,6 +672,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitDirectives(GraphQLDirectives directives, TContext context)
     {
+        await Visit(directives.Comment, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
         await context.Write(" ").ConfigureAwait(false);
 
         for (int i = 0; i < directives.Items.Count; ++i)
@@ -685,6 +695,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
     {
+        await Visit(argumentsDefinition.Comment, context).ConfigureAwait(false);
         await context.Write("(").ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
 
@@ -702,6 +713,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitArguments(GraphQLArguments arguments, TContext context)
     {
+        await Visit(arguments.Comment, context).ConfigureAwait(false);
         await context.Write("(").ConfigureAwait(false);
         for (int i = 0; i < arguments.Items.Count; ++i)
         {

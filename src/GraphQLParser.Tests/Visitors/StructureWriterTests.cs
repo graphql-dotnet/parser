@@ -346,28 +346,47 @@ field: Int }", @"Document
           Name [GREEN] (13,18)
 ")]
     //           01234567890123456789012
-    [InlineData("{ f(x:10) }", @"Document (0,11)
-  OperationDefinition (0,11)
-    SelectionSet (0,11)
-      Field (2,9)
+    [InlineData("{ f(x:10,y:true) }", @"Document (0,18)
+  OperationDefinition (0,18)
+    SelectionSet (0,18)
+      Field (2,16)
         Name [f] (2,3)
-        Arguments (3,9)
+        Arguments (3,16)
           Argument (4,8)
             Name [x] (4,5)
             IntValue (6,8)
+          Argument (9,15)
+            Name [y] (9,10)
+            BooleanValue (11,15)
+")]
+    //           01234567890123456789012
+    [InlineData("type T { f: Int }", @"Document (0,17)
+  ObjectTypeDefinition (0,17)
+    Name [T] (5,6)
+    FieldsDefinition (7,17)
+      FieldDefinition (9,15)
+        Name [f] (9,10)
+        NamedType (12,15)
+          Name [Int] (12,15)
+")]
+    //           01234567890123456789012
+    [InlineData(@"#obsolete
+""obsolete!""
+scalar S", @"Document (11,32)
+  ScalarTypeDefinition (11,32)
+    Comment (0,10)
+    Description (11,22)
+    Name [S] (31,32)
 ")]
     public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
     {
-        foreach (var option in new[] { IgnoreOptions.None, IgnoreOptions.Comments })
-        {
-            var context = new TestContext();
+        var context = new TestContext();
 
-            using (var document = text.Parse(new ParserOptions { Ignore = option }))
-            {
-                await _structWriter3.Visit(document, context).ConfigureAwait(false);
-                var actual = context.Writer.ToString();
-                actual.ShouldBe(expected);
-            }
+        using (var document = text.Parse(new ParserOptions { Ignore = IgnoreOptions.None }))
+        {
+            await _structWriter3.Visit(document, context).ConfigureAwait(false);
+            var actual = context.Writer.ToString();
+            actual.ShouldBe(expected);
         }
     }
 }

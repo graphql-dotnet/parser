@@ -81,6 +81,8 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
 
         var args = NodeHelper.CreateGraphQLArguments(_ignoreOptions);
+
+        args.Comment = GetComment();
         args.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
         args.Location = GetLocation(start);
 
@@ -96,6 +98,8 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
 
         var argsDef = NodeHelper.CreateGraphQLArgumentsDefinition(_ignoreOptions);
+
+        argsDef.Comment = GetComment();
         argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
         argsDef.Location = GetLocation(start);
 
@@ -111,6 +115,8 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
 
         var inputFieldsDef = NodeHelper.CreateGraphQLInputFieldsDefinition(_ignoreOptions);
+
+        inputFieldsDef.Comment = GetComment();
         inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
         inputFieldsDef.Location = GetLocation(start);
 
@@ -126,6 +132,8 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
 
         var fieldsDef = NodeHelper.CreateGraphQLFieldsDefinition(_ignoreOptions);
+
+        fieldsDef.Comment = GetComment();
         fieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R);
         fieldsDef.Location = GetLocation(start);
 
@@ -141,6 +149,8 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
 
         var enumValuesDef = NodeHelper.CreateGraphQLEnumValuesDefinition(_ignoreOptions);
+
+        enumValuesDef.Comment = GetComment();
         enumValuesDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R);
         enumValuesDef.Location = GetLocation(start);
 
@@ -156,6 +166,8 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
 
         var variablesDef = NodeHelper.CreateGraphQLVariablesDefinition(_ignoreOptions);
+
+        variablesDef.Comment = GetComment();
         variablesDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R);
         variablesDef.Location = GetLocation(start);
 
@@ -312,35 +324,24 @@ internal partial struct ParserContext
         return dir;
     }
 
-    /// <summary>
-    /// http://spec.graphql.org/October2021/#DirectiveDefinition
-    /// DirectiveDefinition:
-    ///     Description(opt) directive @ Name ArgumentsDefinition(opt) repeatable(opt) on DirectiveLocations
-    /// </summary>
-    /// <returns></returns>
+    // http://spec.graphql.org/October2021/#DirectiveDefinition
     private GraphQLDirectiveDefinition ParseDirectiveDefinition()
     {
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
-        var comment = GetComment();
-        ExpectKeyword("directive");
-        Expect(TokenKind.AT);
 
         var def = NodeHelper.CreateGraphQLDirectiveDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
+        def.Comment = GetComment();
+        ExpectKeyword("directive");
+        Expect(TokenKind.AT);
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#DirectiveDefinition");
         def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentsDefinition() : null;
         def.Repeatable = Peek(TokenKind.NAME) && ParseRepeatable();
         ExpectKeyword("on");
         def.Locations = ParseDirectiveLocations();
-        def.Description = description;
-        def.Comment = comment;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -365,6 +366,7 @@ internal partial struct ParserContext
     private GraphQLDirectiveLocations ParseDirectiveLocations()
     {
         IncreaseDepth();
+        var comment = GetComment();
 
         int start = _currentToken.Start;
 
@@ -383,6 +385,7 @@ internal partial struct ParserContext
         while (Skip(TokenKind.PIPE));
 
         directiveLocations.Items = items;
+        directiveLocations.Comment = comment;
         directiveLocations.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -393,6 +396,10 @@ internal partial struct ParserContext
     private GraphQLDirectives ParseDirectives()
     {
         IncreaseDepth();
+        // Directives go one after another without any "list prefix", so it is impossible
+        // to distinguish the comment of the first directive from the comment to the entire
+        // list of directives. Therefore, a comment for the directive itself is used.
+        //var comment = GetComment();
 
         int start = _currentToken.Start;
 
@@ -405,6 +412,7 @@ internal partial struct ParserContext
             items.Add(ParseDirective());
 
         directives.Items = items;
+        //directives.Comment = comment;
         directives.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -417,21 +425,15 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
-        var comment = GetComment();
-        ExpectKeyword("enum");
 
         var def = NodeHelper.CreateGraphQLEnumTypeDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
+        def.Comment = GetComment();
+        ExpectKeyword("enum");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#EnumTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValuesDefinition() : null;
-        def.Description = description;
-        def.Comment = comment;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -499,19 +501,14 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLEnumValueDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         def.EnumValue = ParseEnumValue();
         def.Name = def.EnumValue.Name; // ATTENTION: should set Name property (inherited from GraphQLTypeDefinition)
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -524,21 +521,16 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLFieldDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#FieldDefinition");
         def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentsDefinition() : null;
         Expect(TokenKind.COLON);
         def.Type = ParseType();
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -705,6 +697,7 @@ internal partial struct ParserContext
     private GraphQLImplementsInterfaces ParseImplementsInterfaces()
     {
         IncreaseDepth();
+        var comment = GetComment();
 
         int start = _currentToken.Start;
 
@@ -725,6 +718,7 @@ internal partial struct ParserContext
         while (Skip(TokenKind.AMPERSAND));
 
         implementsInterfaces.Items = types;
+        implementsInterfaces.Comment = comment;
         implementsInterfaces.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -737,20 +731,15 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLInputObjectTypeDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         ExpectKeyword("input");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InputObjectTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.Fields = Peek(TokenKind.BRACE_L) ? ParseInputFieldsDefinition() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -787,21 +776,16 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLInputValueDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InputValueDefinition");
         Expect(TokenKind.COLON);
         def.Type = ParseType();
         def.DefaultValue = Skip(TokenKind.EQUALS) ? ParseValueLiteral(true) : null;
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -832,21 +816,16 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLInterfaceTypeDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         ExpectKeyword("interface");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InterfaceTypeDefinition");
         def.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1085,21 +1064,16 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLObjectTypeDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         ExpectKeyword("type");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ObjectTypeDefinition");
         def.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.Fields = Peek(TokenKind.BRACE_L) ? ParseFieldsDefinition() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1232,19 +1206,14 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLScalarTypeDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         ExpectKeyword("scalar");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ScalarTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1280,19 +1249,14 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLSchemaDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         ExpectKeyword("schema");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.OperationTypes = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseRootOperationTypeDefinition(), TokenKind.BRACE_R);
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1392,7 +1356,7 @@ internal partial struct ParserContext
             return type;
         }
 
-        var nonNull = NodeHelper.CreateGraphQLNonNullType(_ignoreOptions);
+        var nonNull = NodeHelper.CreateGraphQLNonNullType(_ignoreOptions); //TODO: deal with depth
 
         nonNull.Type = type;
         // move comment from wrapped type to wrapping type
@@ -1436,6 +1400,7 @@ internal partial struct ParserContext
     private GraphQLUnionMemberTypes ParseUnionMemberTypes()
     {
         IncreaseDepth();
+        var comment = GetComment();
 
         int start = _currentToken.Start;
 
@@ -1456,6 +1421,7 @@ internal partial struct ParserContext
         while (Skip(TokenKind.PIPE));
 
         unionMemberTypes.Items = types;
+        unionMemberTypes.Comment = comment;
         unionMemberTypes.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1468,20 +1434,15 @@ internal partial struct ParserContext
         IncreaseDepth();
 
         int start = _currentToken.Start;
-        GraphQLDescription? description = null;
-        if (Peek(TokenKind.STRING))
-        {
-            description = ParseDescription();
-        }
 
         var def = NodeHelper.CreateGraphQLUnionTypeDefinition(_ignoreOptions);
 
+        def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comment = GetComment();
         ExpectKeyword("union");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#UnionTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.Types = Peek(TokenKind.EQUALS) ? ParseUnionMemberTypes() : null;
-        def.Description = description;
         def.Location = GetLocation(start);
 
         DecreaseDepth();

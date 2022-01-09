@@ -43,6 +43,21 @@ internal static class NodeHelper
         };
     }
 
+    // Directives go one after another without any "list prefix", so it is impossible
+    // to distinguish the comment of the first directive from the comment to the entire
+    // list of directives. Therefore, a comment for the directive itself is used.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static GraphQLDirectives CreateGraphQLDirectives(IgnoreOptions options)
+    {
+        return options switch
+        {
+            IgnoreOptions.All => new GraphQLDirectives(),
+            IgnoreOptions.Comments => new GraphQLDirectivesWithLocation(),
+            IgnoreOptions.Locations => new GraphQLDirectives(),
+            _ => new GraphQLDirectivesWithLocation(),
+        };
+    }
+
     #endregion
 
     #region ASTNodes that can have comments and locations
@@ -561,18 +576,6 @@ internal static class NodeHelper
             IgnoreOptions.Comments => new GraphQLFieldsDefinitionWithLocation(),
             IgnoreOptions.Locations => new GraphQLFieldsDefinitionWithComment(),
             _ => new GraphQLFieldsDefinitionFull(),
-        };
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static GraphQLDirectives CreateGraphQLDirectives(IgnoreOptions options)
-    {
-        return options switch
-        {
-            IgnoreOptions.All => new GraphQLDirectives(),
-            IgnoreOptions.Comments => new GraphQLDirectivesWithLocation(),
-            IgnoreOptions.Locations => new GraphQLDirectivesWithComment(),
-            _ => new GraphQLDirectivesFull(),
         };
     }
 

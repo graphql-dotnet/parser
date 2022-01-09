@@ -25,7 +25,6 @@ public class LocationTests
         loc1.Equals(new GraphQLLocation(11, 100)).ShouldBeFalse();
     }
 
-
     [Fact]
     public void To_String()
     {
