@@ -1,0 +1,9 @@
+#very good colors
+enum Color
+#values
+{
+  #not green
+  RED
+  #not red
+  GREEN
+}

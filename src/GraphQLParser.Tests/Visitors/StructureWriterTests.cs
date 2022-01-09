@@ -391,6 +391,14 @@ scalar S", @"Document (10,30)
       Directive (9,13)
         Name [vip] (10,13)
 ")]
+    //           012345678901234567
+    [InlineData("extend enum A @vip", @"Document (0,18)
+  EnumTypeExtension (7,18)
+    Name [A] (12,13)
+    Directives (14,18)
+      Directive (14,18)
+        Name [vip] (15,18)
+")]
     public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected, bool ignoreComments = true)
     {
         text = text.Replace("\r\n", "\n");

@@ -360,6 +360,7 @@ public class ParserTests
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLObjectTypeDefinition;
         def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
+        def.Fields[0].Arguments.Comment.Text.ShouldBe("comment for arguments definition");
         def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
         def.Fields[2].Type.Comment.Text.ShouldBe("comment for list type");
         (def.Fields[2].Type as GraphQLListType).Type.Comment.Text.ShouldBe("comment for item type");
@@ -386,6 +387,26 @@ public class ParserTests
 
         document.UnattachedComments.Count.ShouldBe(1);
         document.UnattachedComments[0].Text.ShouldBe("colon comment");
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    //[InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    //[InlineData(IgnoreOptions.All)]
+    public void Comments_on_Enum_Should_Read_Correctly(IgnoreOptions options)
+    {
+        string query = "CommentsOnEnum".ReadGraphQLFile();
+
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(1);
+        var def = document.Definitions[0] as GraphQLEnumTypeDefinition;
+        def.Comment.Text.ShouldBe("very good colors");
+        def.Values.Comment.Text.ShouldBe("values");
+        def.Values[0].Comment.Text.ShouldBe("not green");
+        def.Values[1].Comment.Text.ShouldBe("not red");
+
+        document.UnattachedComments.ShouldBeNull();
     }
 
     [Theory]
