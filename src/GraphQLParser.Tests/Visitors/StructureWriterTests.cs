@@ -359,15 +359,20 @@ field: Int }", @"Document
             Name [y] (9,10)
             BooleanValue (11,15)
 ")]
-    //           01234567890123456
-    [InlineData("type T { f: Int }", @"Document (0,17)
-  ObjectTypeDefinition (0,17)
+    //           01234567890123456789
+    [InlineData("type T {f(x:Id):Int}", @"Document (0,20)
+  ObjectTypeDefinition (0,20)
     Name [T] (5,6)
-    FieldsDefinition (7,17)
-      FieldDefinition (9,15)
-        Name [f] (9,10)
-        NamedType (12,15)
-          Name [Int] (12,15)
+    FieldsDefinition (7,20)
+      FieldDefinition (8,19)
+        Name [f] (8,9)
+        ArgumentsDefinition (9,15)
+          InputValueDefinition (10,14)
+            Name [x] (10,11)
+            NamedType (12,14)
+                Name [Id] (12,14)
+        NamedType (16,19)
+            Name [Int] (16,19)
 ")]
     //            012345678  note that document node does not include comment node, comments are "out of grammar"
     [InlineData(@"#obsolete
