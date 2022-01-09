@@ -12,9 +12,6 @@ public class GraphQLListType : GraphQLType
     /// Nested <see cref="GraphQLType"/> AST node with wrapped type.
     /// </summary>
     public GraphQLType Type { get; set; } = null!;
-
-    /// <inheritdoc/>
-    public override string ToString() => $"[{Type}]";
 }
 
 internal sealed class GraphQLListTypeWithLocation : GraphQLListType

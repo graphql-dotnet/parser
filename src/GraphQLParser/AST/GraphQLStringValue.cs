@@ -9,7 +9,7 @@ public class GraphQLStringValue : GraphQLValue
     public override ASTNodeKind Kind => ASTNodeKind.StringValue;
 
     /// <summary>
-    /// Value represented as <see cref="ROM"/>.
+    /// String value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
 }

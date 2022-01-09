@@ -9,7 +9,7 @@ public class GraphQLFloatValue : GraphQLValue
     public override ASTNodeKind Kind => ASTNodeKind.BooleanValue;
 
     /// <summary>
-    /// Value represented as <see cref="ROM"/>.
+    /// Float value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
 }

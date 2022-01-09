@@ -872,7 +872,7 @@ internal partial struct ParserContext
 
         val.Comment = GetComment();
         val.Values = ZeroOrMore(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R);
-        val.AstValue = _source.Slice(start, _currentToken.End - start - 1);
+        val.Value = _source.Slice(start, _currentToken.End - start - 1);
         val.Location = GetLocation(start);
 
         DecreaseDepth();
