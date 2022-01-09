@@ -21,6 +21,7 @@ public class TokenTests
     [InlineData(TokenKind.BRACE_L, null, "{")]
     [InlineData(TokenKind.PIPE, null, "|")]
     [InlineData(TokenKind.BRACE_R, null, "}")]
+    [InlineData(TokenKind.AMPERSAND, null, "&")]
 
     [InlineData(TokenKind.NAME, "abc", "Name \"abc\"")]
     [InlineData(TokenKind.INT, "42", "Int \"42\"")]

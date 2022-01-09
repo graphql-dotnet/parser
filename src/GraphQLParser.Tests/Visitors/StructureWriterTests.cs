@@ -21,6 +21,7 @@ public class StructureWriterTests
 
     private static readonly StructureWriter<TestContext> _structWriter1 = new(new StructureWriterOptions { WriteNames = true });
     private static readonly StructureWriter<TestContext> _structWriter2 = new(new StructureWriterOptions { WriteNames = false });
+    private static readonly StructureWriter<TestContext> _structWriter3 = new(new StructureWriterOptions { WriteNames = true, WriteLocations = true });
 
     [Theory]
     [InlineData("query a { name age }", @"Document
@@ -310,6 +311,63 @@ field: Int }", @"Document
             await _structWriter2.Visit(document, context).ConfigureAwait(false);
             var actual = context.Writer.ToString();
             actual.ShouldBe(expected);
+        }
+    }
+
+    [Theory]
+    //           01234567890123456789012
+    [InlineData("query a { name a: age }", @"Document (0,23)
+  OperationDefinition (0,23)
+    Name [a] (6,7)
+    SelectionSet (8,23)
+      Field (10,14)
+        Name [name] (10,14)
+      Field (15,21)
+        Alias (15,17)
+          Name [a] (15,16)
+        Name [age] (18,21)
+")]
+    //           01234567890123456789
+    [InlineData("directive @a on ENUM", @"Document (0,20)
+  DirectiveDefinition (0,20)
+    Name [a] (11,12)
+    DirectiveLocations (16,20)
+")]
+    //           01234567890123456789
+    [InlineData("enum A { RED GREEN }", @"Document (0,20)
+  EnumTypeDefinition (0,20)
+    Name [A] (5,6)
+    EnumValuesDefinition (7,20)
+      EnumValueDefinition (9,12)
+        EnumValue (9,12)
+          Name [RED] (9,12)
+      EnumValueDefinition (13,18)
+        EnumValue (13,18)
+          Name [GREEN] (13,18)
+")]
+    //           01234567890123456789012
+    [InlineData("{ f(x:10) }", @"Document (0,11)
+  OperationDefinition (0,11)
+    SelectionSet (0,11)
+      Field (2,9)
+        Name [f] (2,3)
+        Arguments (3,9)
+          Argument (4,8)
+            Name [x] (4,5)
+            IntValue (6,8)
+")]
+    public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
+    {
+        foreach (var option in new[] { IgnoreOptions.None, IgnoreOptions.Comments })
+        {
+            var context = new TestContext();
+
+            using (var document = text.Parse(new ParserOptions { Ignore = option }))
+            {
+                await _structWriter3.Visit(document, context).ConfigureAwait(false);
+                var actual = context.Writer.ToString();
+                actual.ShouldBe(expected);
+            }
         }
     }
 }
