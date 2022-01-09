@@ -989,7 +989,8 @@ Cat
     }
 
     [Theory]
-    [InlineData("extend", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#TypeExtension")]
+    [InlineData("extend", "Expected \"scalar/type/interface/union/enum/input\", found EOF")]
+    [InlineData("extend variable", "Expected \"scalar/type/interface/union/enum/input\", found Name \"variable\"")]
     [InlineData("extend scalar", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
     [InlineData("extend scalar A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
     [InlineData("extend scalar A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
@@ -1005,7 +1006,6 @@ Cat
     [InlineData("extend enum A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#EnumTypeExtension")]
     [InlineData("extend input", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension")]
     [InlineData("extend input A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension")]
-    [InlineData("extend variable", "Unexpected Name \"variable\"; for more information see http://spec.graphql.org/October2021/#TypeExtension")]
     public void Should_Throw_Extensions(string text, string description)
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());

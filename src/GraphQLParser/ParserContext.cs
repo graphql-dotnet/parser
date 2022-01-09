@@ -10,27 +10,37 @@ internal partial struct ParserContext
 {
     private static string[] TopLevelKeywordOneOf { get; set; } = new[]
     {
-            "query",
-            "mutation",
-            "subscription",
-            "fragment",
-            "schema",
-            "scalar",
-            "type",
-            "interface",
-            "union",
-            "enum",
-            "input",
-            "extend",
-            "directive",
-        };
+        "query",
+        "mutation",
+        "subscription",
+        "fragment",
+        "schema",
+        "scalar",
+        "type",
+        "interface",
+        "union",
+        "enum",
+        "input",
+        "extend",
+        "directive",
+    };
+
+    private static string[] TypeExtensionOneOf { get; set; } = new[]
+    {
+        "scalar",
+        "type",
+        "interface",
+        "union",
+        "enum",
+        "input",
+    };
 
     private static string[] OperationTypeOneOf { get; set; } = new[]
     {
-            "query",
-            "mutation",
-            "subscription",
-        };
+        "query",
+        "mutation",
+        "subscription",
+    };
 
     private static string[] DirectiveLocationOneOf { get; set; } = new[]
     {
