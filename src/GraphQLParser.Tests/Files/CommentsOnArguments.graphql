@@ -1,5 +1,5 @@
 {
-f
-#arguments comment
-(x:10)
+  f
+  #arguments comment
+  (x:10)
 }
