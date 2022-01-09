@@ -345,7 +345,7 @@ field: Int }", @"Document
         EnumValue (13,18)
           Name [GREEN] (13,18)
 ")]
-    //           01234567890123456789012
+    //           012345678901234567
     [InlineData("{ f(x:10,y:true) }", @"Document (0,18)
   OperationDefinition (0,18)
     SelectionSet (0,18)
@@ -359,7 +359,7 @@ field: Int }", @"Document
             Name [y] (9,10)
             BooleanValue (11,15)
 ")]
-    //           01234567890123456789012
+    //           01234567890123456
     [InlineData("type T { f: Int }", @"Document (0,17)
   ObjectTypeDefinition (0,17)
     Name [T] (5,6)
@@ -369,17 +369,18 @@ field: Int }", @"Document
         NamedType (12,15)
           Name [Int] (12,15)
 ")]
-    //           01234567890123456789012
+    //            012345678  note that document node does not include comment node, comments are "out of grammar"
     [InlineData(@"#obsolete
 ""obsolete!""
-scalar S", @"Document (11,32)
-  ScalarTypeDefinition (11,32)
+scalar S", @"Document (10,30)
+  ScalarTypeDefinition (10,30)
     Comment (0,10)
-    Description (11,22)
-    Name [S] (31,32)
+    Description (10,21)
+    Name [S] (29,30)
 ")]
     public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected)
     {
+        text = text.Replace("\r\n", "\n");
         var context = new TestContext();
 
         using (var document = text.Parse(new ParserOptions { Ignore = IgnoreOptions.None }))
