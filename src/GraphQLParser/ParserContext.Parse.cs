@@ -442,12 +442,9 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#EnumTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLEnumTypeExtension ParseEnumTypeExtension()
+    private GraphQLEnumTypeExtension ParseEnumTypeExtension(int start, GraphQLComment? comment)
     {
         IncreaseDepth();
-
-        int start = _currentToken.Start;
-        var comment = GetComment();
 
         ExpectKeyword("enum");
 
@@ -748,15 +745,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#InputObjectTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLInputObjectTypeExtension ParseInputObjectTypeExtension()
+    private GraphQLInputObjectTypeExtension ParseInputObjectTypeExtension(int start, GraphQLComment? comment)
     {
         IncreaseDepth();
 
-        int start = _currentToken.Start;
-
         var extension = NodeHelper.CreateGraphQLInputObjectTypeExtension(_ignoreOptions);
 
-        extension.Comment = GetComment();
+        extension.Comment = comment;
         ExpectKeyword("input");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -834,15 +829,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#InterfaceTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLInterfaceTypeExtension ParseInterfaceTypeExtension()
+    private GraphQLInterfaceTypeExtension ParseInterfaceTypeExtension(int start, GraphQLComment? comment)
     {
         IncreaseDepth();
 
-        int start = _currentToken.Start;
-
         var extension = NodeHelper.CreateGraphQLInterfaceTypeExtension(_ignoreOptions);
 
-        extension.Comment = GetComment();
+        extension.Comment = comment;
         ExpectKeyword("interface");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension");
         extension.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
@@ -1082,15 +1075,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#ObjectTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLObjectTypeExtension ParseObjectTypeExtension()
+    private GraphQLObjectTypeExtension ParseObjectTypeExtension(int start, GraphQLComment? comment)
     {
         IncreaseDepth();
 
-        int start = _currentToken.Start;
-
         var extension = NodeHelper.CreateGraphQLObjectTypeExtension(_ignoreOptions);
 
-        extension.Comment = GetComment();
+        extension.Comment = comment;
         ExpectKeyword("type");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension");
         extension.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
@@ -1222,15 +1213,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#ScalarTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLScalarTypeExtension ParseScalarTypeExtension()
+    private GraphQLScalarTypeExtension ParseScalarTypeExtension(int start, GraphQLComment? comment)
     {
         IncreaseDepth();
 
-        int start = _currentToken.Start;
-
         var extension = NodeHelper.CreateGraphQLScalarTypeExtension(_ignoreOptions);
 
-        extension.Comment = GetComment();
+        extension.Comment = comment;
         ExpectKeyword("scalar");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -1371,29 +1360,21 @@ internal partial struct ParserContext
     // http://spec.graphql.org/October2021/#TypeExtension
     private GraphQLTypeExtension ParseTypeExtension()
     {
+        int start = _currentToken.Start;
+        var comment = GetComment();
+
         ExpectKeyword("extend");
 
-        var value = _currentToken.Value;
-
-        if (value == "scalar")
-            return ParseScalarTypeExtension();
-
-        if (value == "type")
-            return ParseObjectTypeExtension();
-
-        if (value == "interface")
-            return ParseInterfaceTypeExtension();
-
-        if (value == "union")
-            return ParseUnionTypeExtension();
-
-        if (value == "enum")
-            return ParseEnumTypeExtension();
-
-        if (value == "input")
-            return ParseInputObjectTypeExtension();
-
-        return (GraphQLTypeExtension)Throw_Unexpected_Token("; for more information see http://spec.graphql.org/October2021/#TypeExtension");
+        return ExpectOneOf(TypeExtensionOneOf, advance: false) switch
+        {
+            "scalar" => ParseScalarTypeExtension(start, comment),
+            "type" => ParseObjectTypeExtension(start, comment),
+            "interface" => ParseInterfaceTypeExtension(start, comment),
+            "union" => ParseUnionTypeExtension(start, comment),
+            "enum" => ParseEnumTypeExtension(start, comment),
+            "input" => ParseInputObjectTypeExtension(start, comment),
+            _ => throw new NotSupportedException("Compiler never gets here since ExpectOneOf throws.")
+        };
     }
 
     // http://spec.graphql.org/October2021/#UnionMemberTypes
@@ -1451,15 +1432,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#UnionTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLUnionTypeExtension ParseUnionTypeExtension()
+    private GraphQLUnionTypeExtension ParseUnionTypeExtension(int start, GraphQLComment? comment)
     {
         IncreaseDepth();
 
-        int start = _currentToken.Start;
-
         var extension = NodeHelper.CreateGraphQLUnionTypeExtension(_ignoreOptions);
 
-        extension.Comment = GetComment();
+        extension.Comment = comment;
         ExpectKeyword("union");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#UnionTypeExtension");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;

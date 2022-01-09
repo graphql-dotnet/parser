@@ -1,5 +1,7 @@
 type Person {
-  name:
+  name
+  #comment for arguments definition
+  (full: Boolean!):
   #comment for named type
   String
   age:
