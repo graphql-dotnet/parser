@@ -345,13 +345,13 @@ field: Int }", @"Document
         EnumValue (13,18)
           Name [GREEN] (13,18)
 ")]
-    //           012345678901234567890123456789012345678901234567
-    [InlineData("{f(a:10,b:true,c:3.14,d:[],e:null,f:\"!\",g:{})}", @"Document (0,46)
-  OperationDefinition (0,46)
-    SelectionSet (0,46)
-      Field (1,45)
+    //           012345678901234567890123456789012345 67 89012345678901
+    [InlineData("{f(a:10,b:true,c:3.14,d:[],e:null,f:\"!\",g:{h:ENUM})}", @"Document (0,52)
+  OperationDefinition (0,52)
+    SelectionSet (0,52)
+      Field (1,51)
         Name [f] (1,2)
-        Arguments (2,45)
+        Arguments (2,51)
           Argument (3,7)
             Name [a] (3,4)
             IntValue (5,7)
@@ -370,9 +370,13 @@ field: Int }", @"Document
           Argument (34,39)
             Name [f] (34,35)
             StringValue (36,39)
-          Argument (40,44)
+          Argument (40,50)
             Name [g] (40,41)
-            ObjectValue (42,44)
+            ObjectValue (42,50)
+              ObjectField (43,49)
+                Name [h] (43,44)
+                EnumValue (45,49)
+                  Name [ENUM] (45,49)
 ")]
     //           01234567890123456789
     [InlineData("type T {f(x:Id):Int}", @"Document (0,20)
@@ -453,6 +457,14 @@ scalar S", @"Document (10,30)
     Directives (15,19)
       Directive (15,19)
         Name [vip] (16,19)
+")]
+    //           0123456789012345678
+    [InlineData("extend type T @vip", @"Document (0,18)
+  ObjectTypeExtension (0,18)
+    Name [T] (12,13)
+    Directives (14,18)
+      Directive (14,18)
+        Name [vip] (15,18)
 ")]
     //           01234567890123456789012
     [InlineData("extend interface I @vip", @"Document (0,23)
