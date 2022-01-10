@@ -364,6 +364,7 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(3);
         var def = document.Definitions[0] as GraphQLObjectTypeDefinition;
+        def.Comment.Text.ShouldBe("very good type");
         def.Interfaces.Comment.Text.ShouldBe("comment for implemented interfaces");
         def.Fields.Comment.Text.ShouldBe("comment for fields definition");
         def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
@@ -391,6 +392,7 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLInputObjectTypeDefinition;
+        def.Comment.Text.ShouldBe("very good input");
         def.Fields.Comment.Text.ShouldBe("comment for input fields definition");
         def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
         def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
