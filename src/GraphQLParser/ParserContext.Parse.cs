@@ -197,23 +197,13 @@ internal partial struct ParserContext
     private ASTNode ParseDefinition()
     {
         if (Peek(TokenKind.BRACE_L))
-        {
             return ParseOperationDefinition();
-        }
 
         if (Peek(TokenKind.NAME))
-        {
-            ASTNode? definition;
-            if ((definition = ParseNamedDefinition()) != null)
-                return definition;
-        }
+            return ParseNamedDefinition();
 
         if (Peek(TokenKind.STRING))
-        {
-            ASTNode? definition;
-            if ((definition = ParseNamedDefinitionWithDescription()) != null)
-                return definition;
-        }
+            return ParseNamedDefinitionWithDescription();
 
         return Throw_Unexpected_Token();
     }
@@ -891,7 +881,7 @@ internal partial struct ParserContext
         return name;
     }
 
-    private ASTNode? ParseNamedDefinition()
+    private ASTNode ParseNamedDefinition()
     {
         return ExpectOneOf(TopLevelKeywordOneOf, advance: false) switch
         {
@@ -915,7 +905,7 @@ internal partial struct ParserContext
 
     // TODO: 1. May be changed to use ExpectOneOf, or
     // TODO: 2. https://github.com/graphql/graphql-spec/pull/892 which allow to remove this method
-    private ASTNode? ParseNamedDefinitionWithDescription()
+    private ASTNode ParseNamedDefinitionWithDescription()
     {
         // look-ahead to next token (_currentToken remains unchanged)
         var token = Lexer.Lex(_source, _currentToken.End);
@@ -924,38 +914,39 @@ internal partial struct ParserContext
         {
             token = Lexer.Lex(_source, token.End);
         }
+
         // verify this is a NAME
-        if (token.Kind != TokenKind.NAME)
-            return null;
+        if (token.Kind == TokenKind.NAME)
+        {
+            // retrieve the value
+            var value = token.Value;
 
-        // retrieve the value
-        var value = token.Value;
+            if (value == "schema")
+                return ParseSchemaDefinition();
 
-        if (value == "schema")
-            return ParseSchemaDefinition();
+            if (value == "scalar")
+                return ParseScalarTypeDefinition();
 
-        if (value == "scalar")
-            return ParseScalarTypeDefinition();
+            if (value == "type")
+                return ParseObjectTypeDefinition();
 
-        if (value == "type")
-            return ParseObjectTypeDefinition();
+            if (value == "interface")
+                return ParseInterfaceTypeDefinition();
 
-        if (value == "interface")
-            return ParseInterfaceTypeDefinition();
+            if (value == "union")
+                return ParseUnionTypeDefinition();
 
-        if (value == "union")
-            return ParseUnionTypeDefinition();
+            if (value == "enum")
+                return ParseEnumTypeDefinition();
 
-        if (value == "enum")
-            return ParseEnumTypeDefinition();
+            if (value == "input")
+                return ParseInputObjectTypeDefinition();
 
-        if (value == "input")
-            return ParseInputObjectTypeDefinition();
+            if (value == "directive")
+                return ParseDirectiveDefinition();
+        }
 
-        if (value == "directive")
-            return ParseDirectiveDefinition();
-
-        return null;
+        return Throw_Unexpected_Token();
     }
 
     // http://spec.graphql.org/October2021/#NamedType
