@@ -467,7 +467,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLTypeCondition() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public GraphQLParser.AST.GraphQLNamedType? Type { get; set; }
+        public GraphQLParser.AST.GraphQLNamedType Type { get; set; }
     }
     public abstract class GraphQLTypeDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDescriptionNode, GraphQLParser.AST.INamedNode
     {

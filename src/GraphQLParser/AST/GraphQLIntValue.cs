@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.IntValue"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLIntValue: {Value}")]
 public class GraphQLIntValue : GraphQLValue
 {
     /// <inheritdoc/>

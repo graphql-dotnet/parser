@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.FloatValue"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLFloatValue: {Value}")]
 public class GraphQLFloatValue : GraphQLValue
 {
     /// <inheritdoc/>

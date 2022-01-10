@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.BooleanValue"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLBooleanValue: {Value}")]
 public class GraphQLBooleanValue : GraphQLValue
 {
     /// <inheritdoc/>
