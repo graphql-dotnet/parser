@@ -11,7 +11,7 @@ public class GraphQLTypeCondition : ASTNode
     /// <summary>
     /// Type to which this condition is applied.
     /// </summary>
-    public GraphQLNamedType? Type { get; set; }
+    public GraphQLNamedType Type { get; set; } = null!;
 }
 
 internal sealed class GraphQLTypeConditionWithLocation : GraphQLTypeCondition
