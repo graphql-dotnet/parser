@@ -412,6 +412,14 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
+    public virtual async ValueTask VisitSchemaExtension(GraphQLSchemaExtension schemaExtension, TContext context)
+    {
+        await Visit(schemaExtension.Comment, context).ConfigureAwait(false);
+        await Visit(schemaExtension.Directives, context).ConfigureAwait(false);
+        await Visit(schemaExtension.OperationTypes, context).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc/>
     public virtual async ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
     {
         await Visit(scalarTypeExtension.Comment, context).ConfigureAwait(false);
@@ -515,6 +523,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
                 GraphQLStringValue stringValue => VisitStringValue(stringValue, context),
                 GraphQLSchemaDefinition schemaDefinition => VisitSchemaDefinition(schemaDefinition, context),
                 GraphQLSelectionSet selectionSet => VisitSelectionSet(selectionSet, context),
+                GraphQLSchemaExtension schemaEx => VisitSchemaExtension(schemaEx, context),
                 GraphQLScalarTypeExtension scalarEx => VisitScalarTypeExtension(scalarEx, context),
                 GraphQLObjectTypeExtension objectEx => VisitObjectTypeExtension(objectEx, context),
                 GraphQLInterfaceTypeExtension ifaceEx => VisitInterfaceTypeExtension(ifaceEx, context),

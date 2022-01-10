@@ -26,6 +26,7 @@ field: Int }", 10)]
     [InlineData("enum Color { RED GREEN }", 10)]
     [InlineData("input UserData { Login: String! Password: String! }", 14)]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT", 10)]
+    [InlineData("extend schema @dir", 5)] // Document->SchemaExtension->Directives->Directive->Name
     [InlineData("extend scalar S @dir", 6)]
     [InlineData("extend type T @dir", 6)]
     [InlineData("extend interface I @dir", 6)]

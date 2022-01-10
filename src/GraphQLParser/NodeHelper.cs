@@ -339,6 +339,18 @@ internal static class NodeHelper
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static GraphQLSchemaExtension CreateGraphQLSchemaExtension(IgnoreOptions options)
+    {
+        return options switch
+        {
+            IgnoreOptions.All => new GraphQLSchemaExtension(),
+            IgnoreOptions.Comments => new GraphQLSchemaExtensionWithLocation(),
+            IgnoreOptions.Locations => new GraphQLSchemaExtensionWithComment(),
+            _ => new GraphQLSchemaExtensionFull(),
+        };
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static GraphQLFragmentSpread CreateGraphQLFragmentSpread(IgnoreOptions options)
     {
         return options switch

@@ -238,6 +238,12 @@ field: Int }", @"Document
             Name [Boolean]
     DirectiveLocations
 ")]
+    [InlineData("extend schema @dir", @"Document
+  SchemaExtension
+    Directives
+      Directive
+        Name [dir]
+")]
     [InlineData("extend scalar S @dir", @"Document
   ScalarTypeExtension
     Name [S]
