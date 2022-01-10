@@ -349,7 +349,7 @@ public class LexerTests
     [Fact]
     public void Lex_VeryLongStringToken()
     {
-        string text = new string('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadString
+        string text = new('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadString
         var token = $"\"{text}\"".Lex();
         token.Kind.ShouldBe(TokenKind.STRING);
         token.Value.Length.ShouldBe(4096 + 10);
