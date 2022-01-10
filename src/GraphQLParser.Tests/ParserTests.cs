@@ -436,6 +436,7 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLDirectiveDefinition;
+        def.Comment.Text.ShouldBe("very good directive");
         def.Locations.Comment.Text.ShouldBe("comment for directive locations");
 
         document.UnattachedComments.ShouldBeNull();
