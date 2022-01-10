@@ -322,6 +322,40 @@ public class LexerTests
     }
 
     [Fact]
+    public void Lex_NameTokenWithEscapedComment()
+    {
+        var token = $"#abc\\tdef\nfoo".Lex();
+        token.Kind.ShouldBe(TokenKind.COMMENT);
+        token.Value.Length.ShouldBe(7);
+    }
+
+    [Fact]
+    public void Lex_NameTokenWithVeryLongComment()
+    {
+        string comment = new string('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadComment
+        var token = $"#{comment}\nfoo".Lex();
+        token.Kind.ShouldBe(TokenKind.COMMENT);
+        token.Value.Length.ShouldBe(4096 + 10);
+    }
+
+    [Fact]
+    public void Lex_EscapedStringToken()
+    {
+        var token = $"\"abc\\tdef\"".Lex();
+        token.Kind.ShouldBe(TokenKind.STRING);
+        token.Value.Length.ShouldBe(7);
+    }
+
+    [Fact]
+    public void Lex_VeryLongStringToken()
+    {
+        string text = new string('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadString
+        var token = $"\"{text}\"".Lex();
+        token.Kind.ShouldBe(TokenKind.STRING);
+        token.Value.Length.ShouldBe(4096 + 10);
+    }
+
+    [Fact]
     public void Lex_NameTokenWithWhitespaces_HasCorrectEnd()
     {
         var token = GetSingleNameTokenLexerSurroundedWithWhitespaces();
