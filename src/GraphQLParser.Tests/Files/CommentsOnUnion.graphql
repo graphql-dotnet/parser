@@ -1,0 +1,7 @@
+#very good union
+union Unity
+#comment for union members
+= A | B
+
+#forgot about C!
+extend union Unity = C

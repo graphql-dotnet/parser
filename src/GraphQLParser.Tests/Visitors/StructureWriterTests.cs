@@ -345,13 +345,13 @@ field: Int }", @"Document
         EnumValue (13,18)
           Name [GREEN] (13,18)
 ")]
-    //           0123456789012345678901234567890123456789012
-    [InlineData("{f(a:10,b:true,c:3.14,d:[],e:null,f:\"!\")}", @"Document (0,41)
-  OperationDefinition (0,41)
-    SelectionSet (0,41)
-      Field (1,40)
+    //           012345678901234567890123456789012345678901234567
+    [InlineData("{f(a:10,b:true,c:3.14,d:[],e:null,f:\"!\",g:{})}", @"Document (0,46)
+  OperationDefinition (0,46)
+    SelectionSet (0,46)
+      Field (1,45)
         Name [f] (1,2)
-        Arguments (2,40)
+        Arguments (2,45)
           Argument (3,7)
             Name [a] (3,4)
             IntValue (5,7)
@@ -370,6 +370,9 @@ field: Int }", @"Document
           Argument (34,39)
             Name [f] (34,35)
             StringValue (36,39)
+          Argument (40,44)
+            Name [g] (40,41)
+            ObjectValue (42,44)
 ")]
     //           01234567890123456789
     [InlineData("type T {f(x:Id):Int}", @"Document (0,20)
@@ -403,25 +406,27 @@ scalar S", @"Document (10,30)
       Directive (9,13)
         Name [vip] (10,13)
 ")]
-    //           0123456789012345
-    [InlineData("interface I @vip", @"Document (0,16)
-  InterfaceTypeDefinition (0,16)
+    //           012345678901234567890123456
+    [InlineData("interface I implements Base", @"Document (0,27)
+  InterfaceTypeDefinition (0,27)
     Name [I] (10,11)
-    Directives (12,16)
-      Directive (12,16)
-        Name [vip] (13,16)
+    ImplementsInterfaces (12,27)
+      NamedType (23,27)
+        Name [Base] (23,27)
 ")]
-    //           012345678901234567890
-    [InlineData("input D {x: Int! = 3}", @"Document (0,21)
-  InputObjectTypeDefinition (0,21)
+    //           0123456789012345678901234
+    [InlineData("input D {x: [Int!] = [3]}", @"Document (0,25)
+  InputObjectTypeDefinition (0,25)
     Name [D] (6,7)
-    InputFieldsDefinition (8,21)
-      InputValueDefinition (9,20)
+    InputFieldsDefinition (8,25)
+      InputValueDefinition (9,24)
         Name [x] (9,10)
-        NonNullType (12,16)
-          NamedType (12,15)
-            Name [Int] (12,15)
-        IntValue (19,20)
+        ListType (12,18)
+          NonNullType (13,17)
+            NamedType (13,16)
+              Name [Int] (13,16)
+        ListValue (21,24)
+          IntValue (22,23)
 ")]
     //           012345678901234
     [InlineData("union U = A | B", @"Document (0,15)
@@ -490,6 +495,17 @@ scalar S", @"Document (10,30)
     SelectionSet (19,27)
       Field (21,25)
         Name [name] (21,25)
+")]
+    //           0123456789012345678
+    [InlineData("{ ...human ... {a}}", @"Document (0,19)
+  OperationDefinition (0,19)
+    SelectionSet (0,19)
+      FragmentSpread (2,10)
+        Name [human] (5,10)
+      InlineFragment (11,18)
+        SelectionSet (15,18)
+          Field (16,17)
+            Name [a] (16,17)
 ")]
     //           01234567890123456789012345678901234567890
     [InlineData("mutation M($id:ID = 5) { f(a:$id, b:42) }", @"Document (0,41)

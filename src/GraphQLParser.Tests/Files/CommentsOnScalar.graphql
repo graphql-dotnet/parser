@@ -1,0 +1,5 @@
+#very good scalar
+scalar JSON
+
+#forgot about external!
+extend scalar JSON @external

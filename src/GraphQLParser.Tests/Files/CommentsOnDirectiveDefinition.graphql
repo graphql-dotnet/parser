@@ -1,0 +1,4 @@
+#very good directive
+directive @external on
+#comment for directive locations
+SCHEMA

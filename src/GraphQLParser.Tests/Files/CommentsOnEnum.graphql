@@ -7,3 +7,9 @@ enum Color
   #not red
   GREEN
 }
+
+#forgot about orange!
+extend enum Color
+{
+  ORANGE
+}

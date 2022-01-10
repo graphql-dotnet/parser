@@ -1,0 +1,23 @@
+#very good input
+input Person
+#comment for input fields definition
+{
+  name:
+  #comment for named type
+  String
+  age:
+  #comment for nonnull type
+  Int!
+  friends:
+  #comment for list type
+  [
+  #comment for item type
+  Person
+  ]
+}
+
+#forgot about address!
+extend input Person
+{
+  address: String
+}

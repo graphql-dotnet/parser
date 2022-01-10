@@ -203,7 +203,7 @@ internal partial struct ParserContext
     {
         if (_currentToken.Kind == TokenKind.NAME)
         {
-            var found = IsAny(_currentToken, oneOf);
+            string? found = IsAny(_currentToken, oneOf);
             if (found != null)
             {
                 if (advance)
