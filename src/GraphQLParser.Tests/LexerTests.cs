@@ -329,13 +329,16 @@ public class LexerTests
         token.Value.Length.ShouldBe(7);
     }
 
-    [Fact]
-    public void Lex_NameTokenWithVeryLongComment()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Lex_NameTokenWithVeryLongComment(bool escape)
     {
-        string comment = new string('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadComment
-        var token = $"#{comment}\nfoo".Lex();
+        string comment = new('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadComment
+        var token = (escape ? $"#\\t{comment}\nfoo" : $"#{comment}\nfoo").Lex();
         token.Kind.ShouldBe(TokenKind.COMMENT);
-        token.Value.Length.ShouldBe(4096 + 10);
+        token.Value.Length.ShouldBe(4096 + 10 + (escape ? 1 : 0));
+        token.Value.Span[0].ShouldBe(escape ? '\t' : 'w');
     }
 
     [Fact]
@@ -346,13 +349,16 @@ public class LexerTests
         token.Value.Length.ShouldBe(7);
     }
 
-    [Fact]
-    public void Lex_VeryLongStringToken()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Lex_VeryLongStringToken(bool escape)
     {
         string text = new('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadString
-        var token = $"\"{text}\"".Lex();
+        var token = (escape ? $"\"\\t{text}\"" : $"\"{text}\"").Lex();
         token.Kind.ShouldBe(TokenKind.STRING);
-        token.Value.Length.ShouldBe(4096 + 10);
+        token.Value.Length.ShouldBe(4096 + 10 + (escape ? 1 : 0));
+        token.Value.Span[0].ShouldBe(escape ? '\t' : 'w');
     }
 
     [Fact]
