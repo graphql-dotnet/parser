@@ -376,7 +376,7 @@ internal partial struct ParserContext
 
         // Directive locations may be defined with an optional leading | character
         // to aid formatting when representing a longer list of possible locations
-        Skip(TokenKind.PIPE);
+        _ = Skip(TokenKind.PIPE);
 
         do
         {
@@ -706,7 +706,7 @@ internal partial struct ParserContext
 
         // Objects that implement interfaces may be defined with an optional leading & character
         // to aid formatting when representing a longer list of implemented interfaces
-        Skip(TokenKind.AMPERSAND);
+        _ = Skip(TokenKind.AMPERSAND);
 
         do
         {
@@ -1373,6 +1373,7 @@ internal partial struct ParserContext
             "union" => ParseUnionTypeExtension(start, comment),
             "enum" => ParseEnumTypeExtension(start, comment),
             "input" => ParseInputObjectTypeExtension(start, comment),
+
             _ => throw new NotSupportedException("Compiler never gets here since ExpectOneOf throws.")
         };
     }
@@ -1393,7 +1394,7 @@ internal partial struct ParserContext
 
         // Union members may be defined with an optional leading | character
         // to aid formatting when representing a longer list of possible types
-        Skip(TokenKind.PIPE);
+        _ = Skip(TokenKind.PIPE);
 
         do
         {

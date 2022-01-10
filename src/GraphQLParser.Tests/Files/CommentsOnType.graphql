@@ -1,4 +1,8 @@
-type Person {
+type Person
+#comment for implemented interfaces
+implements Human
+#comment for fields definition
+{
   name
   #comment for arguments definition
   (full: Boolean!):
@@ -14,3 +18,12 @@ type Person {
   Person
   ]
 }
+
+#forgot about address!
+extend type Person
+{
+  address: String
+}
+
+#forgot about vip!
+extend interface Human @vip

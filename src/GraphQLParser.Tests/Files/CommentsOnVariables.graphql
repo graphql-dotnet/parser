@@ -1,4 +1,6 @@
-query _(
+query _
+#very good variables definition
+(
     #comment1
     $id:
     #comment on variable type

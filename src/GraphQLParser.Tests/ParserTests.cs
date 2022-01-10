@@ -269,7 +269,12 @@ public class ParserTests
         var def = document.Definitions[0] as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(1);
         var field = def.SelectionSet.Selections.First() as GraphQLField;
+        field.Arguments.Count.ShouldBe(2);
         field.Arguments.Comment.ShouldNotBeNull().Text.ShouldBe("arguments comment");
+        var obj = field.Arguments[1].Value.ShouldBeAssignableTo<GraphQLObjectValue>();
+        obj.Fields.Count.ShouldBe(1);
+        obj.Fields[0].Name.Value.ShouldBe("z");
+        obj.Fields[0].Comment.Text.ShouldBe("comment on object field");
     }
 
     [Theory]
@@ -357,13 +362,43 @@ public class ParserTests
         string query = "CommentsOnType".ReadGraphQLFile();
 
         using var document = query.Parse(new ParserOptions { Ignore = options });
-        document.Definitions.Count.ShouldBe(1);
+        document.Definitions.Count.ShouldBe(3);
         var def = document.Definitions[0] as GraphQLObjectTypeDefinition;
+        def.Interfaces.Comment.Text.ShouldBe("comment for implemented interfaces");
+        def.Fields.Comment.Text.ShouldBe("comment for fields definition");
         def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
         def.Fields[0].Arguments.Comment.Text.ShouldBe("comment for arguments definition");
         def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
         def.Fields[2].Type.Comment.Text.ShouldBe("comment for list type");
         (def.Fields[2].Type as GraphQLListType).Type.Comment.Text.ShouldBe("comment for item type");
+
+        var ext1 = document.Definitions[1] as GraphQLObjectTypeExtension;
+        ext1.Comment.Text.ShouldBe("forgot about address!");
+
+        var ext2 = document.Definitions[2] as GraphQLInterfaceTypeExtension;
+        ext2.Comment.Text.ShouldBe("forgot about vip!");
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    //[InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    //[InlineData(IgnoreOptions.All)]
+    public void Comments_on_Input_Should_Read_Correctly(IgnoreOptions options)
+    {
+        string query = "CommentsOnInput".ReadGraphQLFile();
+
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(2);
+        var def = document.Definitions[0] as GraphQLInputObjectTypeDefinition;
+        def.Fields.Comment.Text.ShouldBe("comment for input fields definition");
+        def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
+        def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
+        def.Fields[2].Type.Comment.Text.ShouldBe("comment for list type");
+        (def.Fields[2].Type as GraphQLListType).Type.Comment.Text.ShouldBe("comment for item type");
+
+        var ext = document.Definitions[1] as GraphQLInputObjectTypeExtension;
+        ext.Comment.Text.ShouldBe("forgot about address!");
     }
 
     [Theory]
@@ -394,17 +429,78 @@ public class ParserTests
     //[InlineData(IgnoreOptions.Comments)]
     [InlineData(IgnoreOptions.Locations)]
     //[InlineData(IgnoreOptions.All)]
+    public void Comments_on_DirectiveDefinition_Should_Read_Correctly(IgnoreOptions options)
+    {
+        string query = "CommentsOnDirectiveDefinition".ReadGraphQLFile();
+
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(1);
+        var def = document.Definitions[0] as GraphQLDirectiveDefinition;
+        def.Locations.Comment.Text.ShouldBe("comment for directive locations");
+
+        document.UnattachedComments.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    //[InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    //[InlineData(IgnoreOptions.All)]
     public void Comments_on_Enum_Should_Read_Correctly(IgnoreOptions options)
     {
         string query = "CommentsOnEnum".ReadGraphQLFile();
 
         using var document = query.Parse(new ParserOptions { Ignore = options });
-        document.Definitions.Count.ShouldBe(1);
+        document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLEnumTypeDefinition;
         def.Comment.Text.ShouldBe("very good colors");
         def.Values.Comment.Text.ShouldBe("values");
         def.Values[0].Comment.Text.ShouldBe("not green");
         def.Values[1].Comment.Text.ShouldBe("not red");
+
+        var ext = document.Definitions[1] as GraphQLEnumTypeExtension;
+        ext.Comment.Text.ShouldBe("forgot about orange!");
+
+        document.UnattachedComments.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    //[InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    //[InlineData(IgnoreOptions.All)]
+    public void Comments_on_Scalar_Should_Read_Correctly(IgnoreOptions options)
+    {
+        string query = "CommentsOnScalar".ReadGraphQLFile();
+
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(2);
+        var def = document.Definitions[0] as GraphQLScalarTypeDefinition;
+        def.Comment.Text.ShouldBe("very good scalar");
+
+        var ext = document.Definitions[1] as GraphQLScalarTypeExtension;
+        ext.Comment.Text.ShouldBe("forgot about external!");
+
+        document.UnattachedComments.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    //[InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    //[InlineData(IgnoreOptions.All)]
+    public void Comments_on_Union_Should_Read_Correctly(IgnoreOptions options)
+    {
+        string query = "CommentsOnUnion".ReadGraphQLFile();
+
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(2);
+        var def = document.Definitions[0] as GraphQLUnionTypeDefinition;
+        def.Comment.Text.ShouldBe("very good union");
+        def.Types.Comment.Text.ShouldBe("comment for union members");
+
+        var ext = document.Definitions[1] as GraphQLUnionTypeExtension;
+        ext.Comment.Text.ShouldBe("forgot about C!");
 
         document.UnattachedComments.ShouldBeNull();
     }
@@ -422,6 +518,7 @@ public class ParserTests
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions.First() as GraphQLOperationDefinition;
         def.Variables.Count.ShouldBe(3);
+        def.Variables.Comment.Text.ShouldBe("very good variables definition");
         def.Variables[0].Comment.ShouldNotBeNull().Text.ShouldBe("comment1");
         def.Variables.Skip(1).First().Comment.ShouldBeNull();
         def.Variables.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("comment3");
