@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.NullValue"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLNullValue: {Value}")]
 public class GraphQLNullValue : GraphQLValue
 {
     /// <inheritdoc/>

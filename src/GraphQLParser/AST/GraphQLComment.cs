@@ -5,7 +5,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.Comment"/>.
 /// </summary>
-[DebuggerDisplay("{Text}")]
+[DebuggerDisplay("GraphQLComment: {Text}")]
 public class GraphQLComment : ASTNode
 {
     //private GraphQLComment? _comment;

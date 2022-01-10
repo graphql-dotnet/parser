@@ -5,7 +5,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.Name"/>.
 /// </summary>
-[DebuggerDisplay("{Value}")]
+[DebuggerDisplay("GraphQLName: {Value}")]
 public class GraphQLName : ASTNode
 {
     /// <inheritdoc/>
