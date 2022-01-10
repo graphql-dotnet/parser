@@ -9,7 +9,7 @@ public class LexerBenchmark : BenchmarkBase
     [ArgumentsSource(nameof(Names))]
     public void Lex(string name)
     {
-        var source = GetQueryByName(name);
+        string source = GetQueryByName(name);
         int resetPosition = 0;
         Token token;
         while ((token = Lexer.Lex(source, resetPosition)).Kind != TokenKind.EOF)
