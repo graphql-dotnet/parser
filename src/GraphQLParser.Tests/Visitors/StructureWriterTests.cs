@@ -345,7 +345,7 @@ field: Int }", @"Document
         EnumValue (13,18)
           Name [GREEN] (13,18)
 ")]
-    //           012345678901234567890123456789012345678901234567890123
+    //           012345678901234567890123456789012345 67 89012345678901
     [InlineData("{f(a:10,b:true,c:3.14,d:[],e:null,f:\"!\",g:{h:ENUM})}", @"Document (0,52)
   OperationDefinition (0,52)
     SelectionSet (0,52)
