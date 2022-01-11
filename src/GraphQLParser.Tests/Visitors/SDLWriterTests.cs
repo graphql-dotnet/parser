@@ -38,6 +38,7 @@ public class SDLWriterTests
 ) repeatable on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | VARIABLE_DEFINITION | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION")]
     [InlineData("directive @exportable on | SCHEMA", @"directive @exportable on SCHEMA")]
     [InlineData("directive @exportable on | SCHEMA | ENUM", @"directive @exportable on SCHEMA | ENUM")]
+    [InlineData("extend schema @exportable ", @"extend schema @exportable")]
     [InlineData("extend schema @exportable { mutation: M }", @"extend schema @exportable
 {
   mutation: M
