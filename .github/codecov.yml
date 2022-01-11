@@ -1,3 +1,6 @@
 # https://docs.codecov.com/docs/codecov-yaml
+# https://docs.codecov.com/docs/codecovyml-reference
+codecov:
+  require_ci_to_pass: false
 comment:
   behavior: new
