@@ -4,6 +4,7 @@ codecov:
   require_ci_to_pass: false
 # https://docs.codecov.com/docs/pull-request-comments
 comment:
+  layout: "reach, diff, flags, files"
   behavior: new
   require_changes: false
   require_head: no
