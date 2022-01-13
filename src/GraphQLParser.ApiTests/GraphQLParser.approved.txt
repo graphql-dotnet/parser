@@ -230,7 +230,7 @@ namespace GraphQLParser.AST
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLSelectionSet SelectionSet { get; set; }
     }
-    public class GraphQLField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode, GraphQLParser.AST.INamedNode
+    public class GraphQLField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode, GraphQLParser.AST.INamedNode, GraphQLParser.AST.ISelectionNode
     {
         public GraphQLField() { }
         public GraphQLParser.AST.GraphQLAlias? Alias { get; set; }
@@ -266,7 +266,7 @@ namespace GraphQLParser.AST
         public GraphQLParser.AST.GraphQLName Name { get; set; }
         public GraphQLParser.AST.GraphQLTypeCondition TypeCondition { get; set; }
     }
-    public class GraphQLFragmentSpread : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.INamedNode
+    public class GraphQLFragmentSpread : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.INamedNode, GraphQLParser.AST.ISelectionNode
     {
         public GraphQLFragmentSpread() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
@@ -278,7 +278,7 @@ namespace GraphQLParser.AST
         public GraphQLImplementsInterfaces() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
-    public class GraphQLInlineFragment : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode
+    public class GraphQLInlineFragment : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode, GraphQLParser.AST.ISelectionNode
     {
         public GraphQLInlineFragment() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
@@ -567,6 +567,7 @@ namespace GraphQLParser.AST
     {
         GraphQLParser.AST.GraphQLName Name { get; set; }
     }
+    public interface ISelectionNode { }
     public enum OperationType
     {
         Query = 0,
