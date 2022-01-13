@@ -3,7 +3,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.InlineFragment"/>.
 /// </summary>
-public class GraphQLInlineFragment : ASTNode, IHasSelectionSetNode, IHasDirectivesNode
+public class GraphQLInlineFragment : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasDirectivesNode
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.InlineFragment;

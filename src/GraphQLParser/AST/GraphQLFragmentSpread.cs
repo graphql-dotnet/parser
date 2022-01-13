@@ -3,7 +3,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.FragmentSpread"/>.
 /// </summary>
-public class GraphQLFragmentSpread : ASTNode, IHasDirectivesNode, INamedNode
+public class GraphQLFragmentSpread : ASTNode, ISelectionNode, IHasDirectivesNode, INamedNode
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
