@@ -1,4 +1,5 @@
 using System;
+using GraphQLParser.AST;
 using Shouldly;
 using Xunit;
 
@@ -61,4 +62,13 @@ public class MemoryTests
         rom2.Span[0].ShouldBe('d');
         rom2.Span[1].ShouldBe('e');
     }
+
+    [Fact]
+    public void GraphQLName_Implicit_Cast()
+    {
+        var name = new GraphQLName { Value = "abc" };
+        FuncROM(name).ShouldBe(name);
+    }
+
+    private ROM FuncROM(ROM r) => r;
 }

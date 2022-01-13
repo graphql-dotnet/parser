@@ -15,6 +15,11 @@ public class GraphQLName : ASTNode
     /// Name value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
+
+    /// <summary>
+    /// Implicitly casts <see cref="GraphQLName"/> to <see cref="ROM"/>.
+    /// </summary>
+    public static implicit operator ROM(GraphQLName node) => node.Value;
 }
 
 internal sealed class GraphQLNameWithLocation : GraphQLName
