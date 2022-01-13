@@ -70,5 +70,14 @@ public class MemoryTests
         FuncROM(name).ShouldBe(name);
     }
 
+    [Fact]
+    public void GraphQLName_Explicit_Cast()
+    {
+        var name = new GraphQLName { Value = "abc" };
+        FuncString((string)name).ShouldBe("abc");
+    }
+
     private ROM FuncROM(ROM r) => r;
+
+    private string FuncString(string s) => s;
 }
