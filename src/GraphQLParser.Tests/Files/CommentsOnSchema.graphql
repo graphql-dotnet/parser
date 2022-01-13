@@ -1,0 +1,11 @@
+#very good schema
+schema
+{
+  query: Q
+}
+
+#forgot about mutation!
+extend schema
+{
+  mutation: M
+}

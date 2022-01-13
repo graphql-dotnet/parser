@@ -379,6 +379,31 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
+    public override async ValueTask VisitSchemaExtension(GraphQLSchemaExtension schemaExtension, TContext context)
+    {
+        await Visit(schemaExtension.Comment, context).ConfigureAwait(false);
+        await context.Write("extend schema").ConfigureAwait(false);
+        await Visit(schemaExtension.Directives, context).ConfigureAwait(false);
+
+        //TODO: https://github.com/graphql/graphql-spec/issues/921
+        if (schemaExtension.OperationTypes?.Count > 0)
+        {
+            await context.WriteLine().ConfigureAwait(false);
+            await context.Write("{").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+
+            for (int i = 0; i < schemaExtension.OperationTypes.Count; ++i)
+            {
+                await Visit(schemaExtension.OperationTypes[i], context).ConfigureAwait(false);
+                await context.WriteLine().ConfigureAwait(false);
+            }
+
+            await context.Write("}").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+        }
+    }
+
+    /// <inheritdoc/>
     public override async ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
     {
         await Visit(scalarTypeExtension.Comment, context).ConfigureAwait(false);
@@ -894,7 +919,8 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
                 if (node is GraphQLSelectionSet ||
                     node is GraphQLTypeDefinition ||
                     node is GraphQLInputObjectTypeDefinition ||
-                    node is GraphQLSchemaDefinition)
+                    node is GraphQLSchemaDefinition ||
+                    node is GraphQLSchemaExtension)
                     ++level;
             }
 

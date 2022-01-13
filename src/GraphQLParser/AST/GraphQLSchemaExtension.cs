@@ -3,27 +3,23 @@ using System.Collections.Generic;
 namespace GraphQLParser.AST;
 
 /// <summary>
-/// AST node for <see cref="ASTNodeKind.SchemaDefinition"/>.
+/// AST node for <see cref="ASTNodeKind.SchemaExtension"/>.
 /// </summary>
-public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHasDescriptionNode
+public class GraphQLSchemaExtension : ASTNode, IHasDirectivesNode
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.SchemaDefinition;
-
-    /// <inheritdoc/>
-    public GraphQLDescription? Description { get; set; }
+    public override ASTNodeKind Kind => ASTNodeKind.SchemaExtension;
 
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
 
     /// <summary>
-    /// All root operation type definitions in this schema represented as a list of nested AST nodes.
+    /// Root operation type definitions added by this schema extension represented as a list of nested AST nodes.
     /// </summary>
-    public List<GraphQLRootOperationTypeDefinition> OperationTypes { get; set; } = null!;
-    //TODO: https://github.com/graphql/graphql-spec/issues/921
+    public List<GraphQLRootOperationTypeDefinition>? OperationTypes { get; set; }
 }
 
-internal sealed class GraphQLSchemaDefinitionWithLocation : GraphQLSchemaDefinition
+internal sealed class GraphQLSchemaExtensionWithLocation : GraphQLSchemaExtension
 {
     private GraphQLLocation _location;
 
@@ -34,7 +30,7 @@ internal sealed class GraphQLSchemaDefinitionWithLocation : GraphQLSchemaDefinit
     }
 }
 
-internal sealed class GraphQLSchemaDefinitionWithComment : GraphQLSchemaDefinition
+internal sealed class GraphQLSchemaExtensionWithComment : GraphQLSchemaExtension
 {
     private GraphQLComment? _comment;
 
@@ -45,7 +41,7 @@ internal sealed class GraphQLSchemaDefinitionWithComment : GraphQLSchemaDefiniti
     }
 }
 
-internal sealed class GraphQLSchemaDefinitionFull : GraphQLSchemaDefinition
+internal sealed class GraphQLSchemaExtensionFull : GraphQLSchemaExtension
 {
     private GraphQLLocation _location;
     private GraphQLComment? _comment;

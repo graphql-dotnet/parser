@@ -1,3 +1,10 @@
 # https://docs.codecov.com/docs/codecov-yaml
+# https://docs.codecov.com/docs/codecovyml-reference
+codecov:
+  require_ci_to_pass: false
+# https://docs.codecov.com/docs/pull-request-comments
 comment:
   behavior: new
+  require_changes: false
+  require_head: no
+  require_base: no

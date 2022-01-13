@@ -27,6 +27,7 @@ internal partial struct ParserContext
 
     private static string[] TypeExtensionOneOf { get; set; } = new[]
     {
+        "schema",
         "scalar",
         "type",
         "interface",

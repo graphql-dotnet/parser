@@ -472,6 +472,26 @@ public class ParserTests
     //[InlineData(IgnoreOptions.Comments)]
     [InlineData(IgnoreOptions.Locations)]
     //[InlineData(IgnoreOptions.All)]
+    public void Comments_on_Schema_Should_Read_Correctly(IgnoreOptions options)
+    {
+        string query = "CommentsOnSchema".ReadGraphQLFile();
+
+        using var document = query.Parse(new ParserOptions { Ignore = options });
+        document.Definitions.Count.ShouldBe(2);
+        var def = document.Definitions[0] as GraphQLSchemaDefinition;
+        def.Comment.Text.ShouldBe("very good schema");
+
+        var ext = document.Definitions[1] as GraphQLSchemaExtension;
+        ext.Comment.Text.ShouldBe("forgot about mutation!");
+
+        document.UnattachedComments.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    //[InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    //[InlineData(IgnoreOptions.All)]
     public void Comments_on_Scalar_Should_Read_Correctly(IgnoreOptions options)
     {
         string query = "CommentsOnScalar".ReadGraphQLFile();
@@ -1089,8 +1109,10 @@ Cat
     }
 
     [Theory]
-    [InlineData("extend", "Expected \"scalar/type/interface/union/enum/input\", found EOF")]
-    [InlineData("extend variable", "Expected \"scalar/type/interface/union/enum/input\", found Name \"variable\"")]
+    [InlineData("extend", "Expected \"schema/scalar/type/interface/union/enum/input\", found EOF")]
+    [InlineData("extend variable", "Expected \"schema/scalar/type/interface/union/enum/input\", found Name \"variable\"")]
+    [InlineData("extend schema", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#SchemaExtension")]
+    [InlineData("extend schema A", "Unexpected Name \"A\"; for more information see http://spec.graphql.org/October2021/#SchemaExtension")]
     [InlineData("extend scalar", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
     [InlineData("extend scalar A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
     [InlineData("extend scalar A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]

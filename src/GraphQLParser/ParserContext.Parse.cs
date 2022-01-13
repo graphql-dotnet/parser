@@ -1202,6 +1202,27 @@ internal partial struct ParserContext
         return def;
     }
 
+    // http://spec.graphql.org/October2021/#SchemaExtension
+    // Note that due to the spec type extensions have no descriptions.
+    private GraphQLSchemaExtension ParseSchemaExtension(int start, GraphQLComment? comment)
+    {
+        IncreaseDepth();
+
+        var extension = NodeHelper.CreateGraphQLSchemaExtension(_ignoreOptions);
+
+        extension.Comment = comment;
+        ExpectKeyword("schema");
+        extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
+        extension.OperationTypes = Peek(TokenKind.BRACE_L) ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseRootOperationTypeDefinition(), TokenKind.BRACE_R) : null;
+        extension.Location = GetLocation(start);
+
+        if (extension.Directives == null && extension.OperationTypes == null)
+            return (GraphQLSchemaExtension)Throw_Unexpected_Token("; for more information see http://spec.graphql.org/October2021/#SchemaExtension");
+
+        DecreaseDepth();
+        return extension;
+    }
+
     // http://spec.graphql.org/October2021/#ScalarTypeExtension
     // Note that due to the spec type extensions have no descriptions.
     private GraphQLScalarTypeExtension ParseScalarTypeExtension(int start, GraphQLComment? comment)
@@ -1348,8 +1369,8 @@ internal partial struct ParserContext
         return nonNull;
     }
 
-    // http://spec.graphql.org/October2021/#TypeExtension
-    private GraphQLTypeExtension ParseTypeExtension()
+    // http://spec.graphql.org/October2021/#TypeSystemExtension : SchemaExtension / TypeExtension
+    private ASTNode ParseTypeExtension()
     {
         int start = _currentToken.Start;
         var comment = GetComment();
@@ -1358,6 +1379,7 @@ internal partial struct ParserContext
 
         return ExpectOneOf(TypeExtensionOneOf, advance: false) switch
         {
+            "schema" => ParseSchemaExtension(start, comment),
             "scalar" => ParseScalarTypeExtension(start, comment),
             "type" => ParseObjectTypeExtension(start, comment),
             "interface" => ParseInterfaceTypeExtension(start, comment),

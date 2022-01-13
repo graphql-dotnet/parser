@@ -398,6 +398,16 @@ public enum ASTNodeKind
     InputObjectTypeExtension,
 
     /// <summary>
+    /// Schema extensions are used to represent a schema which has been
+    /// extended from an original schema. For example, this might be used
+    /// by a GraphQL service which adds additional operation types, or
+    /// additional directives to an existing schema.
+    /// <br/>
+    /// <see href="http://spec.graphql.org/October2021/#SchemaExtension"/>
+    /// </summary>
+    SchemaExtension,
+
+    /// <summary>
     /// Occasionally object fields/directives can accept arguments to further specify
     /// the return value. Object field arguments are defined as a list of all possible
     /// argument names and their expected input types.

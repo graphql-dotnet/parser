@@ -261,6 +261,11 @@ public interface INodeVisitor<TContext>
     ValueTask VisitAlias(GraphQLAlias alias, TContext context);
 
     /// <summary>
+    /// Visits <see cref="GraphQLSchemaExtension"/> node.
+    /// </summary>
+    ValueTask VisitSchemaExtension(GraphQLSchemaExtension schemaExtension, TContext context);
+
+    /// <summary>
     /// Visits <see cref="GraphQLScalarTypeExtension"/> node.
     /// </summary>
     ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context);
