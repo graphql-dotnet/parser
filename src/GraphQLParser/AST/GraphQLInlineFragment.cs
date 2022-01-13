@@ -3,7 +3,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.InlineFragment"/>.
 /// </summary>
-public class GraphQLInlineFragment : ASTNode, IHasDirectivesNode
+public class GraphQLInlineFragment : ASTNode, IHasSelectionSetNode, IHasDirectivesNode
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.InlineFragment;
@@ -17,10 +17,10 @@ public class GraphQLInlineFragment : ASTNode, IHasDirectivesNode
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
 
-    /// <summary>
-    /// Nested <see cref="GraphQLSelectionSet"/> AST node with selection set of this inline fragment.
-    /// </summary>
+    /// <inheritdoc/>
+#pragma warning disable CS8767 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
     public GraphQLSelectionSet SelectionSet { get; set; } = null!;
+#pragma warning restore CS8767
 }
 
 internal sealed class GraphQLInlineFragmentWithLocation : GraphQLInlineFragment

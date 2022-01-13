@@ -3,7 +3,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.Field"/>.
 /// </summary>
-public class GraphQLField : ASTNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
+public class GraphQLField : ASTNode, IHasSelectionSetNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Field;
@@ -24,6 +24,7 @@ public class GraphQLField : ASTNode, IHasDirectivesNode, IHasArgumentsNode, INam
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
 
+    /// <inheritdoc/>
     public GraphQLSelectionSet? SelectionSet { get; set; }
 }
 

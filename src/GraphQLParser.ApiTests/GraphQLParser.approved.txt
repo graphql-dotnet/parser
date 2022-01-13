@@ -224,13 +224,13 @@ namespace GraphQLParser.AST
         public GraphQLEnumValuesDefinition() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
-    public abstract class GraphQLExecutableDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode
+    public abstract class GraphQLExecutableDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode
     {
         protected GraphQLExecutableDefinition() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLSelectionSet SelectionSet { get; set; }
     }
-    public class GraphQLField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.INamedNode
+    public class GraphQLField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode, GraphQLParser.AST.INamedNode
     {
         public GraphQLField() { }
         public GraphQLParser.AST.GraphQLAlias? Alias { get; set; }
@@ -278,7 +278,7 @@ namespace GraphQLParser.AST
         public GraphQLImplementsInterfaces() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
-    public class GraphQLInlineFragment : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode
+    public class GraphQLInlineFragment : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode
     {
         public GraphQLInlineFragment() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
@@ -558,6 +558,10 @@ namespace GraphQLParser.AST
     public interface IHasInterfacesNode
     {
         GraphQLParser.AST.GraphQLImplementsInterfaces? Interfaces { get; set; }
+    }
+    public interface IHasSelectionSetNode
+    {
+        GraphQLParser.AST.GraphQLSelectionSet? SelectionSet { get; set; }
     }
     public interface INamedNode
     {
