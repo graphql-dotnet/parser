@@ -40,39 +40,46 @@ public readonly struct ROM : IEquatable<ROM>
     /// <inheritdoc/>
     public bool Equals(ROM other)
     {
-        if (_memory.Length != other._memory.Length)
-            return false;
+        // fast check in case of memory is backed by the same string object
+        //public bool Equals(ReadOnlyMemory<T> other)
+        //{
+        //    if (_object == other._object && _index == other._index)
+        //    {
+        //        return _length == other._length;
+        //    }
 
+        //    return false;
+        //}
+        if (_memory.Equals(other._memory))
+            return true;
+
+        // then check byte by byte, SequenceEqual already has length check
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public static bool SequenceEqual<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> other) where T : IEquatable<T>
+        //{
+        //    int length = span.Length;
+        //    if (default(T) != null && IsTypeComparableAsBytes<T>(out NUInt size))
+        //    {
+        //        if (length == other.Length)
+        //        {
+        //            return SpanHelpers.SequenceEqual(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(span)), ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(other)), (NUInt)length * size);
+        //        }
+
+        //        return false;
+        //    }
+
+        //    if (length == other.Length)
+        //    {
+        //        return SpanHelpers.SequenceEqual(ref MemoryMarshal.GetReference(span), ref MemoryMarshal.GetReference(other), length);
+        //    }
+
+        //    return false;
+        //}
         return _memory.Span.SequenceEqual(other._memory.Span);
     }
 
     /// <inheritdoc/>
-    public override int GetHashCode() // TODO: find a better implementation
-    {
-        if (_memory.Length == 0)
-            return 0;
-
-        int num1 = 5381;
-        int num2 = num1;
-        int num3;
-        int end = _memory.Length - 1;
-        var span = _memory.Span;
-
-        for (int i = 0; i <= end; i += 2)
-        {
-            num3 = span[i];
-            num1 = (num1 << 5) + num1 ^ num3;
-            if (i == end)
-                break;
-            int num4 = span[i + 1];
-            //if (num4 != 0)
-            num2 = (num2 << 5) + num2 ^ num4;
-            //else
-            //    break;
-        }
-
-        return num1 + num2 * 1566083941;
-    }
+    public override int GetHashCode() => _memory.GetHashCode();
 
     /// <inheritdoc/>
     public override string ToString() => _memory.ToString();

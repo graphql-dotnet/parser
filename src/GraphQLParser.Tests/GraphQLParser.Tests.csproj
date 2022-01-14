@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6;net5;netcoreapp3.1</TargetFrameworks>
+    <TargetFramework>net6</TargetFramework>
     <Nullable>disable</Nullable>
     <NoWarn>$(NoWarn);1591;IDE0008;IDE0022;IDE0058;IDE1006</NoWarn>
   </PropertyGroup>

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using GraphQLParser.AST;
 using Shouldly;
 using Xunit;
@@ -7,6 +8,16 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
+    [Fact]
+    public void SizeOf_ROM_Should_Be_The_Same_As_ReadOnlyMemory()
+    {
+        if (OperatingSystem.IsWindows()) // TODO: weird errors on Linux
+        {
+            Marshal.SizeOf(default(ROM)).ShouldBe(16);
+            Marshal.SizeOf(default(ReadOnlyMemory<char>)).ShouldBe(16);
+        }
+    }
+
     [Fact]
     public void Operators()
     {
@@ -29,7 +40,9 @@ public class MemoryTests
         rom2.Length.ShouldBe(5);
         rom2.GetHashCode().ShouldNotBe(0);
         rom2.GetHashCode().ShouldNotBe(rom.GetHashCode());
-        rom.Slice(6).GetHashCode().ShouldBe(0);
+        rom.Slice(6).GetHashCode().ShouldNotBe(0);
+
+        default(ROM).GetHashCode().ShouldBe(0);
 
         (rom2 == str).ShouldBeFalse();
         (str == rom2).ShouldBeFalse();
@@ -46,6 +59,17 @@ public class MemoryTests
         rom.Equals((object)rom).ShouldBeTrue();
         rom.Equals((object)str).ShouldBeFalse();
         rom.Equals("strin").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Casted_To_String_From_Original_String_Should_Be_Equal()
+    {
+        var str = "string";
+        ROM rom = str;
+
+        // so no heap allocation when ROM is actually backed by whole string object
+        ReferenceEquals(rom.ToString(), str).ShouldBeTrue();
+        ReferenceEquals((string)rom, str).ShouldBeTrue();
     }
 
     [Fact]
@@ -66,14 +90,14 @@ public class MemoryTests
     [Fact]
     public void GraphQLName_Implicit_Cast()
     {
-        var name = new GraphQLName { Value = "abc" };
+        var name = new GraphQLName("abc");
         FuncROM(name).ShouldBe(name);
     }
 
     [Fact]
     public void GraphQLName_Explicit_Cast()
     {
-        var name = new GraphQLName { Value = "abc" };
+        var name = new GraphQLName("abc");
         FuncString((string)name).ShouldBe("abc");
     }
 
