@@ -624,6 +624,7 @@ namespace GraphQLParser
         public GraphQLParser.ROM Slice(int start) { }
         public GraphQLParser.ROM Slice(int start, int length) { }
         public override string ToString() { }
+        public static bool IsEmptyOrWhiteSpace(GraphQLParser.ROM value) { }
         public static string op_Explicit(GraphQLParser.ROM rom) { }
         public static System.ReadOnlyMemory<char> op_Implicit(GraphQLParser.ROM rom) { }
         public static System.ReadOnlySpan<char> op_Implicit(GraphQLParser.ROM rom) { }

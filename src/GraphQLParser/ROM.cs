@@ -75,7 +75,23 @@ public readonly struct ROM : IEquatable<ROM>
 
         //    return false;
         //}
-        return _memory.Span.SequenceEqual(other._memory.Span);
+        return _memory.Span.SequenceEqual(other._memory.Span); //TODO: check Memory.Equals(memory) for net6
+    }
+
+    /// <summary>
+    /// Indicates whether a specified ROM empty, or consists only of white-space characters.
+    /// </summary>
+    public static bool IsEmptyOrWhiteSpace(ROM value)
+    {
+        if (value.Length == 0)
+            return true;
+
+        var span = value.Span;
+        for (int i = 0; i < span.Length; ++i)
+            if (!char.IsWhiteSpace(span[i]))
+                return false;
+
+        return true;
     }
 
     /// <inheritdoc/>

@@ -8,6 +8,18 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
+    [Theory]
+    [InlineData(null, true)]
+    [InlineData("", true)]
+    [InlineData(" ", true)]
+    [InlineData(" a ", false)]
+    [InlineData("\t\t\t\t\t", true)]
+    [InlineData("\t   a", false)]
+    public void IsEmptyOrWhiteSpace_Should_Work(string text, bool expected)
+    {
+        ROM.IsEmptyOrWhiteSpace(text).ShouldBe(expected);
+    }
+
     [Fact]
     public void SizeOf_ROM_Should_Be_The_Same_As_ReadOnlyMemory()
     {
