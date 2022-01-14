@@ -365,7 +365,9 @@ namespace GraphQLParser.AST
         public GraphQLName() { }
         public GraphQLName(GraphQLParser.ROM value) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public string StringValue { get; }
         public GraphQLParser.ROM Value { get; set; }
+        public override string ToString() { }
         public static string op_Explicit(GraphQLParser.AST.GraphQLName? node) { }
         public static GraphQLParser.ROM op_Implicit(GraphQLParser.AST.GraphQLName? node) { }
     }

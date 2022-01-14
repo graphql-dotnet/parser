@@ -9,6 +9,22 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
+    [Fact]
+    public void GraphQLName_Cache_StringValue()
+    {
+        var name = new GraphQLName();
+        name.StringValue.ShouldBe(string.Empty);
+        name.ToString().ShouldBe(string.Empty);
+
+        name.Value = "abc";
+        name.StringValue.ShouldBe("abc");
+        name.ToString().ShouldBe("abc");
+
+        name.Value = "def";
+        name.StringValue.ShouldBe("def");
+        name.ToString().ShouldBe("def");
+    }
+
     [Fact(Skip = "ReadOnlyMemory<T>.GetHashCode demonstration")]
     public void GetHashCode_Issue()
     {
