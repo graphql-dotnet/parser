@@ -53,10 +53,28 @@ public readonly struct ROM : IEquatable<ROM>
         if (_memory.Equals(other._memory))
             return true;
 
-        // then check byte by byte
-        if (_memory.Length != other._memory.Length)
-            return false;
+        // then check byte by byte, SequenceEqual already has length check
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public static bool SequenceEqual<T>(this ReadOnlySpan<T> span, ReadOnlySpan<T> other) where T : IEquatable<T>
+        //{
+        //    int length = span.Length;
+        //    if (default(T) != null && IsTypeComparableAsBytes<T>(out NUInt size))
+        //    {
+        //        if (length == other.Length)
+        //        {
+        //            return SpanHelpers.SequenceEqual(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(span)), ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(other)), (NUInt)length * size);
+        //        }
 
+        //        return false;
+        //    }
+
+        //    if (length == other.Length)
+        //    {
+        //        return SpanHelpers.SequenceEqual(ref MemoryMarshal.GetReference(span), ref MemoryMarshal.GetReference(other), length);
+        //    }
+
+        //    return false;
+        //}
         return _memory.Span.SequenceEqual(other._memory.Span);
     }
 
