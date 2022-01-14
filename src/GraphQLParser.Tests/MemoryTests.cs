@@ -40,7 +40,9 @@ public class MemoryTests
         rom2.Length.ShouldBe(5);
         rom2.GetHashCode().ShouldNotBe(0);
         rom2.GetHashCode().ShouldNotBe(rom.GetHashCode());
-        rom.Slice(6).GetHashCode().ShouldBe(0);
+        rom.Slice(6).GetHashCode().ShouldNotBe(0);
+
+        default(ROM).GetHashCode().ShouldBe(0);
 
         (rom2 == str).ShouldBeFalse();
         (str == rom2).ShouldBeFalse();

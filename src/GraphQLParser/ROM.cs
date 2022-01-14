@@ -38,7 +38,27 @@ public readonly struct ROM : IEquatable<ROM>
     public override bool Equals(object obj) => obj is ROM rom && Equals(rom);
 
     /// <inheritdoc/>
-    public bool Equals(ROM other) => _memory.Equals(other._memory);
+    public bool Equals(ROM other)
+    {
+        // fast check in case of memory is backed by the same string object
+        //public bool Equals(ReadOnlyMemory<T> other)
+        //{
+        //    if (_object == other._object && _index == other._index)
+        //    {
+        //        return _length == other._length;
+        //    }
+
+        //    return false;
+        //}
+        if (_memory.Equals(other._memory))
+            return true;
+
+        // then check byte by byte
+        if (_memory.Length != other._memory.Length)
+            return false;
+
+        return _memory.Span.SequenceEqual(other._memory.Span);
+    }
 
     /// <inheritdoc/>
     public override int GetHashCode() => _memory.GetHashCode();
