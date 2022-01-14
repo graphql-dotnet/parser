@@ -95,7 +95,46 @@ public readonly struct ROM : IEquatable<ROM>
     }
 
     /// <inheritdoc/>
-    public override int GetHashCode() => _memory.GetHashCode();
+    public override int GetHashCode()
+    {
+        // ReadOnlyMemory<T> implementation has issue - see MemoryTests.GetHashCode_Issue
+        // public override int GetHashCode()
+        // {
+        //     if (_object == null)
+        //     {
+        //         return 0;
+        //     }
+        //
+        //     return CombineHashCodes(_object.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+        // }
+
+        //return _memory.GetHashCode();
+
+        // TODO: think about GetHashCode implementation
+        if (_memory.Length == 0)
+            return 0;
+
+        int num1 = 5381;
+        int num2 = num1;
+        int num3;
+        int end = _memory.Length - 1;
+        var span = _memory.Span;
+
+        for (int i = 0; i <= end; i += 2)
+        {
+            num3 = span[i];
+            num1 = (num1 << 5) + num1 ^ num3;
+            if (i == end)
+                break;
+            int num4 = span[i + 1];
+            //if (num4 != 0)
+            num2 = (num2 << 5) + num2 ^ num4;
+            //else
+            //    break;
+        }
+
+        return num1 + num2 * 1566083941;
+    }
 
     /// <inheritdoc/>
     public override string ToString() => _memory.ToString();

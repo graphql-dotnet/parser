@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using GraphQLParser.AST;
 using Shouldly;
@@ -8,6 +9,62 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
+    [Fact(Skip = "ReadOnlyMemory<T>.GetHashCode demonstration")]
+    public void GetHashCode_Issue()
+    {
+        // ReadOnlyMemory<T> implementation
+        // public override int GetHashCode()
+        // {
+        //     if (_object == null)
+        //     {
+        //         return 0;
+        //     }
+        //
+        //     return CombineHashCodes(_object.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+        // }
+
+        string s = "abcabc";
+        var m = s.AsMemory();
+        var s1 = m.Slice(0, 3);
+        var s2 = m.Slice(3, 3);
+
+        s1.ToString().ShouldBe("abc");
+        s2.ToString().ShouldBe("abc");
+
+        var h1 = s1.GetHashCode();
+        var h2 = s2.GetHashCode();
+        h1.ShouldBe(h2); // failed
+    }
+
+    [Fact]
+    public void HashSet()
+    {
+        ROM r = "abc";
+        HashSet<ROM> hashSet = new();
+        hashSet.Add(r);
+        hashSet.Contains(r).ShouldBeTrue();
+
+        ROM r2 = "abcdef";
+        r2 = r2.Slice(0, 3);
+
+        hashSet.Contains(r2).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Dictionary()
+    {
+        ROM r = "abc";
+        Dictionary<ROM, int> dictionary = new();
+        dictionary[r] = 42;
+        dictionary.ContainsKey(r).ShouldBeTrue();
+
+        ROM r2 = "abcdef";
+        r2 = r2.Slice(0, 3);
+
+        dictionary.ContainsKey(r2).ShouldBeTrue();
+        dictionary["abc"].ShouldBe(42);
+    }
+
     [Theory]
     [InlineData(null, true)]
     [InlineData("", true)]
@@ -52,7 +109,7 @@ public class MemoryTests
         rom2.Length.ShouldBe(5);
         rom2.GetHashCode().ShouldNotBe(0);
         rom2.GetHashCode().ShouldNotBe(rom.GetHashCode());
-        rom.Slice(6).GetHashCode().ShouldNotBe(0);
+        rom.Slice(6).GetHashCode().ShouldBe(0);
 
         default(ROM).GetHashCode().ShouldBe(0);
 
