@@ -120,6 +120,9 @@ public class MemoryTests
     {
         var name = new GraphQLName("abc");
         FuncROM(name).ShouldBe(name);
+
+        GraphQLName nameNull = null;
+        FuncROM(nameNull).Length.ShouldBe(0);
     }
 
     [Fact]

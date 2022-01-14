@@ -34,7 +34,7 @@ public class GraphQLName : ASTNode
     /// <summary>
     /// Implicitly casts <see cref="GraphQLName"/> to <see cref="ROM"/>.
     /// </summary>
-    public static implicit operator ROM(GraphQLName node) => node.Value;
+    public static implicit operator ROM(GraphQLName? node) => node == null ? default : node.Value;
 
     /// <summary>
     /// Explicitly casts <see cref="GraphQLName"/> to <see cref="string"/>.

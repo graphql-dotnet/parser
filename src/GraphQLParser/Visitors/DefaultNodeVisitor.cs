@@ -556,8 +556,10 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     {
         if (nodes != null)
         {
-            foreach (var node in nodes)
-                await Visit(node, context).ConfigureAwait(false);
+            // Visitor may change AST while being traversed so foreach yields
+            // System.InvalidOperationException: 'Collection was modified; enumeration operation may not execute.'
+            for (int i = 0; i < nodes.Count; ++i)
+                await Visit(nodes[i], context).ConfigureAwait(false);
         }
     }
 }
