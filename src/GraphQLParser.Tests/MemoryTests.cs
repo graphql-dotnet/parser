@@ -11,11 +11,8 @@ public class MemoryTests
     [Fact]
     public void SizeOf_ROM_Should_Be_The_Same_As_ReadOnlyMemory()
     {
-        ROM r = default;
-        Marshal.SizeOf(r).ShouldBe(16);
-
-        ReadOnlyMemory<char> m = default;
-        Marshal.SizeOf(m).ShouldBe(16);
+        Marshal.SizeOf<ROM>().ShouldBe(16);
+        Marshal.SizeOf<ReadOnlyMemory<char>>().ShouldBe(16);
     }
 
     [Fact]
