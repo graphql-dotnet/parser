@@ -73,15 +73,31 @@ public class MemoryTests
         rom.Equals("strin").ShouldBeFalse();
     }
 
-    [Fact]
-    public void Casted_To_String_From_Original_String_Should_Be_Equal()
+    [Theory]
+    [InlineData("string")]
+    [InlineData("")]
+    //[InlineData(null)] // see Null_Roundtrip
+    public void Casted_To_String_From_Original_String_Should_Be_Equal(string str)
     {
-        var str = "string";
         ROM rom = str;
 
         // so no heap allocation when ROM is actually backed by whole string object
         ReferenceEquals(rom.ToString(), str).ShouldBeTrue();
         ReferenceEquals((string)rom, str).ShouldBeTrue();
+    }
+
+    [Fact(Skip = "Known issue with ROM - it cannot represent null values")]
+    public void Null_Roundtrip()
+    {
+        string s = null;
+        ROM r = s;
+
+        var s1 = r.ToString(); // ""
+        var s2 = r.ToString(); // ""
+
+        ReferenceEquals(s1, s2).ShouldBeTrue();
+
+        s1.ShouldBe(s); // failed!
     }
 
     [Fact]
@@ -111,6 +127,9 @@ public class MemoryTests
     {
         var name = new GraphQLName("abc");
         FuncString((string)name).ShouldBe("abc");
+
+        GraphQLName nameNull = null;
+        ((string)nameNull).ShouldBeNull();
     }
 
     private ROM FuncROM(ROM r) => r;
