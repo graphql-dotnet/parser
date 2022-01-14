@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using GraphQLParser.AST;
 using Shouldly;
 using Xunit;
@@ -7,6 +8,16 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
+    [Fact]
+    public void SizeOf_ROM_Should_Be_The_Same_As_ReadOnlyMemory()
+    {
+        ROM r = default;
+        Marshal.SizeOf(r).ShouldBe(16);
+
+        ReadOnlyMemory<char> m = default;
+        Marshal.SizeOf(m).ShouldBe(16);
+    }
+
     [Fact]
     public void Operators()
     {
@@ -46,6 +57,17 @@ public class MemoryTests
         rom.Equals((object)rom).ShouldBeTrue();
         rom.Equals((object)str).ShouldBeFalse();
         rom.Equals("strin").ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Casted_To_String_From_Original_String_Should_Be_Equal()
+    {
+        var str = "string";
+        ROM rom = str;
+
+        // so no heap allocation when ROM is actually backed by whole string object
+        ReferenceEquals(rom.ToString(), str).ShouldBeTrue();
+        ReferenceEquals((string)rom, str).ShouldBeTrue();
     }
 
     [Fact]
