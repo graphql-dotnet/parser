@@ -12,6 +12,21 @@ public class GraphQLName : ASTNode
     public override ASTNodeKind Kind => ASTNodeKind.Name;
 
     /// <summary>
+    /// Creates a new instance (with empty value).
+    /// </summary>
+    public GraphQLName()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance with the specified value.
+    /// </summary>
+    public GraphQLName(ROM value)
+    {
+        Value = value;
+    }
+
+    /// <summary>
     /// Name value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }

@@ -90,14 +90,14 @@ public class MemoryTests
     [Fact]
     public void GraphQLName_Implicit_Cast()
     {
-        var name = new GraphQLName { Value = "abc" };
+        var name = new GraphQLName("abc");
         FuncROM(name).ShouldBe(name);
     }
 
     [Fact]
     public void GraphQLName_Explicit_Cast()
     {
-        var name = new GraphQLName { Value = "abc" };
+        var name = new GraphQLName("abc");
         FuncString((string)name).ShouldBe("abc");
     }
 
