@@ -39,7 +39,7 @@ public class GraphQLName : ASTNode
     /// <summary>
     /// Explicitly casts <see cref="GraphQLName"/> to <see cref="string"/>.
     /// </summary>
-    public static explicit operator string(GraphQLName node) => (string)node.Value;
+    public static explicit operator string(GraphQLName? node) => node == null ? null! : (string)node.Value; //TODO: not sure about nullability annotations for operators
 }
 
 internal sealed class GraphQLNameWithLocation : GraphQLName
