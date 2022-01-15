@@ -53,18 +53,19 @@ public class GraphQLStringValue : GraphQLValue
     {
         get
         {
-            if (_value.Length == 0)
-                return string.Empty;
-
             if (_string == null)
-                _string = (string)_value;
+            {
+                _string = _value.Length == 0
+                    ? string.Empty
+                    : (string)_value;
+            }
 
             return _string;
         }
     }
 
     /// <inheritdoc />
-    public override object? ClrValue => TypedValue;
+    public override object? ClrValue => _string ??= TypedValue;
 }
 
 internal sealed class GraphQLStringValueWithLocation : GraphQLStringValue

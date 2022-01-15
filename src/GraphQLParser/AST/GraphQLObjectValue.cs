@@ -9,7 +9,7 @@ namespace GraphQLParser.AST;
 public class GraphQLObjectValue : GraphQLValue
 {
     private ROM _value;
-    private Dictionary<string, object?>? _object;
+    private IDictionary<string, object?>? _object;
     private static readonly ReadOnlyDictionary<string, object?> _empty = new(new Dictionary<string, object?>());
 
     /// <inheritdoc/>
@@ -43,15 +43,19 @@ public class GraphQLObjectValue : GraphQLValue
     {
         get
         {
-            if (Fields == null || Fields.Count == 0)
-                return _empty;
-
             if (_object == null)
             {
-                var @object = new Dictionary<string, object?>(Fields.Count);
-                foreach (var field in Fields)
-                    @object.Add(field.Name.StringValue, field.Value.ClrValue);
-                _object = @object;
+                if (Fields == null || Fields.Count == 0)
+                {
+                    _object = _empty;
+                }
+                else
+                {
+                    var @object = new Dictionary<string, object?>(Fields.Count);
+                    foreach (var field in Fields)
+                        @object.Add(field.Name.StringValue, field.Value.ClrValue);
+                    _object = @object;
+                }
             }
 
             return _object;
@@ -59,7 +63,7 @@ public class GraphQLObjectValue : GraphQLValue
     }
 
     /// <inheritdoc />
-    public override object? ClrValue => TypedValue;
+    public override object? ClrValue => _object ??= TypedValue;
 }
 
 internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue

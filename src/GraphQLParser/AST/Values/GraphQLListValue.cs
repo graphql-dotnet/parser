@@ -11,7 +11,7 @@ namespace GraphQLParser.AST;
 public class GraphQLListValue : GraphQLValue
 {
     private ROM _value;
-    private List<object?>? _list;
+    private IList<object?>? _list;
 
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ListValue;
@@ -44,15 +44,19 @@ public class GraphQLListValue : GraphQLValue
     {
         get
         {
-            if (Values == null || Values.Count == 0)
-                return Array.Empty<object?>();
-
             if (_list == null)
             {
-                var list = new List<object?>(Values.Count);
-                foreach (var value in Values)
-                    list.Add(value.ClrValue);
-                _list = list;
+                if (Values == null || Values.Count == 0)
+                {
+                    _list = Array.Empty<object?>();
+                }
+                else
+                {
+                    var list = new List<object?>(Values.Count);
+                    foreach (var value in Values)
+                        list.Add(value.ClrValue);
+                    _list = list;
+                }
             }
 
             return _list;
@@ -60,7 +64,7 @@ public class GraphQLListValue : GraphQLValue
     }
 
     /// <inheritdoc />
-    public override object? ClrValue => TypedValue;
+    public override object? ClrValue => _list ??= TypedValue;
 }
 
 internal sealed class GraphQLListValueWithLocation : GraphQLListValue

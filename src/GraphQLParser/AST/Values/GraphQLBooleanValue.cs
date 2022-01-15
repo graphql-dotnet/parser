@@ -38,7 +38,7 @@ public class GraphQLBooleanValue : GraphQLValue
     public override object? ClrValue => TypedValue ? _true : _false;
 
     /// <inheritdoc cref="GraphQLValue.ClrValue"/>
-    public bool TypedValue => Value == "true" ? true : false;
+    public bool TypedValue => Value == "true";
 }
 
 internal sealed class GraphQLBooleanValueWithLocation : GraphQLBooleanValue

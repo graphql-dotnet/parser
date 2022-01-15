@@ -321,6 +321,16 @@ namespace GraphQLParser.AST
     public class GraphQLIntValue : GraphQLParser.AST.GraphQLValue
     {
         public GraphQLIntValue() { }
+        public GraphQLIntValue(byte value) { }
+        public GraphQLIntValue(decimal value) { }
+        public GraphQLIntValue(short value) { }
+        public GraphQLIntValue(int value) { }
+        public GraphQLIntValue(long value) { }
+        public GraphQLIntValue(System.Numerics.BigInteger value) { }
+        public GraphQLIntValue(sbyte value) { }
+        public GraphQLIntValue(ushort value) { }
+        public GraphQLIntValue(uint value) { }
+        public GraphQLIntValue(ulong value) { }
         public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
