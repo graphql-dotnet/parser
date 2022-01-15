@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -9,25 +8,11 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLObjectValue : GraphQLValue
 {
-    private ROM _value;
-    private IDictionary<string, object?>? _object;
     private static readonly ReadOnlyDictionary<string, object?> _empty = new(new Dictionary<string, object?>());
+    private IDictionary<string, object?>? _object;
 
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
-
-    /// <summary>
-    /// Object value represented as <see cref="ROM"/>.
-    /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _object = null;
-        }
-    }
 
     /// <summary>
     /// Values of the object represented as a list of nested <see cref="GraphQLObjectField"/> nodes.
@@ -38,15 +23,12 @@ public class GraphQLObjectValue : GraphQLValue
     /// Object value represented as <see cref="IDictionary{TKey, TValue}"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it as long as <see cref="Value"/> does not change.
+    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
     /// </summary>
     public IDictionary<string, object?> TypedValue
     {
         get
         {
-            if (Value.Length == 0)
-                throw new InvalidOperationException("Invalid object (empty string)");
-
             if (_object == null)
             {
                 if (Fields == null || Fields.Count == 0)
@@ -68,6 +50,12 @@ public class GraphQLObjectValue : GraphQLValue
 
     /// <inheritdoc />
     public override object? ClrValue => _object ??= TypedValue;
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _object = null;
+    }
 }
 
 internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue

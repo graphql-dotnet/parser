@@ -10,24 +10,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLListValue: {Value}")]
 public class GraphQLListValue : GraphQLValue
 {
-    private ROM _value;
     private IList<object?>? _list;
 
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ListValue;
-
-    /// <summary>
-    /// List value represented as <see cref="ROM"/>.
-    /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _list = null;
-        }
-    }
 
     /// <summary>
     /// Values of the list represented as a list of nested <see cref="GraphQLValue"/> nodes.
@@ -38,15 +24,12 @@ public class GraphQLListValue : GraphQLValue
     /// List value represented as <see cref="List{T}"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it as long as <see cref="Value"/> does not change.
+    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
     /// </summary>
     public IList<object?> TypedValue
     {
         get
         {
-            if (Value.Length == 0)
-                throw new InvalidOperationException("Invalid list (empty string)");
-
             if (_list == null)
             {
                 if (Values == null || Values.Count == 0)
@@ -68,6 +51,12 @@ public class GraphQLListValue : GraphQLValue
 
     /// <inheritdoc />
     public override object? ClrValue => _list ??= TypedValue;
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _list = null;
+    }
 }
 
 internal sealed class GraphQLListValueWithLocation : GraphQLListValue

@@ -8,7 +8,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLStringValue: {Value}")]
 public class GraphQLStringValue : GraphQLValue
 {
-    private ROM _value;
     private string? _string;
 
     /// <inheritdoc/>
@@ -33,21 +32,13 @@ public class GraphQLStringValue : GraphQLValue
     /// <summary>
     /// String value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _string = null;
-        }
-    }
+    public ROM Value { get; set; }
 
     /// <summary>
     /// String value represented as <see cref="string"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it as long as <see cref="Value"/> does not change.
+    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
     /// </summary>
     public string TypedValue
     {
@@ -55,9 +46,9 @@ public class GraphQLStringValue : GraphQLValue
         {
             if (_string == null)
             {
-                _string = _value.Length == 0
+                _string = Value.Length == 0
                     ? string.Empty
-                    : (string)_value;
+                    : (string)Value;
             }
 
             return _string;
@@ -66,6 +57,12 @@ public class GraphQLStringValue : GraphQLValue
 
     /// <inheritdoc />
     public override object? ClrValue => _string ??= TypedValue;
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _string = null;
+    }
 }
 
 internal sealed class GraphQLStringValueWithLocation : GraphQLStringValue

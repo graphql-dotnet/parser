@@ -13,6 +13,9 @@ public class GraphQLVariable : GraphQLValue, INamedNode
 
     /// <inheritdoc />
     public override object? ClrValue => Name.StringValue;
+
+    /// <inheritdoc />
+    public override void Reset() { Name.Reset(); }
 }
 
 internal sealed class GraphQLVariableWithLocation : GraphQLVariable

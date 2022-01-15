@@ -8,7 +8,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLName: {Value}")]
 public class GraphQLName : ASTNode
 {
-    private ROM _value;
     private string? _string;
 
     /// <inheritdoc/>
@@ -32,31 +31,24 @@ public class GraphQLName : ASTNode
     /// <summary>
     /// Name value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _string = null;
-        }
-    }
+    public ROM Value { get; set; }
 
     /// <summary>
     /// Name value represented as <see cref="string"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it as long as <see cref="Value"/> does not change.
+    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
     /// </summary>
     public string StringValue
     {
         get
         {
-            if (_value.Length == 0)
-                return string.Empty;
-
             if (_string == null)
-                _string = (string)_value;
+            {
+                _string = Value.Length == 0
+                    ? string.Empty
+                    : (string)Value;
+            }
 
             return _string;
         }
@@ -64,6 +56,14 @@ public class GraphQLName : ASTNode
 
     /// <inheritdoc />
     public override string ToString() => StringValue;
+
+    /// <summary>
+    /// Resets cached <see cref="StringValue"/>.
+    /// </summary>
+    public void Reset()
+    {
+        _string = null;
+    }
 
     /// <summary>
     /// Implicitly casts <see cref="GraphQLName"/> to <see cref="ROM"/>.

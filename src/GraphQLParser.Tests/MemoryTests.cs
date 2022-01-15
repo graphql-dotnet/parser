@@ -16,11 +16,15 @@ public class MemoryTests
         name.StringValue.ShouldBe(string.Empty);
         name.ToString().ShouldBe(string.Empty);
 
+        name.Reset();
         name.Value = "abc";
         name.StringValue.ShouldBe("abc");
         name.ToString().ShouldBe("abc");
 
         name.Value = "def";
+        name.StringValue.ShouldBe("abc"); // no reset
+
+        name.Reset();
         name.StringValue.ShouldBe("def");
         name.ToString().ShouldBe("def");
     }

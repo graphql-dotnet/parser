@@ -10,7 +10,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLFloatValue: {Value}")]
 public class GraphQLFloatValue : GraphQLValue
 {
-    private ROM _value;
     private object? _number;
 
     /// <inheritdoc/>
@@ -28,12 +27,12 @@ public class GraphQLFloatValue : GraphQLValue
     /// </summary>
     public GraphQLFloatValue(float value)
     {
-        _number = ValidateValue(value);
         // print most compact form of value with up to 15 digits of precision (C# default)
         // note: G17 format (17 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
         // "3.330000000000001" which probably is not desirable.
-        _value = ((double)value).ToString("G15", CultureInfo.InvariantCulture);
+        Value = ((double)value).ToString("G15", CultureInfo.InvariantCulture);
+        _number = ValidateValue(value);
     }
 
     /// <summary>
@@ -41,12 +40,12 @@ public class GraphQLFloatValue : GraphQLValue
     /// </summary>
     public GraphQLFloatValue(double value)
     {
-        _number = ValidateValue(value);
         // print most compact form of value with up to 15 digits of precision (C# default)
         // note: G17 format (17 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
         // "3.330000000000001" which probably is not desirable.
-        _value = value.ToString("G15", CultureInfo.InvariantCulture);
+        Value = value.ToString("G15", CultureInfo.InvariantCulture);
+        _number = ValidateValue(value);
     }
 
     /// <summary>
@@ -54,22 +53,14 @@ public class GraphQLFloatValue : GraphQLValue
     /// </summary>
     public GraphQLFloatValue(decimal value)
     {
-        _number = value;
         Value = value.ToString(CultureInfo.InvariantCulture);
+        _number = value;
     }
 
     /// <summary>
     /// Float value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _number = null;
-        }
-    }
+    public ROM Value { get; set; }
 
     private static double ValidateValue(double value)
     {
@@ -85,7 +76,7 @@ public class GraphQLFloatValue : GraphQLValue
     /// Float value represented as <see cref="double"/> or <see cref="decimal"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it as long as <see cref="Value"/> does not change.
+    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
     /// </summary>
     private object TypedValue //TODO: ??? no typed value :(
     {
@@ -126,6 +117,12 @@ public class GraphQLFloatValue : GraphQLValue
 
     /// <inheritdoc />
     public override object? ClrValue => _number ??= TypedValue;
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _number = null;
+    }
 }
 
 internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue

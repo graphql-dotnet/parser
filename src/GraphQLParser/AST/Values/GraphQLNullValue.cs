@@ -18,6 +18,9 @@ public class GraphQLNullValue : GraphQLValue
 
     /// <inheritdoc />
     public override object? ClrValue => null;
+
+    /// <inheritdoc />
+    public override void Reset() { }
 }
 
 internal sealed class GraphQLNullValueWithLocation : GraphQLNullValue

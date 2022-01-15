@@ -11,7 +11,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLIntValue: {Value}")]
 public class GraphQLIntValue : GraphQLValue
 {
-    private ROM _value;
     private object? _number;
 
     /// <inheritdoc/>
@@ -125,21 +124,13 @@ public class GraphQLIntValue : GraphQLValue
     /// <summary>
     /// Integer value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _number = null;
-        }
-    }
+    public ROM Value { get; set; }
 
     /// <summary>
     /// Integer value represented as <see cref="int"/>, <see cref="long"/>, <see cref="decimal"/> or <see cref="BigInteger"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it as long as <see cref="Value"/> does not change.
+    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
     /// </summary>
     private object TypedValue //TODO: ??? no typed value :(
     {
@@ -178,6 +169,12 @@ public class GraphQLIntValue : GraphQLValue
 
     /// <inheritdoc />
     public override object? ClrValue => _number ??= TypedValue;
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _number = null;
+    }
 }
 
 internal sealed class GraphQLIntValueWithLocation : GraphQLIntValue
