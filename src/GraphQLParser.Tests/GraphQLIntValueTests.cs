@@ -24,6 +24,10 @@ public class GraphQLIntValueTests
         value.Value.ShouldBe("1234567");
         value.ClrValue.ShouldBe(1234567);
         value.ClrValue.ShouldBeOfType<int>();
+
+        value.Value = "1234567";
+        value.ClrValue.ShouldBe(1234567);
+        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
@@ -32,6 +36,10 @@ public class GraphQLIntValueTests
         var value = new GraphQLIntValue((byte)42);
         value.Value.Length.ShouldBe(2);
         value.Value.ShouldBe("42");
+        value.ClrValue.ShouldBe(42);
+        value.ClrValue.ShouldBeOfType<int>();
+
+        value.Value = "42";
         value.ClrValue.ShouldBe(42);
         value.ClrValue.ShouldBeOfType<int>();
     }
@@ -44,6 +52,10 @@ public class GraphQLIntValueTests
         value.Value.ShouldBe("-10");
         value.ClrValue.ShouldBe(-10);
         value.ClrValue.ShouldBeOfType<int>();
+
+        value.Value = "-10";
+        value.ClrValue.ShouldBe(-10);
+        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
@@ -54,6 +66,10 @@ public class GraphQLIntValueTests
         value.Value.ShouldBe("-300");
         value.ClrValue.ShouldBe(-300);
         value.ClrValue.ShouldBeOfType<int>();
+
+        value.Value = "-300";
+        value.ClrValue.ShouldBe(-300);
+        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
@@ -62,6 +78,10 @@ public class GraphQLIntValueTests
         var value = new GraphQLIntValue((ushort)60000);
         value.Value.Length.ShouldBe(5);
         value.Value.ShouldBe("60000");
+        value.ClrValue.ShouldBe(60000);
+        value.ClrValue.ShouldBeOfType<int>();
+
+        value.Value = "60000";
         value.ClrValue.ShouldBe(60000);
         value.ClrValue.ShouldBeOfType<int>();
     }
@@ -75,6 +95,10 @@ public class GraphQLIntValueTests
         value.Value.ShouldBe("17");
         value.ClrValue.ShouldBe(17);
         value.ClrValue.ShouldBeOfType<int>();
+
+        value.Value = "17";
+        value.ClrValue.ShouldBe(17);
+        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
@@ -83,6 +107,10 @@ public class GraphQLIntValueTests
         var value = new GraphQLIntValue((uint)2247483647);
         value.Value.Length.ShouldBe(10);
         value.Value.ShouldBe("2247483647");
+        value.ClrValue.ShouldBe(2247483647);
+        value.ClrValue.ShouldBeOfType<long>();
+
+        value.Value = "2247483647";
         value.ClrValue.ShouldBe(2247483647);
         value.ClrValue.ShouldBeOfType<long>();
     }
@@ -95,6 +123,10 @@ public class GraphQLIntValueTests
         value.Value.ShouldBe("-60001");
         value.ClrValue.ShouldBe(-60001);
         value.ClrValue.ShouldBeOfType<long>();
+
+        value.Value = "2247483647";
+        value.ClrValue.ShouldBe(2247483647);
+        value.ClrValue.ShouldBeOfType<long>();
     }
 
     [Fact]
@@ -103,6 +135,10 @@ public class GraphQLIntValueTests
         var value = new GraphQLIntValue((ulong)123);
         value.Value.Length.ShouldBe(3);
         value.Value.ShouldBe("123");
+        value.ClrValue.ShouldBe(123);
+        value.ClrValue.ShouldBeOfType<int>();
+
+        value.Value = "123";
         value.ClrValue.ShouldBe(123);
         value.ClrValue.ShouldBeOfType<int>();
     }
@@ -115,6 +151,10 @@ public class GraphQLIntValueTests
         value.Value.ShouldBe("2247483647");
         value.ClrValue.ShouldBe(2247483647);
         value.ClrValue.ShouldBeOfType<long>();
+
+        value.Value = "2247483647";
+        value.ClrValue.ShouldBe(2247483647);
+        value.ClrValue.ShouldBeOfType<long>();
     }
 
     [Fact]
@@ -123,6 +163,10 @@ public class GraphQLIntValueTests
         var value = new GraphQLIntValue((ulong)9223372036854775808);
         value.Value.Length.ShouldBe(19);
         value.Value.ShouldBe("9223372036854775808");
+        value.ClrValue.ShouldBe(9223372036854775808);
+        value.ClrValue.ShouldBeOfType<decimal>();
+
+        value.Value = "9223372036854775808";
         value.ClrValue.ShouldBe(9223372036854775808);
         value.ClrValue.ShouldBeOfType<decimal>();
     }
@@ -135,6 +179,10 @@ public class GraphQLIntValueTests
         value.Value.ShouldBe("1234554321");
         value.ClrValue.ShouldBe(new BigInteger(1234554321));
         value.ClrValue.ShouldBeOfType<BigInteger>();
+
+        value.Value = "7922816251426433759354395033579228162514264337593543950335";
+        value.ClrValue.ShouldBe(BigInteger.Parse("7922816251426433759354395033579228162514264337593543950335"));
+        value.ClrValue.ShouldBeOfType<BigInteger>();
     }
 
     [Fact]
@@ -144,6 +192,10 @@ public class GraphQLIntValueTests
         value.Value.Length.ShouldBe(10);
         value.Value.ShouldBe("1234554321");
         value.ClrValue.ShouldBe(1234554321);
+        value.ClrValue.ShouldBeOfType<decimal>();
+
+        value.Value = "79228162514264337593543950335";
+        value.ClrValue.ShouldBe(79228162514264337593543950335M);
         value.ClrValue.ShouldBeOfType<decimal>();
     }
 }

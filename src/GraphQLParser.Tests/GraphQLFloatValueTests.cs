@@ -30,6 +30,10 @@ public class GraphQLFloatValueTests
         value.Value.ShouldBe("1.10000002384186");
         value.ClrValue.ShouldBe(1.1f);
         value.ClrValue.ShouldBeOfType<double>();
+
+        value.Value = "1.1";
+        value.ClrValue.ShouldBe(1.1);
+        value.ClrValue.ShouldBeOfType<double>();
     }
 
     [Fact]
@@ -40,6 +44,10 @@ public class GraphQLFloatValueTests
         value.Value.ShouldBe("1.1");
         value.ClrValue.ShouldBe(1.1);
         value.ClrValue.ShouldBeOfType<double>();
+
+        value.Value = "1.1";
+        value.ClrValue.ShouldBe(1.1);
+        value.ClrValue.ShouldBeOfType<double>();
     }
 
     [Fact]
@@ -48,6 +56,10 @@ public class GraphQLFloatValueTests
         var value = new GraphQLFloatValue(15.10m);
         value.Value.Length.ShouldBe(5);
         value.Value.ShouldBe("15.10");
+        value.ClrValue.ShouldBe(15.10m);
+        value.ClrValue.ShouldBeOfType<decimal>();
+
+        value.Value = "15.10";
         value.ClrValue.ShouldBe(15.10m);
         value.ClrValue.ShouldBeOfType<decimal>();
     }
