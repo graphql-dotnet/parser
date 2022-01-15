@@ -1,19 +1,21 @@
-using System.Collections.Generic;
-
 namespace GraphQLParser.AST;
 
 /// <summary>
-/// AST node for <see cref="ASTNodeKind.ObjectValue"/>.
+/// AST node for <see cref="ASTNodeKind.EnumValue"/>.
 /// </summary>
-public class GraphQLObjectValue : GraphQLValue
+public class GraphQLEnumValue : GraphQLValue, INamedNode
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
+    public override ASTNodeKind Kind => ASTNodeKind.EnumValue;
 
-    public List<GraphQLObjectField>? Fields { get; set; }
+    /// <inheritdoc/>
+    public GraphQLName Name { get; set; } = null!;
+
+    /// <inheritdoc />
+    public override object? ClrValue => Name.StringValue;
 }
 
-internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue
+internal sealed class GraphQLEnumValueWithLocation : GraphQLEnumValue
 {
     private GraphQLLocation _location;
 
@@ -24,7 +26,7 @@ internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue
     }
 }
 
-internal sealed class GraphQLObjectValueWithComment : GraphQLObjectValue
+internal sealed class GraphQLEnumValueWithComment : GraphQLEnumValue
 {
     private GraphQLComment? _comment;
 
@@ -35,7 +37,7 @@ internal sealed class GraphQLObjectValueWithComment : GraphQLObjectValue
     }
 }
 
-internal sealed class GraphQLObjectValueFull : GraphQLObjectValue
+internal sealed class GraphQLEnumValueFull : GraphQLEnumValue
 {
     private GraphQLLocation _location;
     private GraphQLComment? _comment;

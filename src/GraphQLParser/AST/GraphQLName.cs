@@ -29,7 +29,6 @@ public class GraphQLName : ASTNode
         Value = value;
     }
 
-
     /// <summary>
     /// Name value represented as <see cref="ROM"/>.
     /// </summary>
@@ -47,7 +46,7 @@ public class GraphQLName : ASTNode
     /// Name value represented as <see cref="string"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it until <see cref="Value"/> does not change.
+    /// and then caches it as long as <see cref="Value"/> does not change.
     /// </summary>
     public string StringValue
     {

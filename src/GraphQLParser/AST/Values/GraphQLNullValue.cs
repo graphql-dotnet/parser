@@ -15,6 +15,9 @@ public class GraphQLNullValue : GraphQLValue
     /// Null value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
+
+    /// <inheritdoc />
+    public override object? ClrValue => null;
 }
 
 internal sealed class GraphQLNullValueWithLocation : GraphQLNullValue

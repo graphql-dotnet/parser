@@ -999,6 +999,7 @@ internal partial struct ParserContext
 
         val.Comment = GetComment();
         val.Fields = ZeroOrMore(TokenKind.BRACE_L, isConstant ? constant : value, TokenKind.BRACE_R);
+        val.Value = _source.Slice(start, _currentToken.End - start - 1);
         val.Location = GetLocation(start);
 
         DecreaseDepth();

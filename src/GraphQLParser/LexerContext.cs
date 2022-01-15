@@ -40,6 +40,7 @@ internal struct LexerContext
         if (code == '#')
             return ReadComment();
 
+        // http://spec.graphql.org/October2021/#NameStart
         if ('a' <= code && code <= 'z' || 'A' <= code && code <= 'Z' || code == '_')
             return ReadName();
 
@@ -710,6 +711,7 @@ internal struct LexerContext
             : (char)0;
     }
 
+    // http://spec.graphql.org/October2021/#Name
     private Token ReadName()
     {
         int start = _currentIndex;

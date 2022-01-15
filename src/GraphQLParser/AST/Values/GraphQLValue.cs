@@ -7,4 +7,8 @@ namespace GraphQLParser.AST;
 /// </summary>
 public abstract class GraphQLValue : ASTNode
 {
+    /// <summary>
+    /// Returns the CLR object that represents the value of this AST node.
+    /// </summary>
+    public abstract object? ClrValue { get; }
 }
