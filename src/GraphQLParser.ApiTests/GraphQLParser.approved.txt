@@ -145,7 +145,6 @@ namespace GraphQLParser.AST
         public GraphQLBooleanValue(bool value) { }
         public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public bool TypedValue { get; }
         public GraphQLParser.ROM Value { get; set; }
         public override void Reset() { }
     }

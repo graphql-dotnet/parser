@@ -35,10 +35,7 @@ public class GraphQLBooleanValue : GraphQLValue
     public ROM Value { get; set; }
 
     /// <inheritdoc />
-    public override object? ClrValue => TypedValue ? _true : _false;
-
-    /// <inheritdoc cref="GraphQLValue.ClrValue"/>
-    public bool TypedValue => Value == "true";
+    public override object? ClrValue => Value == "true" ? _true : _false;
 
     /// <inheritdoc />
     public override void Reset() { }
