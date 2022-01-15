@@ -17,6 +17,48 @@ public class GraphQLFloatValue : GraphQLValue
     public override ASTNodeKind Kind => ASTNodeKind.FloatValue;
 
     /// <summary>
+    /// Creates a new instance (with empty value).
+    /// </summary>
+    public GraphQLFloatValue()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance with the specified value.
+    /// </summary>
+    public GraphQLFloatValue(float value)
+    {
+        _number = ValidateValue(value);
+        // print most compact form of value with up to 15 digits of precision (C# default)
+        // note: G17 format (17 digits of precision) is necessary to prevent losing any
+        // information during roundtrip to string. However, "3.33" prints something like
+        // "3.330000000000001" which probably is not desirable.
+        _value = ((double)value).ToString("G15", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Creates a new instance with the specified value.
+    /// </summary>
+    public GraphQLFloatValue(double value)
+    {
+        _number = ValidateValue(value);
+        // print most compact form of value with up to 15 digits of precision (C# default)
+        // note: G17 format (17 digits of precision) is necessary to prevent losing any
+        // information during roundtrip to string. However, "3.33" prints something like
+        // "3.330000000000001" which probably is not desirable.
+        _value = value.ToString("G15", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Creates a new instance with the specified value.
+    /// </summary>
+    public GraphQLFloatValue(decimal value)
+    {
+        _number = value;
+        Value = value.ToString(CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
     /// Float value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value
@@ -27,6 +69,16 @@ public class GraphQLFloatValue : GraphQLValue
             _value = value;
             _number = null;
         }
+    }
+
+    private static double ValidateValue(double value)
+    {
+        // TODO: see https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800828568 and https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800906086
+        // if (double.IsNaN(value) || double.IsInfinity(value))
+        if (double.IsNaN(value))
+            throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be NaN."); // Value cannot be NaN or Infinity.
+
+        return value;
     }
 
     /// <summary>

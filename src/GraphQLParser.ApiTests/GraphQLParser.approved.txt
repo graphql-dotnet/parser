@@ -260,6 +260,9 @@ namespace GraphQLParser.AST
     public class GraphQLFloatValue : GraphQLParser.AST.GraphQLValue
     {
         public GraphQLFloatValue() { }
+        public GraphQLFloatValue(decimal value) { }
+        public GraphQLFloatValue(double value) { }
+        public GraphQLFloatValue(float value) { }
         public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
