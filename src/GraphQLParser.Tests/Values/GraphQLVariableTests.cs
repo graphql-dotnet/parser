@@ -4,12 +4,18 @@ using Xunit;
 
 namespace GraphQLParser.Tests;
 
-public class GraphVariableTests
+public class GraphQLVariableTests
 {
     [Fact]
     public void VariableName()
     {
         var variable = new GraphQLVariable { Name = new GraphQLName("id") };
-        variable.ClrValue.ShouldBe("id");
+        var value = variable.ClrValue;
+        value.ShouldBe("id");
+        ReferenceEquals(value, variable.ClrValue).ShouldBeTrue();
+
+        variable.Reset();
+        //WOW! Even after GraphQLName.Reset ROM->string cast returns the same string instance!
+        //ReferenceEquals(value, variable.ClrValue).ShouldBeFalse();
     }
 }

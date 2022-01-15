@@ -10,7 +10,7 @@ public class GraphQLObjectValueTests
     [Fact]
     public void EmptyValue_NullFields()
     {
-        var value = new GraphQLObjectValue { };
+        var value = new GraphQLObjectValue();
         value.ClrValue.ShouldBeAssignableTo<IDictionary<string, object>>().Count.ShouldBe(0);
     }
 
@@ -37,5 +37,9 @@ public class GraphQLObjectValueTests
 
         var obj2 = value.ClrValue;
         ReferenceEquals(obj, obj2).ShouldBeTrue();
+
+        value.Reset();
+        var obj3 = value.ClrValue;
+        ReferenceEquals(obj, obj3).ShouldBeFalse();
     }
 }
