@@ -20,8 +20,13 @@ public class GraphQLStringValueTests
         const string s = "abc";
         var value = new GraphQLStringValue(s);
         value.Value.Length.ShouldBe(3);
-        value.ClrValue.ShouldBe(s);
+        var val = value.ClrValue;
+        val.ShouldBe(s);
         ReferenceEquals(value.ClrValue, s).ShouldBeTrue();
+
+        value.Reset();
+        //WOW! Even after GraphQLStringValue.Reset ROM->string cast returns the same string instance!
+        //ReferenceEquals(val, value.ClrValue).ShouldBeFalse();
     }
 
     [Fact]
@@ -29,7 +34,12 @@ public class GraphQLStringValueTests
     {
         var value = new GraphQLStringValue { Value = "abc" };
         value.Value.Length.ShouldBe(3);
-        value.ClrValue.ShouldBe("abc");
-        ReferenceEquals(value.ClrValue, value.ClrValue).ShouldBeTrue();
+        var val = value.ClrValue;
+        val.ShouldBe("abc");
+        ReferenceEquals(val, value.ClrValue).ShouldBeTrue();
+
+        value.Reset();
+        //WOW! Even after GraphQLStringValue.Reset ROM->string cast returns the same string instance!
+        //ReferenceEquals(val, value.ClrValue).ShouldBeFalse();
     }
 }
