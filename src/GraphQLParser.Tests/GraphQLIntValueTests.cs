@@ -13,7 +13,17 @@ public class GraphQLIntValueTests
     {
         var value = new GraphQLIntValue();
         value.Value.Length.ShouldBe(0);
-        Should.Throw<InvalidOperationException>(() => value.ClrValue);
+        var ex = Should.Throw<InvalidOperationException>(() => value.ClrValue);
+        ex.Message.ShouldStartWith("Invalid number (empty string)");
+    }
+
+    [Fact]
+    public void BadValue()
+    {
+        var value = new GraphQLIntValue() { Value = "abc" };
+        value.Value.Length.ShouldBe(3);
+        var ex = Should.Throw<InvalidOperationException>(() => value.ClrValue);
+        ex.Message.ShouldStartWith("Invalid number abc");
     }
 
     [Fact]

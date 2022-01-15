@@ -12,7 +12,8 @@ public class GraphQLFloatValueTests
     {
         var value = new GraphQLFloatValue();
         value.Value.Length.ShouldBe(0);
-        Should.Throw<InvalidOperationException>(() => value.ClrValue);
+        var ex = Should.Throw<InvalidOperationException>(() => value.ClrValue);
+        ex.Message.ShouldStartWith("Invalid number (empty string)");
     }
 
     [Fact]
@@ -20,6 +21,18 @@ public class GraphQLFloatValueTests
     {
         var ex = Should.Throw<ArgumentOutOfRangeException>(() => new GraphQLFloatValue(double.NaN));
         ex.Message.ShouldStartWith("Value cannot be NaN.");
+    }
+
+    [Fact]
+    public void BadValue()
+    {
+        var value = new GraphQLFloatValue() { Value = "abc" };
+        value.Value.Length.ShouldBe(3);
+        value.ClrValue.ShouldBe(double.PositiveInfinity);
+
+        value.Value = "-def";
+        value.Value.Length.ShouldBe(4);
+        value.ClrValue.ShouldBe(double.NegativeInfinity);
     }
 
     [Fact]

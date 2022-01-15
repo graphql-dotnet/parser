@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -43,6 +44,9 @@ public class GraphQLObjectValue : GraphQLValue
     {
         get
         {
+            if (Value.Length == 0)
+                throw new InvalidOperationException("Invalid object (empty string)");
+
             if (_object == null)
             {
                 if (Fields == null || Fields.Count == 0)

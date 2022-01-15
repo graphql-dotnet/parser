@@ -44,6 +44,9 @@ public class GraphQLListValue : GraphQLValue
     {
         get
         {
+            if (Value.Length == 0)
+                throw new InvalidOperationException("Invalid list (empty string)");
+
             if (_list == null)
             {
                 if (Values == null || Values.Count == 0)
