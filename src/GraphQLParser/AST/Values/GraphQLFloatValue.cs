@@ -14,10 +14,11 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
     public override ASTNodeKind Kind => ASTNodeKind.FloatValue;
 
     /// <summary>
-    /// Creates a new instance (with empty value).
+    /// Creates a new instance with the specified value.
     /// </summary>
-    public GraphQLFloatValue()
+    public GraphQLFloatValue(ROM value)
     {
+        Value = value;
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
         // note: G9 format (9 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
         // "3.33000001" which probably is not desirable.
-        Value = ValidateValue(value).ToString("R", CultureInfo.InvariantCulture);
+        Value = value.ToString("R", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -55,7 +56,7 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
     /// <summary>
     /// Float value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value { get; set; }
+    public ROM Value { get; }
 
     private static double ValidateValue(double value)
     {
@@ -77,6 +78,12 @@ internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue
         get => _location;
         set => _location = value;
     }
+
+    /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
+    public GraphQLFloatValueWithLocation(ROM value)
+        : base(value)
+    {
+    }
 }
 
 internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
@@ -87,6 +94,12 @@ internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
+    public GraphQLFloatValueWithComment(ROM value)
+        : base(value)
+    {
     }
 }
 
@@ -105,5 +118,11 @@ internal sealed class GraphQLFloatValueFull : GraphQLFloatValue
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
+    public GraphQLFloatValueFull(ROM value)
+        : base(value)
+    {
     }
 }

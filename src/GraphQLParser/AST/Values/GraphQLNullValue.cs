@@ -12,17 +12,9 @@ public class GraphQLNullValue : GraphQLValue, IHasValueNode
     public override ASTNodeKind Kind => ASTNodeKind.NullValue;
 
     /// <summary>
-    /// Creates a new instance of <see cref="GraphQLNullValue"/>.
-    /// </summary>
-    public GraphQLNullValue()
-    {
-        Value = "null";
-    }
-
-    /// <summary>
     /// Null value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value { get; set; }
+    public ROM Value => "null";
 }
 
 internal sealed class GraphQLNullValueWithLocation : GraphQLNullValue

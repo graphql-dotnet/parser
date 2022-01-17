@@ -42,7 +42,7 @@ public class GraphQLDocument : ASTNode, IDisposable
 
                     // memory returned to the pool can no longer be used so for safety, we erase the reference to it from the node
                     if (rentedBy is GraphQLComment comment)
-                        comment.Text = default;
+                        comment.Value = default;
                 }
             }
         }

@@ -1,4 +1,3 @@
-using System;
 using System.Numerics;
 using GraphQLParser.AST;
 using Shouldly;
@@ -8,13 +7,6 @@ namespace GraphQLParser.Tests;
 
 public class GraphQLIntValueTests
 {
-    [Fact]
-    public void NoValue()
-    {
-        var value = new GraphQLIntValue();
-        value.Value.Length.ShouldBe(0);
-    }
-
     [Fact]
     public void Int()
     {
@@ -85,20 +77,5 @@ public class GraphQLIntValueTests
         var value = new GraphQLIntValue(BigInteger.Parse("7922816251426433759354395033579228162514264337593543950335"));
         value.Value.Length.ShouldBe(58);
         value.Value.ShouldBe("7922816251426433759354395033579228162514264337593543950335");
-    }
-
-    [Fact]
-    public void Decimal()
-    {
-        var value = new GraphQLIntValue(1234554321m);
-        value.Value.Length.ShouldBe(10);
-        value.Value.ShouldBe("1234554321");
-    }
-
-    [Fact]
-    public void DecimalBad()
-    {
-        var ex = Should.Throw<ArgumentOutOfRangeException>(() => new GraphQLIntValue(12.3m));
-        ex.Message.Replace(",", ".").ShouldStartWith("Invalid integer number 12.3");
     }
 }

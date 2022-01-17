@@ -7,13 +7,6 @@ namespace GraphQLParser.Tests;
 public class GraphQLBooleanValueTests
 {
     [Fact]
-    public void EmptyValue()
-    {
-        var value = new GraphQLBooleanValue();
-        value.Value.Length.ShouldBe(0);
-    }
-
-    [Fact]
     public void BoolValue_False()
     {
         var value = new GraphQLBooleanValue(false);

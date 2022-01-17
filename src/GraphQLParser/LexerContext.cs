@@ -381,7 +381,7 @@ internal struct LexerContext
             }
 
             // return the string value from the output buffer
-            return output.Slice(0, outputIndex).ToString();
+            return output.Slice(0, outputIndex).ToString(); //TODO: allocation, see GraphQLDocument.RentedMemoryTracker
         }
     }
 

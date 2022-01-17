@@ -9,7 +9,7 @@ public class GraphQLStringValueTests
     [Fact]
     public void EmptyValue()
     {
-        var value = new GraphQLStringValue();
+        var value = new GraphQLStringValue("");
         value.Value.Length.ShouldBe(0);
         value.Value.ShouldBe("");
     }

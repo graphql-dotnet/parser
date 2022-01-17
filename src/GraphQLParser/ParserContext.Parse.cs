@@ -177,17 +177,16 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#BooleanValue
     // There is no true/false value check, see calling method.
-    private GraphQLBooleanValue ParseBooleanValue()
+    private GraphQLBooleanValue ParseBooleanValue(bool value)
     {
         IncreaseDepth();
 
         var token = _currentToken;
 
-        var val = NodeHelper.CreateGraphQLBooleanValue(_ignoreOptions);
+        var val = NodeHelper.CreateGraphQLBooleanValue(_ignoreOptions, value);
 
         val.Comment = GetComment();
         Advance();
-        val.Value = token.Value;
         val.Location = GetLocation(token.Start);
 
         DecreaseDepth();
@@ -261,20 +260,19 @@ internal partial struct ParserContext
         }
         while (_currentToken.Kind == TokenKind.COMMENT);
 
-        var comment = NodeHelper.CreateGraphQLComment(_ignoreOptions);
-
-        comment.Location = new GraphQLLocation(start, end);
-
+        GraphQLComment comment = null!;
         if (text.Count == 1)
         {
-            comment.Text = text[0];
+            comment = NodeHelper.CreateGraphQLComment(_ignoreOptions, text[0]);
         }
         else if (text.Count > 1)
         {
             var (owner, result) = text.Concat();
-            comment.Text = result;
+            comment = NodeHelper.CreateGraphQLComment(_ignoreOptions, result);
             (_document.RentedMemoryTracker ??= new List<(System.Buffers.IMemoryOwner<char>, ASTNode)>()).Add((owner, comment));
         }
+
+        comment.Location = new GraphQLLocation(start, end);
 
         SetCurrentComment(comment);
         DecreaseDepth();
@@ -593,11 +591,10 @@ internal partial struct ParserContext
 
         var token = _currentToken;
 
-        var val = NodeHelper.CreateGraphQLFloatValue(_ignoreOptions);
+        var val = NodeHelper.CreateGraphQLFloatValue(_ignoreOptions, token.Value);
 
         val.Comment = GetComment();
         Advance();
-        val.Value = token.Value;
         val.Location = GetLocation(token.Start);
 
         DecreaseDepth();
@@ -784,11 +781,10 @@ internal partial struct ParserContext
 
         var token = _currentToken;
 
-        var val = NodeHelper.CreateGraphQLIntValue(_ignoreOptions);
+        var val = NodeHelper.CreateGraphQLIntValue(_ignoreOptions, token.Value);
 
         val.Comment = GetComment();
         Advance();
-        val.Value = token.Value;
         val.Location = GetLocation(token.Start);
 
         DecreaseDepth();
@@ -869,11 +865,10 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
         var value = _currentToken.Value;
 
-        var name = NodeHelper.CreateGraphQLName(_ignoreOptions);
+        var name = NodeHelper.CreateGraphQLName(_ignoreOptions, value);
 
         name.Comment = GetComment();
         Expect(TokenKind.NAME, description);
-        name.Value = value;
         name.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -969,9 +964,13 @@ internal partial struct ParserContext
     {
         var token = _currentToken;
 
-        if (token.Value == "true" || token.Value == "false")
+        if (token.Value == "true")
         {
-            return ParseBooleanValue();
+            return ParseBooleanValue(true);
+        }
+        else if (token.Value == "false")
+        {
+            return ParseBooleanValue(false);
         }
         else if (!token.Value.IsEmpty)
         {
@@ -1014,7 +1013,6 @@ internal partial struct ParserContext
         var val = NodeHelper.CreateGraphQLNullValue(_ignoreOptions);
 
         val.Comment = GetComment();
-        val.Value = token.Value;
         Advance();
         val.Location = GetLocation(token.Start);
 
@@ -1295,11 +1293,10 @@ internal partial struct ParserContext
 
         var token = _currentToken;
 
-        var val = NodeHelper.CreateGraphQLStringValue(_ignoreOptions);
+        var val = NodeHelper.CreateGraphQLStringValue(_ignoreOptions, token.Value);
 
         val.Comment = GetComment();
         Advance();
-        val.Value = token.Value;
         val.Location = GetLocation(token.Start);
 
         DecreaseDepth();
@@ -1314,9 +1311,8 @@ internal partial struct ParserContext
         var token = _currentToken;
         Advance();
 
-        var descr = NodeHelper.CreateGraphQLDescription(_ignoreOptions);
+        var descr = NodeHelper.CreateGraphQLDescription(_ignoreOptions, token.Value);
 
-        descr.Value = token.Value;
         descr.Location = GetLocation(token.Start);
 
         DecreaseDepth();

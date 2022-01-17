@@ -5,6 +5,8 @@ namespace GraphQLParser.AST;
 /// These nodes are:
 /// <list type="number">
 /// <item><see cref="GraphQLName"/></item>
+/// <item><see cref="GraphQLDescription"/></item>
+/// <item><see cref="GraphQLComment"/></item>
 /// <item><see cref="GraphQLNullValue"/></item>
 /// <item><see cref="GraphQLBooleanValue"/></item>
 /// <item><see cref="GraphQLIntValue"/></item>
@@ -17,5 +19,5 @@ public interface IHasValueNode
     /// <summary>
     /// Value of AST node represented as <see cref="ROM"/>.
     /// </summary>
-    ROM Value { get; set; }
+    ROM Value { get; }
 }

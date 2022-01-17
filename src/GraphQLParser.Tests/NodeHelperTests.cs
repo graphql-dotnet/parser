@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using GraphQLParser.AST;
 using Shouldly;
@@ -12,9 +13,11 @@ public class NodeHelperTests
     {
         foreach (var method in typeof(NodeHelper).GetMethods().Where(m => m.IsStatic))
         {
-            var node = (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.None });
+            var node = method.GetParameters().Length == 1
+                ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.None })
+                : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.None, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment();
+            node.Comment = new GraphQLComment("abcdef");
             if (node is not GraphQLComment &&
                 node is not GraphQLDocument &&
                 node is not GraphQLDescription &&
@@ -31,9 +34,11 @@ public class NodeHelperTests
     {
         foreach (var method in typeof(NodeHelper).GetMethods().Where(m => m.IsStatic))
         {
-            var node = (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Comments });
+            var node = method.GetParameters().Length == 1
+                ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Comments })
+                : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Comments, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment();
+            node.Comment = new GraphQLComment("abcdef");
             node.Comment.ShouldBeNull();
 
             node.Location = new GraphQLLocation(100, 200);
@@ -46,9 +51,11 @@ public class NodeHelperTests
     {
         foreach (var method in typeof(NodeHelper).GetMethods().Where(m => m.IsStatic))
         {
-            var node = (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Locations });
+            var node = method.GetParameters().Length == 1
+              ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Locations })
+              : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Locations, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment();
+            node.Comment = new GraphQLComment("abcdef");
             if (node is not GraphQLComment &&
                 node is not GraphQLDocument &&
                 node is not GraphQLDescription &&
@@ -65,9 +72,11 @@ public class NodeHelperTests
     {
         foreach (var method in typeof(NodeHelper).GetMethods().Where(m => m.IsStatic))
         {
-            var node = (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.All });
+            var node = method.GetParameters().Length == 1
+                ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.All })
+                : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.All, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment();
+            node.Comment = new GraphQLComment("abcdef");
             node.Comment.ShouldBeNull();
 
             node.Location = new GraphQLLocation(100, 200);

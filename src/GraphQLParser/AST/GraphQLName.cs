@@ -9,18 +9,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLName: {Value}")]
 public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
 {
-    private ROM _value;
     private string? _string;
 
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Name;
-
-    /// <summary>
-    /// Creates a new instance (with empty value).
-    /// </summary>
-    public GraphQLName()
-    {
-    }
 
     /// <summary>
     /// Creates a new instance with the specified value.
@@ -33,15 +25,7 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     /// <summary>
     /// Name value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _string = null;
-        }
-    }
+    public ROM Value { get; }
 
     /// <summary>
     /// Name value represented as <see cref="string"/>.
@@ -117,6 +101,12 @@ internal sealed class GraphQLNameWithLocation : GraphQLName
         get => _location;
         set => _location = value;
     }
+
+    /// <inheritdoc cref="GraphQLName(ROM)"/>
+    public GraphQLNameWithLocation(ROM value)
+        : base(value)
+    {
+    }
 }
 
 internal sealed class GraphQLNameWithComment : GraphQLName
@@ -127,6 +117,12 @@ internal sealed class GraphQLNameWithComment : GraphQLName
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLName(ROM)"/>
+    public GraphQLNameWithComment(ROM value)
+        : base(value)
+    {
     }
 }
 
@@ -145,5 +141,11 @@ internal sealed class GraphQLNameFull : GraphQLName
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLName(ROM)"/>
+    public GraphQLNameFull(ROM value)
+        : base(value)
+    {
     }
 }

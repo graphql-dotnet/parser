@@ -37,7 +37,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         int level = GetLevel(context);
 
         bool needStartNewLine = true;
-        int length = comment.Text.Span.Length;
+        int length = comment.Value.Span.Length;
         for (int i = 0; i < length; ++i)
         {
             if (needStartNewLine)
@@ -47,7 +47,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
                 needStartNewLine = false;
             }
 
-            char code = comment.Text.Span[i];
+            char code = comment.Value.Span[i];
             switch (code)
             {
                 case '\r':
@@ -59,7 +59,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
                     break;
 
                 default:
-                    await context.Write(comment.Text.Slice(i, 1)/*code*/).ConfigureAwait(false);
+                    await context.Write(comment.Value.Slice(i, 1)/*code*/).ConfigureAwait(false);
                     break;
             }
         }
