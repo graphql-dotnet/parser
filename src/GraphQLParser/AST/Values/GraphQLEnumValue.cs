@@ -10,12 +10,6 @@ public class GraphQLEnumValue : GraphQLValue, INamedNode
 
     /// <inheritdoc/>
     public GraphQLName Name { get; set; } = null!;
-
-    /// <inheritdoc />
-    public override object? ClrValue => Name.StringValue;
-
-    /// <inheritdoc />
-    public override void Reset() { Name.Reset(); }
 }
 
 internal sealed class GraphQLEnumValueWithLocation : GraphQLEnumValue

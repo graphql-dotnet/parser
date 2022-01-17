@@ -13,212 +13,92 @@ public class GraphQLIntValueTests
     {
         var value = new GraphQLIntValue();
         value.Value.Length.ShouldBe(0);
-        var ex = Should.Throw<InvalidOperationException>(() => value.ClrValue);
-        ex.Message.ShouldStartWith("Invalid number (empty string)");
     }
 
     [Fact]
-    public void BadValue()
+    public void Int()
     {
-        var value = new GraphQLIntValue() { Value = "abc" };
-        value.Value.Length.ShouldBe(3);
-        var ex = Should.Throw<InvalidOperationException>(() => value.ClrValue);
-        ex.Message.ShouldStartWith("Invalid number abc");
-    }
-
-    [Fact]
-    public void IntValue()
-    {
-        var value = new GraphQLIntValue((int)1234567);
+        var value = new GraphQLIntValue(1234567);
         value.Value.Length.ShouldBe(7);
         value.Value.ShouldBe("1234567");
-        value.ClrValue.ShouldBe(1234567);
-        value.ClrValue.ShouldBeOfType<int>();
-
-        value.Reset();
-        value.Value = "1234567";
-        value.ClrValue.ShouldBe(1234567);
-        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
-    public void ByteValue()
+    public void Byte()
     {
         var value = new GraphQLIntValue((byte)42);
         value.Value.Length.ShouldBe(2);
         value.Value.ShouldBe("42");
-        value.ClrValue.ShouldBe(42);
-        value.ClrValue.ShouldBeOfType<int>();
-
-        value.Reset();
-        value.Value = "42";
-        value.ClrValue.ShouldBe(42);
-        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
-    public void SbyteValue()
+    public void Sbyte()
     {
         var value = new GraphQLIntValue((sbyte)-10);
         value.Value.Length.ShouldBe(3);
         value.Value.ShouldBe("-10");
-        value.ClrValue.ShouldBe(-10);
-        value.ClrValue.ShouldBeOfType<int>();
-
-        value.Reset();
-        value.Value = "-10";
-        value.ClrValue.ShouldBe(-10);
-        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
-    public void ShortValue()
+    public void Short()
     {
         var value = new GraphQLIntValue((short)-300);
         value.Value.Length.ShouldBe(4);
         value.Value.ShouldBe("-300");
-        value.ClrValue.ShouldBe(-300);
-        value.ClrValue.ShouldBeOfType<int>();
-
-        value.Reset();
-        value.Value = "-300";
-        value.ClrValue.ShouldBe(-300);
-        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
-    public void UshortValue()
+    public void Ushort()
     {
         var value = new GraphQLIntValue((ushort)60000);
         value.Value.Length.ShouldBe(5);
         value.Value.ShouldBe("60000");
-        value.ClrValue.ShouldBe(60000);
-        value.ClrValue.ShouldBeOfType<int>();
-
-        value.Reset();
-        value.Value = "60000";
-        value.ClrValue.ShouldBe(60000);
-        value.ClrValue.ShouldBeOfType<int>();
-    }
-
-
-    [Fact]
-    public void UintValue_ToInt()
-    {
-        var value = new GraphQLIntValue((uint)17);
-        value.Value.Length.ShouldBe(2);
-        value.Value.ShouldBe("17");
-        value.ClrValue.ShouldBe(17);
-        value.ClrValue.ShouldBeOfType<int>();
-
-        value.Reset();
-        value.Value = "17";
-        value.ClrValue.ShouldBe(17);
-        value.ClrValue.ShouldBeOfType<int>();
     }
 
     [Fact]
-    public void UintValue_ToLong()
+    public void Uint()
     {
-        var value = new GraphQLIntValue((uint)2247483647);
+        var value = new GraphQLIntValue(2247483647U);
         value.Value.Length.ShouldBe(10);
         value.Value.ShouldBe("2247483647");
-        value.ClrValue.ShouldBe(2247483647);
-        value.ClrValue.ShouldBeOfType<long>();
-
-        value.Reset();
-        value.Value = "2247483647";
-        value.ClrValue.ShouldBe(2247483647);
-        value.ClrValue.ShouldBeOfType<long>();
     }
 
     [Fact]
-    public void LongValue()
+    public void Long()
     {
-        var value = new GraphQLIntValue((long)-60001);
+        var value = new GraphQLIntValue(-60001L);
         value.Value.Length.ShouldBe(6);
         value.Value.ShouldBe("-60001");
-        value.ClrValue.ShouldBe(-60001);
-        value.ClrValue.ShouldBeOfType<long>();
-
-        value.Reset();
-        value.Value = "2247483647";
-        value.ClrValue.ShouldBe(2247483647);
-        value.ClrValue.ShouldBeOfType<long>();
     }
 
     [Fact]
-    public void UlongValue_ToInt()
+    public void Ulong()
     {
-        var value = new GraphQLIntValue((ulong)123);
-        value.Value.Length.ShouldBe(3);
-        value.Value.ShouldBe("123");
-        value.ClrValue.ShouldBe(123);
-        value.ClrValue.ShouldBeOfType<int>();
-
-        value.Reset();
-        value.Value = "123";
-        value.ClrValue.ShouldBe(123);
-        value.ClrValue.ShouldBeOfType<int>();
-    }
-
-    [Fact]
-    public void UlongValue_ToLong()
-    {
-        var value = new GraphQLIntValue((ulong)2247483647);
-        value.Value.Length.ShouldBe(10);
-        value.Value.ShouldBe("2247483647");
-        value.ClrValue.ShouldBe(2247483647);
-        value.ClrValue.ShouldBeOfType<long>();
-
-        value.Reset();
-        value.Value = "2247483647";
-        value.ClrValue.ShouldBe(2247483647);
-        value.ClrValue.ShouldBeOfType<long>();
-    }
-
-    [Fact]
-    public void UlongValue_ToDecimal()
-    {
-        var value = new GraphQLIntValue((ulong)9223372036854775808);
+        var value = new GraphQLIntValue(9223372036854775808UL);
         value.Value.Length.ShouldBe(19);
         value.Value.ShouldBe("9223372036854775808");
-        value.ClrValue.ShouldBe(9223372036854775808);
-        value.ClrValue.ShouldBeOfType<decimal>();
-
-        value.Reset();
-        value.Value = "9223372036854775808";
-        value.ClrValue.ShouldBe(9223372036854775808);
-        value.ClrValue.ShouldBeOfType<decimal>();
     }
 
     [Fact]
-    public void BigIntegerValue()
+    public void BigInt()
     {
-        var value = new GraphQLIntValue(new BigInteger(1234554321));
-        value.Value.Length.ShouldBe(10);
-        value.Value.ShouldBe("1234554321");
-        value.ClrValue.ShouldBe(new BigInteger(1234554321));
-        value.ClrValue.ShouldBeOfType<BigInteger>();
-
-        value.Reset();
-        value.Value = "7922816251426433759354395033579228162514264337593543950335";
-        value.ClrValue.ShouldBe(BigInteger.Parse("7922816251426433759354395033579228162514264337593543950335"));
-        value.ClrValue.ShouldBeOfType<BigInteger>();
+        var value = new GraphQLIntValue(BigInteger.Parse("7922816251426433759354395033579228162514264337593543950335"));
+        value.Value.Length.ShouldBe(58);
+        value.Value.ShouldBe("7922816251426433759354395033579228162514264337593543950335");
     }
 
     [Fact]
-    public void DecimalValue()
+    public void Decimal()
     {
-        var value = new GraphQLIntValue((decimal)1234554321);
+        var value = new GraphQLIntValue(1234554321m);
         value.Value.Length.ShouldBe(10);
         value.Value.ShouldBe("1234554321");
-        value.ClrValue.ShouldBe(1234554321);
-        value.ClrValue.ShouldBeOfType<decimal>();
+    }
 
-        value.Reset();
-        value.Value = "79228162514264337593543950335";
-        value.ClrValue.ShouldBe(79228162514264337593543950335M);
-        value.ClrValue.ShouldBeOfType<decimal>();
+    [Fact]
+    public void DecimalBad()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() => new GraphQLIntValue(12.3m));
+        ex.Message.Replace(",", ".").ShouldStartWith("Invalid integer number 12.3");
     }
 }

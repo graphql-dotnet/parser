@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 
 namespace GraphQLParser.AST;
@@ -6,8 +7,9 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.Name"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLName: {Value}")]
-public class GraphQLName : ASTNode
+public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
 {
+    private ROM _value;
     private string? _string;
 
     /// <inheritdoc/>
@@ -31,13 +33,21 @@ public class GraphQLName : ASTNode
     /// <summary>
     /// Name value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value { get; set; }
+    public ROM Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            _string = null;
+        }
+    }
 
     /// <summary>
     /// Name value represented as <see cref="string"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
+    /// and then caches it as long as <see cref="Value"/> does not change.
     /// </summary>
     public string StringValue
     {
@@ -58,14 +68,6 @@ public class GraphQLName : ASTNode
     public override string ToString() => StringValue;
 
     /// <summary>
-    /// Resets cached <see cref="StringValue"/>.
-    /// </summary>
-    public void Reset()
-    {
-        _string = null;
-    }
-
-    /// <summary>
     /// Implicitly casts <see cref="GraphQLName"/> to <see cref="ROM"/>.
     /// </summary>
     public static implicit operator ROM(GraphQLName? node) => node == null ? default : node.Value;
@@ -74,6 +76,36 @@ public class GraphQLName : ASTNode
     /// Explicitly casts <see cref="GraphQLName"/> to <see cref="string"/>.
     /// </summary>
     public static explicit operator string(GraphQLName? node) => node == null ? null! : (string)node.Value; //TODO: not sure about nullability annotations for operators
+
+    /// <summary>
+    /// Checks two names for equality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator ==(GraphQLName? name1, GraphQLName? name2) => Equals(name1, name2);
+
+    /// <summary>
+    /// Checks two names for inequality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator !=(GraphQLName? name1, GraphQLName? name2) => !Equals(name1, name2);
+
+    /// <inheritdoc/>
+    public bool Equals(GraphQLName other) => Equals(this, other);
+
+    private static bool Equals(GraphQLName? name1, GraphQLName? name2)
+    {
+        if (name1 is null)
+            return name2 is null || name2.Value.IsEmpty;
+
+        if (name2 is null)
+            return name1 is null || name1.Value.IsEmpty;
+
+        return name1.Value == name2.Value;
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object obj) => obj is GraphQLName name && Equals(name);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => Value.GetHashCode();
 }
 
 internal sealed class GraphQLNameWithLocation : GraphQLName

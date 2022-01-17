@@ -8,10 +8,8 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.FloatValue"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLFloatValue: {Value}")]
-public class GraphQLFloatValue : GraphQLValue
+public class GraphQLFloatValue : GraphQLValue, IHasValueNode
 {
-    private object? _number;
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.FloatValue;
 
@@ -31,8 +29,7 @@ public class GraphQLFloatValue : GraphQLValue
         // note: G17 format (17 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
         // "3.330000000000001" which probably is not desirable.
-        Value = ((double)value).ToString("G15", CultureInfo.InvariantCulture);
-        _number = ValidateValue(value);
+        Value = ValidateValue(value).ToString("G15", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -44,8 +41,7 @@ public class GraphQLFloatValue : GraphQLValue
         // note: G17 format (17 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
         // "3.330000000000001" which probably is not desirable.
-        Value = value.ToString("G15", CultureInfo.InvariantCulture);
-        _number = ValidateValue(value);
+        Value = ValidateValue(value).ToString("G15", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -54,7 +50,6 @@ public class GraphQLFloatValue : GraphQLValue
     public GraphQLFloatValue(decimal value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = value;
     }
 
     /// <summary>
@@ -70,58 +65,6 @@ public class GraphQLFloatValue : GraphQLValue
             throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be NaN."); // Value cannot be NaN or Infinity.
 
         return value;
-    }
-
-    /// <summary>
-    /// Float value represented as <see cref="double"/> or <see cref="decimal"/>.
-    /// <br/>
-    /// This property allocates the string on the heap on first access
-    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
-    /// </summary>
-    private object TypedValue //TODO: ??? no typed value :(
-    {
-        get
-        {
-            if (Value.Length == 0)
-                throw new InvalidOperationException("Invalid number (empty string)");
-
-            // the idea is to see if there is a loss of accuracy of value
-            // for example, 12.1 or 12.11 is double but 12.10 is decimal
-            if (!Double.TryParse(
-                Value,
-                NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
-                CultureInfo.InvariantCulture,
-                out double dbl))
-            {
-                dbl = Value.Span[0] == '-' ? double.NegativeInfinity : double.PositiveInfinity;
-            }
-
-            //it is possible for a FloatValue to overflow a decimal; however, with a double, it just returns Infinity or -Infinity
-            if (Decimal.TryParse(
-                Value,
-                NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
-                CultureInfo.InvariantCulture,
-                out decimal dec))
-            {
-                // Cast the decimal to our struct to avoid the decimal.GetBits allocations.
-                var decBits = System.Runtime.CompilerServices.Unsafe.As<decimal, DecimalData>(ref dec);
-                decimal temp = new decimal(dbl);
-                var dblAsDecBits = System.Runtime.CompilerServices.Unsafe.As<decimal, DecimalData>(ref temp);
-                if (!decBits.Equals(dblAsDecBits))
-                    return dec;
-            }
-
-            return dbl;
-        }
-    }
-
-    /// <inheritdoc />
-    public override object? ClrValue => _number ??= TypedValue;
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        _number = null;
     }
 }
 

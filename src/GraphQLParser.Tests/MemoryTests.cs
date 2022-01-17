@@ -16,15 +16,11 @@ public class MemoryTests
         name.StringValue.ShouldBe(string.Empty);
         name.ToString().ShouldBe(string.Empty);
 
-        name.Reset();
         name.Value = "abc";
         name.StringValue.ShouldBe("abc");
         name.ToString().ShouldBe("abc");
 
         name.Value = "def";
-        name.StringValue.ShouldBe("abc"); // no reset
-
-        name.Reset();
         name.StringValue.ShouldBe("def");
         name.ToString().ShouldBe("def");
     }
@@ -190,6 +186,31 @@ public class MemoryTests
         ROM rom2 = new char[] { 'd', 'e' };
         rom2.Span[0].ShouldBe('d');
         rom2.Span[1].ShouldBe('e');
+    }
+
+    [Fact]
+    public void GraphQLName_Equality()
+    {
+        ((GraphQLName)null == (GraphQLName)null).ShouldBeTrue();
+        ((GraphQLName)null != (GraphQLName)null).ShouldBeFalse();
+
+        var name = new GraphQLName("abc");
+        (name == null).ShouldBeFalse();
+        (null == name).ShouldBeFalse();
+        (name != null).ShouldBeTrue();
+        (null != name).ShouldBeTrue();
+
+        name = new GraphQLName();
+        (name == null).ShouldBeTrue();
+        (null == name).ShouldBeTrue();
+        (name != null).ShouldBeFalse();
+        (null != name).ShouldBeFalse();
+
+        name = new GraphQLName("");
+        (name == null).ShouldBeTrue();
+        (null == name).ShouldBeTrue();
+        (name != null).ShouldBeFalse();
+        (null != name).ShouldBeFalse();
     }
 
     [Fact]

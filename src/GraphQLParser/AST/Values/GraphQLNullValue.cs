@@ -6,21 +6,23 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.NullValue"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLNullValue: {Value}")]
-public class GraphQLNullValue : GraphQLValue
+public class GraphQLNullValue : GraphQLValue, IHasValueNode
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.NullValue;
 
     /// <summary>
+    /// Creates a new instance of <see cref="GraphQLNullValue"/>.
+    /// </summary>
+    public GraphQLNullValue()
+    {
+        Value = "null";
+    }
+
+    /// <summary>
     /// Null value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
-
-    /// <inheritdoc />
-    public override object? ClrValue => null;
-
-    /// <inheritdoc />
-    public override void Reset() { }
 }
 
 internal sealed class GraphQLNullValueWithLocation : GraphQLNullValue

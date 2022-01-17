@@ -139,14 +139,12 @@ namespace GraphQLParser.AST
         public GraphQLArgumentsDefinition() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
-    public class GraphQLBooleanValue : GraphQLParser.AST.GraphQLValue
+    public class GraphQLBooleanValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
     {
         public GraphQLBooleanValue() { }
         public GraphQLBooleanValue(bool value) { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public override void Reset() { }
     }
     public class GraphQLComment : GraphQLParser.AST.ASTNode
     {
@@ -212,10 +210,8 @@ namespace GraphQLParser.AST
     public class GraphQLEnumValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.INamedNode
     {
         public GraphQLEnumValue() { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
-        public override void Reset() { }
     }
     public class GraphQLEnumValueDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {
@@ -258,16 +254,14 @@ namespace GraphQLParser.AST
         public GraphQLFieldsDefinition() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
-    public class GraphQLFloatValue : GraphQLParser.AST.GraphQLValue
+    public class GraphQLFloatValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
     {
         public GraphQLFloatValue() { }
         public GraphQLFloatValue(decimal value) { }
         public GraphQLFloatValue(double value) { }
         public GraphQLFloatValue(float value) { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public override void Reset() { }
     }
     public class GraphQLFragmentDefinition : GraphQLParser.AST.GraphQLExecutableDefinition, GraphQLParser.AST.INamedNode
     {
@@ -323,7 +317,7 @@ namespace GraphQLParser.AST
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType Type { get; set; }
     }
-    public class GraphQLIntValue : GraphQLParser.AST.GraphQLValue
+    public class GraphQLIntValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
     {
         public GraphQLIntValue() { }
         public GraphQLIntValue(byte value) { }
@@ -336,10 +330,8 @@ namespace GraphQLParser.AST
         public GraphQLIntValue(ushort value) { }
         public GraphQLIntValue(uint value) { }
         public GraphQLIntValue(ulong value) { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public override void Reset() { }
     }
     public class GraphQLInterfaceTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasFieldsDefinitionNode, GraphQLParser.AST.IHasInterfacesNode
     {
@@ -366,11 +358,8 @@ namespace GraphQLParser.AST
     public class GraphQLListValue : GraphQLParser.AST.GraphQLValue
     {
         public GraphQLListValue() { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.Collections.Generic.IList<object?> TypedValue { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLValue>? Values { get; set; }
-        public override void Reset() { }
     }
     public readonly struct GraphQLLocation : System.IEquatable<GraphQLParser.AST.GraphQLLocation>
     {
@@ -384,17 +373,21 @@ namespace GraphQLParser.AST
         public static bool operator !=(GraphQLParser.AST.GraphQLLocation left, GraphQLParser.AST.GraphQLLocation right) { }
         public static bool operator ==(GraphQLParser.AST.GraphQLLocation left, GraphQLParser.AST.GraphQLLocation right) { }
     }
-    public class GraphQLName : GraphQLParser.AST.ASTNode
+    public class GraphQLName : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasValueNode, System.IEquatable<GraphQLParser.AST.GraphQLName>
     {
         public GraphQLName() { }
         public GraphQLName(GraphQLParser.ROM value) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public string StringValue { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public void Reset() { }
+        public bool Equals(GraphQLParser.AST.GraphQLName other) { }
+        public override bool Equals(object obj) { }
+        public override int GetHashCode() { }
         public override string ToString() { }
         public static string op_Explicit(GraphQLParser.AST.GraphQLName? node) { }
         public static GraphQLParser.ROM op_Implicit(GraphQLParser.AST.GraphQLName? node) { }
+        public static bool operator !=(GraphQLParser.AST.GraphQLName? name1, GraphQLParser.AST.GraphQLName? name2) { }
+        public static bool operator ==(GraphQLParser.AST.GraphQLName? name1, GraphQLParser.AST.GraphQLName? name2) { }
     }
     public class GraphQLNamedType : GraphQLParser.AST.GraphQLType, GraphQLParser.AST.INamedNode
     {
@@ -408,13 +401,11 @@ namespace GraphQLParser.AST
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType Type { get; set; }
     }
-    public class GraphQLNullValue : GraphQLParser.AST.GraphQLValue
+    public class GraphQLNullValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
     {
         public GraphQLNullValue() { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public override void Reset() { }
     }
     public class GraphQLObjectField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
@@ -442,11 +433,8 @@ namespace GraphQLParser.AST
     public class GraphQLObjectValue : GraphQLParser.AST.GraphQLValue
     {
         public GraphQLObjectValue() { }
-        public override object? ClrValue { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLObjectField>? Fields { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.Collections.Generic.IDictionary<string, object?> TypedValue { get; }
-        public override void Reset() { }
     }
     public class GraphQLOperationDefinition : GraphQLParser.AST.GraphQLExecutableDefinition, GraphQLParser.AST.INamedNode
     {
@@ -496,15 +484,12 @@ namespace GraphQLParser.AST
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.ASTNode> Selections { get; set; }
     }
-    public class GraphQLStringValue : GraphQLParser.AST.GraphQLValue
+    public class GraphQLStringValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
     {
         public GraphQLStringValue() { }
         public GraphQLStringValue(string value) { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public string TypedValue { get; }
         public GraphQLParser.ROM Value { get; set; }
-        public override void Reset() { }
     }
     public abstract class GraphQLType : GraphQLParser.AST.ASTNode
     {
@@ -549,16 +534,12 @@ namespace GraphQLParser.AST
     public abstract class GraphQLValue : GraphQLParser.AST.ASTNode
     {
         protected GraphQLValue() { }
-        public abstract object? ClrValue { get; }
-        public abstract void Reset();
     }
     public class GraphQLVariable : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.INamedNode
     {
         public GraphQLVariable() { }
-        public override object? ClrValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
-        public override void Reset() { }
     }
     public class GraphQLVariableDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDefaultValueNode, GraphQLParser.AST.IHasDirectivesNode
     {
@@ -605,6 +586,10 @@ namespace GraphQLParser.AST
     public interface IHasSelectionSetNode
     {
         GraphQLParser.AST.GraphQLSelectionSet? SelectionSet { get; set; }
+    }
+    public interface IHasValueNode
+    {
+        GraphQLParser.ROM Value { get; set; }
     }
     public interface INamedNode
     {

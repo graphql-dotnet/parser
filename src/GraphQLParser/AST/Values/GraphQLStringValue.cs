@@ -6,10 +6,8 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.StringValue"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLStringValue: {Value}")]
-public class GraphQLStringValue : GraphQLValue
+public class GraphQLStringValue : GraphQLValue, IHasValueNode
 {
-    private string? _string;
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.StringValue;
 
@@ -26,43 +24,12 @@ public class GraphQLStringValue : GraphQLValue
     public GraphQLStringValue(string value)
     {
         Value = value;
-        _string = value;
     }
 
     /// <summary>
     /// String value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
-
-    /// <summary>
-    /// String value represented as <see cref="string"/>.
-    /// <br/>
-    /// This property allocates the string on the heap on first access
-    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
-    /// </summary>
-    public string TypedValue
-    {
-        get
-        {
-            if (_string == null)
-            {
-                _string = Value.Length == 0
-                    ? string.Empty
-                    : (string)Value;
-            }
-
-            return _string;
-        }
-    }
-
-    /// <inheritdoc />
-    public override object? ClrValue => _string ??= TypedValue;
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        _string = null;
-    }
 }
 
 internal sealed class GraphQLStringValueWithLocation : GraphQLStringValue

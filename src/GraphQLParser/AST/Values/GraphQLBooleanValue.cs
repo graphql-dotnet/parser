@@ -6,11 +6,8 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.BooleanValue"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLBooleanValue: {Value}")]
-public class GraphQLBooleanValue : GraphQLValue
+public class GraphQLBooleanValue : GraphQLValue, IHasValueNode
 {
-    private static readonly object _true = true;
-    private static readonly object _false = false;
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.BooleanValue;
 
@@ -33,12 +30,6 @@ public class GraphQLBooleanValue : GraphQLValue
     /// Boolean value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
-
-    /// <inheritdoc />
-    public override object? ClrValue => Value == "true" ? _true : _false;
-
-    /// <inheritdoc />
-    public override void Reset() { }
 }
 
 internal sealed class GraphQLBooleanValueWithLocation : GraphQLBooleanValue

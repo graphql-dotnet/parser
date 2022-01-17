@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -10,8 +9,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLListValue: {Value}")]
 public class GraphQLListValue : GraphQLValue
 {
-    private IList<object?>? _list;
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ListValue;
 
@@ -19,44 +16,6 @@ public class GraphQLListValue : GraphQLValue
     /// Values of the list represented as a list of nested <see cref="GraphQLValue"/> nodes.
     /// </summary>
     public List<GraphQLValue>? Values { get; set; }
-
-    /// <summary>
-    /// List value represented as <see cref="List{T}"/>.
-    /// <br/>
-    /// This property allocates the string on the heap on first access
-    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
-    /// </summary>
-    public IList<object?> TypedValue
-    {
-        get
-        {
-            if (_list == null)
-            {
-                if (Values == null || Values.Count == 0)
-                {
-                    _list = Array.Empty<object?>();
-                }
-                else
-                {
-                    var list = new List<object?>(Values.Count);
-                    foreach (var value in Values)
-                        list.Add(value.ClrValue);
-                    _list = list;
-                }
-            }
-
-            return _list;
-        }
-    }
-
-    /// <inheritdoc />
-    public override object? ClrValue => _list ??= TypedValue;
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        _list = null;
-    }
 }
 
 internal sealed class GraphQLListValueWithLocation : GraphQLListValue

@@ -9,10 +9,8 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.IntValue"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLIntValue: {Value}")]
-public class GraphQLIntValue : GraphQLValue
+public class GraphQLIntValue : GraphQLValue, IHasValueNode
 {
-    private object? _number;
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.IntValue;
 
@@ -29,7 +27,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(int value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = value;
     }
 
     /// <summary>
@@ -38,7 +35,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(byte value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = (int)value;
     }
 
     /// <summary>
@@ -47,7 +43,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(sbyte value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = (int)value;
     }
 
     /// <summary>
@@ -56,7 +51,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(short value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = (int)value;
     }
 
     /// <summary>
@@ -65,7 +59,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(ushort value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = (int)value;
     }
 
     /// <summary>
@@ -74,10 +67,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(uint value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        if (value < int.MaxValue)
-            _number = (int)value;
-        else
-            _number = (long)value;
     }
 
     /// <summary>
@@ -86,7 +75,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(long value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = value;
     }
 
     /// <summary>
@@ -95,12 +83,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(ulong value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        if (value < int.MaxValue)
-            _number = (int)value;
-        else if (value < long.MaxValue)
-            _number = (long)value;
-        else
-            _number = (decimal)value;
     }
 
     /// <summary>
@@ -109,7 +91,6 @@ public class GraphQLIntValue : GraphQLValue
     public GraphQLIntValue(BigInteger value)
     {
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = value;
     }
 
     /// <summary>
@@ -117,64 +98,15 @@ public class GraphQLIntValue : GraphQLValue
     /// </summary>
     public GraphQLIntValue(decimal value)
     {
+        if (Math.Truncate(value) != value)
+            throw new ArgumentOutOfRangeException(nameof(value), $"Invalid integer number {value}");
         Value = value.ToString(CultureInfo.InvariantCulture);
-        _number = value;
     }
 
     /// <summary>
     /// Integer value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; set; }
-
-    /// <summary>
-    /// Integer value represented as <see cref="int"/>, <see cref="long"/>, <see cref="decimal"/> or <see cref="BigInteger"/>.
-    /// <br/>
-    /// This property allocates the string on the heap on first access
-    /// and then caches it. Call <see cref="Reset"/> to reset cache when needed.
-    /// </summary>
-    private object TypedValue //TODO: ??? no typed value :(
-    {
-        get
-        {
-            if (Value.Length == 0)
-                throw new InvalidOperationException("Invalid number (empty string)");
-
-            if (Int.TryParse(Value, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int intResult))
-            {
-                return intResult;
-            }
-
-            // If the value doesn't fit in an integer, revert to using long...
-            if (Long.TryParse(Value, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out long longResult))
-            {
-                return longResult;
-            }
-
-            // If the value doesn't fit in an long, revert to using decimal...
-            if (Decimal.TryParse(Value, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out decimal decimalResult))
-            {
-                return decimalResult;
-            }
-
-            // If the value doesn't fit in an decimal, revert to using BigInteger...
-            if (BigInt.TryParse(Value, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var bigIntegerResult))
-            {
-                return bigIntegerResult;
-            }
-
-            // Since BigInteger can contain any valid integer (arbitrarily large), this is impossible to trigger via an invalid query
-            throw new InvalidOperationException($"Invalid number {Value}");
-        }
-    }
-
-    /// <inheritdoc />
-    public override object? ClrValue => _number ??= TypedValue;
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        _number = null;
-    }
 }
 
 internal sealed class GraphQLIntValueWithLocation : GraphQLIntValue

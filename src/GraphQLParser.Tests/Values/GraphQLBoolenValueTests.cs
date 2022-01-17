@@ -11,7 +11,6 @@ public class GraphQLBooleanValueTests
     {
         var value = new GraphQLBooleanValue();
         value.Value.Length.ShouldBe(0);
-        value.ClrValue.ShouldBe(false);
     }
 
     [Fact]
@@ -19,10 +18,7 @@ public class GraphQLBooleanValueTests
     {
         var value = new GraphQLBooleanValue(false);
         value.Value.Length.ShouldBe(5);
-        value.ClrValue.ShouldBe(false);
-        ReferenceEquals(value.ClrValue, value.ClrValue).ShouldBeTrue();
-        value.Reset(); // does nothing
-        ReferenceEquals(value.ClrValue, value.ClrValue).ShouldBeTrue();
+        value.Value.ShouldBe("false");
     }
 
     [Fact]
@@ -30,9 +26,6 @@ public class GraphQLBooleanValueTests
     {
         var value = new GraphQLBooleanValue(true);
         value.Value.Length.ShouldBe(4);
-        value.ClrValue.ShouldBe(true);
-        ReferenceEquals(value.ClrValue, value.ClrValue).ShouldBeTrue();
-        value.Reset(); // does nothing
-        ReferenceEquals(value.ClrValue, value.ClrValue).ShouldBeTrue();
+        value.Value.ShouldBe("true");
     }
 }
