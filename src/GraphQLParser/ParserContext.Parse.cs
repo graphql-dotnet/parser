@@ -563,7 +563,7 @@ internal partial struct ParserContext
 
         var field = NodeHelper.CreateGraphQLField(_ignoreOptions);
 
-        if (alias != null)
+        if (alias is not null)
         {
             var aliasNode = NodeHelper.CreateGraphQLAlias(_ignoreOptions);
 

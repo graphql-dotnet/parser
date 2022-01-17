@@ -284,7 +284,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     public override async ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
     {
         await Visit(operationDefinition.Comment, context).ConfigureAwait(false);
-        if (operationDefinition.Name != null)
+        if (operationDefinition.Name is not null)
         {
             await context.Write(GetOperationType(operationDefinition.Operation)).ConfigureAwait(false);
             await context.Write(" ").ConfigureAwait(false);
