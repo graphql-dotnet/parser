@@ -15,6 +15,14 @@ public class GraphQLStringValueTests
     }
 
     [Fact]
+    public void NullValue()
+    {
+        var value = new GraphQLStringValue((string)null);
+        value.Value.Length.ShouldBe(0);
+        value.Value.ShouldBe("");
+    }
+
+    [Fact]
     public void StringValue()
     {
         const string s = "abc";
