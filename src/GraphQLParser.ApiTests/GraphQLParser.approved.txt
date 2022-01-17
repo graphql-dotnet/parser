@@ -380,7 +380,11 @@ namespace GraphQLParser.AST
         public static string op_Explicit(GraphQLParser.AST.GraphQLName? node) { }
         public static GraphQLParser.ROM op_Implicit(GraphQLParser.AST.GraphQLName? node) { }
         public static bool operator !=(GraphQLParser.AST.GraphQLName? name1, GraphQLParser.AST.GraphQLName? name2) { }
+        public static bool operator !=(GraphQLParser.AST.GraphQLName? name1, string? name2) { }
+        public static bool operator !=(string? name1, GraphQLParser.AST.GraphQLName? name2) { }
         public static bool operator ==(GraphQLParser.AST.GraphQLName? name1, GraphQLParser.AST.GraphQLName? name2) { }
+        public static bool operator ==(GraphQLParser.AST.GraphQLName? name1, string? name2) { }
+        public static bool operator ==(string? name1, GraphQLParser.AST.GraphQLName? name2) { }
     }
     public class GraphQLNamedType : GraphQLParser.AST.GraphQLType, GraphQLParser.AST.INamedNode
     {

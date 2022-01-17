@@ -54,12 +54,12 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     /// <summary>
     /// Implicitly casts <see cref="GraphQLName"/> to <see cref="ROM"/>.
     /// </summary>
-    public static implicit operator ROM(GraphQLName? node) => node == null ? default : node.Value;
+    public static implicit operator ROM(GraphQLName? node) => node is null ? default : node.Value;
 
     /// <summary>
     /// Explicitly casts <see cref="GraphQLName"/> to <see cref="string"/>.
     /// </summary>
-    public static explicit operator string(GraphQLName? node) => node == null ? null! : (string)node.Value; //TODO: not sure about nullability annotations for operators
+    public static explicit operator string(GraphQLName? node) => node is null ? null! : (string)node.Value; //TODO: not sure about nullability annotations for operators
 
     /// <summary>
     /// Checks two names for equality. The check is based on the actual contents of the two chunks of memory.
@@ -70,6 +70,26 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     /// Checks two names for inequality. The check is based on the actual contents of the two chunks of memory.
     /// </summary>
     public static bool operator !=(GraphQLName? name1, GraphQLName? name2) => !Equals(name1, name2);
+
+    /// <summary>
+    /// Checks GraphQLName and string for equality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator ==(GraphQLName? name1, string? name2) => Equals(name1, name2);
+
+    /// <summary>
+    /// Checks GraphQLName and string for inequality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator !=(GraphQLName? name1, string? name2) => !Equals(name1, name2);
+
+    /// <summary>
+    /// Checks string and GraphQLName for equality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator ==(string? name1, GraphQLName? name2) => name2 == name1;
+
+    /// <summary>
+    /// Checks string and GraphQLName for inequality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator !=(string? name1, GraphQLName? name2) => name2 != name1;
 
     /// <inheritdoc/>
     public bool Equals(GraphQLName other) => Equals(this, other);
@@ -83,6 +103,17 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
             return name1.Value.IsEmpty;
 
         return name1.Value == name2.Value;
+    }
+
+    private static bool Equals(GraphQLName? name1, string? name2)
+    {
+        if (name1 is null)
+            return string.IsNullOrEmpty(name2);
+
+        if (name2 is null)
+            return name1.Value.IsEmpty;
+
+        return name1.Value == name2;
     }
 
     /// <inheritdoc/>

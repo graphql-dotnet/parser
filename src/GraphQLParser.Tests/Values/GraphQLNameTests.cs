@@ -59,17 +59,23 @@ public class GraphQLNameTests
     {
         GraphQLName empty = new("");
 
-        ((GraphQLName)empty == (GraphQLName)null).ShouldBeTrue();
-        ((GraphQLName)null != (GraphQLName)empty).ShouldBeFalse();
+        (empty == (GraphQLName)null).ShouldBeTrue();
+        (empty == (string)null).ShouldBeTrue();
+        ((GraphQLName)null != empty).ShouldBeFalse();
+        ((string)null != empty).ShouldBeFalse();
 
         ((GraphQLName)null == (GraphQLName)null).ShouldBeTrue();
         ((GraphQLName)null != (GraphQLName)null).ShouldBeFalse();
 
         var name = new GraphQLName("abc");
-        (name == null).ShouldBeFalse();
-        (null == name).ShouldBeFalse();
-        (name != null).ShouldBeTrue();
-        (null != name).ShouldBeTrue();
+        (name == (GraphQLName)null).ShouldBeFalse();
+        (name == (string)null).ShouldBeFalse();
+        ((GraphQLName)null == name).ShouldBeFalse();
+        ((string)null == name).ShouldBeFalse();
+        (name != (GraphQLName)null).ShouldBeTrue();
+        (name != (string)null).ShouldBeTrue();
+        ((GraphQLName)null != name).ShouldBeTrue();
+        ((string)null != name).ShouldBeTrue();
 
         (name == empty).ShouldBeFalse();
         (empty == name).ShouldBeFalse();
@@ -77,10 +83,14 @@ public class GraphQLNameTests
         (empty != name).ShouldBeTrue();
 
         name = new GraphQLName("");
-        (name == null).ShouldBeTrue();
-        (null == name).ShouldBeTrue();
-        (name != null).ShouldBeFalse();
-        (null != name).ShouldBeFalse();
+        (name == (GraphQLName)null).ShouldBeTrue();
+        (name == (string)null).ShouldBeTrue();
+        ((GraphQLName)null == name).ShouldBeTrue();
+        ((string)null == name).ShouldBeTrue();
+        (name != (GraphQLName)null).ShouldBeFalse();
+        (name != (string)null).ShouldBeFalse();
+        ((GraphQLName)null != name).ShouldBeFalse();
+        ((string)null != name).ShouldBeFalse();
     }
 
     [Fact]
