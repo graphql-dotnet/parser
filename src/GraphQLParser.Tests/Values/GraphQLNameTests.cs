@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GraphQLParser.AST;
 using Shouldly;
 using Xunit;
@@ -20,7 +21,41 @@ public class GraphQLNameTests
     }
 
     [Fact]
+    public void GraphQLName_GetHashCode()
+    {
+        var dictionary = new Dictionary<GraphQLName, int>
+        {
+            [new GraphQLName("abc")] = 42
+        };
+
+        dictionary.ContainsKey(new GraphQLName("abc")).ShouldBeTrue();
+        dictionary[new GraphQLName("abc")].ShouldBe(42);
+
+        dictionary.ContainsKey(new GraphQLName("def")).ShouldBeFalse();
+        dictionary.ContainsKey(new GraphQLName("")).ShouldBeFalse();
+        dictionary.ContainsKey(new GraphQLName("def")).ShouldBeFalse();
+    }
+
+    [Fact]
     public void GraphQLName_Equality()
+    {
+        var name = new GraphQLName("abc");
+        var nameNull = (GraphQLName)null;
+        name.Equals(nameNull).ShouldBeFalse();
+        name.Equals((object)nameNull).ShouldBeFalse();
+        name.Equals((object)name).ShouldBeTrue();
+
+        var nameother = new GraphQLName("def");
+        name.Equals(nameother).ShouldBeFalse();
+        name.Equals((object)nameother).ShouldBeFalse();
+
+        var nameothersamevalue = new GraphQLName("abc");
+        name.Equals(nameothersamevalue).ShouldBeTrue();
+        name.Equals((object)nameothersamevalue).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void GraphQLName_Equality_Operators()
     {
         ((GraphQLName)null == (GraphQLName)null).ShouldBeTrue();
         ((GraphQLName)null != (GraphQLName)null).ShouldBeFalse();
@@ -30,12 +65,6 @@ public class GraphQLNameTests
         (null == name).ShouldBeFalse();
         (name != null).ShouldBeTrue();
         (null != name).ShouldBeTrue();
-
-        name = new GraphQLName("");
-        (name == null).ShouldBeTrue();
-        (null == name).ShouldBeTrue();
-        (name != null).ShouldBeFalse();
-        (null != name).ShouldBeFalse();
 
         name = new GraphQLName("");
         (name == null).ShouldBeTrue();
