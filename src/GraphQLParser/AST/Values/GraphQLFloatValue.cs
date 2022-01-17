@@ -26,6 +26,10 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
     /// </summary>
     public GraphQLFloatValue(float value)
     {
+        // see https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800828568 and https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800906086
+        if (float.IsNaN(value) || float.IsInfinity(value))
+            throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be NaN or Infinity.");
+
         // print most compact form of value with up to 7 digits of precision (C# default)
         // note: G9 format (9 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
@@ -38,11 +42,15 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
     /// </summary>
     public GraphQLFloatValue(double value)
     {
+        // see https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800828568 and https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800906086
+        if (double.IsNaN(value) || double.IsInfinity(value))
+            throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be NaN or Infinity.");
+
         // print most compact form of value with up to 15 digits of precision (C# default)
         // note: G17 format (17 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
         // "3.330000000000001" which probably is not desirable.
-        Value = ValidateValue(value).ToString("G15", CultureInfo.InvariantCulture);
+        Value = value.ToString("G15", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -57,16 +65,6 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
     /// Float value represented as <see cref="ROM"/>.
     /// </summary>
     public ROM Value { get; }
-
-    private static double ValidateValue(double value)
-    {
-        // TODO: see https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800828568 and https://github.com/graphql-dotnet/graphql-dotnet/pull/2379#issuecomment-800906086
-        // if (double.IsNaN(value) || double.IsInfinity(value))
-        if (double.IsNaN(value))
-            throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be NaN."); // Value cannot be NaN or Infinity.
-
-        return value;
-    }
 }
 
 internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue

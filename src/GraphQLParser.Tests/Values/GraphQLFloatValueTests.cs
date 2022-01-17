@@ -7,11 +7,24 @@ namespace GraphQLParser.Tests;
 
 public class GraphQLFloatValueTests
 {
-    [Fact]
-    public void NanValue()
+    [Theory]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    [InlineData(double.NegativeInfinity)]
+    public void BadDoubleValue(double value)
     {
-        var ex = Should.Throw<ArgumentOutOfRangeException>(() => new GraphQLFloatValue(double.NaN));
-        ex.Message.ShouldStartWith("Value cannot be NaN.");
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() => new GraphQLFloatValue(value));
+        ex.Message.ShouldStartWith("Value cannot be NaN or Infinity.");
+    }
+
+    [Theory]
+    [InlineData(float.NaN)]
+    [InlineData(float.PositiveInfinity)]
+    [InlineData(float.NegativeInfinity)]
+    public void BadFloatValue(float value)
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() => new GraphQLFloatValue(value));
+        ex.Message.ShouldStartWith("Value cannot be NaN or Infinity.");
     }
 
     [Fact]
