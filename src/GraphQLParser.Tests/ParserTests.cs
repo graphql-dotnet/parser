@@ -806,8 +806,12 @@ scalar JSON
     public void Parse_KitchenSink_DoesNotThrowError(IgnoreOptions options)
     {
         using var document = "KitchenSink".ReadGraphQLFile().Parse(new ParserOptions { Ignore = options });
+
         document.OperationsCount().ShouldBe(5);
         document.FragmentsCount().ShouldBe(1);
+        document.FindFragmentDefinition("qwerty").ShouldBeNull();
+        document.FindFragmentDefinition("frag").ShouldNotBeNull();
+
         var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
         var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
         if (options.HasFlag(IgnoreOptions.Comments))

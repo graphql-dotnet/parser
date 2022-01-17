@@ -7,6 +7,24 @@ public class GraphQLArguments : ASTListNode<GraphQLArgument>
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Arguments;
+
+    /// <summary>
+    /// Searches arguments for the first matching agrument by its name,
+    /// or returns <see langword="null"/> if none is found.
+    /// </summary>
+    public GraphQLValue? ValueFor(ROM name)
+    {
+        if (Items != null)
+        {
+            foreach (var item in Items)
+            {
+                if (item.Name == name)
+                    return item.Value;
+            }
+        }
+
+        return null;
+    }
 }
 
 internal sealed class GraphQLArgumentsWithLocation : GraphQLArguments

@@ -133,6 +133,7 @@ namespace GraphQLParser.AST
     {
         public GraphQLArguments() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public GraphQLParser.AST.GraphQLValue? ValueFor(GraphQLParser.ROM name) { }
     }
     public class GraphQLArgumentsDefinition : GraphQLParser.AST.ASTListNode<GraphQLParser.AST.GraphQLInputValueDefinition>
     {
@@ -606,6 +607,9 @@ namespace GraphQLParser
     public static class ASTNodeExtensions
     {
         public static int AllNestedCount(this GraphQLParser.AST.ASTNode node) { }
+        public static TNode? Find<TNode>(this GraphQLParser.AST.ASTListNode<TNode> node, GraphQLParser.ROM name)
+            where TNode :  class, GraphQLParser.AST.INamedNode { }
+        public static GraphQLParser.AST.GraphQLFragmentDefinition? FindFragmentDefinition(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM name) { }
         public static int FragmentsCount(this GraphQLParser.AST.GraphQLDocument document) { }
         public static int MaxNestedDepth(this GraphQLParser.AST.ASTNode node) { }
         public static int OperationsCount(this GraphQLParser.AST.GraphQLDocument document) { }

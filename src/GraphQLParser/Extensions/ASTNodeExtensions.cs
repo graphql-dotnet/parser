@@ -35,7 +35,7 @@ public static class ASTNodeExtensions
     }
 
     /// <summary>
-    /// Gets count of operations in the specified document.
+    /// Gets count of operations in the specified GraphQL document.
     /// </summary>
     public static int OperationsCount(this GraphQLDocument document)
     {
@@ -51,7 +51,7 @@ public static class ASTNodeExtensions
     }
 
     /// <summary>
-    /// Gets count of fragments in the specified document.
+    /// Gets count of fragments in the specified GraphQL document.
     /// </summary>
     public static int FragmentsCount(this GraphQLDocument document)
     {
@@ -64,5 +64,40 @@ public static class ASTNodeExtensions
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// Searches GraphQL document for the first matching fragment definition,
+    /// or returns <see langword="null"/> if none is found.
+    /// </summary>
+    public static GraphQLFragmentDefinition? FindFragmentDefinition(this GraphQLDocument document, ROM name)
+    {
+        // DO NOT USE LINQ ON HOT PATH
+        foreach (var def in document.Definitions)
+        {
+            if (def is GraphQLFragmentDefinition frag && frag.Name == name)
+                return frag;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Searches the list for a AST node specified by name and returns first match.
+    /// </summary>
+    public static TNode? Find<TNode>(this ASTListNode<TNode> node, ROM name)
+        where TNode : class, INamedNode
+    {
+        // DO NOT USE LINQ ON HOT PATH
+        if (node.Items != null)
+        {
+            foreach (var item in node.Items)
+            {
+                if (item.Name == name)
+                    return item;
+            }
+        }
+
+        return null;
     }
 }
