@@ -1,29 +1,22 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
-/// AST node for <see cref="ASTNodeKind.ListValue"/>.
+/// AST node for <see cref="ASTNodeKind.ObjectValue"/>.
 /// </summary>
-[DebuggerDisplay("GraphQLListValue: {Value}")]
-public class GraphQLListValue : GraphQLValue
+public class GraphQLObjectValue : GraphQLValue
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.ListValue;
+    public override ASTNodeKind Kind => ASTNodeKind.ObjectValue;
 
     /// <summary>
-    /// List value represented as <see cref="ROM"/>.
+    /// Values of the object represented as a list of nested <see cref="GraphQLObjectField"/> nodes.
     /// </summary>
-    public ROM Value { get; set; }
-
-    /// <summary>
-    /// Values of the list represented as a list of nested <see cref="GraphQLValue"/> nodes.
-    /// </summary>
-    public List<GraphQLValue>? Values { get; set; }
+    public List<GraphQLObjectField>? Fields { get; set; }
 }
 
-internal sealed class GraphQLListValueWithLocation : GraphQLListValue
+internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue
 {
     private GraphQLLocation _location;
 
@@ -34,7 +27,7 @@ internal sealed class GraphQLListValueWithLocation : GraphQLListValue
     }
 }
 
-internal sealed class GraphQLListValueWithComment : GraphQLListValue
+internal sealed class GraphQLObjectValueWithComment : GraphQLObjectValue
 {
     private GraphQLComment? _comment;
 
@@ -45,7 +38,7 @@ internal sealed class GraphQLListValueWithComment : GraphQLListValue
     }
 }
 
-internal sealed class GraphQLListValueFull : GraphQLListValue
+internal sealed class GraphQLObjectValueFull : GraphQLObjectValue
 {
     private GraphQLLocation _location;
     private GraphQLComment? _comment;

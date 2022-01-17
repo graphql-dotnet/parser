@@ -1,3 +1,4 @@
+using GraphQLParser.Exceptions;
 using Shouldly;
 using Xunit;
 
@@ -6,119 +7,47 @@ namespace GraphQLParser.Tests;
 public class LexerTests
 {
     [Fact]
-    public void Lex_ATPunctuation_HasCorrectEnd()
+    public void ATPunctuation()
     {
-        var token = GetATPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_ATPunctuation_HasCorrectKind()
-    {
-        var token = GetATPunctuationTokenLexer();
+        var token = "@".Lex();
         token.Kind.ShouldBe(TokenKind.AT);
-    }
-
-    [Fact]
-    public void Lex_ATPunctuation_HasCorrectStart()
-    {
-        var token = GetATPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_ATPunctuation_HasCorrectValue()
-    {
-        var token = GetATPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("@");
     }
 
     [Fact]
-    public void Lex_BangPunctuation_HasCorrectEnd()
+    public void BangPunctuation()
     {
-        var token = GetBangPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_BangPunctuation_HasCorrectKind()
-    {
-        var token = GetBangPunctuationTokenLexer();
+        var token = "!".Lex();
         token.Kind.ShouldBe(TokenKind.BANG);
-    }
-
-    [Fact]
-    public void Lex_BangPunctuation_HasCorrectStart()
-    {
-        var token = GetBangPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_BangPunctuation_HasCorrectValue()
-    {
-        var token = GetBangPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("!");
     }
 
     [Fact]
-    public void Lex_ColonPunctuation_HasCorrectEnd()
+    public void ColonPunctuation()
     {
-        var token = GetColonPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_ColonPunctuation_HasCorrectKind()
-    {
-        var token = GetColonPunctuationTokenLexer();
+        var token = ":".Lex();
         token.Kind.ShouldBe(TokenKind.COLON);
-    }
-
-    [Fact]
-    public void Lex_ColonPunctuation_HasCorrectStart()
-    {
-        var token = GetColonPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_ColonPunctuation_HasCorrectValue()
-    {
-        var token = GetColonPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe(":");
     }
 
     [Fact]
-    public void Lex_DollarPunctuation_HasCorrectEnd()
+    public void DollarPunctuation()
     {
-        var token = GetDollarPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_DollarPunctuation_HasCorrectKind()
-    {
-        var token = GetDollarPunctuationTokenLexer();
+        var token = "$".Lex();
         token.Kind.ShouldBe(TokenKind.DOLLAR);
-    }
-
-    [Fact]
-    public void Lex_DollarPunctuation_HasCorrectStart()
-    {
-        var token = GetDollarPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_DollarPunctuation_HasCorrectValue()
-    {
-        var token = GetDollarPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("$");
     }
 
     [Fact]
-    public void Lex_EmptySource_ReturnsEOF()
+    public void EmptySource_ReturnsEOF()
     {
         var token = "".Lex();
 
@@ -126,203 +55,79 @@ public class LexerTests
     }
 
     [Fact]
-    public void Lex_EqualsPunctuation_HasCorrectEnd()
+    public void EqualsPunctuation()
     {
-        var token = GetEqualsPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_EqualsPunctuation_HasCorrectKind()
-    {
-        var token = GetEqualsPunctuationTokenLexer();
+        var token = "=".Lex();
         token.Kind.ShouldBe(TokenKind.EQUALS);
-    }
-
-    [Fact]
-    public void Lex_EqualsPunctuation_HasCorrectStart()
-    {
-        var token = GetEqualsPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_EqualsPunctuation_HasCorrectValue()
-    {
-        var token = GetEqualsPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("=");
     }
 
-    [Fact]
-    public void Lex_EscapedStringToken_HasCorrectEnd()
+    [Theory]
+    [InlineData("\"escaped \\n\\r\\b\\t\\f\"", 0, 20, "escaped \n\r\b\t\f")]
+    [InlineData($"\"abc\\tdef\"", 0, 10, "abc\tdef")]
+    public void EscapedString(string text, int start, int end, string value)
     {
-        var token = GetEscapedStringTokenLexer();
-        token.End.ShouldBe(20);
-    }
-
-    [Fact]
-    public void Lex_EscapedStringToken_HasCorrectStart()
-    {
-        var token = GetEscapedStringTokenLexer();
-        token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_EscapedStringToken_HasCorrectValue()
-    {
-        var token = GetEscapedStringTokenLexer();
-        token.Value.ShouldBe("escaped \n\r\b\t\f");
-    }
-
-    [Fact]
-    public void Lex_EscapedStringToken_HasStringKind()
-    {
-        var token = GetEscapedStringTokenLexer();
+        var token = text.Lex();
         token.Kind.ShouldBe(TokenKind.STRING);
+        token.Start.ShouldBe(start);
+        token.End.ShouldBe(end);
+        token.Value.ShouldBe(value);
     }
 
     [Fact]
-    public void Lex_LeftBracePunctuation_HasCorrectEnd()
+    public void LeftBracePunctuation()
     {
-        var token = GetLeftBracePunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_LeftBracePunctuation_HasCorrectKind()
-    {
-        var token = GetLeftBracePunctuationTokenLexer();
+        var token = "{".Lex();
         token.Kind.ShouldBe(TokenKind.BRACE_L);
-    }
-
-    [Fact]
-    public void Lex_LeftBracePunctuation_HasCorrectStart()
-    {
-        var token = GetLeftBracePunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_LeftBracePunctuation_HasCorrectValue()
-    {
-        var token = GetLeftBracePunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("{");
     }
 
     [Fact]
-    public void Lex_LeftBracketPunctuation_HasCorrectEnd()
+    public void LeftBracketPunctuation()
     {
-        var token = GetLeftBracketPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_LeftBracketPunctuation_HasCorrectKind()
-    {
-        var token = GetLeftBracketPunctuationTokenLexer();
+        var token = "[".Lex();
         token.Kind.ShouldBe(TokenKind.BRACKET_L);
-    }
-
-    [Fact]
-    public void Lex_LeftBracketPunctuation_HasCorrectStart()
-    {
-        var token = GetLeftBracketPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_LeftBracketPunctuation_HasCorrectValue()
-    {
-        var token = GetLeftBracketPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("[");
     }
 
     [Fact]
-    public void Lex_LeftParenthesisPunctuation_HasCorrectEnd()
+    public void LeftParenthesisPunctuation()
     {
-        var token = GetLeftParenthesisPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_LeftParenthesisPunctuation_HasCorrectKind()
-    {
-        var token = GetLeftParenthesisPunctuationTokenLexer();
+        var token = "(".Lex();
         token.Kind.ShouldBe(TokenKind.PAREN_L);
-    }
-
-    [Fact]
-    public void Lex_LeftParenthesisPunctuation_HasCorrectStart()
-    {
-        var token = GetLeftParenthesisPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_LeftParenthesisPunctuation_HasCorrectValue()
-    {
-        var token = GetLeftParenthesisPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("(");
     }
 
     [Fact]
-    public void Lex_MultipleDecimalsIntToken_HasCorrectEnd()
+    public void MultipleDecimalsInt()
     {
-        var token = GetMultipleDecimalsIntTokenLexer();
-        token.End.ShouldBe(3);
-    }
-
-    [Fact]
-    public void Lex_MultipleDecimalsIntToken_HasCorrectStart()
-    {
-        var token = GetMultipleDecimalsIntTokenLexer();
+        var token = "123".Lex();
+        token.Kind.ShouldBe(TokenKind.INT);
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_MultipleDecimalsIntToken_HasCorrectValue()
-    {
-        var token = GetMultipleDecimalsIntTokenLexer();
+        token.End.ShouldBe(3);
         token.Value.ShouldBe("123");
     }
 
     [Fact]
-    public void Lex_MultipleDecimalsIntToken_HasIntKind()
+    public void NameTokenWithComments()
     {
-        var token = GetMultipleDecimalsIntTokenLexer();
-        token.Kind.ShouldBe(TokenKind.INT);
-    }
-
-    [Fact]
-    public void Lex_NameTokenWithComments_HasCorrectEnd()
-    {
-        var token = GetSingleNameTokenLexerWithComments();
-        token.End.ShouldBe(10);
-    }
-
-    [Fact]
-    public void Lex_NameTokenWithComments_HasCorrectStart()
-    {
-        var token = GetSingleNameTokenLexerWithComments();
+        var token = $"\n#comment\nfoo#comment".Lex();
+        token.Kind.ShouldBe(TokenKind.COMMENT);
         token.Start.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_NameTokenWithComments_HasCorrectValue()
-    {
-        var token = GetSingleNameTokenLexerWithComments();
+        token.End.ShouldBe(10);
         token.Value.ShouldBe("comment");
     }
 
     [Fact]
-    public void Lex_NameTokenWithComments_HasNameKind()
-    {
-        var token = GetSingleNameTokenLexerWithComments();
-        token.Kind.ShouldBe(TokenKind.COMMENT);
-    }
-
-    [Fact]
-    public void Lex_NameTokenWithEscapedComment()
+    public void NameTokenWithEscapedComment()
     {
         var token = $"#abc\\tdef\nfoo".Lex();
         token.Kind.ShouldBe(TokenKind.COMMENT);
@@ -332,7 +137,7 @@ public class LexerTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Lex_NameTokenWithVeryLongComment(bool escape)
+    public void NameTokenWithVeryLongComment(bool escape)
     {
         string comment = new('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadComment
         var token = (escape ? $"#\\t{comment}\nfoo" : $"#{comment}\nfoo").Lex();
@@ -341,18 +146,10 @@ public class LexerTests
         token.Value.Span[0].ShouldBe(escape ? '\t' : 'w');
     }
 
-    [Fact]
-    public void Lex_EscapedStringToken()
-    {
-        var token = $"\"abc\\tdef\"".Lex();
-        token.Kind.ShouldBe(TokenKind.STRING);
-        token.Value.Length.ShouldBe(7);
-    }
-
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Lex_VeryLongStringToken(bool escape)
+    public void VeryLongString(bool escape)
     {
         string text = new('w', 4096 + 10); // causes IndexOutOfRangeException in LexerContext.ReadString
         var token = (escape ? $"\"\\t{text}\"" : $"\"{text}\"").Lex();
@@ -362,35 +159,17 @@ public class LexerTests
     }
 
     [Fact]
-    public void Lex_NameTokenWithWhitespaces_HasCorrectEnd()
+    public void NameTokenWithWhitespaces()
     {
-        var token = GetSingleNameTokenLexerSurroundedWithWhitespaces();
-        token.End.ShouldBe(12);
-    }
-
-    [Fact]
-    public void Lex_NameTokenWithWhitespaces_HasCorrectStart()
-    {
-        var token = GetSingleNameTokenLexerSurroundedWithWhitespaces();
+        var token = $"\n        foo\n\n    ".Lex();
+        token.Kind.ShouldBe(TokenKind.NAME);
         token.Start.ShouldBe(9);
-    }
-
-    [Fact]
-    public void Lex_NameTokenWithWhitespaces_HasCorrectValue()
-    {
-        var token = GetSingleNameTokenLexerSurroundedWithWhitespaces();
+        token.End.ShouldBe(12);
         token.Value.ShouldBe("foo");
     }
 
     [Fact]
-    public void Lex_NameTokenWithWhitespaces_HasNameKind()
-    {
-        var token = GetSingleNameTokenLexerSurroundedWithWhitespaces();
-        token.Kind.ShouldBe(TokenKind.NAME);
-    }
-
-    [Fact]
-    public void Lex_NullInput_ReturnsEOF()
+    public void NullInput_ReturnsEOF()
     {
         var token = ((string)null).Lex();
 
@@ -398,619 +177,238 @@ public class LexerTests
     }
 
     [Fact]
-    public void Lex_PipePunctuation_HasCorrectEnd()
+    public void PipePunctuation()
     {
-        var token = GetPipePunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_PipePunctuation_HasCorrectKind()
-    {
-        var token = GetPipePunctuationTokenLexer();
+        var token = "|".Lex();
         token.Kind.ShouldBe(TokenKind.PIPE);
-    }
-
-    [Fact]
-    public void Lex_PipePunctuation_HasCorrectStart()
-    {
-        var token = GetPipePunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_PipePunctuation_HasCorrectValue()
-    {
-        var token = GetPipePunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("|");
     }
 
     [Fact]
-    public void Lex_QuoteStringToken_HasCorrectEnd()
+    public void QuoteString()
     {
-        var token = GetQuoteStringTokenLexer();
-        token.End.ShouldBe(10);
-    }
-
-    [Fact]
-    public void Lex_QuoteStringToken_HasCorrectStart()
-    {
-        var token = GetQuoteStringTokenLexer();
+        var token = "\"quote \\\"\"".Lex();
+        token.Kind.ShouldBe(TokenKind.STRING);
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_QuoteStringToken_HasCorrectValue()
-    {
-        var token = GetQuoteStringTokenLexer();
+        token.End.ShouldBe(10);
         token.Value.ShouldBe("quote \"");
     }
 
     [Fact]
-    public void Lex_QuoteStringToken_HasStringKind()
+    public void RightBracePunctuation()
     {
-        var token = GetQuoteStringTokenLexer();
-        token.Kind.ShouldBe(TokenKind.STRING);
-    }
-
-    [Fact]
-    public void Lex_RightBracePunctuation_HasCorrectEnd()
-    {
-        var token = GetRightBracePunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_RightBracePunctuation_HasCorrectKind()
-    {
-        var token = GetRightBracePunctuationTokenLexer();
+        var token = "}".Lex();
         token.Kind.ShouldBe(TokenKind.BRACE_R);
-    }
-
-    [Fact]
-    public void Lex_RightBracePunctuation_HasCorrectStart()
-    {
-        var token = GetRightBracePunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_RightBracePunctuation_HasCorrectValue()
-    {
-        var token = GetRightBracePunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("}");
     }
 
     [Fact]
-    public void Lex_RightBracketPunctuation_HasCorrectEnd()
+    public void RightBracketPunctuation()
     {
-        var token = GetRightBracketPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_RightBracketPunctuation_HasCorrectKind()
-    {
-        var token = GetRightBracketPunctuationTokenLexer();
+        var token = "]".Lex();
         token.Kind.ShouldBe(TokenKind.BRACKET_R);
-    }
-
-    [Fact]
-    public void Lex_RightBracketPunctuation_HasCorrectStart()
-    {
-        var token = GetRightBracketPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_RightBracketPunctuation_HasCorrectValue()
-    {
-        var token = GetRightBracketPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("]");
     }
 
     [Fact]
-    public void Lex_RightParenthesisPunctuation_HasCorrectEnd()
+    public void RightParenthesisPunctuation()
     {
-        var token = GetRightParenthesisPunctuationTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_RightParenthesisPunctuation_HasCorrectKind()
-    {
-        var token = GetRightParenthesisPunctuationTokenLexer();
+        var token = ")".Lex();
         token.Kind.ShouldBe(TokenKind.PAREN_R);
-    }
-
-    [Fact]
-    public void Lex_RightParenthesisPunctuation_HasCorrectStart()
-    {
-        var token = GetRightParenthesisPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_RightParenthesisPunctuation_HasCorrectValue()
-    {
-        var token = GetRightParenthesisPunctuationTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe(")");
     }
 
     [Fact]
-    public void Lex_SimpleStringToken_HasCorrectEnd()
+    public void SimpleString()
     {
-        var token = GetSimpleStringTokenLexer();
-        token.End.ShouldBe(5);
-    }
-
-    [Fact]
-    public void Lex_SimpleStringToken_HasCorrectStart()
-    {
-        var token = GetSimpleStringTokenLexer();
+        var token = "\"str\"".Lex();
+        token.Kind.ShouldBe(TokenKind.STRING);
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SimpleStringToken_HasCorrectValue()
-    {
-        var token = GetSimpleStringTokenLexer();
+        token.End.ShouldBe(5);
         token.Value.ShouldBe("str");
     }
 
     [Fact]
-    public void Lex_SimpleStringToken_HasStringKind()
+    public void SingleDecimalInt()
     {
-        var token = GetSimpleStringTokenLexer();
-        token.Kind.ShouldBe(TokenKind.STRING);
-    }
-
-    [Fact]
-    public void Lex_SingleDecimalIntToken_HasCorrectEnd()
-    {
-        var token = GetSingleDecimalIntTokenLexer();
-        token.End.ShouldBe(1);
-    }
-
-    [Fact]
-    public void Lex_SingleDecimalIntToken_HasCorrectStart()
-    {
-        var token = GetSingleDecimalIntTokenLexer();
+        var token = "0".Lex();
+        token.Kind.ShouldBe(TokenKind.INT);
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleDecimalIntToken_HasCorrectValue()
-    {
-        var token = GetSingleDecimalIntTokenLexer();
+        token.End.ShouldBe(1);
         token.Value.ShouldBe("0");
     }
 
     [Fact]
-    public void Lex_SingleDecimalIntToken_HasIntKind()
+    public void SingleFloat()
     {
-        var token = GetSingleDecimalIntTokenLexer();
-        token.Kind.ShouldBe(TokenKind.INT);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatTokenLexer_HasCorrectEnd()
-    {
-        var token = GetSingleFloatTokenLexer();
-        token.End.ShouldBe(5);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleFloatTokenLexer();
+        var token = "4.123".Lex();
         token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleFloatTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleFloatTokenLexer();
+        token.End.ShouldBe(5);
         token.Value.ShouldBe("4.123");
     }
 
     [Fact]
-    public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectEnd()
+    public void SingleFloatWithZero()
     {
-        var token = GetSingleFloatWithZeroTokenLexer();
-        token.End.ShouldBe(5);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleFloatWithZeroTokenLexer();
+        var token = "12.10".Lex();
         token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleFloatWithZeroTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithZeroTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleFloatWithZeroTokenLexer();
+        token.End.ShouldBe(5);
         token.Value.ShouldBe("12.10");
     }
 
     [Fact]
-    public void Lex_SingleFloatWithExplicitlyPositiveExponentTokenLexer_HasCorrectEnd()
+    public void SingleFloatWithExplicitlyPositiveExponent()
     {
-        var token = GetSingleFloatWithExplicitlyPositiveExponentTokenLexer();
-        token.End.ShouldBe(6);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExplicitlyPositiveExponentTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleFloatWithExplicitlyPositiveExponentTokenLexer();
+        var token = "123e+4".Lex();
         token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExplicitlyPositiveExponentTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleFloatWithExplicitlyPositiveExponentTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExplicitlyPositiveExponentTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleFloatWithExplicitlyPositiveExponentTokenLexer();
+        token.End.ShouldBe(6);
         token.Value.ShouldBe("123e+4");
     }
 
     [Fact]
-    public void Lex_SingleFloatWithExponentCapitalLetterTokenLexer_HasCorrectEnd()
+    public void SingleFloatWithExponentCapitalLetter()
     {
-        var token = GetSingleFloatWithExponentCapitalLetterTokenLexer();
-        token.End.ShouldBe(5);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExponentCapitalLetterTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleFloatWithExponentCapitalLetterTokenLexer();
+        var token = "123E4".Lex();
         token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExponentCapitalLetterTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleFloatWithExponentCapitalLetterTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExponentCapitalLetterTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleFloatWithExponentCapitalLetterTokenLexer();
+        token.End.ShouldBe(5);
         token.Value.ShouldBe("123E4");
     }
 
     [Fact]
-    public void Lex_SingleFloatWithExponentTokenLexer_HasCorrectEnd()
+    public void SingleFloatWithExponent()
     {
-        var token = GetSingleFloatWithExponentTokenLexer();
-        token.End.ShouldBe(5);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExponentTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleFloatWithExponentTokenLexer();
+        var token = "123e4".Lex();
         token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExponentTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleFloatWithExponentTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithExponentTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleFloatWithExponentTokenLexer();
+        token.End.ShouldBe(5);
         token.Value.ShouldBe("123e4");
     }
 
     [Fact]
-    public void Lex_SingleFloatWithNegativeExponentTokenLexer_HasCorrectEnd()
+    public void SingleFloatWithNegativeExponent()
     {
-        var token = GetSingleFloatWithNegativeExponentTokenLexer();
-        token.End.ShouldBe(6);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithNegativeExponentTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleFloatWithNegativeExponentTokenLexer();
+        var token = "123e-4".Lex();
         token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithNegativeExponentTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleFloatWithNegativeExponentTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleFloatWithNegativeExponentTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleFloatWithNegativeExponentTokenLexer();
+        token.End.ShouldBe(6);
         token.Value.ShouldBe("123e-4");
     }
 
     [Fact]
-    public void Lex_SingleNameSurroundedByCommasTokenLexer_HasCorrectEnd()
+    public void SingleNameSurroundedByCommas()
     {
-        var token = GetSingleNameSurroundedByCommasTokenLexer();
-        token.End.ShouldBe(6);
-    }
-
-    [Fact]
-    public void Lex_SingleNameSurroundedByCommasTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleNameSurroundedByCommasTokenLexer();
+        var token = ",,,foo,,,".Lex();
         token.Kind.ShouldBe(TokenKind.NAME);
-    }
-
-    [Fact]
-    public void Lex_SingleNameSurroundedByCommasTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleNameSurroundedByCommasTokenLexer();
         token.Start.ShouldBe(3);
-    }
-
-    [Fact]
-    public void Lex_SingleNameSurroundedByCommasTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleNameSurroundedByCommasTokenLexer();
-        token.Value.ShouldBe("foo");
-    }
-
-    [Fact]
-    public void Lex_SingleNameWithBOMHeaderTokenLexer_HasCorrectEnd()
-    {
-        var token = GetSingleNameWithBOMHeaderTokenLexer();
-        token.End.ShouldBe(5);
-    }
-
-    [Fact]
-    public void Lex_SingleNameWithBOMHeaderTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleNameWithBOMHeaderTokenLexer();
-        token.Kind.ShouldBe(TokenKind.NAME);
-    }
-
-    [Fact]
-    public void Lex_SingleNameWithBOMHeaderTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleNameWithBOMHeaderTokenLexer();
-        token.Start.ShouldBe(2);
-    }
-
-    [Fact]
-    public void Lex_SingleNameWithBOMHeaderTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleNameWithBOMHeaderTokenLexer();
-        token.Value.ShouldBe("foo");
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeFloatTokenLexer_HasCorrectEnd()
-    {
-        var token = GetSingleNegativeFloatTokenLexer();
         token.End.ShouldBe(6);
+        token.Value.ShouldBe("foo");
     }
 
     [Fact]
-    public void Lex_SingleNegativeFloatTokenLexer_HasCorrectKind()
+    public void NameWithHyphen()
     {
-        var token = GetSingleNegativeFloatTokenLexer();
-        token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeFloatTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleNegativeFloatTokenLexer();
+        var token = "foo-name".Lex();
+        token.Kind.ShouldBe(TokenKind.NAME);
         token.Start.ShouldBe(0);
+        token.End.ShouldBe(3);
+        token.Value.ShouldBe("foo");
+
+        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => "foo-name".Lex(token.End));
+        ex.Description.ShouldBe("Invalid number, expected digit but got: \"n\"");
+        ex.Line.ShouldBe(1);
+        ex.Column.ShouldBe(5);
     }
 
     [Fact]
-    public void Lex_SingleNegativeFloatTokenLexer_HasCorrectValue()
+    public void SingleNameWithBOMHeader()
     {
-        var token = GetSingleNegativeFloatTokenLexer();
+        var token = "\uFEFF foo\\".Lex();
+        token.Kind.ShouldBe(TokenKind.NAME);
+        token.Start.ShouldBe(2);
+        token.End.ShouldBe(5);
+        token.Value.ShouldBe("foo");
+    }
+
+    [Fact]
+    public void SingleNegativeFloat()
+    {
+        var token = "-0.123".Lex();
+        token.Kind.ShouldBe(TokenKind.FLOAT);
+        token.Start.ShouldBe(0);
+        token.End.ShouldBe(6);
         token.Value.ShouldBe("-0.123");
     }
 
     [Fact]
-    public void Lex_SingleNegativeFloatWithExponentTokenLexer_HasCorrectEnd()
+    public void SingleNegativeFloatWithExponent()
     {
-        var token = GetSingleNegativeFloatWithExponentTokenLexer();
-        token.End.ShouldBe(6);
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeFloatWithExponentTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleNegativeFloatWithExponentTokenLexer();
+        var token = "-123e4".Lex();
         token.Kind.ShouldBe(TokenKind.FLOAT);
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeFloatWithExponentTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleNegativeFloatWithExponentTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeFloatWithExponentTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleNegativeFloatWithExponentTokenLexer();
+        token.End.ShouldBe(6);
         token.Value.ShouldBe("-123e4");
     }
 
     [Fact]
-    public void Lex_SingleNegativeIntTokenLexer_HasCorrectEnd()
+    public void SingleNegativeInt()
     {
-        var token = GetSingleNegativeIntTokenLexer();
-        token.End.ShouldBe(2);
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeIntTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleNegativeIntTokenLexer();
+        var token = "-3".Lex();
         token.Kind.ShouldBe(TokenKind.INT);
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeIntTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleNegativeIntTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleNegativeIntTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleNegativeIntTokenLexer();
+        token.End.ShouldBe(2);
         token.Value.ShouldBe("-3");
     }
 
     [Fact]
-    public void Lex_SingleStringWithSlashesTokenLexer_HasCorrectEnd()
+    public void SingleStringWithSlashes()
     {
-        var token = GetSingleStringWithSlashesTokenLexer();
-        token.End.ShouldBe(15);
-    }
-
-    [Fact]
-    public void Lex_SingleStringWithSlashesTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleStringWithSlashesTokenLexer();
+        var token = "\"slashes \\\\ \\/\"".Lex();
         token.Kind.ShouldBe(TokenKind.STRING);
-    }
-
-    [Fact]
-    public void Lex_SingleStringWithSlashesTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleStringWithSlashesTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleStringWithSlashesTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleStringWithSlashesTokenLexer();
+        token.End.ShouldBe(15);
         token.Value.ShouldBe("slashes \\ /");
     }
 
     [Fact]
-    public void Lex_SingleStringWithUnicodeCharactersTokenLexer_HasCorrectEnd()
+    public void SingleStringWithUnicodeCharacters()
     {
-        var token = GetSingleStringWithUnicodeCharactersTokenLexer();
-        token.End.ShouldBe(34);
-    }
-
-    [Fact]
-    public void Lex_SingleStringWithUnicodeCharactersTokenLexer_HasCorrectKind()
-    {
-        var token = GetSingleStringWithUnicodeCharactersTokenLexer();
+        var token = "\"unicode \\u1234\\u5678\\u90AB\\uCDEF\"".Lex();
         token.Kind.ShouldBe(TokenKind.STRING);
-    }
-
-    [Fact]
-    public void Lex_SingleStringWithUnicodeCharactersTokenLexer_HasCorrectStart()
-    {
-        var token = GetSingleStringWithUnicodeCharactersTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SingleStringWithUnicodeCharactersTokenLexer_HasCorrectValue()
-    {
-        var token = GetSingleStringWithUnicodeCharactersTokenLexer();
+        token.End.ShouldBe(34);
         token.Value.ShouldBe("unicode \u1234\u5678\u90AB\uCDEF");
     }
 
     [Fact]
-    public void Lex_SpreadPunctuation_HasCorrectEnd()
+    public void SpreadPunctuation()
     {
-        var token = GetSpreadPunctuationTokenLexer();
-        token.End.ShouldBe(3);
-    }
-
-    [Fact]
-    public void Lex_SpreadPunctuation_HasCorrectKind()
-    {
-        var token = GetSpreadPunctuationTokenLexer();
+        var token = "...".Lex();
         token.Kind.ShouldBe(TokenKind.SPREAD);
-    }
-
-    [Fact]
-    public void Lex_SpreadPunctuation_HasCorrectStart()
-    {
-        var token = GetSpreadPunctuationTokenLexer();
         token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_SpreadPunctuation_HasCorrectValue()
-    {
-        var token = GetSpreadPunctuationTokenLexer();
+        token.End.ShouldBe(3);
         token.Value.ShouldBe("...");
     }
 
     [Fact]
-    public void Lex_WhiteSpaceStringToken_HasCorrectEnd()
+    public void WhiteSpaceString()
     {
-        var token = GetWhiteSpaceStringTokenLexer();
-        token.End.ShouldBe(15);
-    }
-
-    [Fact]
-    public void Lex_WhiteSpaceStringToken_HasCorrectStart()
-    {
-        var token = GetWhiteSpaceStringTokenLexer();
-        token.Start.ShouldBe(0);
-    }
-
-    [Fact]
-    public void Lex_WhiteSpaceStringToken_HasCorrectValue()
-    {
-        var token = GetWhiteSpaceStringTokenLexer();
-        token.Value.ShouldBe(" white space ");
-    }
-
-    [Fact]
-    public void Lex_WhiteSpaceStringToken_HasStringKind()
-    {
-        var token = GetWhiteSpaceStringTokenLexer();
+        var token = "\" white space \"".Lex();
         token.Kind.ShouldBe(TokenKind.STRING);
+        token.Start.ShouldBe(0);
+        token.End.ShouldBe(15);
+        token.Value.ShouldBe(" white space ");
     }
 
     [Theory]
@@ -1044,7 +442,7 @@ public class LexerTests
     [InlineData(28, "Test \\n escaping", "Test \\n escaping")]
     [InlineData(29, "Test \\u1234 escaping", "Test \\u1234 escaping")]
     [InlineData(30, "Test \\ escaping", "Test \\ escaping")]
-    public void Lex_BlockString_Tests(int number, string input, string expected)
+    public void BlockString(int number, string input, string expected)
     {
         number.ShouldBeGreaterThan(0);
 
@@ -1054,175 +452,5 @@ public class LexerTests
         var actual = input.Lex();
         actual.Kind.ShouldBe(TokenKind.STRING);
         actual.Value.ToString().ShouldBe(expected);
-    }
-
-    private static Token GetATPunctuationTokenLexer()
-    {
-        return "@".Lex();
-    }
-
-    private static Token GetBangPunctuationTokenLexer()
-    {
-        return "!".Lex();
-    }
-
-    private static Token GetColonPunctuationTokenLexer()
-    {
-        return ":".Lex();
-    }
-
-    private static Token GetDollarPunctuationTokenLexer()
-    {
-        return "$".Lex();
-    }
-
-    private static Token GetEqualsPunctuationTokenLexer()
-    {
-        return "=".Lex();
-    }
-
-    private static Token GetEscapedStringTokenLexer()
-    {
-        return "\"escaped \\n\\r\\b\\t\\f\"".Lex();
-    }
-
-    private static Token GetLeftBracePunctuationTokenLexer()
-    {
-        return "{".Lex();
-    }
-
-    private static Token GetLeftBracketPunctuationTokenLexer()
-    {
-        return "[".Lex();
-    }
-
-    private static Token GetLeftParenthesisPunctuationTokenLexer()
-    {
-        return "(".Lex();
-    }
-
-    private static Token GetMultipleDecimalsIntTokenLexer()
-    {
-        return "123".Lex();
-    }
-
-    private static Token GetPipePunctuationTokenLexer()
-    {
-        return "|".Lex();
-    }
-
-    private static Token GetQuoteStringTokenLexer()
-    {
-        return "\"quote \\\"\"".Lex();
-    }
-
-    private static Token GetRightBracePunctuationTokenLexer()
-    {
-        return "}".Lex();
-    }
-
-    private static Token GetRightBracketPunctuationTokenLexer()
-    {
-        return "]".Lex();
-    }
-
-    private static Token GetRightParenthesisPunctuationTokenLexer()
-    {
-        return ")".Lex();
-    }
-
-    private static Token GetSimpleStringTokenLexer()
-    {
-        return "\"str\"".Lex();
-    }
-
-    private static Token GetSingleDecimalIntTokenLexer()
-    {
-        return "0".Lex();
-    }
-
-    private static Token GetSingleFloatTokenLexer()
-    {
-        return "4.123".Lex();
-    }
-
-    private static Token GetSingleFloatWithZeroTokenLexer()
-    {
-        return "12.10".Lex();
-    }
-
-    private static Token GetSingleFloatWithExplicitlyPositiveExponentTokenLexer()
-    {
-        return "123e+4".Lex();
-    }
-
-    private static Token GetSingleFloatWithExponentCapitalLetterTokenLexer()
-    {
-        return "123E4".Lex();
-    }
-
-    private static Token GetSingleFloatWithExponentTokenLexer()
-    {
-        return "123e4".Lex();
-    }
-
-    private static Token GetSingleFloatWithNegativeExponentTokenLexer()
-    {
-        return "123e-4".Lex();
-    }
-
-    private static Token GetSingleNameSurroundedByCommasTokenLexer()
-    {
-        return ",,,foo,,,".Lex();
-    }
-
-    private static Token GetSingleNameTokenLexerSurroundedWithWhitespaces()
-    {
-        return $"\n        foo\n\n    ".Lex();
-    }
-
-    private static Token GetSingleNameTokenLexerWithComments()
-    {
-        return $"\n#comment\nfoo#comment".Lex();
-    }
-
-    private static Token GetSingleNameWithBOMHeaderTokenLexer()
-    {
-        return "\uFEFF foo\\".Lex();
-    }
-
-    private static Token GetSingleNegativeFloatTokenLexer()
-    {
-        return "-0.123".Lex();
-    }
-
-    private static Token GetSingleNegativeFloatWithExponentTokenLexer()
-    {
-        return "-123e4".Lex();
-    }
-
-    private static Token GetSingleNegativeIntTokenLexer()
-    {
-        return "-3".Lex();
-    }
-
-    private static Token GetSingleStringWithSlashesTokenLexer()
-    {
-        return "\"slashes \\\\ \\/\"".Lex();
-    }
-
-    private static Token GetSingleStringWithUnicodeCharactersTokenLexer()
-    {
-        return "\"unicode \\u1234\\u5678\\u90AB\\uCDEF\"".Lex();
-    }
-
-    private static Token GetSpreadPunctuationTokenLexer()
-    {
-        return "...".Lex();
-    }
-
-    private static Token GetWhiteSpaceStringTokenLexer()
-    {
-        return "\" white space \"".Lex();
     }
 }

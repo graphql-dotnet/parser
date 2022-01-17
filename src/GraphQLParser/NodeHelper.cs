@@ -8,14 +8,14 @@ internal static class NodeHelper
     #region ASTNodes that can not have comments, only locations
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static GraphQLComment CreateGraphQLComment(IgnoreOptions options)
+    public static GraphQLComment CreateGraphQLComment(IgnoreOptions options, ROM value)
     {
         return options switch
         {
-            IgnoreOptions.All => new GraphQLComment(),
-            IgnoreOptions.Comments => new GraphQLCommentWithLocation(),
-            IgnoreOptions.Locations => new GraphQLComment(),
-            _ => new GraphQLCommentWithLocation(),
+            IgnoreOptions.All => new GraphQLComment(value),
+            IgnoreOptions.Comments => new GraphQLCommentWithLocation(value),
+            IgnoreOptions.Locations => new GraphQLComment(value),
+            _ => new GraphQLCommentWithLocation(value),
         };
     }
 
@@ -32,14 +32,14 @@ internal static class NodeHelper
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static GraphQLDescription CreateGraphQLDescription(IgnoreOptions options)
+    public static GraphQLDescription CreateGraphQLDescription(IgnoreOptions options, ROM value)
     {
         return options switch
         {
-            IgnoreOptions.All => new GraphQLDescription(),
-            IgnoreOptions.Comments => new GraphQLDescriptionWithLocation(),
-            IgnoreOptions.Locations => new GraphQLDescription(),
-            _ => new GraphQLDescriptionWithLocation(),
+            IgnoreOptions.All => new GraphQLDescription(value),
+            IgnoreOptions.Comments => new GraphQLDescriptionWithLocation(value),
+            IgnoreOptions.Locations => new GraphQLDescription(value),
+            _ => new GraphQLDescriptionWithLocation(value),
         };
     }
 
@@ -183,14 +183,14 @@ internal static class NodeHelper
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static GraphQLName CreateGraphQLName(IgnoreOptions options)
+    public static GraphQLName CreateGraphQLName(IgnoreOptions options, ROM value)
     {
         return options switch
         {
-            IgnoreOptions.All => new GraphQLName(),
-            IgnoreOptions.Comments => new GraphQLNameWithLocation(),
-            IgnoreOptions.Locations => new GraphQLNameWithComment(),
-            _ => new GraphQLNameFull(),
+            IgnoreOptions.All => new GraphQLName(value),
+            IgnoreOptions.Comments => new GraphQLNameWithLocation(value),
+            IgnoreOptions.Locations => new GraphQLNameWithComment(value),
+            _ => new GraphQLNameFull(value),
         };
     }
 
@@ -646,47 +646,47 @@ internal static class NodeHelper
         };
     }
 
-    public static GraphQLBooleanValue CreateGraphQLBooleanValue(IgnoreOptions options)
+    public static GraphQLBooleanValue CreateGraphQLBooleanValue(IgnoreOptions options, bool value)
     {
         return options switch
         {
-            IgnoreOptions.All => new GraphQLBooleanValue(),
-            IgnoreOptions.Comments => new GraphQLBooleanValueWithLocation(),
-            IgnoreOptions.Locations => new GraphQLBooleanValueWithComment(),
-            _ => new GraphQLBooleanValueFull(),
+            IgnoreOptions.All => new GraphQLBooleanValue(value),
+            IgnoreOptions.Comments => new GraphQLBooleanValueWithLocation(value),
+            IgnoreOptions.Locations => new GraphQLBooleanValueWithComment(value),
+            _ => new GraphQLBooleanValueFull(value),
         };
     }
 
-    public static GraphQLFloatValue CreateGraphQLFloatValue(IgnoreOptions options)
+    public static GraphQLFloatValue CreateGraphQLFloatValue(IgnoreOptions options, ROM value)
     {
         return options switch
         {
-            IgnoreOptions.All => new GraphQLFloatValue(),
-            IgnoreOptions.Comments => new GraphQLFloatValueWithLocation(),
-            IgnoreOptions.Locations => new GraphQLFloatValueWithComment(),
-            _ => new GraphQLFloatValueFull(),
+            IgnoreOptions.All => new GraphQLFloatValue(value),
+            IgnoreOptions.Comments => new GraphQLFloatValueWithLocation(value),
+            IgnoreOptions.Locations => new GraphQLFloatValueWithComment(value),
+            _ => new GraphQLFloatValueFull(value),
         };
     }
 
-    public static GraphQLIntValue CreateGraphQLIntValue(IgnoreOptions options)
+    public static GraphQLIntValue CreateGraphQLIntValue(IgnoreOptions options, ROM value)
     {
         return options switch
         {
-            IgnoreOptions.All => new GraphQLIntValue(),
-            IgnoreOptions.Comments => new GraphQLIntValueWithLocation(),
-            IgnoreOptions.Locations => new GraphQLIntValueWithComment(),
-            _ => new GraphQLIntValueFull(),
+            IgnoreOptions.All => new GraphQLIntValue(value),
+            IgnoreOptions.Comments => new GraphQLIntValueWithLocation(value),
+            IgnoreOptions.Locations => new GraphQLIntValueWithComment(value),
+            _ => new GraphQLIntValueFull(value),
         };
     }
 
-    public static GraphQLStringValue CreateGraphQLStringValue(IgnoreOptions options)
+    public static GraphQLStringValue CreateGraphQLStringValue(IgnoreOptions options, ROM value)
     {
         return options switch
         {
-            IgnoreOptions.All => new GraphQLStringValue(),
-            IgnoreOptions.Comments => new GraphQLStringValueWithLocation(),
-            IgnoreOptions.Locations => new GraphQLStringValueWithComment(),
-            _ => new GraphQLStringValueFull(),
+            IgnoreOptions.All => new GraphQLStringValue(value),
+            IgnoreOptions.Comments => new GraphQLStringValueWithLocation(value),
+            IgnoreOptions.Locations => new GraphQLStringValueWithComment(value),
+            _ => new GraphQLStringValueFull(value),
         };
     }
 

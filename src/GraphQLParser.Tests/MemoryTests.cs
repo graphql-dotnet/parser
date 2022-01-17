@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using GraphQLParser.AST;
 using Shouldly;
 using Xunit;
 
@@ -9,22 +8,6 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
-    [Fact]
-    public void GraphQLName_Cache_StringValue()
-    {
-        var name = new GraphQLName();
-        name.StringValue.ShouldBe(string.Empty);
-        name.ToString().ShouldBe(string.Empty);
-
-        name.Value = "abc";
-        name.StringValue.ShouldBe("abc");
-        name.ToString().ShouldBe("abc");
-
-        name.Value = "def";
-        name.StringValue.ShouldBe("def");
-        name.ToString().ShouldBe("def");
-    }
-
     [Fact(Skip = "ReadOnlyMemory<T>.GetHashCode demonstration")]
     public void GetHashCode_Issue()
     {
@@ -133,6 +116,9 @@ public class MemoryTests
         (str == rom2).ShouldBeFalse();
         (rom2 != str).ShouldBeTrue();
         (str != rom2).ShouldBeTrue();
+
+        ROM.Empty.Length.ShouldBe(0);
+        ROM.Empty.ShouldBe(string.Empty);
     }
 
     [Fact]
@@ -187,28 +173,4 @@ public class MemoryTests
         rom2.Span[0].ShouldBe('d');
         rom2.Span[1].ShouldBe('e');
     }
-
-    [Fact]
-    public void GraphQLName_Implicit_Cast()
-    {
-        var name = new GraphQLName("abc");
-        FuncROM(name).ShouldBe(name);
-
-        GraphQLName nameNull = null;
-        FuncROM(nameNull).Length.ShouldBe(0);
-    }
-
-    [Fact]
-    public void GraphQLName_Explicit_Cast()
-    {
-        var name = new GraphQLName("abc");
-        FuncString((string)name).ShouldBe("abc");
-
-        GraphQLName nameNull = null;
-        ((string)nameNull).ShouldBeNull();
-    }
-
-    private ROM FuncROM(ROM r) => r;
-
-    private string FuncString(string s) => s;
 }

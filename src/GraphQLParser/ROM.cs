@@ -12,6 +12,11 @@ public readonly struct ROM : IEquatable<ROM>
     private readonly ReadOnlyMemory<char> _memory;
 
     /// <summary>
+    /// Like <see cref="string.Empty"/> but for <see cref="ROM"/>.
+    /// </summary>
+    public static readonly ROM Empty = "";
+
+    /// <summary>
     /// Wraps an instance of <see cref="ReadOnlyMemory{T}"/>.
     /// </summary>
     public ROM(ReadOnlyMemory<char> memory)

@@ -3,21 +3,21 @@ using System.Diagnostics;
 namespace GraphQLParser.AST;
 
 /// <summary>
-/// AST node for <see cref="ASTNodeKind.FloatValue"/>.
+/// AST node for <see cref="ASTNodeKind.NullValue"/>.
 /// </summary>
-[DebuggerDisplay("GraphQLFloatValue: {Value}")]
-public class GraphQLFloatValue : GraphQLValue
+[DebuggerDisplay("GraphQLNullValue: {Value}")]
+public class GraphQLNullValue : GraphQLValue, IHasValueNode
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.FloatValue;
+    public override ASTNodeKind Kind => ASTNodeKind.NullValue;
 
     /// <summary>
-    /// Float value represented as <see cref="ROM"/>.
+    /// Null value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value { get; set; }
+    public ROM Value => "null";
 }
 
-internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue
+internal sealed class GraphQLNullValueWithLocation : GraphQLNullValue
 {
     private GraphQLLocation _location;
 
@@ -28,7 +28,7 @@ internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue
     }
 }
 
-internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
+internal sealed class GraphQLNullValueWithComment : GraphQLNullValue
 {
     private GraphQLComment? _comment;
 
@@ -39,7 +39,7 @@ internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
     }
 }
 
-internal sealed class GraphQLFloatValueFull : GraphQLFloatValue
+internal sealed class GraphQLNullValueFull : GraphQLNullValue
 {
     private GraphQLLocation _location;
     private GraphQLComment? _comment;

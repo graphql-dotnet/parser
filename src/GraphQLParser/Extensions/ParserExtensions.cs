@@ -20,7 +20,7 @@ internal static class ParserExtensions
         length += newLine.Length * (parts.Count - 1);
 
         var owner = MemoryPool<char>.Shared.Rent(length);
-        var memory = owner.Memory.Slice(0, length); // since length of the pooled array very likely may be greater 
+        var memory = owner.Memory.Slice(0, length); // since length of the pooled array very likely may be greater
         var destination = memory.Span;
 
         for (int i = 0; i < parts.Count; ++i)

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 
 namespace GraphQLParser.AST;
@@ -6,20 +7,12 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.Name"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLName: {Value}")]
-public class GraphQLName : ASTNode
+public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
 {
-    private ROM _value;
     private string? _string;
 
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Name;
-
-    /// <summary>
-    /// Creates a new instance (with empty value).
-    /// </summary>
-    public GraphQLName()
-    {
-    }
 
     /// <summary>
     /// Creates a new instance with the specified value.
@@ -29,35 +22,27 @@ public class GraphQLName : ASTNode
         Value = value;
     }
 
-
     /// <summary>
     /// Name value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-            _string = null;
-        }
-    }
+    public ROM Value { get; }
 
     /// <summary>
     /// Name value represented as <see cref="string"/>.
     /// <br/>
     /// This property allocates the string on the heap on first access
-    /// and then caches it until <see cref="Value"/> does not change.
+    /// and then caches it as long as <see cref="Value"/> does not change.
     /// </summary>
     public string StringValue
     {
         get
         {
-            if (_value.Length == 0)
-                return string.Empty;
-
             if (_string == null)
-                _string = (string)_value;
+            {
+                _string = Value.Length == 0
+                    ? string.Empty
+                    : (string)Value;
+            }
 
             return _string;
         }
@@ -75,6 +60,36 @@ public class GraphQLName : ASTNode
     /// Explicitly casts <see cref="GraphQLName"/> to <see cref="string"/>.
     /// </summary>
     public static explicit operator string(GraphQLName? node) => node == null ? null! : (string)node.Value; //TODO: not sure about nullability annotations for operators
+
+    /// <summary>
+    /// Checks two names for equality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator ==(GraphQLName? name1, GraphQLName? name2) => Equals(name1, name2);
+
+    /// <summary>
+    /// Checks two names for inequality. The check is based on the actual contents of the two chunks of memory.
+    /// </summary>
+    public static bool operator !=(GraphQLName? name1, GraphQLName? name2) => !Equals(name1, name2);
+
+    /// <inheritdoc/>
+    public bool Equals(GraphQLName other) => Equals(this, other);
+
+    private static bool Equals(GraphQLName? name1, GraphQLName? name2)
+    {
+        if (name1 is null)
+            return name2 is null || name2.Value.IsEmpty;
+
+        if (name2 is null)
+            return name1.Value.IsEmpty;
+
+        return name1.Value == name2.Value;
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object obj) => obj is GraphQLName name && Equals(name);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => Value.GetHashCode();
 }
 
 internal sealed class GraphQLNameWithLocation : GraphQLName
@@ -86,6 +101,12 @@ internal sealed class GraphQLNameWithLocation : GraphQLName
         get => _location;
         set => _location = value;
     }
+
+    /// <inheritdoc cref="GraphQLName(ROM)"/>
+    public GraphQLNameWithLocation(ROM value)
+        : base(value)
+    {
+    }
 }
 
 internal sealed class GraphQLNameWithComment : GraphQLName
@@ -96,6 +117,12 @@ internal sealed class GraphQLNameWithComment : GraphQLName
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLName(ROM)"/>
+    public GraphQLNameWithComment(ROM value)
+        : base(value)
+    {
     }
 }
 
@@ -114,5 +141,11 @@ internal sealed class GraphQLNameFull : GraphQLName
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLName(ROM)"/>
+    public GraphQLNameFull(ROM value)
+        : base(value)
+    {
     }
 }

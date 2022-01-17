@@ -137,15 +137,15 @@ public class ParserTests
         // test
         field = def.SelectionSet.Selections.Last() as GraphQLField;
         field.SelectionSet.Selections.Count.ShouldBe(1);
-        field.Comment.ShouldNotBeNull().Text.ShouldBe("comment2");
+        field.Comment.ShouldNotBeNull().Value.ShouldBe("comment2");
         // alt
         subField = field.SelectionSet.Selections.First() as GraphQLField;
         subField.Comment.ShouldBeNull();
         // extra document comments
         document.UnattachedComments.Count.ShouldBe(3);
-        document.UnattachedComments[0].Text.ShouldBe("comment1");
-        document.UnattachedComments[1].Text.ShouldBe("comment3");
-        document.UnattachedComments[2].Text.ShouldBe("comment4");
+        document.UnattachedComments[0].Value.ShouldBe("comment1");
+        document.UnattachedComments[1].Value.ShouldBe("comment3");
+        document.UnattachedComments[2].Value.ShouldBe("comment4");
     }
 
     [Theory]
@@ -188,7 +188,7 @@ public class ParserTests
         var field = def.SelectionSet.Selections.First() as GraphQLField;
         field.SelectionSet.Selections.Count.ShouldBe(1);
         var fragment = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
-        fragment.Comment.ShouldNotBeNull().Text.ShouldBe("comment");
+        fragment.Comment.ShouldNotBeNull().Value.ShouldBe("comment");
     }
 
     [Theory]
@@ -209,31 +209,31 @@ public class ParserTests
         field.Arguments.Count.ShouldBe(9);
 
         var boolValue = field.Arguments[0].Value.ShouldBeAssignableTo<GraphQLBooleanValue>();
-        boolValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for bool");
+        boolValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for bool");
 
         var nullValue = field.Arguments[1].Value.ShouldBeAssignableTo<GraphQLNullValue>();
-        nullValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for null");
+        nullValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for null");
 
         var enumValue = field.Arguments[2].Value.ShouldBeAssignableTo<GraphQLEnumValue>();
-        enumValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for enum");
+        enumValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for enum");
 
         var listValue = field.Arguments[3].Value.ShouldBeAssignableTo<GraphQLListValue>();
-        listValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for list");
+        listValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for list");
 
         var objValue = field.Arguments[4].Value.ShouldBeAssignableTo<GraphQLObjectValue>();
-        objValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for object");
+        objValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for object");
 
         var intValue = field.Arguments[5].Value.ShouldBeAssignableTo<GraphQLIntValue>();
-        intValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for int");
+        intValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for int");
 
         var floatValue = field.Arguments[6].Value.ShouldBeAssignableTo<GraphQLFloatValue>();
-        floatValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for float");
+        floatValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for float");
 
         var stringValue = field.Arguments[7].Value.ShouldBeAssignableTo<GraphQLStringValue>();
-        stringValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for string");
+        stringValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for string");
 
         var varValue = field.Arguments[8].Value.ShouldBeAssignableTo<GraphQLVariable>();
-        varValue.Comment.ShouldNotBeNull().Text.ShouldBe("comment for variable");
+        varValue.Comment.ShouldNotBeNull().Value.ShouldBe("comment for variable");
     }
 
     [Theory]
@@ -252,7 +252,7 @@ public class ParserTests
         var field = def.SelectionSet.Selections.First() as GraphQLField;
         field.SelectionSet.Selections.Count.ShouldBe(1);
         var fragment = field.SelectionSet.Selections.First() as GraphQLInlineFragment;
-        fragment.Comment.ShouldNotBeNull().Text.ShouldBe("comment");
+        fragment.Comment.ShouldNotBeNull().Value.ShouldBe("comment");
     }
 
     [Theory]
@@ -270,11 +270,11 @@ public class ParserTests
         def.SelectionSet.Selections.Count.ShouldBe(1);
         var field = def.SelectionSet.Selections.First() as GraphQLField;
         field.Arguments.Count.ShouldBe(2);
-        field.Arguments.Comment.ShouldNotBeNull().Text.ShouldBe("arguments comment");
+        field.Arguments.Comment.ShouldNotBeNull().Value.ShouldBe("arguments comment");
         var obj = field.Arguments[1].Value.ShouldBeAssignableTo<GraphQLObjectValue>();
         obj.Fields.Count.ShouldBe(1);
         obj.Fields[0].Name.Value.ShouldBe("z");
-        obj.Fields[0].Comment.Text.ShouldBe("comment on object field");
+        obj.Fields[0].Comment.Value.ShouldBe("comment on object field");
     }
 
     [Theory]
@@ -292,19 +292,19 @@ public class ParserTests
         var def1 = document.Definitions[0] as GraphQLOperationDefinition;
         var field = def1.SelectionSet.Selections[0] as GraphQLField;
         var frag = field.SelectionSet.Selections[0] as GraphQLInlineFragment;
-        frag.TypeCondition.Type.Comment.Text.ShouldBe("comment for named type from TypeCondition");
+        frag.TypeCondition.Type.Comment.Value.ShouldBe("comment for named type from TypeCondition");
 
         var def2 = document.Definitions[1] as GraphQLObjectTypeDefinition;
-        def2.Interfaces[0].Comment.Text.ShouldBe("comment for named type from ImplementsInterfaces");
+        def2.Interfaces[0].Comment.Value.ShouldBe("comment for named type from ImplementsInterfaces");
 
         var def3 = document.Definitions[2] as GraphQLSchemaDefinition;
-        def3.OperationTypes[0].Type.Comment.Text.ShouldBe("comment for named type from RootOperationTypeDefinition");
+        def3.OperationTypes[0].Type.Comment.Value.ShouldBe("comment for named type from RootOperationTypeDefinition");
 
         var def4 = document.Definitions[3] as GraphQLObjectTypeDefinition;
-        def4.Fields[0].Type.Comment.Text.ShouldBe("comment for named type from Type");
+        def4.Fields[0].Type.Comment.Value.ShouldBe("comment for named type from Type");
 
         var def5 = document.Definitions[4] as GraphQLUnionTypeDefinition;
-        def5.Types[1].Comment.Text.ShouldBe("comment for named type from UnionMemberTypes");
+        def5.Types[1].Comment.Value.ShouldBe("comment for named type from UnionMemberTypes");
     }
 
     [Theory]
@@ -319,7 +319,7 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLOperationDefinition;
-        def.SelectionSet.Comment.Text.ShouldBe("comment on selection set");
+        def.SelectionSet.Comment.Value.ShouldBe("comment on selection set");
     }
 
     [Theory]
@@ -334,7 +334,7 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLSchemaDefinition;
-        def.OperationTypes[0].Comment.Text.ShouldBe("comment for root operation type");
+        def.OperationTypes[0].Comment.Value.ShouldBe("comment for root operation type");
     }
 
     [Theory]
@@ -349,7 +349,7 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLScalarTypeDefinition;
-        def.Directives[0].Comment.Text.ShouldBe("comment for directive");
+        def.Directives[0].Comment.Value.ShouldBe("comment for directive");
     }
 
     [Theory]
@@ -364,20 +364,20 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(3);
         var def = document.Definitions[0] as GraphQLObjectTypeDefinition;
-        def.Comment.Text.ShouldBe("very good type");
-        def.Interfaces.Comment.Text.ShouldBe("comment for implemented interfaces");
-        def.Fields.Comment.Text.ShouldBe("comment for fields definition");
-        def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
-        def.Fields[0].Arguments.Comment.Text.ShouldBe("comment for arguments definition");
-        def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
-        def.Fields[2].Type.Comment.Text.ShouldBe("comment for list type");
-        (def.Fields[2].Type as GraphQLListType).Type.Comment.Text.ShouldBe("comment for item type");
+        def.Comment.Value.ShouldBe("very good type");
+        def.Interfaces.Comment.Value.ShouldBe("comment for implemented interfaces");
+        def.Fields.Comment.Value.ShouldBe("comment for fields definition");
+        def.Fields[0].Type.Comment.Value.ShouldBe("comment for named type");
+        def.Fields[0].Arguments.Comment.Value.ShouldBe("comment for arguments definition");
+        def.Fields[1].Type.Comment.Value.ShouldBe("comment for nonnull type");
+        def.Fields[2].Type.Comment.Value.ShouldBe("comment for list type");
+        (def.Fields[2].Type as GraphQLListType).Type.Comment.Value.ShouldBe("comment for item type");
 
         var ext1 = document.Definitions[1] as GraphQLObjectTypeExtension;
-        ext1.Comment.Text.ShouldBe("forgot about address!");
+        ext1.Comment.Value.ShouldBe("forgot about address!");
 
         var ext2 = document.Definitions[2] as GraphQLInterfaceTypeExtension;
-        ext2.Comment.Text.ShouldBe("forgot about vip!");
+        ext2.Comment.Value.ShouldBe("forgot about vip!");
     }
 
     [Theory]
@@ -392,15 +392,15 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLInputObjectTypeDefinition;
-        def.Comment.Text.ShouldBe("very good input");
-        def.Fields.Comment.Text.ShouldBe("comment for input fields definition");
-        def.Fields[0].Type.Comment.Text.ShouldBe("comment for named type");
-        def.Fields[1].Type.Comment.Text.ShouldBe("comment for nonnull type");
-        def.Fields[2].Type.Comment.Text.ShouldBe("comment for list type");
-        (def.Fields[2].Type as GraphQLListType).Type.Comment.Text.ShouldBe("comment for item type");
+        def.Comment.Value.ShouldBe("very good input");
+        def.Fields.Comment.Value.ShouldBe("comment for input fields definition");
+        def.Fields[0].Type.Comment.Value.ShouldBe("comment for named type");
+        def.Fields[1].Type.Comment.Value.ShouldBe("comment for nonnull type");
+        def.Fields[2].Type.Comment.Value.ShouldBe("comment for list type");
+        (def.Fields[2].Type as GraphQLListType).Type.Comment.Value.ShouldBe("comment for item type");
 
         var ext = document.Definitions[1] as GraphQLInputObjectTypeExtension;
-        ext.Comment.Text.ShouldBe("forgot about address!");
+        ext.Comment.Value.ShouldBe("forgot about address!");
     }
 
     [Theory]
@@ -418,12 +418,12 @@ public class ParserTests
         def.SelectionSet.Selections.Count.ShouldBe(1);
         var field = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
         field.Name.Value.ShouldBe("name");
-        field.Comment.Text.ShouldBe("field comment");
+        field.Comment.Value.ShouldBe("field comment");
         field.Alias.Name.Value.ShouldBe("a");
-        field.Alias.Comment.Text.ShouldBe("alias comment");
+        field.Alias.Comment.Value.ShouldBe("alias comment");
 
         document.UnattachedComments.Count.ShouldBe(1);
-        document.UnattachedComments[0].Text.ShouldBe("colon comment");
+        document.UnattachedComments[0].Value.ShouldBe("colon comment");
     }
 
     [Theory]
@@ -438,8 +438,8 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLDirectiveDefinition;
-        def.Comment.Text.ShouldBe("very good directive");
-        def.Locations.Comment.Text.ShouldBe("comment for directive locations");
+        def.Comment.Value.ShouldBe("very good directive");
+        def.Locations.Comment.Value.ShouldBe("comment for directive locations");
 
         document.UnattachedComments.ShouldBeNull();
     }
@@ -456,13 +456,13 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLEnumTypeDefinition;
-        def.Comment.Text.ShouldBe("very good colors");
-        def.Values.Comment.Text.ShouldBe("values");
-        def.Values[0].Comment.Text.ShouldBe("not green");
-        def.Values[1].Comment.Text.ShouldBe("not red");
+        def.Comment.Value.ShouldBe("very good colors");
+        def.Values.Comment.Value.ShouldBe("values");
+        def.Values[0].Comment.Value.ShouldBe("not green");
+        def.Values[1].Comment.Value.ShouldBe("not red");
 
         var ext = document.Definitions[1] as GraphQLEnumTypeExtension;
-        ext.Comment.Text.ShouldBe("forgot about orange!");
+        ext.Comment.Value.ShouldBe("forgot about orange!");
 
         document.UnattachedComments.ShouldBeNull();
     }
@@ -479,10 +479,10 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLSchemaDefinition;
-        def.Comment.Text.ShouldBe("very good schema");
+        def.Comment.Value.ShouldBe("very good schema");
 
         var ext = document.Definitions[1] as GraphQLSchemaExtension;
-        ext.Comment.Text.ShouldBe("forgot about mutation!");
+        ext.Comment.Value.ShouldBe("forgot about mutation!");
 
         document.UnattachedComments.ShouldBeNull();
     }
@@ -499,10 +499,10 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLScalarTypeDefinition;
-        def.Comment.Text.ShouldBe("very good scalar");
+        def.Comment.Value.ShouldBe("very good scalar");
 
         var ext = document.Definitions[1] as GraphQLScalarTypeExtension;
-        ext.Comment.Text.ShouldBe("forgot about external!");
+        ext.Comment.Value.ShouldBe("forgot about external!");
 
         document.UnattachedComments.ShouldBeNull();
     }
@@ -519,11 +519,11 @@ public class ParserTests
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLUnionTypeDefinition;
-        def.Comment.Text.ShouldBe("very good union");
-        def.Types.Comment.Text.ShouldBe("comment for union members");
+        def.Comment.Value.ShouldBe("very good union");
+        def.Types.Comment.Value.ShouldBe("comment for union members");
 
         var ext = document.Definitions[1] as GraphQLUnionTypeExtension;
-        ext.Comment.Text.ShouldBe("forgot about C!");
+        ext.Comment.Value.ShouldBe("forgot about C!");
 
         document.UnattachedComments.ShouldBeNull();
     }
@@ -541,10 +541,10 @@ public class ParserTests
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions.First() as GraphQLOperationDefinition;
         def.Variables.Count.ShouldBe(3);
-        def.Variables.Comment.Text.ShouldBe("very good variables definition");
-        def.Variables[0].Comment.ShouldNotBeNull().Text.ShouldBe("comment1");
+        def.Variables.Comment.Value.ShouldBe("very good variables definition");
+        def.Variables[0].Comment.ShouldNotBeNull().Value.ShouldBe("comment1");
         def.Variables.Skip(1).First().Comment.ShouldBeNull();
-        def.Variables.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("comment3");
+        def.Variables.Skip(2).First().Comment.ShouldNotBeNull().Value.ShouldBe("comment3");
     }
 
     [Theory]
@@ -566,9 +566,9 @@ query {
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions.First() as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(3);
-        def.SelectionSet.Selections.First().Comment.ShouldNotBeNull().Text.ShouldBe(" a comment below query");
+        def.SelectionSet.Selections.First().Comment.ShouldNotBeNull().Value.ShouldBe(" a comment below query");
         def.SelectionSet.Selections.Skip(1).First().Comment.ShouldBe(null);
-        def.SelectionSet.Selections.Skip(2).First().Comment.ShouldNotBeNull().Text.ShouldBe("second comment");
+        def.SelectionSet.Selections.Skip(2).First().Comment.ShouldNotBeNull().Value.ShouldBe("second comment");
     }
 
     [Theory]
@@ -600,10 +600,10 @@ scalar JSON
         document.Definitions.Count.ShouldBe(3);
         var d1 = document.Definitions.First() as GraphQLEnumTypeDefinition;
         d1.Name.Value.ShouldBe("Animal");
-        d1.Comment.ShouldNotBeNull().Text.ShouldBe(" different animals");
+        d1.Comment.ShouldNotBeNull().Value.ShouldBe(" different animals");
         d1.Values[0].Name.Value.ShouldBe("Cat");
         d1.Values[0].Comment.ShouldNotBeNull();
-        d1.Values[0].Comment.Text.ShouldBe("a cat");
+        d1.Values[0].Comment.Value.ShouldBe("a cat");
         d1.Values.Skip(2).First().Name.Value.ShouldBe("Octopus");
         d1.Values.Skip(2).First().Comment.ShouldBeNull();
 
@@ -611,7 +611,7 @@ scalar JSON
         d2.Name.Value.ShouldBe("Parameter");
         d2.Comment.ShouldBeNull();
         d2.Fields.Count.ShouldBe(1);
-        d2.Fields[0].Comment.Text.ShouldBe("any value");
+        d2.Fields[0].Comment.Value.ShouldBe("any value");
     }
 
     [Theory]
@@ -811,7 +811,7 @@ scalar JSON
         if (options.HasFlag(IgnoreOptions.Comments))
             fieldDef.Comment.ShouldBeNull();
         else
-            fieldDef.Comment.ShouldNotBeNull().Text.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
+            fieldDef.Comment.ShouldNotBeNull().Value.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
 
         // Schema description
         // https://github.com/graphql/graphql-spec/pull/466
@@ -823,7 +823,7 @@ scalar JSON
         else
         {
             comment.ShouldNotBeNull();
-            ((string)comment.Text).StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
+            ((string)comment.Value).StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
         }
     }
 
@@ -1426,54 +1426,54 @@ directive @TestDirective (
         var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
         schemaDef.Description.Value.ShouldBe("Super schema");
         if (parseComments)
-            schemaDef.Comment.Text.ShouldBe(" comment 0");
+            schemaDef.Comment.Value.ShouldBe(" comment 0");
 
         var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
         scalarDef.Name.Value.ShouldBe("JSON");
         scalarDef.Description.Value.ShouldBe("A JSON scalar");
         if (parseComments)
-            scalarDef.Comment.Text.ShouldBe(" comment 2");
+            scalarDef.Comment.Value.ShouldBe(" comment 2");
 
         var objectDef = defs.Single(x => x is GraphQLObjectTypeDefinition) as GraphQLObjectTypeDefinition;
         objectDef.Name.Value.ShouldBe("Human");
         objectDef.Description.Value.ShouldBe("Human type");
         if (parseComments)
-            objectDef.Comment.Text.ShouldBe(" comment 4");
+            objectDef.Comment.Value.ShouldBe(" comment 4");
         objectDef.Fields.Count.ShouldBe(2);
         objectDef.Fields[0].Name.Value.ShouldBe("name");
         objectDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
         objectDef.Fields[0].Description.Value.ShouldBe("Name of human");
         if (parseComments)
-            objectDef.Fields[0].Comment.Text.ShouldBe(" comment 6");
+            objectDef.Fields[0].Comment.Value.ShouldBe(" comment 6");
         objectDef.Fields[1].Name.Value.ShouldBe("test");
         objectDef.Fields[1].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         objectDef.Fields[1].Description.Value.ShouldBe("Test");
         if (parseComments)
-            objectDef.Fields[1].Comment.Text.ShouldBe(" comment 8");
+            objectDef.Fields[1].Comment.Value.ShouldBe(" comment 8");
         objectDef.Fields[1].Arguments.Count.ShouldBe(1);
         objectDef.Fields[1].Arguments[0].Name.Value.ShouldBe("arg");
         objectDef.Fields[1].Arguments[0].Description.Value.ShouldBe("desc");
         objectDef.Fields[1].Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         if (parseComments)
-            objectDef.Fields[1].Arguments[0].Comment.Text.ShouldBe(" comment 10");
+            objectDef.Fields[1].Arguments[0].Comment.Value.ShouldBe(" comment 10");
 
         var interfaceDef = defs.Single(x => x is GraphQLInterfaceTypeDefinition) as GraphQLInterfaceTypeDefinition;
         interfaceDef.Name.Value.ShouldBe("TestInterface");
         interfaceDef.Description.Value.ShouldBe("Test interface");
         if (parseComments)
-            interfaceDef.Comment.Text.ShouldBe(" comment 12");
+            interfaceDef.Comment.Value.ShouldBe(" comment 12");
         interfaceDef.Fields.Count.ShouldBe(1);
         interfaceDef.Fields[0].Name.Value.ShouldBe("name");
         interfaceDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
         interfaceDef.Fields[0].Description.Value.ShouldBe("Object name");
         if (parseComments)
-            interfaceDef.Fields[0].Comment.Text.ShouldBe(" comment 14");
+            interfaceDef.Fields[0].Comment.Value.ShouldBe(" comment 14");
 
         var unionDef = defs.Single(x => x is GraphQLUnionTypeDefinition) as GraphQLUnionTypeDefinition;
         unionDef.Name.Value.ShouldBe("TestUnion");
         unionDef.Description.Value.ShouldBe("Test union");
         if (parseComments)
-            unionDef.Comment.Text.ShouldBe(" comment 16");
+            unionDef.Comment.Value.ShouldBe(" comment 16");
         unionDef.Types.Count.ShouldBe(2);
         unionDef.Types[0].Name.Value.ShouldBe("Test1");
         unionDef.Types[1].Name.Value.ShouldBe("Test2");
@@ -1482,40 +1482,40 @@ directive @TestDirective (
         enumDef.Name.Value.ShouldBe("Colors");
         enumDef.Description.Value.ShouldBe("Example enum");
         if (parseComments)
-            enumDef.Comment.Text.ShouldBe(" comment 18");
+            enumDef.Comment.Value.ShouldBe(" comment 18");
         enumDef.Values.Count.ShouldBe(2);
         enumDef.Values[0].Name.Value.ShouldBe("RED");
         enumDef.Values[0].Description.Value.ShouldBe("Red");
         if (parseComments)
-            enumDef.Values[0].Comment.Text.ShouldBe(" comment 20");
+            enumDef.Values[0].Comment.Value.ShouldBe(" comment 20");
         enumDef.Values[1].Name.Value.ShouldBe("BLUE");
         enumDef.Values[1].Description.Value.ShouldBe("Blue");
         if (parseComments)
-            enumDef.Values[1].Comment.Text.ShouldBe(" comment 22");
+            enumDef.Values[1].Comment.Value.ShouldBe(" comment 22");
 
         var inputDef = defs.Single(x => x is GraphQLInputObjectTypeDefinition) as GraphQLInputObjectTypeDefinition;
         inputDef.Name.Value.ShouldBe("TestInputObject");
         inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
         if (parseComments)
-            inputDef.Comment.Text.ShouldBe(" comment 24");
+            inputDef.Comment.Value.ShouldBe(" comment 24");
         inputDef.Fields.Count.ShouldBe(1);
         inputDef.Fields[0].Name.Value.ShouldBe("Value");
         inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
         inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
         if (parseComments)
-            inputDef.Fields[0].Comment.Text.ShouldBe(" comment 26");
+            inputDef.Fields[0].Comment.Value.ShouldBe(" comment 26");
 
         var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
         directiveDef.Name.Value.ShouldBe("TestDirective");
         directiveDef.Description.Value.ShouldBe("Test directive");
         if (parseComments)
-            directiveDef.Comment.Text.ShouldBe(" comment 28");
+            directiveDef.Comment.Value.ShouldBe(" comment 28");
         directiveDef.Arguments.Count.ShouldBe(1);
         directiveDef.Arguments[0].Name.Value.ShouldBe("Value");
         directiveDef.Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         directiveDef.Arguments[0].Description.Value.ShouldBe("Example");
         if (parseComments)
-            directiveDef.Arguments[0].Comment.Text.ShouldBe(" comment 30");
+            directiveDef.Arguments[0].Comment.Value.ShouldBe(" comment 30");
     }
 
     [Theory]
@@ -1610,54 +1610,54 @@ directive @TestDirective (
         var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
         schemaDef.Description.Value.ShouldBe("Super schema");
         if (parseComments)
-            schemaDef.Comment.Text.ShouldBe(" comment 1");
+            schemaDef.Comment.Value.ShouldBe(" comment 1");
 
         var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
         scalarDef.Name.Value.ShouldBe("JSON");
         scalarDef.Description.Value.ShouldBe("A JSON scalar");
         if (parseComments)
-            scalarDef.Comment.Text.ShouldBe(" comment 2");
+            scalarDef.Comment.Value.ShouldBe(" comment 2");
 
         var objectDef = defs.Single(x => x is GraphQLObjectTypeDefinition) as GraphQLObjectTypeDefinition;
         objectDef.Name.Value.ShouldBe("Human");
         objectDef.Description.Value.ShouldBe("Human type");
         if (parseComments)
-            objectDef.Comment.Text.ShouldBe(" comment 4");
+            objectDef.Comment.Value.ShouldBe(" comment 4");
         objectDef.Fields.Count.ShouldBe(2);
         objectDef.Fields[0].Name.Value.ShouldBe("name");
         objectDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
         objectDef.Fields[0].Description.Value.ShouldBe("Name of human");
         if (parseComments)
-            objectDef.Fields[0].Comment.Text.ShouldBe(" comment 6");
+            objectDef.Fields[0].Comment.Value.ShouldBe(" comment 6");
         objectDef.Fields[1].Name.Value.ShouldBe("test");
         objectDef.Fields[1].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         objectDef.Fields[1].Description.Value.ShouldBe("Test");
         if (parseComments)
-            objectDef.Fields[1].Comment.Text.ShouldBe(" comment 8");
+            objectDef.Fields[1].Comment.Value.ShouldBe(" comment 8");
         objectDef.Fields[1].Arguments.Count.ShouldBe(1);
         objectDef.Fields[1].Arguments[0].Name.Value.ShouldBe("arg");
         objectDef.Fields[1].Arguments[0].Description.Value.ShouldBe("desc");
         objectDef.Fields[1].Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         if (parseComments)
-            objectDef.Fields[1].Arguments[0].Comment.Text.ShouldBe(" comment 10");
+            objectDef.Fields[1].Arguments[0].Comment.Value.ShouldBe(" comment 10");
 
         var interfaceDef = defs.Single(x => x is GraphQLInterfaceTypeDefinition) as GraphQLInterfaceTypeDefinition;
         interfaceDef.Name.Value.ShouldBe("TestInterface");
         interfaceDef.Description.Value.ShouldBe("Test interface");
         if (parseComments)
-            interfaceDef.Comment.Text.ShouldBe(" comment 12");
+            interfaceDef.Comment.Value.ShouldBe(" comment 12");
         interfaceDef.Fields.Count.ShouldBe(1);
         interfaceDef.Fields[0].Name.Value.ShouldBe("name");
         interfaceDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
         interfaceDef.Fields[0].Description.Value.ShouldBe("Object name");
         if (parseComments)
-            interfaceDef.Fields[0].Comment.Text.ShouldBe(" comment 14");
+            interfaceDef.Fields[0].Comment.Value.ShouldBe(" comment 14");
 
         var unionDef = defs.Single(x => x is GraphQLUnionTypeDefinition) as GraphQLUnionTypeDefinition;
         unionDef.Name.Value.ShouldBe("TestUnion");
         unionDef.Description.Value.ShouldBe("Test union");
         if (parseComments)
-            unionDef.Comment.Text.ShouldBe(" comment 16");
+            unionDef.Comment.Value.ShouldBe(" comment 16");
         unionDef.Types.Count.ShouldBe(2);
         unionDef.Types[0].Name.Value.ShouldBe("Test1");
         unionDef.Types[1].Name.Value.ShouldBe("Test2");
@@ -1666,40 +1666,40 @@ directive @TestDirective (
         enumDef.Name.Value.ShouldBe("Colors");
         enumDef.Description.Value.ShouldBe("Example enum");
         if (parseComments)
-            enumDef.Comment.Text.ShouldBe(" comment 18");
+            enumDef.Comment.Value.ShouldBe(" comment 18");
         enumDef.Values.Count.ShouldBe(2);
         enumDef.Values[0].Name.Value.ShouldBe("RED");
         enumDef.Values[0].Description.Value.ShouldBe("Red");
         if (parseComments)
-            enumDef.Values[0].Comment.Text.ShouldBe(" comment 20");
+            enumDef.Values[0].Comment.Value.ShouldBe(" comment 20");
         enumDef.Values[1].Name.Value.ShouldBe("BLUE");
         enumDef.Values[1].Description.Value.ShouldBe("Blue");
         if (parseComments)
-            enumDef.Values[1].Comment.Text.ShouldBe(" comment 22");
+            enumDef.Values[1].Comment.Value.ShouldBe(" comment 22");
 
         var inputDef = defs.Single(x => x is GraphQLInputObjectTypeDefinition) as GraphQLInputObjectTypeDefinition;
         inputDef.Name.Value.ShouldBe("TestInputObject");
         inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
         if (parseComments)
-            inputDef.Comment.Text.ShouldBe(" comment 24");
+            inputDef.Comment.Value.ShouldBe(" comment 24");
         inputDef.Fields.Count.ShouldBe(1);
         inputDef.Fields[0].Name.Value.ShouldBe("Value");
         inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
         inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
         if (parseComments)
-            inputDef.Fields[0].Comment.Text.ShouldBe(" comment 26");
+            inputDef.Fields[0].Comment.Value.ShouldBe(" comment 26");
 
         var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
         directiveDef.Name.Value.ShouldBe("TestDirective");
         directiveDef.Description.Value.ShouldBe("Test directive");
         if (parseComments)
-            directiveDef.Comment.Text.ShouldBe(" comment 28");
+            directiveDef.Comment.Value.ShouldBe(" comment 28");
         directiveDef.Arguments.Count.ShouldBe(1);
         directiveDef.Arguments[0].Name.Value.ShouldBe("Value");
         directiveDef.Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         directiveDef.Arguments[0].Description.Value.ShouldBe("Example");
         if (parseComments)
-            directiveDef.Arguments[0].Comment.Text.ShouldBe(" comment 30");
+            directiveDef.Arguments[0].Comment.Value.ShouldBe(" comment 30");
     }
 
     [Theory]
@@ -1794,54 +1794,54 @@ directive @TestDirective (
         var schemaDef = defs.Single(x => x is GraphQLSchemaDefinition) as GraphQLSchemaDefinition;
         schemaDef.Description.Value.ShouldBe("Super schema");
         if (parseComments)
-            schemaDef.Comment.Text.ShouldBe(" comment 0");
+            schemaDef.Comment.Value.ShouldBe(" comment 0");
 
         var scalarDef = defs.Single(x => x is GraphQLScalarTypeDefinition) as GraphQLScalarTypeDefinition;
         scalarDef.Name.Value.ShouldBe("JSON");
         scalarDef.Description.Value.ShouldBe("A JSON scalar");
         if (parseComments)
-            scalarDef.Comment.Text.ShouldBe(" comment 1");
+            scalarDef.Comment.Value.ShouldBe(" comment 1");
 
         var objectDef = defs.Single(x => x is GraphQLObjectTypeDefinition) as GraphQLObjectTypeDefinition;
         objectDef.Name.Value.ShouldBe("Human");
         objectDef.Description.Value.ShouldBe("Human type");
         if (parseComments)
-            objectDef.Comment.Text.ShouldBe(" comment 3");
+            objectDef.Comment.Value.ShouldBe(" comment 3");
         objectDef.Fields.Count.ShouldBe(2);
         objectDef.Fields[0].Name.Value.ShouldBe("name");
         objectDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
         objectDef.Fields[0].Description.Value.ShouldBe("Name of human");
         if (parseComments)
-            objectDef.Fields[0].Comment.Text.ShouldBe(" comment 5");
+            objectDef.Fields[0].Comment.Value.ShouldBe(" comment 5");
         objectDef.Fields[1].Name.Value.ShouldBe("test");
         objectDef.Fields[1].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         objectDef.Fields[1].Description.Value.ShouldBe("Test");
         if (parseComments)
-            objectDef.Fields[1].Comment.Text.ShouldBe(" comment 7");
+            objectDef.Fields[1].Comment.Value.ShouldBe(" comment 7");
         objectDef.Fields[1].Arguments.Count.ShouldBe(1);
         objectDef.Fields[1].Arguments[0].Name.Value.ShouldBe("arg");
         objectDef.Fields[1].Arguments[0].Description.Value.ShouldBe("desc");
         objectDef.Fields[1].Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         if (parseComments)
-            objectDef.Fields[1].Arguments[0].Comment.Text.ShouldBe(" comment 9");
+            objectDef.Fields[1].Arguments[0].Comment.Value.ShouldBe(" comment 9");
 
         var interfaceDef = defs.Single(x => x is GraphQLInterfaceTypeDefinition) as GraphQLInterfaceTypeDefinition;
         interfaceDef.Name.Value.ShouldBe("TestInterface");
         interfaceDef.Description.Value.ShouldBe("Test interface");
         if (parseComments)
-            interfaceDef.Comment.Text.ShouldBe(" comment 11");
+            interfaceDef.Comment.Value.ShouldBe(" comment 11");
         interfaceDef.Fields.Count.ShouldBe(1);
         interfaceDef.Fields[0].Name.Value.ShouldBe("name");
         interfaceDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("String");
         interfaceDef.Fields[0].Description.Value.ShouldBe("Object name");
         if (parseComments)
-            interfaceDef.Fields[0].Comment.Text.ShouldBe(" comment 13");
+            interfaceDef.Fields[0].Comment.Value.ShouldBe(" comment 13");
 
         var unionDef = defs.Single(x => x is GraphQLUnionTypeDefinition) as GraphQLUnionTypeDefinition;
         unionDef.Name.Value.ShouldBe("TestUnion");
         unionDef.Description.Value.ShouldBe("Test union");
         if (parseComments)
-            unionDef.Comment.Text.ShouldBe(" comment 15");
+            unionDef.Comment.Value.ShouldBe(" comment 15");
         unionDef.Types.Count.ShouldBe(2);
         unionDef.Types[0].Name.Value.ShouldBe("Test1");
         unionDef.Types[1].Name.Value.ShouldBe("Test2");
@@ -1850,39 +1850,39 @@ directive @TestDirective (
         enumDef.Name.Value.ShouldBe("Colors");
         enumDef.Description.Value.ShouldBe("Example enum");
         if (parseComments)
-            enumDef.Comment.Text.ShouldBe(" comment 17");
+            enumDef.Comment.Value.ShouldBe(" comment 17");
         enumDef.Values.Count.ShouldBe(2);
         enumDef.Values[0].Name.Value.ShouldBe("RED");
         enumDef.Values[0].Description.Value.ShouldBe("Red");
         if (parseComments)
-            enumDef.Values[0].Comment.Text.ShouldBe(" comment 19");
+            enumDef.Values[0].Comment.Value.ShouldBe(" comment 19");
         enumDef.Values[1].Name.Value.ShouldBe("BLUE");
         enumDef.Values[1].Description.Value.ShouldBe("Blue");
         if (parseComments)
-            enumDef.Values[1].Comment.Text.ShouldBe(" comment 21");
+            enumDef.Values[1].Comment.Value.ShouldBe(" comment 21");
 
         var inputDef = defs.Single(x => x is GraphQLInputObjectTypeDefinition) as GraphQLInputObjectTypeDefinition;
         inputDef.Name.Value.ShouldBe("TestInputObject");
         inputDef.Description.Value.ShouldBe("This is an example input object\nLine two of the description");
         if (parseComments)
-            inputDef.Comment.Text.ShouldBe(" comment 23");
+            inputDef.Comment.Value.ShouldBe(" comment 23");
         inputDef.Fields.Count.ShouldBe(1);
         inputDef.Fields[0].Name.Value.ShouldBe("Value");
         inputDef.Fields[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("JSON");
         inputDef.Fields[0].Description.Value.ShouldBe("The value of the input object\n  (any JSON value is accepted)");
         if (parseComments)
-            inputDef.Fields[0].Comment.Text.ShouldBe(" comment 25");
+            inputDef.Fields[0].Comment.Value.ShouldBe(" comment 25");
 
         var directiveDef = defs.Single(x => x is GraphQLDirectiveDefinition) as GraphQLDirectiveDefinition;
         directiveDef.Name.Value.ShouldBe("TestDirective");
         directiveDef.Description.Value.ShouldBe("Test directive");
         if (parseComments)
-            directiveDef.Comment.Text.ShouldBe(" comment 27");
+            directiveDef.Comment.Value.ShouldBe(" comment 27");
         directiveDef.Arguments.Count.ShouldBe(1);
         directiveDef.Arguments[0].Name.Value.ShouldBe("Value");
         directiveDef.Arguments[0].Type.ShouldBeAssignableTo<GraphQLNamedType>().Name.Value.ShouldBe("Int");
         directiveDef.Arguments[0].Description.Value.ShouldBe("Example");
         if (parseComments)
-            directiveDef.Arguments[0].Comment.Text.ShouldBe(" comment 29");
+            directiveDef.Arguments[0].Comment.Value.ShouldBe(" comment 29");
     }
 }

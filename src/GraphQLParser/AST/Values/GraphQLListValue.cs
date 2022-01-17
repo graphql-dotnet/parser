@@ -1,23 +1,24 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
-/// AST node for <see cref="ASTNodeKind.NullValue"/>.
+/// AST node for <see cref="ASTNodeKind.ListValue"/>.
 /// </summary>
-[DebuggerDisplay("GraphQLNullValue: {Value}")]
-public class GraphQLNullValue : GraphQLValue
+[DebuggerDisplay("GraphQLListValue: {Value}")]
+public class GraphQLListValue : GraphQLValue
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.NullValue;
+    public override ASTNodeKind Kind => ASTNodeKind.ListValue;
 
     /// <summary>
-    /// Null value represented as <see cref="ROM"/>.
+    /// Values of the list represented as a list of nested <see cref="GraphQLValue"/> nodes.
     /// </summary>
-    public ROM Value { get; set; }
+    public List<GraphQLValue>? Values { get; set; }
 }
 
-internal sealed class GraphQLNullValueWithLocation : GraphQLNullValue
+internal sealed class GraphQLListValueWithLocation : GraphQLListValue
 {
     private GraphQLLocation _location;
 
@@ -28,7 +29,7 @@ internal sealed class GraphQLNullValueWithLocation : GraphQLNullValue
     }
 }
 
-internal sealed class GraphQLNullValueWithComment : GraphQLNullValue
+internal sealed class GraphQLListValueWithComment : GraphQLListValue
 {
     private GraphQLComment? _comment;
 
@@ -39,7 +40,7 @@ internal sealed class GraphQLNullValueWithComment : GraphQLNullValue
     }
 }
 
-internal sealed class GraphQLNullValueFull : GraphQLNullValue
+internal sealed class GraphQLListValueFull : GraphQLListValue
 {
     private GraphQLLocation _location;
     private GraphQLComment? _comment;

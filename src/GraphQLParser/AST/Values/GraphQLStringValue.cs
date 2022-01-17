@@ -6,15 +6,31 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.StringValue"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLStringValue: {Value}")]
-public class GraphQLStringValue : GraphQLValue
+public class GraphQLStringValue : GraphQLValue, IHasValueNode
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.StringValue;
 
     /// <summary>
+    /// Creates a new instance with the specified value.
+    /// </summary>
+    public GraphQLStringValue(ROM value)
+    {
+        Value = value;
+    }
+
+    /// <summary>
+    /// Creates a new instance with the specified value.
+    /// </summary>
+    public GraphQLStringValue(string value)
+    {
+        Value = value;
+    }
+
+    /// <summary>
     /// String value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value { get; set; }
+    public ROM Value { get; }
 }
 
 internal sealed class GraphQLStringValueWithLocation : GraphQLStringValue
@@ -26,6 +42,12 @@ internal sealed class GraphQLStringValueWithLocation : GraphQLStringValue
         get => _location;
         set => _location = value;
     }
+
+    /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
+    public GraphQLStringValueWithLocation(ROM value)
+        : base(value)
+    {
+    }
 }
 
 internal sealed class GraphQLStringValueWithComment : GraphQLStringValue
@@ -36,6 +58,12 @@ internal sealed class GraphQLStringValueWithComment : GraphQLStringValue
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
+    public GraphQLStringValueWithComment(ROM value)
+        : base(value)
+    {
     }
 }
 
@@ -54,5 +82,11 @@ internal sealed class GraphQLStringValueFull : GraphQLStringValue
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
+    public GraphQLStringValueFull(ROM value)
+        : base(value)
+    {
     }
 }

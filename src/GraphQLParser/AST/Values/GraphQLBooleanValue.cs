@@ -6,15 +6,28 @@ namespace GraphQLParser.AST;
 /// AST node for <see cref="ASTNodeKind.BooleanValue"/>.
 /// </summary>
 [DebuggerDisplay("GraphQLBooleanValue: {Value}")]
-public class GraphQLBooleanValue : GraphQLValue
+public class GraphQLBooleanValue : GraphQLValue, IHasValueNode
 {
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.BooleanValue;
 
     /// <summary>
+    /// Creates a new instance with the specified value.
+    /// </summary>
+    public GraphQLBooleanValue(bool value)
+    {
+        BoolValue = value;
+    }
+
+    /// <summary>
     /// Boolean value represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value { get; set; }
+    public ROM Value => BoolValue ? "true" : "false";
+
+    /// <summary>
+    /// Boolean value represented as <see cref="bool"/>.
+    /// </summary>
+    public bool BoolValue { get; }
 }
 
 internal sealed class GraphQLBooleanValueWithLocation : GraphQLBooleanValue
@@ -26,6 +39,12 @@ internal sealed class GraphQLBooleanValueWithLocation : GraphQLBooleanValue
         get => _location;
         set => _location = value;
     }
+
+    /// <inheritdoc cref="GraphQLBooleanValue(bool)"/>
+    public GraphQLBooleanValueWithLocation(bool value)
+        : base(value)
+    {
+    }
 }
 
 internal sealed class GraphQLBooleanValueWithComment : GraphQLBooleanValue
@@ -36,6 +55,12 @@ internal sealed class GraphQLBooleanValueWithComment : GraphQLBooleanValue
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLBooleanValue(bool)"/>
+    public GraphQLBooleanValueWithComment(bool value)
+        : base(value)
+    {
     }
 }
 
@@ -54,5 +79,11 @@ internal sealed class GraphQLBooleanValueFull : GraphQLBooleanValue
     {
         get => _comment;
         set => _comment = value;
+    }
+
+    /// <inheritdoc cref="GraphQLBooleanValue(bool)"/>
+    public GraphQLBooleanValueFull(bool value)
+        : base(value)
+    {
     }
 }
