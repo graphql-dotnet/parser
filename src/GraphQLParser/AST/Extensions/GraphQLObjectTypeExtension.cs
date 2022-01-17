@@ -8,11 +8,13 @@ public class GraphQLObjectTypeExtension : GraphQLTypeExtension, IHasDirectivesNo
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeExtension;
 
+    /// <inheritdoc/>
     public GraphQLImplementsInterfaces? Interfaces { get; set; }
 
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
 
+    /// <inheritdoc/>
     public GraphQLFieldsDefinition? Fields { get; set; }
 }
 

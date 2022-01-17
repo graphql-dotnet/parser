@@ -11,6 +11,9 @@ public class GraphQLInputObjectTypeExtension : GraphQLTypeExtension, IHasDirecti
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
 
+    /// <summary>
+    /// Nested <see cref="GraphQLInputFieldsDefinition"/> AST node with input fields definition of this AST node.
+    /// </summary>
     public GraphQLInputFieldsDefinition? Fields { get; set; }
 }
 
