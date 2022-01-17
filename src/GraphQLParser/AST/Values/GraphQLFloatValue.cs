@@ -25,11 +25,11 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
     /// </summary>
     public GraphQLFloatValue(float value)
     {
-        // print most compact form of value with up to 15 digits of precision (C# default)
-        // note: G17 format (17 digits of precision) is necessary to prevent losing any
+        // print most compact form of value with up to 7 digits of precision (C# default)
+        // note: G9 format (9 digits of precision) is necessary to prevent losing any
         // information during roundtrip to string. However, "3.33" prints something like
-        // "3.330000000000001" which probably is not desirable.
-        Value = ValidateValue(value).ToString("G15", CultureInfo.InvariantCulture);
+        // "3.33000001" which probably is not desirable.
+        Value = ValidateValue(value).ToString("R", CultureInfo.InvariantCulture);
     }
 
     /// <summary>
