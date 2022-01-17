@@ -80,7 +80,7 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
             return name2 is null || name2.Value.IsEmpty;
 
         if (name2 is null)
-            return name1 is null || name1.Value.IsEmpty;
+            return name1.Value.IsEmpty;
 
         return name1.Value == name2.Value;
     }

@@ -57,6 +57,11 @@ public class GraphQLNameTests
     [Fact]
     public void GraphQLName_Equality_Operators()
     {
+        GraphQLName empty = new("");
+
+        ((GraphQLName)empty == (GraphQLName)null).ShouldBeTrue();
+        ((GraphQLName)null != (GraphQLName)empty).ShouldBeFalse();
+
         ((GraphQLName)null == (GraphQLName)null).ShouldBeTrue();
         ((GraphQLName)null != (GraphQLName)null).ShouldBeFalse();
 
@@ -65,6 +70,11 @@ public class GraphQLNameTests
         (null == name).ShouldBeFalse();
         (name != null).ShouldBeTrue();
         (null != name).ShouldBeTrue();
+
+        (name == empty).ShouldBeFalse();
+        (empty == name).ShouldBeFalse();
+        (name != empty).ShouldBeTrue();
+        (empty != name).ShouldBeTrue();
 
         name = new GraphQLName("");
         (name == null).ShouldBeTrue();
