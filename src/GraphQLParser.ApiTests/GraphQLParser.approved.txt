@@ -142,6 +142,7 @@ namespace GraphQLParser.AST
     public class GraphQLBooleanValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
     {
         public GraphQLBooleanValue(bool value) { }
+        public bool BoolValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; }
     }

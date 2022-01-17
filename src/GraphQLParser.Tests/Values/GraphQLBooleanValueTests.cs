@@ -12,6 +12,7 @@ public class GraphQLBooleanValueTests
         var value = new GraphQLBooleanValue(false);
         value.Value.Length.ShouldBe(5);
         value.Value.ShouldBe("false");
+        value.BoolValue.ShouldBeFalse();
     }
 
     [Fact]
@@ -20,5 +21,6 @@ public class GraphQLBooleanValueTests
         var value = new GraphQLBooleanValue(true);
         value.Value.Length.ShouldBe(4);
         value.Value.ShouldBe("true");
+        value.BoolValue.ShouldBeTrue();
     }
 }
