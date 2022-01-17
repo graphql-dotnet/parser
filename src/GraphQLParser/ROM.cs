@@ -75,7 +75,7 @@ public readonly struct ROM : IEquatable<ROM>
 
         //    return false;
         //}
-        return _memory.Span.SequenceEqual(other._memory.Span); //TODO: check Memory.Equals(memory) for net6
+        return _memory.Span.SequenceEqual(other._memory.Span);
     }
 
     /// <summary>
