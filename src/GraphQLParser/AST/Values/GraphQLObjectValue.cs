@@ -14,6 +14,25 @@ public class GraphQLObjectValue : GraphQLValue
     /// Values of the object represented as a list of nested <see cref="GraphQLObjectField"/> nodes.
     /// </summary>
     public List<GraphQLObjectField>? Fields { get; set; }
+
+    /// <summary>
+    /// Returns the first matching field node contained within this object value
+    /// node that matches the specified name, or <see langword="null"/> otherwise.
+    /// </summary>
+    public GraphQLObjectField? Field(ROM name)
+    {
+        // DO NOT USE LINQ ON HOT PATH
+        if (Fields != null)
+        {
+            foreach (var field in Fields)
+            {
+                if (field.Name.Value == name)
+                    return field;
+            }
+        }
+
+        return null;
+    }
 }
 
 internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue

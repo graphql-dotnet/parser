@@ -11,6 +11,9 @@ public class GraphQLUnionTypeExtension : GraphQLTypeExtension, IHasDirectivesNod
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
 
+    /// <summary>
+    /// Nested <see cref="GraphQLUnionMemberTypes"/> AST node with types contained in this union AST node.
+    /// </summary>
     public GraphQLUnionMemberTypes? Types { get; set; }
 }
 

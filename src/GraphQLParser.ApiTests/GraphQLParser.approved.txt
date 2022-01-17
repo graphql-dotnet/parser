@@ -428,6 +428,7 @@ namespace GraphQLParser.AST
         public GraphQLObjectValue() { }
         public System.Collections.Generic.List<GraphQLParser.AST.GraphQLObjectField>? Fields { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public GraphQLParser.AST.GraphQLObjectField? Field(GraphQLParser.ROM name) { }
     }
     public class GraphQLOperationDefinition : GraphQLParser.AST.GraphQLExecutableDefinition, GraphQLParser.AST.INamedNode
     {
@@ -601,7 +602,9 @@ namespace GraphQLParser
     public static class ASTNodeExtensions
     {
         public static int AllNestedCount(this GraphQLParser.AST.ASTNode node) { }
+        public static int FragmentsCount(this GraphQLParser.AST.GraphQLDocument document) { }
         public static int MaxNestedDepth(this GraphQLParser.AST.ASTNode node) { }
+        public static int OperationsCount(this GraphQLParser.AST.GraphQLDocument document) { }
     }
     [System.Flags]
     public enum IgnoreOptions

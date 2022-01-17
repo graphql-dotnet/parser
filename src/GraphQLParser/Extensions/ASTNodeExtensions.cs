@@ -33,4 +33,36 @@ public static class ASTNodeExtensions
         visitor.Visit(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
         return context.MaxDepth;
     }
+
+    /// <summary>
+    /// Gets count of operations in the specified document.
+    /// </summary>
+    public static int OperationsCount(this GraphQLDocument document)
+    {
+        int count = 0;
+
+        foreach (var def in document.Definitions)
+        {
+            if (def is GraphQLOperationDefinition)
+                ++count;
+        }
+
+        return count;
+    }
+
+    /// <summary>
+    /// Gets count of fragments in the specified document.
+    /// </summary>
+    public static int FragmentsCount(this GraphQLDocument document)
+    {
+        int count = 0;
+
+        foreach (var def in document.Definitions)
+        {
+            if (def is GraphQLFragmentDefinition)
+                ++count;
+        }
+
+        return count;
+    }
 }

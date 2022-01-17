@@ -14,6 +14,7 @@ public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectives
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
 
+    /// <inheritdoc/>
     public GraphQLFieldsDefinition? Fields { get; set; }
 }
 

@@ -11,6 +11,9 @@ public class GraphQLObjectField : ASTNode, INamedNode
     /// <inheritdoc/>
     public GraphQLName Name { get; set; } = null!;
 
+    /// <summary>
+    /// Value of the field represented as a nested AST node.
+    /// </summary>
     public GraphQLValue Value { get; set; } = null!;
 }
 
