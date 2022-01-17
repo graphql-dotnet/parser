@@ -17,5 +17,5 @@ public interface IHasValueNode
     /// <summary>
     /// Value of AST node represented as <see cref="ROM"/>.
     /// </summary>
-    public ROM Value { get; set; }
+    ROM Value { get; set; }
 }
