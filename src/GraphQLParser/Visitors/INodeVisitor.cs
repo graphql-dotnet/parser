@@ -81,6 +81,11 @@ public interface INodeVisitor<TContext>
     ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context);
 
     /// <summary>
+    /// Visits <see cref="GraphQLFragmentName"/> node.
+    /// </summary>
+    ValueTask VisitFragmentName(GraphQLFragmentName fragmentName, TContext context);
+
+    /// <summary>
     /// Visits <see cref="GraphQLIntValue"/> node.
     /// </summary>
     ValueTask VisitIntValue(GraphQLIntValue intValue, TContext context);

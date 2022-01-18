@@ -1,23 +1,18 @@
 namespace GraphQLParser.AST;
 
 /// <summary>
-/// AST node for <see cref="ASTNodeKind.FragmentSpread"/>.
+/// AST node for <see cref="ASTNodeKind.FragmentName"/>.
 /// </summary>
-public class GraphQLFragmentSpread : ASTNode, ISelectionNode, IHasDirectivesNode
+public class GraphQLFragmentName : ASTNode, INamedNode
 {
     /// <inheritdoc/>
-    public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
-
-    /// <summary>
-    /// Fragment name represented as a nested AST node.
-    /// </summary>
-    public GraphQLFragmentName FragmentName { get; set; } = null!;
+    public override ASTNodeKind Kind => ASTNodeKind.FragmentName;
 
     /// <inheritdoc/>
-    public GraphQLDirectives? Directives { get; set; }
+    public GraphQLName Name { get; set; } = null!;
 }
 
-internal sealed class GraphQLFragmentSpreadWithLocation : GraphQLFragmentSpread
+internal sealed class GraphQLFragmentNameWithLocation : GraphQLFragmentName
 {
     private GraphQLLocation _location;
 
@@ -28,7 +23,7 @@ internal sealed class GraphQLFragmentSpreadWithLocation : GraphQLFragmentSpread
     }
 }
 
-internal sealed class GraphQLFragmentSpreadWithComment : GraphQLFragmentSpread
+internal sealed class GraphQLFragmentNameWithComment : GraphQLFragmentName
 {
     private GraphQLComment? _comment;
 
@@ -39,7 +34,7 @@ internal sealed class GraphQLFragmentSpreadWithComment : GraphQLFragmentSpread
     }
 }
 
-internal sealed class GraphQLFragmentSpreadFull : GraphQLFragmentSpread
+internal sealed class GraphQLFragmentNameFull : GraphQLFragmentName
 {
     private GraphQLLocation _location;
     private GraphQLComment? _comment;

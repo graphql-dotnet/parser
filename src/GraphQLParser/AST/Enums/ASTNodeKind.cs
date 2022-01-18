@@ -504,4 +504,13 @@ public enum ASTNodeKind
     /// This node represents a list of <see cref="NamedType"/>.
     /// </summary>
     UnionMemberTypes,
+
+    /// <summary>
+    /// Fragments are the primary unit of composition in GraphQL.
+    /// Fragments allow for the reuse of common repeated selections of fields,
+    /// reducing duplicated text in the document.
+    /// <br/>
+    /// <see href="http://spec.graphql.org/October2021/#FragmentName"/>
+    /// </summary>
+    FragmentName,
 }

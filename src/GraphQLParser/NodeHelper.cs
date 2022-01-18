@@ -690,5 +690,16 @@ internal static class NodeHelper
         };
     }
 
+    public static GraphQLFragmentName CreateGraphQLFragmentName(IgnoreOptions options)
+    {
+        return options switch
+        {
+            IgnoreOptions.All => new GraphQLFragmentName(),
+            IgnoreOptions.Comments => new GraphQLFragmentNameWithLocation(),
+            IgnoreOptions.Locations => new GraphQLFragmentNameWithComment(),
+            _ => new GraphQLFragmentNameFull(),
+        };
+    }
+
     #endregion
 }

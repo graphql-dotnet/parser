@@ -121,11 +121,18 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
         await Visit(field.SelectionSet, context).ConfigureAwait(false);
     }
 
+    /// <inheritdoc />
+    public virtual async ValueTask VisitFragmentName(GraphQLFragmentName fragmentName, TContext context)
+    {
+        await Visit(fragmentName.Comment, context).ConfigureAwait(false);
+        await Visit(fragmentName.Name, context).ConfigureAwait(false);
+    }
+
     /// <inheritdoc/>
     public virtual async ValueTask VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context)
     {
         await Visit(fragmentSpread.Comment, context).ConfigureAwait(false);
-        await Visit(fragmentSpread.Name, context).ConfigureAwait(false);
+        await Visit(fragmentSpread.FragmentName, context).ConfigureAwait(false);
         await Visit(fragmentSpread.Directives, context).ConfigureAwait(false);
     }
 
@@ -156,7 +163,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
     public virtual async ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
     {
         await Visit(fragmentDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(fragmentDefinition.Name, context).ConfigureAwait(false);
+        await Visit(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
         await Visit(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
         await Visit(fragmentDefinition.Directives, context).ConfigureAwait(false);
         await Visit(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
@@ -500,6 +507,7 @@ public class DefaultNodeVisitor<TContext> : INodeVisitor<TContext>
                 GraphQLFragmentDefinition fragmentDefinition => VisitFragmentDefinition(fragmentDefinition, context), // inherits from GraphQLInlineFragment so should be above
                 GraphQLFragmentSpread fragmentSpread => VisitFragmentSpread(fragmentSpread, context),
                 GraphQLInlineFragment inlineFragment => VisitInlineFragment(inlineFragment, context),
+                GraphQLFragmentName fragmentName => VisitFragmentName(fragmentName, context),
                 GraphQLTypeCondition typeCondition => VisitTypeCondition(typeCondition, context),
                 GraphQLInputObjectTypeDefinition inputObjectTypeDefinition => VisitInputObjectTypeDefinition(inputObjectTypeDefinition, context),
                 GraphQLInputValueDefinition inputValueDefinition => VisitInputValueDefinition(inputValueDefinition, context),

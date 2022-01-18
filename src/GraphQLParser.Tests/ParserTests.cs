@@ -811,6 +811,9 @@ scalar JSON
         document.FragmentsCount().ShouldBe(1);
         document.FindFragmentDefinition("qwerty").ShouldBeNull();
         document.FindFragmentDefinition("frag").ShouldNotBeNull();
+        document.OperationWithName("qwerty").ShouldBeNull();
+        document.OperationWithName("updateStory").ShouldNotBeNull().Name.Value.ShouldBe("updateStory");
+        document.OperationWithName("").ShouldNotBeNull().Name.Value.ShouldBe("queryName");
 
         var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
         var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
