@@ -914,6 +914,7 @@ namespace GraphQLParser.Visitors
     public class SDLWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
         where TContext : GraphQLParser.Visitors.IWriteContext
     {
+        public SDLWriter() { }
         public SDLWriter(GraphQLParser.Visitors.SDLWriterOptions options) { }
         public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }

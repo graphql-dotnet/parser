@@ -15,6 +15,14 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     where TContext : IWriteContext
 {
     /// <summary>
+    /// Creates visitor with default options.
+    /// </summary>
+    public SDLWriter()
+        : this(new SDLWriterOptions())
+    {
+    }
+
+    /// <summary>
     /// Creates visitor with the specified options.
     /// </summary>
     /// <param name="options">Visitor options.</param>

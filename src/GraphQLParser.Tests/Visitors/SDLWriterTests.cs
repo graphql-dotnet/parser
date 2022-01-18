@@ -544,7 +544,7 @@ extend union Unity = C
             : "\"" + expected + "\"";
 
         var context = new TestContext();
-        var writer = new SDLWriter<TestContext>(new SDLWriterOptions());
+        var writer = new SDLWriter<TestContext>();
 
         using (var document = (input + " scalar a").Parse())
         {
@@ -577,7 +577,7 @@ extend union Unity = C
 }}
 ";
         var context = new TestContext();
-        var writer = new SDLWriter<TestContext>(new SDLWriterOptions());
+        var writer = new SDLWriter<TestContext>();
 
         using (var document = query.Parse())
         {

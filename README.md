@@ -103,6 +103,8 @@ public class Context : IWriteContext
     public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
 
     public CancellationToken CancellationToken { get; set; }
+
+    public int IndentLevel { get; set; }
 }
 
 public static void Parse(string text)
