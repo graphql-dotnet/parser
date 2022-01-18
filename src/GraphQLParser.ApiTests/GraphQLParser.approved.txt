@@ -895,6 +895,7 @@ namespace GraphQLParser.Visitors
     }
     public interface IWriteContext : GraphQLParser.Visitors.INodeVisitorContext
     {
+        int IndentLevel { get; set; }
         System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
         System.IO.TextWriter Writer { get; }
     }
@@ -904,10 +905,18 @@ namespace GraphQLParser.Visitors
         public MaxDepthVisitor() { }
         public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
     }
+    public class SDLWriterOptions
+    {
+        public SDLWriterOptions() { }
+        public bool EachDirectiveLocationOnNewLine { get; set; }
+        public bool EachUnionMemberOnNewLine { get; set; }
+        public bool WriteComments { get; set; }
+    }
     public class SDLWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
         where TContext : GraphQLParser.Visitors.IWriteContext
     {
         public SDLWriter() { }
+        public SDLWriter(GraphQLParser.Visitors.SDLWriterOptions options) { }
         public override System.Threading.Tasks.ValueTask Visit(GraphQLParser.AST.ASTNode? node, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitAlias(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitArgument(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }

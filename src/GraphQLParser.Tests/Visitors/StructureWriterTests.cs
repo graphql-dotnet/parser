@@ -17,6 +17,8 @@ public class StructureWriterTests
         public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
 
         public CancellationToken CancellationToken { get; set; }
+
+        public int IndentLevel { get; set; }
     }
 
     private static readonly StructureWriter<TestContext> _structWriter1 = new(new StructureWriterOptions { WriteNames = true });

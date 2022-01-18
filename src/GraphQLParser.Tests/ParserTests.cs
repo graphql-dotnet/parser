@@ -422,10 +422,11 @@ public class ParserTests
         var def = document.Definitions[0] as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(1);
         var field = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLField>();
-        field.Name.Value.ShouldBe("name");
-        field.Comment.Value.ShouldBe("field comment");
+        field.Comment.Value.ShouldBe("field comment! not alias!");
         field.Alias.Name.Value.ShouldBe("a");
-        field.Alias.Comment.Value.ShouldBe("alias comment");
+        field.Alias.Comment.ShouldBeNull();
+        field.Name.Value.ShouldBe("name");
+        field.Name.Comment.Value.ShouldBe("field name (GraphQLName) comment");
 
         document.UnattachedComments.Count.ShouldBe(1);
         document.UnattachedComments[0].Value.ShouldBe("colon comment");

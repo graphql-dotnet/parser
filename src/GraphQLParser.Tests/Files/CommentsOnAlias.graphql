@@ -1,9 +1,9 @@
 query q
 {
-#alias comment
+#field comment! not alias!
   a
 #colon comment
   :
-#field comment
+#field name (GraphQLName) comment
   name
 }
