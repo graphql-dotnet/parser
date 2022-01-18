@@ -35,6 +35,33 @@ public static class ASTNodeExtensions
     }
 
     /// <summary>
+    /// Searches GraphQL document for the first matching operation with the
+    /// specified name, or returns the first operation if name not specified.
+    /// Returns <see langword="null"/> if none is found.
+    /// </summary>
+    public static GraphQLOperationDefinition? OperationWithName(this GraphQLDocument document, ROM operationName)
+    {
+        if (operationName.IsEmpty)
+        {
+            foreach (var def in document.Definitions)
+            {
+                if (def is GraphQLOperationDefinition op)
+                    return op;
+            }
+        }
+        else
+        {
+            foreach (var def in document.Definitions)
+            {
+                if (def is GraphQLOperationDefinition op && op.Name == operationName)
+                    return op;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Gets count of operations in the specified GraphQL document.
     /// </summary>
     public static int OperationsCount(this GraphQLDocument document)
@@ -75,7 +102,7 @@ public static class ASTNodeExtensions
         // DO NOT USE LINQ ON HOT PATH
         foreach (var def in document.Definitions)
         {
-            if (def is GraphQLFragmentDefinition frag && frag.Name == name)
+            if (def is GraphQLFragmentDefinition frag && frag.FragmentName.Name == name)
                 return frag;
         }
 

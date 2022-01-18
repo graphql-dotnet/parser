@@ -1,10 +1,14 @@
 query _ {
     person {
         #comment
-        ...human
+        ...
+        #comment on fragment name 1
+        human
     }
 }
 
-fragment human on person {
+fragment
+#comment on fragment name 2
+human on person {
         name
 }

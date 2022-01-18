@@ -74,6 +74,7 @@ namespace GraphQLParser.AST
         ImplementsInterfaces = 54,
         DirectiveLocations = 55,
         UnionMemberTypes = 56,
+        FragmentName = 57,
     }
     public enum DirectiveLocation
     {
@@ -264,19 +265,25 @@ namespace GraphQLParser.AST
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; }
     }
-    public class GraphQLFragmentDefinition : GraphQLParser.AST.GraphQLExecutableDefinition, GraphQLParser.AST.INamedNode
+    public class GraphQLFragmentDefinition : GraphQLParser.AST.GraphQLExecutableDefinition
     {
         public GraphQLFragmentDefinition() { }
+        public GraphQLParser.AST.GraphQLFragmentName FragmentName { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public GraphQLParser.AST.GraphQLName Name { get; set; }
         public GraphQLParser.AST.GraphQLTypeCondition TypeCondition { get; set; }
     }
-    public class GraphQLFragmentSpread : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.INamedNode, GraphQLParser.AST.ISelectionNode
+    public class GraphQLFragmentName : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
+    {
+        public GraphQLFragmentName() { }
+        public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public GraphQLParser.AST.GraphQLName Name { get; set; }
+    }
+    public class GraphQLFragmentSpread : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.ISelectionNode
     {
         public GraphQLFragmentSpread() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
+        public GraphQLParser.AST.GraphQLFragmentName FragmentName { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public GraphQLParser.AST.GraphQLName Name { get; set; }
     }
     public class GraphQLImplementsInterfaces : GraphQLParser.AST.ASTListNode<GraphQLParser.AST.GraphQLNamedType>
     {
@@ -612,6 +619,7 @@ namespace GraphQLParser
         public static GraphQLParser.AST.GraphQLFragmentDefinition? FindFragmentDefinition(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM name) { }
         public static int FragmentsCount(this GraphQLParser.AST.GraphQLDocument document) { }
         public static int MaxNestedDepth(this GraphQLParser.AST.ASTNode node) { }
+        public static GraphQLParser.AST.GraphQLOperationDefinition? OperationWithName(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM operationName) { }
         public static int OperationsCount(this GraphQLParser.AST.GraphQLDocument document) { }
     }
     [System.Flags]
@@ -772,6 +780,7 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask VisitFieldsDefinition(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitFloatValue(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitFragmentDefinition(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context) { }
+        public virtual System.Threading.Tasks.ValueTask VisitFragmentName(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitFragmentSpread(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitImplementsInterfaces(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitInlineFragment(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context) { }
@@ -847,6 +856,7 @@ namespace GraphQLParser.Visitors
         System.Threading.Tasks.ValueTask VisitFieldsDefinition(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context);
         System.Threading.Tasks.ValueTask VisitFloatValue(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context);
         System.Threading.Tasks.ValueTask VisitFragmentDefinition(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context);
+        System.Threading.Tasks.ValueTask VisitFragmentName(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context);
         System.Threading.Tasks.ValueTask VisitFragmentSpread(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context);
         System.Threading.Tasks.ValueTask VisitImplementsInterfaces(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context);
         System.Threading.Tasks.ValueTask VisitInlineFragment(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context);
@@ -921,6 +931,7 @@ namespace GraphQLParser.Visitors
         public override System.Threading.Tasks.ValueTask VisitFieldsDefinition(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitFloatValue(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitFragmentDefinition(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context) { }
+        public override System.Threading.Tasks.ValueTask VisitFragmentName(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitFragmentSpread(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitImplementsInterfaces(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context) { }
         public override System.Threading.Tasks.ValueTask VisitInlineFragment(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context) { }

@@ -187,8 +187,13 @@ public class ParserTests
         def.SelectionSet.Selections.Count.ShouldBe(1);
         var field = def.SelectionSet.Selections.First() as GraphQLField;
         field.SelectionSet.Selections.Count.ShouldBe(1);
-        var fragment = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
-        fragment.Comment.ShouldNotBeNull().Value.ShouldBe("comment");
+        var spread = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
+        spread.Comment.ShouldNotBeNull().Value.ShouldBe("comment");
+        spread.FragmentName.Comment.Value.ShouldBe("comment on fragment name 1");
+
+        var frag = document.Definitions.Last() as GraphQLFragmentDefinition;
+        frag.Comment.ShouldBeNull();
+        frag.FragmentName.Comment.Value.ShouldBe("comment on fragment name 2");
     }
 
     [Theory]
@@ -455,6 +460,8 @@ public class ParserTests
 
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
+        document.OperationWithName("qwerty").ShouldBeNull();
+        document.OperationWithName("").ShouldBeNull();
         var def = document.Definitions[0] as GraphQLEnumTypeDefinition;
         def.Comment.Value.ShouldBe("very good colors");
         def.Values.Comment.Value.ShouldBe("values");
@@ -811,6 +818,9 @@ scalar JSON
         document.FragmentsCount().ShouldBe(1);
         document.FindFragmentDefinition("qwerty").ShouldBeNull();
         document.FindFragmentDefinition("frag").ShouldNotBeNull();
+        document.OperationWithName("qwerty").ShouldBeNull();
+        document.OperationWithName("updateStory").ShouldNotBeNull().Name.Value.ShouldBe("updateStory");
+        document.OperationWithName("").ShouldNotBeNull().Name.Value.ShouldBe("queryName");
 
         var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
         var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");

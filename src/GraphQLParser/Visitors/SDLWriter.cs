@@ -169,11 +169,18 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
+    public override async ValueTask VisitFragmentName(GraphQLFragmentName fragmentName, TContext context)
+    {
+        await Visit(fragmentName.Comment, context).ConfigureAwait(false);
+        await Visit(fragmentName.Name, context).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc/>
     public override async ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
     {
         await Visit(fragmentDefinition.Comment, context).ConfigureAwait(false);
         await context.Write("fragment ").ConfigureAwait(false);
-        await Visit(fragmentDefinition.Name, context).ConfigureAwait(false);
+        await Visit(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
         await context.Write(" ").ConfigureAwait(false);
         await Visit(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
         await Visit(fragmentDefinition.Directives, context).ConfigureAwait(false);
@@ -189,7 +196,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await WriteIndent(context, level).ConfigureAwait(false);
 
         await context.Write("...").ConfigureAwait(false);
-        await Visit(fragmentSpread.Name, context).ConfigureAwait(false);
+        await Visit(fragmentSpread.FragmentName, context).ConfigureAwait(false);
         await Visit(fragmentSpread.Directives, context).ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
     }

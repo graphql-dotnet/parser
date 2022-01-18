@@ -454,30 +454,23 @@ internal partial struct ParserContext
     // http://spec.graphql.org/October2021/#EnumValue
     private GraphQLEnumValue ParseEnumValue()
     {
-        IncreaseDepth();
-
-        int start = _currentToken.Start;
-
-        var val = NodeHelper.CreateGraphQLEnumValue(_ignoreOptions);
-
-        val.Comment = GetComment();
-        val.Name = ParseEnumName();
-        val.Location = GetLocation(start);
-
-        DecreaseDepth();
-        return val;
-    }
-
-    // Like ParseFragmentName but without special term in grammar.
-    // TODO: https://github.com/graphql/graphql-spec/issues/919
-    private GraphQLName ParseEnumName()
-    {
         if (_currentToken.Value == "true" || _currentToken.Value == "false" || _currentToken.Value == "null")
         {
             Throw_Unexpected_Token("; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.");
         }
 
-        return ParseName("; for more information see http://spec.graphql.org/October2021/#EnumValue");
+        IncreaseDepth();
+
+        int start = _currentToken.Start;
+
+        var enumVal = NodeHelper.CreateGraphQLEnumValue(_ignoreOptions);
+
+        enumVal.Comment = GetComment();
+        enumVal.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#EnumValue");
+        enumVal.Location = GetLocation(start);
+
+        DecreaseDepth();
+        return enumVal;
     }
 
     // http://spec.graphql.org/October2021/#EnumValueDefinition
@@ -619,7 +612,7 @@ internal partial struct ParserContext
 
         var spread = NodeHelper.CreateGraphQLFragmentSpread(_ignoreOptions);
 
-        spread.Name = ParseFragmentName();
+        spread.FragmentName = ParseFragmentName();
         spread.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         spread.Comment = comment;
         spread.Location = GetLocation(start);
@@ -656,7 +649,7 @@ internal partial struct ParserContext
 
         def.Comment = GetComment();
         ExpectKeyword("fragment");
-        def.Name = ParseFragmentName();
+        def.FragmentName = ParseFragmentName();
         def.TypeCondition = ParseTypeCondition(optional: false)!; // never returns null
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.SelectionSet = ParseSelectionSet();
@@ -667,14 +660,25 @@ internal partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#FragmentName
-    private GraphQLName ParseFragmentName()
+    private GraphQLFragmentName ParseFragmentName()
     {
         if (_currentToken.Value == "on")
         {
             Throw_Unexpected_Token("; fragment name can not be 'on'.");
         }
 
-        return ParseName("; for more information see http://spec.graphql.org/October2021/#FragmentName");
+        IncreaseDepth();
+
+        int start = _currentToken.Start;
+
+        var fragName = NodeHelper.CreateGraphQLFragmentName(_ignoreOptions);
+
+        fragName.Comment = GetComment();
+        fragName.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#FragmentName");
+        fragName.Location = GetLocation(start);
+
+        DecreaseDepth();
+        return fragName;
     }
 
     // http://spec.graphql.org/October2021/#ImplementsInterfaces
