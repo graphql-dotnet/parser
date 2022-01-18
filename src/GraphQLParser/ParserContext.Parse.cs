@@ -524,14 +524,14 @@ internal partial struct ParserContext
         // start of alias (if exists) equals start of field
         int start = _currentToken.Start;
 
-        var nameOrAliasComment = GetComment();
+        var comment = GetComment(); // Greedy parsing for comment here - we read comment for field itself, not for alias.
         var nameOrAlias = ParseName("; for more information see http://spec.graphql.org/October2021/#Field");
 
         GraphQLName name;
         GraphQLName? alias;
 
-        GraphQLComment? nameComment;
-        GraphQLComment? aliasComment;
+        //GraphQLComment? nameComment;
+        //GraphQLComment? aliasComment;
 
         GraphQLLocation aliasLocation = default;
 
@@ -539,16 +539,16 @@ internal partial struct ParserContext
         {
             aliasLocation = GetLocation(start);
 
-            nameComment = GetComment();
-            aliasComment = nameOrAliasComment;
+            //nameComment = GetComment();
+            //aliasComment = nameOrAliasComment;
 
             name = ParseName("; for more information see http://spec.graphql.org/October2021/#Field");
             alias = nameOrAlias;
         }
         else // no alias
         {
-            aliasComment = null;
-            nameComment = nameOrAliasComment;
+            //aliasComment = null;
+            //nameComment = nameOrAliasComment;
 
             alias = null;
             name = nameOrAlias;
@@ -560,13 +560,13 @@ internal partial struct ParserContext
         {
             var aliasNode = NodeHelper.CreateGraphQLAlias(_ignoreOptions);
 
-            aliasNode.Comment = aliasComment;
+            //aliasNode.Comment = aliasComment; // Alias can not have comment
             aliasNode.Name = alias;
             aliasNode.Location = aliasLocation;
 
             field.Alias = aliasNode;
         }
-        field.Comment = nameComment;
+        field.Comment = comment;
         field.Name = name;
         field.Arguments = Peek(TokenKind.PAREN_L) ? ParseArguments() : null;
         field.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;

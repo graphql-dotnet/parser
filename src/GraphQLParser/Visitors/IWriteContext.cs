@@ -17,4 +17,9 @@ public interface IWriteContext : INodeVisitorContext
     /// Stack of AST nodes to track the current visitor position.
     /// </summary>
     Stack<AST.ASTNode> Parents { get; }
+
+    /// <summary>
+    /// Tracks the current indent level.
+    /// </summary>
+    int IndentLevel { get; set; }
 }

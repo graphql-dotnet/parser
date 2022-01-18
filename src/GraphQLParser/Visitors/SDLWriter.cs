@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using GraphQLParser.AST;
@@ -12,6 +14,17 @@ namespace GraphQLParser.Visitors;
 public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     where TContext : IWriteContext
 {
+    /// <summary>
+    /// Creates visitor with the specified options.
+    /// </summary>
+    /// <param name="options">Visitor options.</param>
+    public SDLWriter(SDLWriterOptions options)
+    {
+        Options = options;
+    }
+
+    private SDLWriterOptions Options { get; }
+
     /// <inheritdoc/>
     public override async ValueTask VisitDocument(GraphQLDocument document, TContext context)
     {
@@ -34,15 +47,23 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// <inheritdoc/>
     public override async ValueTask VisitComment(GraphQLComment comment, TContext context)
     {
-        int level = GetLevel(context);
+        if (!Options.WriteComments)
+            return;
 
-        bool needStartNewLine = true;
+        if (CommentedNodeShouldBeCloseToPreviousNode(context))
+            await context.WriteLine().ConfigureAwait(false);
+
+        // starting # should always be printed in case of empty comment
+        await WriteIndent(context).ConfigureAwait(false);
+        await context.Write("#").ConfigureAwait(false);
+        bool needStartNewLine = false;
+
         int length = comment.Value.Span.Length;
         for (int i = 0; i < length; ++i)
         {
             if (needStartNewLine)
             {
-                await WriteIndent(context, level).ConfigureAwait(false);
+                await WriteIndent(context).ConfigureAwait(false);
                 await context.Write("#").ConfigureAwait(false);
                 needStartNewLine = false;
             }
@@ -65,6 +86,18 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         }
 
         await context.WriteLine().ConfigureAwait(false);
+
+        if (CommentedNodeShouldBeCloseToPreviousNode(context))
+            await WriteIndent(context).ConfigureAwait(false);
+
+        static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context)
+        {
+            return TryPeek<ASTNode>(context, 2, out var node) &&
+                node is GraphQLArguments ||
+                node is GraphQLObjectField ||
+                node is GraphQLName ||
+                node is GraphQLUnionMemberTypes;
+        }
     }
 
     /// <inheritdoc/>
@@ -95,9 +128,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
 
         async ValueTask WriteMultilineBlockString()
         {
-            int level = GetLevel(context);
-
-            await WriteIndent(context, level).ConfigureAwait(false);
+            await WriteIndent(context).ConfigureAwait(false);
             await context.Write("\"\"\"").ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
 
@@ -108,7 +139,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
             {
                 if (needStartNewLine)
                 {
-                    await WriteIndent(context, level).ConfigureAwait(false);
+                    await WriteIndent(context).ConfigureAwait(false);
                     needStartNewLine = false;
                 }
 
@@ -141,15 +172,14 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
             }
 
             await context.WriteLine().ConfigureAwait(false);
-            await WriteIndent(context, level).ConfigureAwait(false);
+            await WriteIndent(context).ConfigureAwait(false);
             await context.Write("\"\"\"").ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
         }
 
         async ValueTask WriteString()
         {
-            int level = GetLevel(context);
-            await WriteIndent(context, level).ConfigureAwait(false);
+            await WriteIndent(context).ConfigureAwait(false);
             await WriteEncodedString(context, description.Value).ConfigureAwait(false);
             await context.WriteLine().ConfigureAwait(false);
         }
@@ -192,8 +222,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     {
         await Visit(fragmentSpread.Comment, context).ConfigureAwait(false);
 
-        int level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
 
         await context.Write("...").ConfigureAwait(false);
         await Visit(fragmentSpread.FragmentName, context).ConfigureAwait(false);
@@ -206,8 +235,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     {
         await Visit(inlineFragment.Comment, context).ConfigureAwait(false);
 
-        int level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
 
         await context.Write("... ").ConfigureAwait(false);
         await Visit(inlineFragment.TypeCondition, context).ConfigureAwait(false);
@@ -241,16 +269,23 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     public override async ValueTask VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
     {
         await Visit(selectionSet.Comment, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
-        int level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
-        await context.Write("{").ConfigureAwait(false);
+
+        bool freshLine = selectionSet.Comment != null && Options.WriteComments;
+        if (!freshLine && (TryPeek<GraphQLOperationDefinition>(context, 2, out var op) && op.Name is not null || op is null))
+        {
+            await context.Write(" {").ConfigureAwait(false);
+        }
+        else
+        {
+            await WriteIndent(context).ConfigureAwait(false);
+            await context.Write("{").ConfigureAwait(false);
+        }
         await context.WriteLine().ConfigureAwait(false);
 
         foreach (var selection in selectionSet.Selections)
             await Visit(selection, context).ConfigureAwait(false);
 
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
         await context.Write("}").ConfigureAwait(false);
         await context.WriteLine().ConfigureAwait(false);
     }
@@ -260,11 +295,10 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     {
         await Visit(alias.Comment, context).ConfigureAwait(false);
 
-        var level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
 
         await Visit(alias.Name, context).ConfigureAwait(false);
-        await context.Write(": ").ConfigureAwait(false);
+        await context.Write(":").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -272,19 +306,19 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     {
         await Visit(field.Comment, context).ConfigureAwait(false);
         await Visit(field.Alias, context).ConfigureAwait(false);
+
         if (field.Alias == null)
-        {
-            var level = GetLevel(context);
-            await WriteIndent(context, level).ConfigureAwait(false);
-        }
+            await WriteIndent(context).ConfigureAwait(false);
+        else if (field.Name.Comment == null || !Options.WriteComments)
+            await context.Write(" ").ConfigureAwait(false);
+
         await Visit(field.Name, context).ConfigureAwait(false);
         await Visit(field.Arguments, context).ConfigureAwait(false);
         await Visit(field.Directives, context).ConfigureAwait(false);
+        await Visit(field.SelectionSet, context).ConfigureAwait(false);
 
         if (field.SelectionSet == null)
             await context.WriteLine().ConfigureAwait(false);
-        else
-            await Visit(field.SelectionSet, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -313,18 +347,35 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         if (directiveDefinition.Repeatable)
             await context.Write(" repeatable").ConfigureAwait(false);
         await Visit(directiveDefinition.Locations, context).ConfigureAwait(false);
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
     public override async ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context)
     {
         await Visit(directiveLocations.Comment, context).ConfigureAwait(false);
-        await context.Write(" on ").ConfigureAwait(false);
-        for (int i = 0; i < directiveLocations.Items.Count; ++i)
+        if (Options.EachDirectiveLocationOnNewLine)
         {
-            await context.Write(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
-            if (i < directiveLocations.Items.Count - 1)
-                await context.Write(" | ").ConfigureAwait(false);
+            await context.Write(" on").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+            for (int i = 0; i < directiveLocations.Items.Count; ++i)
+            {
+                await WriteIndent(context).ConfigureAwait(false);
+                await context.Write("| ").ConfigureAwait(false);
+                await context.Write(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
+                if (i < directiveLocations.Items.Count - 1)
+                    await context.WriteLine().ConfigureAwait(false);
+            }
+        }
+        else
+        {
+            await context.Write(" on ").ConfigureAwait(false);
+            for (int i = 0; i < directiveLocations.Items.Count; ++i)
+            {
+                await context.Write(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
+                if (i < directiveLocations.Items.Count - 1)
+                    await context.Write(" | ").ConfigureAwait(false);
+            }
         }
     }
 
@@ -406,8 +457,8 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
             }
 
             await context.Write("}").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
         }
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -429,6 +480,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(enumTypeDefinition.Name, context).ConfigureAwait(false);
         await Visit(enumTypeDefinition.Directives, context).ConfigureAwait(false);
         await Visit(enumTypeDefinition.Values, context).ConfigureAwait(false);
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -439,6 +491,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(enumTypeExtension.Name, context).ConfigureAwait(false);
         await Visit(enumTypeExtension.Directives, context).ConfigureAwait(false);
         await Visit(enumTypeExtension.Values, context).ConfigureAwait(false);
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -447,8 +500,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(enumValueDefinition.Comment, context).ConfigureAwait(false);
         await Visit(enumValueDefinition.Description, context).ConfigureAwait(false);
 
-        int level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
 
         await Visit(enumValueDefinition.Name, context).ConfigureAwait(false);
         await Visit(enumValueDefinition.Directives, context).ConfigureAwait(false);
@@ -469,7 +521,6 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         }
 
         await context.Write("}").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -481,8 +532,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
         await Visit(inputObjectTypeDefinition.Directives, context).ConfigureAwait(false);
         await Visit(inputObjectTypeDefinition.Fields, context).ConfigureAwait(false);
-        if (inputObjectTypeDefinition.Fields == null)
-            await context.WriteLine().ConfigureAwait(false); // TODO: ???
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -493,8 +543,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
         await Visit(inputObjectTypeExtension.Directives, context).ConfigureAwait(false);
         await Visit(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);
-        if (inputObjectTypeExtension.Fields == null)
-            await context.WriteLine().ConfigureAwait(false); // TODO: ???
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -503,8 +552,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(inputValueDefinition.Comment, context).ConfigureAwait(false);
         await Visit(inputValueDefinition.Description, context).ConfigureAwait(false);
 
-        int level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
 
         await Visit(inputValueDefinition.Name, context).ConfigureAwait(false);
         await context.Write(": ").ConfigureAwait(false);
@@ -532,7 +580,6 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         }
 
         await context.Write("}").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -545,8 +592,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(objectTypeDefinition.Interfaces, context).ConfigureAwait(false);
         await Visit(objectTypeDefinition.Directives, context).ConfigureAwait(false);
         await Visit(objectTypeDefinition.Fields, context).ConfigureAwait(false);
-        if (objectTypeDefinition.Fields == null)
-            await context.WriteLine().ConfigureAwait(false); //TODO: ???
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -558,8 +604,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(objectTypeExtension.Interfaces, context).ConfigureAwait(false);
         await Visit(objectTypeExtension.Directives, context).ConfigureAwait(false);
         await Visit(objectTypeExtension.Fields, context).ConfigureAwait(false);
-        if (objectTypeExtension.Fields == null)
-            await context.WriteLine().ConfigureAwait(false); // TODO: ???
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -572,6 +617,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(interfaceTypeDefinition.Interfaces, context).ConfigureAwait(false);
         await Visit(interfaceTypeDefinition.Directives, context).ConfigureAwait(false);
         await Visit(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -583,6 +629,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(interfaceTypeExtension.Interfaces, context).ConfigureAwait(false);
         await Visit(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
         await Visit(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -591,8 +638,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(fieldDefinition.Comment, context).ConfigureAwait(false);
         await Visit(fieldDefinition.Description, context).ConfigureAwait(false);
 
-        int level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
 
         await Visit(fieldDefinition.Name, context).ConfigureAwait(false);
         await Visit(fieldDefinition.Arguments, context).ConfigureAwait(false);
@@ -616,7 +662,6 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         }
 
         await context.Write("}").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -649,8 +694,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     {
         await Visit(rootOperationTypeDefinition.Comment, context).ConfigureAwait(false);
 
-        int level = GetLevel(context);
-        await WriteIndent(context, level).ConfigureAwait(false);
+        await WriteIndent(context).ConfigureAwait(false);
 
         await context.Write(GetOperationType(rootOperationTypeDefinition.Operation)).ConfigureAwait(false);
         await context.Write(": ").ConfigureAwait(false);
@@ -666,6 +710,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(unionTypeDefinition.Name, context).ConfigureAwait(false);
         await Visit(unionTypeDefinition.Directives, context).ConfigureAwait(false);
         await Visit(unionTypeDefinition.Types, context).ConfigureAwait(false);
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -676,13 +721,18 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(unionTypeExtension.Name, context).ConfigureAwait(false);
         await Visit(unionTypeExtension.Directives, context).ConfigureAwait(false);
         await Visit(unionTypeExtension.Types, context).ConfigureAwait(false);
+        await context.WriteLine().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
     public override async ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
     {
         await Visit(unionMemberTypes.Comment, context).ConfigureAwait(false);
-        await context.Write(" = ").ConfigureAwait(false);
+
+        if (unionMemberTypes.Comment == null || !Options.WriteComments)
+            await context.Write(" ").ConfigureAwait(false);
+
+        await context.Write("= ").ConfigureAwait(false);
 
         for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
         {
@@ -729,16 +779,14 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     {
         await Visit(argumentsDefinition.Comment, context).ConfigureAwait(false);
         await context.Write("(").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
 
         for (int i = 0; i < argumentsDefinition.Items.Count; ++i)
         {
             await Visit(argumentsDefinition.Items[i], context).ConfigureAwait(false);
             if (i < argumentsDefinition.Items.Count - 1)
-                await context.WriteLine().ConfigureAwait(false);
+                await context.Write(", ").ConfigureAwait(false);
         }
 
-        await context.WriteLine().ConfigureAwait(false);
         await context.Write(")").ConfigureAwait(false);
     }
 
@@ -863,11 +911,26 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         if (node == null)
             return;
 
+        int prevLevel = context.IndentLevel;
+
+        if (node is GraphQLField ||
+            node is GraphQLFieldDefinition ||
+            node is GraphQLInputFieldsDefinition ||
+            node is GraphQLEnumValueDefinition ||
+            node is GraphQLFragmentSpread ||
+            node is GraphQLInlineFragment ||
+            node is GraphQLRootOperationTypeDefinition)
+            ++context.IndentLevel;
+
+        if (node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine)
+            ++context.IndentLevel;
+
         context.Parents.Push(node);
 
         await base.Visit(node, context).ConfigureAwait(false);
 
         context.Parents.Pop();
+        context.IndentLevel = prevLevel;
     }
 
     private static string GetOperationType(OperationType type) => type switch
@@ -907,39 +970,29 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         _ => throw new NotSupportedException(location.ToString()),
     };
 
-    private static async ValueTask WriteIndent(TContext context, int level)
+    private static async ValueTask WriteIndent(TContext context)
     {
-        for (int i = 0; i < level; ++i)
+        for (int i = 0; i < context.IndentLevel; ++i)
             await context.Write("  ").ConfigureAwait(false);
     }
 
-    private static int GetLevel(TContext context)
+    private static bool TryPeek<TNode>(TContext context, int level, [NotNullWhen(true)] out TNode? node)
+        where TNode : ASTNode
     {
-        int level = 0;
+        node = null;
 
-        if (context.Parents.Count > 0)
+        using var e = context.Parents.GetEnumerator();
+        for (int i = 0; i < level; ++i)
+            if (!e.MoveNext())
+                return false;
+
+        if (e.Current is TNode n)
         {
-            var currentNode = context.Parents.Pop();
-
-            foreach (var node in context.Parents)
-            {
-                if (node is GraphQLSelectionSet ||
-                    node is GraphQLTypeDefinition ||
-                    node is GraphQLInputObjectTypeDefinition ||
-                    node is GraphQLSchemaDefinition ||
-                    node is GraphQLSchemaExtension)
-                    ++level;
-            }
-
-            if (currentNode is GraphQLDescription || currentNode is GraphQLDirectiveDefinition)
-                --level;
-            else if (currentNode is GraphQLComment && context.Parents.Peek() is GraphQLTypeDefinition)
-                --level;
-
-            context.Parents.Push(currentNode);
+            node = n;
+            return true;
         }
 
-        return level;
+        return false;
     }
 
     // http://spec.graphql.org/October2021/#StringCharacter
@@ -976,3 +1029,20 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await context.Write("\"").ConfigureAwait(false);
     }
 }
+
+/// <summary>
+/// Options for <see cref="SDLWriter{TContext}"/>.
+/// </summary>
+public class SDLWriterOptions
+{
+    /// <summary>
+    /// Write comments into the output.
+    /// </summary>
+    public bool WriteComments { get; set; }
+
+    /// <summary>
+    ///
+    /// </summary>
+    public bool EachDirectiveLocationOnNewLine { get; set; }
+}
+

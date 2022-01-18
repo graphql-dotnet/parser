@@ -19,41 +19,148 @@ public class SDLWriterTests
         public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
 
         public CancellationToken CancellationToken { get; set; }
+
+        public int IndentLevel { get; set; }
     }
 
-    private static readonly SDLWriter<TestContext> _sdlWriter = new();
-
     [Theory]
-    [InlineData("{ a(list: [], obj: {}) }", @"
-{
+    [InlineData(1,
+@"#comment that ignored
+  scalar A     ",
+@"scalar A
+", false)]
+    [InlineData(2,
+@"{
+  #
+  field
+}",
+@"{
+  #
+  field
+}
+")]
+    [InlineData(3,
+@"{
+  complicatedArgs {
+    intArgField(intArg: 2)
+  }
+}",
+@"{
+  complicatedArgs {
+    intArgField(intArg: 2)
+  }
+}
+")]
+    [InlineData(4,
+@"mutation createUser($userInput: UserInput!) {
+  createUser(userInput: $userInput) {
+    id
+    gender
+    profileImage
+  }
+}
+",
+@"mutation createUser($userInput: UserInput!) {
+  createUser(userInput: $userInput) {
+    id
+    gender
+    profileImage
+  }
+}
+")]
+    [InlineData(5,
+@"query users {
+  users {
+    id
+    union {
+      ... on UserType {
+        username
+      }
+      ... on CustomerType {
+        customername
+      }
+    }
+  }
+}
+",
+@"query users {
+  users {
+    id
+    union {
+      ... on UserType {
+        username
+      }
+      ... on CustomerType {
+        customername
+      }
+    }
+  }
+}
+")]
+    [InlineData(6,
+@"{ a(list: [], obj: {}) }",
+@"{
   a(list: [], obj: {})
 }
 ")]
-    [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT", @"directive @skip(
-  if: Boolean!
-) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
-    [InlineData("directive @twoArgs(a: Int, b: String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRAGMENT_SPREAD|INLINE_FRAGMENT|VARIABLE_DEFINITION|SCHEMA|SCALAR|OBJECT|FIELD_DEFINITION|ARGUMENT_DEFINITION|INTERFACE|UNION|ENUM|ENUM_VALUE|INPUT_OBJECT|INPUT_FIELD_DEFINITION", @"directive @twoArgs(
-  a: Int
-  b: String!
-) repeatable on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | VARIABLE_DEFINITION | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION")]
-    [InlineData("directive @exportable on | SCHEMA", @"directive @exportable on SCHEMA")]
-    [InlineData("directive @exportable on | SCHEMA | ENUM", @"directive @exportable on SCHEMA | ENUM")]
-    [InlineData("extend schema @exportable ", @"extend schema @exportable")]
-    [InlineData("extend schema @exportable { mutation: M }", @"extend schema @exportable
+    [InlineData(7,
+@"directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(if: Boolean!) on
+  | FIELD
+  | FRAGMENT_SPREAD
+  | INLINE_FRAGMENT
+", false, true)]
+    [InlineData(8,
+@"directive @twoArgs
+(a: Int, b:
+String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRAGMENT_SPREAD|INLINE_FRAGMENT|VARIABLE_DEFINITION|SCHEMA|SCALAR|OBJECT|FIELD_DEFINITION|ARGUMENT_DEFINITION|INTERFACE|UNION|ENUM|ENUM_VALUE|INPUT_OBJECT|INPUT_FIELD_DEFINITION",
+@"directive @twoArgs(a: Int, b: String!) repeatable on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | VARIABLE_DEFINITION | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+")]
+    [InlineData(9,
+@"directive @exportable on | SCHEMA",
+@"directive @exportable on SCHEMA
+")]
+    [InlineData(10,
+@"directive @exportable on | SCHEMA | ENUM",
+@"directive @exportable on SCHEMA | ENUM
+")]
+    [InlineData(11,
+@"extend schema @exportable ",
+@"extend schema @exportable
+")]
+    [InlineData(12,
+@"extend schema @exportable { mutation: M }",
+@"extend schema @exportable
 {
   mutation: M
 }
 ")]
-    [InlineData("extend scalar Foo @exportable", @"extend scalar Foo @exportable
+    [InlineData(13,
+@"extend scalar Foo @exportable",
+@"extend scalar Foo @exportable
 ")]
-    [InlineData("extend type Foo @exportable", @"extend type Foo @exportable
+    [InlineData(14,
+@"extend type Foo @exportable",
+@"extend type Foo @exportable
 ")]
-    [InlineData("extend interface Foo @exportable", "extend interface Foo @exportable")]
-    [InlineData("extend union Foo @exportable", "extend union Foo @exportable")]
-    [InlineData("extend enum Foo @exportable", "extend enum Foo @exportable")]
-    [InlineData("extend input Foo @exportable", @"extend input Foo @exportable
+    [InlineData(15,
+@"extend interface Foo @exportable",
+@"extend interface Foo @exportable
 ")]
-    [InlineData(@"#comment
+    [InlineData(16,
+@"extend union Foo @exportable",
+@"extend union Foo @exportable
+")]
+    [InlineData(17,
+@"extend enum Foo @exportable",
+@"extend enum Foo @exportable
+")]
+    [InlineData(18,
+@"extend input Foo @exportable",
+@"extend input Foo @exportable
+")]
+    [InlineData(19,
+@"#comment
 input Example @x {
   self: [Example!]!
   value: String = ""xyz""
@@ -72,11 +179,14 @@ input B
 
 input C
 ")]
-    [InlineData(@"query inlineFragmentTyping {
-  profiles(handles: [""zuck"", ""coca - cola""]) {
+    [InlineData(20,
+@"query inlineFragmentTyping {
+  profiles(handles: [""zuck"", ""coca - cola""])
+{
     handle
-    ... on User {
-      friends {
+    ... on User
+   {
+      friends           {
         count
       }
 }
@@ -89,51 +199,37 @@ input C
 }
   }
 }
-", @"query inlineFragmentTyping
-{
-  profiles(handles: [""zuck"", ""coca - cola""])
-  {
+",
+@"query inlineFragmentTyping {
+  profiles(handles: [""zuck"", ""coca - cola""]) {
     handle
-    ... on User
-    {
-      friends
-      {
+    ... on User {
+      friends {
         count
       }
     }
-    ... on Page
-    {
-      likers
-      {
+    ... on Page {
+      likers {
         count
       }
     }
   }
 }
 ")]
-    [InlineData(@"scalar a scalar b scalar c", @"scalar a
+    [InlineData(21,
+@"scalar a scalar b scalar c",
+@"scalar a
 
 scalar b
 
 scalar c
 ")]
-    [InlineData(@"{
-  foo
-    #comment on fragment
-  ...Frag
-  qux
-}
-
-fragment Frag on Query {
-  bar
-  baz
-}
-",
-
+    [InlineData(22,
 @"
+
 {
   foo
-  #comment on fragment
+    #comment on fragment
   ...Frag
   qux
 }
@@ -143,34 +239,53 @@ fragment Frag on Query
   bar
   baz
 }
+",
+@"{
+  foo
+  #comment on fragment
+  ...Frag
+  qux
+}
+
+fragment Frag on Query {
+  bar
+  baz
+}
 ")]
-    [InlineData(@"union Animal @immutable = |Cat | Dog", @"union Animal @immutable = Cat | Dog")]
-    [InlineData(@"query
+    [InlineData(23,
+@"union Animal @immutable = |Cat | Dog",
+@"union Animal @immutable = Cat | Dog
+")]
+    [InlineData(24,
+@"query
     q
 {
   a : name
  b
   c  :  age
-}", @"query q
-{
+}", @"query q {
   a: name
   b
   c: age
 }
 ")]
-    [InlineData(@"schema @checked @documented { mutation: MyMutation subscription: MySub }", @"schema @checked @documented
+    [InlineData(25,
+@"schema @checked @documented { mutation: MyMutation subscription: MySub }",
+@"schema @checked @documented
 {
   mutation: MyMutation
   subscription: MySub
 }
 ")]
-    [InlineData(@"interface Dog implements & Eat & Bark { volume: Int! }",
-        @"interface Dog implements Eat & Bark
+    [InlineData(26,
+@"interface Dog implements & Eat & Bark { volume: Int! }",
+@"interface Dog implements Eat & Bark
 {
   volume: Int!
 }
 ")]
-    [InlineData(@"enum Color { RED,
+    [InlineData(27,
+@"enum Color { RED,
 #good color
 GREEN @directive(list: [1,2.7,3,null,{}, {name:""tom"" age:42}]),
 """"""
@@ -186,29 +301,28 @@ BLUE }",
   BLUE
 }
 ")]
-    [InlineData(@"# super query
+    [InlineData(28,
+@"# super query
 #
 # multiline
 query summary($id: ID!, $detailed: Boolean! = true) { name(full:true,kind: UPPER) age1:age address { street @short(length:5,x:""a"", pi: 3.14)
 #need
 building } }",
-
 @"# super query
 #
 # multiline
-query summary($id: ID!, $detailed: Boolean! = true)
-{
+query summary($id: ID!, $detailed: Boolean! = true) {
   name(full: true, kind: UPPER)
   age1: age
-  address
-  {
+  address {
     street @short(length: 5, x: ""a"", pi: 3.14)
     #need
     building
   }
 }
 ")]
-    [InlineData(@"
+    [InlineData(29,
+@"
 """"""
   description
     indent 2
@@ -226,7 +340,6 @@ type Dog implements &Animal {
   friends: [Dog!]
   age: Int!
 }",
-
 @"""""""
 description
   indent 2
@@ -247,15 +360,138 @@ type Dog implements Animal
   age: Int!
 }
 ")]
-    public async Task WriteDocumentVisitor_Should_Print_Document(string text, string expected)
+    [InlineData(30,
+@"query q
+{
+#field comment! not alias!
+  a
+#colon comment
+  :
+#field name (GraphQLName) comment
+  name
+}
+",
+@"query q {
+  #field comment! not alias!
+  a:
+  #field name (GraphQLName) comment
+  name
+}
+")]
+    [InlineData(31,
+@"query q
+{
+#field comment! not alias!
+  a
+#colon comment
+  :
+#field name (GraphQLName) comment
+  name
+}
+",
+@"query q {
+  a: name
+}
+", false)]
+    [InlineData(32,
+@"{
+  f
+  #arguments comment
+  (x:10,
+  y:{
+  #comment on object field
+  z: 1
+  }
+  )
+}
+",
+@"{
+  f
+  #arguments comment
+  (x: 10, y: {
+  #comment on object field
+  z: 1})
+}
+")]
+    [InlineData(33,
+@"{
+  f
+  #arguments comment
+  (x:10,
+  y:{
+  #comment on object field
+  z: 1
+  }
+  )
+}
+",
+@"{
+  f(x: 10, y: {z: 1})
+}
+", false)]
+    [InlineData(34,
+@"#very good scalar
+scalar JSON
+
+#forgot about external!
+extend scalar JSON @external
+",
+@"#very good scalar
+scalar JSON
+
+#forgot about external!
+extend scalar JSON @external
+")]
+    [InlineData(35,
+@"#very good scalar
+scalar JSON
+
+#forgot about external!
+extend scalar JSON @external
+",
+@"scalar JSON
+
+extend scalar JSON @external
+", false)]
+    [InlineData(36,
+@"#very good union
+union Unity
+#comment for union members
+= A | B
+
+#forgot about C!
+extend union Unity = C
+",
+@"#very good union
+union Unity
+#comment for union members
+= A | B
+
+#forgot about C!
+extend union Unity = C
+")]
+    [InlineData(37,
+@"#very good union
+union Unity
+#comment for union members
+= A | B
+
+#forgot about C!
+extend union Unity = C
+",
+@"union Unity = A | B
+
+extend union Unity = C
+", false)]
+    public async Task WriteDocumentVisitor_Should_Print_Document(int number, string text, string expected, bool writeComments = true, bool eachDirectiveLocationOnNewLine = false)
     {
         var context = new TestContext();
-
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = writeComments, EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine });
         using (var document = text.Parse())
         {
-            await _sdlWriter.Visit(document, context).ConfigureAwait(false);
+            await writer.Visit(document, context).ConfigureAwait(false);
             var actual = context.Writer.ToString();
-            actual.ShouldBe(expected);
+            actual.ShouldBe(expected, $"Test {number} failed");
 
             using (actual.Parse())
             {
@@ -308,10 +544,11 @@ type Dog implements Animal
             : "\"" + expected + "\"";
 
         var context = new TestContext();
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions());
 
         using (var document = (input + " scalar a").Parse())
         {
-            await _sdlWriter.Visit(document, context).ConfigureAwait(false);
+            await writer.Visit(document, context).ConfigureAwait(false);
             var renderedOriginal = context.Writer.ToString();
 
             var lines = renderedOriginal.Split(Environment.NewLine);
@@ -335,16 +572,16 @@ type Dog implements Animal
     public async Task WriteDocumentVisitor_Should_Print_EscapedStrings(string stringValue)
     {
         string query = $"{{a(p:{stringValue})}}";
-        string expected = @$"
-{{
+        string expected = @$"{{
   a(p: {stringValue})
 }}
 ";
         var context = new TestContext();
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions());
 
         using (var document = query.Parse())
         {
-            await _sdlWriter.Visit(document, context).ConfigureAwait(false);
+            await writer.Visit(document, context).ConfigureAwait(false);
             var rendered = context.Writer.ToString();
             rendered.ShouldBe(expected);
 
