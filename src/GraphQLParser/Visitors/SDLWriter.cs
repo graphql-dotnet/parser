@@ -740,13 +740,30 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         if (unionMemberTypes.Comment == null || !Options.WriteComments)
             await context.Write(" ").ConfigureAwait(false);
 
-        await context.Write("= ").ConfigureAwait(false);
-
-        for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
+        if (Options.EachUnionMemberOnNewLine)
         {
-            await Visit(unionMemberTypes.Items[i], context).ConfigureAwait(false);
-            if (i < unionMemberTypes.Items.Count - 1)
-                await context.Write(" | ").ConfigureAwait(false);
+            await context.Write("=").ConfigureAwait(false);
+            await context.WriteLine().ConfigureAwait(false);
+
+            for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
+            {
+                await WriteIndent(context).ConfigureAwait(false);
+                await context.Write("| ").ConfigureAwait(false);
+                await Visit(unionMemberTypes.Items[i], context).ConfigureAwait(false);
+                if (i < unionMemberTypes.Items.Count - 1)
+                    await context.WriteLine().ConfigureAwait(false);
+            }
+        }
+        else
+        {
+            await context.Write("= ").ConfigureAwait(false);
+
+            for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
+            {
+                await Visit(unionMemberTypes.Items[i], context).ConfigureAwait(false);
+                if (i < unionMemberTypes.Items.Count - 1)
+                    await context.Write(" | ").ConfigureAwait(false);
+            }
         }
     }
 
@@ -933,6 +950,9 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         if (node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine)
             ++context.IndentLevel;
 
+        if (node is GraphQLUnionMemberTypes && Options.EachUnionMemberOnNewLine)
+            ++context.IndentLevel;
+
         context.Parents.Push(node);
 
         await base.Visit(node, context).ConfigureAwait(false);
@@ -1049,8 +1069,13 @@ public class SDLWriterOptions
     public bool WriteComments { get; set; }
 
     /// <summary>
-    ///
+    /// Whether to write each directive location on its own line.
     /// </summary>
     public bool EachDirectiveLocationOnNewLine { get; set; }
+
+    /// <summary>
+    /// Whether to write each union member on its own line.
+    /// </summary>
+    public bool EachUnionMemberOnNewLine { get; set; }
 }
 

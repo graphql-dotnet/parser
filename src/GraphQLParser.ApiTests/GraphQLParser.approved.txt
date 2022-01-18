@@ -909,6 +909,7 @@ namespace GraphQLParser.Visitors
     {
         public SDLWriterOptions() { }
         public bool EachDirectiveLocationOnNewLine { get; set; }
+        public bool EachUnionMemberOnNewLine { get; set; }
         public bool WriteComments { get; set; }
     }
     public class SDLWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>

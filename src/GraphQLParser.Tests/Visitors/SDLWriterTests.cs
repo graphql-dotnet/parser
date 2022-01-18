@@ -483,10 +483,34 @@ extend union Unity = C
 
 extend union Unity = C
 ", false)]
-    public async Task WriteDocumentVisitor_Should_Print_Document(int number, string text, string expected, bool writeComments = true, bool eachDirectiveLocationOnNewLine = false)
+    [InlineData(38,
+@"union Unity
+= A |    B
+
+extend union Unity =   C
+",
+@"union Unity =
+  | A
+  | B
+
+extend union Unity =
+  | C
+", true, false, true)]
+    public async Task WriteDocumentVisitor_Should_Print_Document(
+        int number,
+        string text,
+        string expected,
+        bool writeComments = true,
+        bool eachDirectiveLocationOnNewLine = false,
+        bool eachUnionMemberOnNewLine = false)
     {
         var context = new TestContext();
-        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = writeComments, EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine });
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions
+        {
+            WriteComments = writeComments,
+            EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
+            EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
+        });
         using (var document = text.Parse())
         {
             await writer.Visit(document, context).ConfigureAwait(false);
