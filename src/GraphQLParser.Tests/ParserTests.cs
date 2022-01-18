@@ -187,8 +187,13 @@ public class ParserTests
         def.SelectionSet.Selections.Count.ShouldBe(1);
         var field = def.SelectionSet.Selections.First() as GraphQLField;
         field.SelectionSet.Selections.Count.ShouldBe(1);
-        var fragment = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
-        fragment.Comment.ShouldNotBeNull().Value.ShouldBe("comment");
+        var spread = field.SelectionSet.Selections.First() as GraphQLFragmentSpread;
+        spread.Comment.ShouldNotBeNull().Value.ShouldBe("comment");
+        spread.FragmentName.Comment.Value.ShouldBe("comment on fragment name 1");
+
+        var frag = document.Definitions.Last() as GraphQLFragmentDefinition;
+        frag.Comment.ShouldBeNull();
+        frag.FragmentName.Comment.Value.ShouldBe("comment on fragment name 2");
     }
 
     [Theory]
