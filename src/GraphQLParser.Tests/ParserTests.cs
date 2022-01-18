@@ -460,6 +460,8 @@ public class ParserTests
 
         using var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
+        document.OperationWithName("qwerty").ShouldBeNull();
+        document.OperationWithName("").ShouldBeNull();
         var def = document.Definitions[0] as GraphQLEnumTypeDefinition;
         def.Comment.Value.ShouldBe("very good colors");
         def.Values.Comment.Value.ShouldBe("values");
