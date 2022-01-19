@@ -87,6 +87,14 @@ public class MemoryTests
     }
 
     [Fact]
+    public void Implicit_Operator_From_Null_String()
+    {
+        string s = null;
+        ROM r = s;
+        r.Length.ShouldBe(0);
+    }
+
+    [Fact]
     public void Operators()
     {
         var str = "string";
@@ -119,6 +127,15 @@ public class MemoryTests
 
         ROM.Empty.Length.ShouldBe(0);
         ROM.Empty.ShouldBe(string.Empty);
+    }
+
+    [Fact]
+    public void Default_ROM_ShouldBe_Always_StringEmpty_Instance()
+    {
+        ReferenceEquals((string)default(ROM), (string)default(ROM)).ShouldBeTrue();
+        ReferenceEquals((string)default(ROM), string.Empty).ShouldBeTrue();
+        ReferenceEquals(default(ROM).ToString(), default(ROM).ToString()).ShouldBeTrue();
+        ReferenceEquals(default(ROM).ToString(), string.Empty).ShouldBeTrue();
     }
 
     [Fact]

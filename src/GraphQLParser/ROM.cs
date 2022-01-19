@@ -167,7 +167,7 @@ public readonly struct ROM : IEquatable<ROM>
     /// <summary>
     /// Implicitly casts string to <see cref="ROM"/>.
     /// </summary>
-    public static implicit operator ROM(string s) => s.AsMemory();
+    public static implicit operator ROM(string? s) => s.AsMemory();
 
     /// <summary>
     /// Explicitly casts <see cref="ROM"/> to string.
@@ -192,20 +192,20 @@ public readonly struct ROM : IEquatable<ROM>
     /// <summary>
     /// Checks ROM and string for equality. The check is based on the actual contents of the two chunks of memory.
     /// </summary>
-    public static bool operator ==(ROM rom, string s) => rom._memory.Span.SequenceEqual(s.AsSpan());
+    public static bool operator ==(ROM rom, string? s) => rom._memory.Span.SequenceEqual(s.AsSpan());
 
     /// <summary>
     /// Checks ROM and string for inequality. The check is based on the actual contents of the two chunks of memory.
     /// </summary>
-    public static bool operator !=(ROM rom, string s) => !rom._memory.Span.SequenceEqual(s.AsSpan());
+    public static bool operator !=(ROM rom, string? s) => !rom._memory.Span.SequenceEqual(s.AsSpan());
 
     /// <summary>
     /// Checks string and ROM and for equality. The check is based on the actual contents of the two chunks of memory.
     /// </summary>
-    public static bool operator ==(string s, ROM rom) => rom == s;
+    public static bool operator ==(string? s, ROM rom) => rom == s;
 
     /// <summary>
     /// Checks string and ROM and for inequality. The check is based on the actual contents of the two chunks of memory.
     /// </summary>
-    public static bool operator !=(string s, ROM rom) => rom != s;
+    public static bool operator !=(string? s, ROM rom) => rom != s;
 }
