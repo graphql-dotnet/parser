@@ -91,6 +91,12 @@ public class GraphQLNameTests
         (name != (string)null).ShouldBeFalse();
         ((GraphQLName)null != name).ShouldBeFalse();
         ((string)null != name).ShouldBeFalse();
+
+        var nameNull = (GraphQLName)null;
+        (nameNull == (string)null).ShouldBeTrue();
+        (nameNull != (string)null).ShouldBeFalse();
+
+        (name == "def").ShouldBeFalse();
     }
 
     [Fact]
