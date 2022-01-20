@@ -59,7 +59,7 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     /// <summary>
     /// Explicitly casts <see cref="GraphQLName"/> to <see cref="string"/>.
     /// </summary>
-    public static explicit operator string(GraphQLName? node) => node is null ? null! : (string)node.Value; //TODO: not sure about nullability annotations for operators
+    public static explicit operator string(GraphQLName? node) => node is null ? null! : (string)node.Value; //TODO: not sure about nullability annotation for returned string here
 
     /// <summary>
     /// Checks two names for equality. The check is based on the actual contents of the two chunks of memory.
