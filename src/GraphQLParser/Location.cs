@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace GraphQLParser;
 
 /// <summary>
@@ -7,8 +5,6 @@ namespace GraphQLParser;
 /// </summary>
 public readonly struct Location
 {
-    private static readonly Regex _lineRegex = new("\r\n|[\n\r]", RegexOptions.ECMAScript);
-
     /// <summary>
     /// Creates location from a given sequence of characters and a linear character position.
     /// </summary>
@@ -16,21 +12,63 @@ public readonly struct Location
     /// <param name="position">Linear character position in the <paramref name="source"/>.</param>
     public Location(ROM source, int position)
     {
-        Line = 1;
-        Column = position + 1;
-
-        if (position > 0)
+        // handle index overflow (EOF)
+        int overflowDelta = 0;
+        if (position >= source.Length)
         {
-            var matches = _lineRegex.Matches((string)source); // TODO: heap allocation
-            foreach (Match match in matches)
+            overflowDelta = position - source.Length + 1; // equals 1 in case of EOF
+            position = source.Length - 1;
+        }
+
+        Line = 1;
+        Column = 0;
+
+        var span = source.Span;
+
+        for (int i = 0; i <= position; ++i)
+        {
+            switch (span[i])
             {
-                if (match.Index >= position)
+                case '\n':
+                    if (i == position)
+                    {
+                        ++Column;
+                    }
+                    else
+                    {
+                        ++Line;
+                        Column = 0;
+                    }
                     break;
 
-                ++Line;
-                Column = position + 1 - (match.Index + matches[0].Length);
+                case '\r':
+                    if (i == position)
+                    {
+                        ++Column;
+                    }
+                    else
+                    {
+                        char next = span[i + 1];
+                        bool nextIncreaseLine = next == '\r' || next == '\n';
+                        if (!nextIncreaseLine)
+                        {
+                            ++Line;
+                            Column = 0;
+                        }
+                        else if (i + 1 == position)
+                        {
+                            ++Column;
+                        }
+                    }
+                    break;
+
+                default:
+                    ++Column;
+                    break;
             }
         }
+
+        Column += overflowDelta;
     }
 
     /// <summary>
