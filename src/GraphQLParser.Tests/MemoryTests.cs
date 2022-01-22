@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Shouldly;
 using Xunit;
 
@@ -8,7 +7,7 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
-    [Fact(Skip = "ReadOnlyMemory<T>.GetHashCode demonstration")]
+    [Fact]//(Skip = "ReadOnlyMemory<T>.GetHashCode demonstration")]
     public void GetHashCode_Issue()
     {
         // ReadOnlyMemory<T> implementation
@@ -76,15 +75,17 @@ public class MemoryTests
         ROM.IsEmptyOrWhiteSpace(text).ShouldBe(expected);
     }
 
+#if NET6_0_OR_GREATER
     [Fact]
     public void SizeOf_ROM_Should_Be_The_Same_As_ReadOnlyMemory()
     {
         if (OperatingSystem.IsWindows()) // TODO: weird errors on Linux
         {
-            Marshal.SizeOf(default(ROM)).ShouldBe(16);
-            Marshal.SizeOf(default(ReadOnlyMemory<char>)).ShouldBe(16);
+            System.Runtime.InteropServices.Marshal.SizeOf(default(ROM)).ShouldBe(16);
+            System.Runtime.InteropServices.Marshal.SizeOf(default(ReadOnlyMemory<char>)).ShouldBe(16);
         }
     }
+#endif
 
     [Fact]
     public void Implicit_Operator_From_Null_String()

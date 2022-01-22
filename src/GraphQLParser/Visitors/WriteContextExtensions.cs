@@ -25,7 +25,7 @@ public static class WriteContextExtensions
 #if NETSTANDARD2_0
         // no cancellationToken support on netstandard2.0
         context.Writer.WriteAsync(value.ToString());
-#elif NETSTANDARD2_1_OR_GREATER
+#elif NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
             context.Writer.WriteAsync(value, context.CancellationToken);
 #endif
         return new ValueTask(task);

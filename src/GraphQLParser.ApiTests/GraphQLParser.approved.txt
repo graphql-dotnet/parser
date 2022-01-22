@@ -369,7 +369,7 @@ namespace GraphQLParser.AST
         public int End { get; }
         public int Start { get; }
         public bool Equals(GraphQLParser.AST.GraphQLLocation other) { }
-        public override bool Equals(object obj) { }
+        public override bool Equals(object? obj) { }
         public override int GetHashCode() { }
         public override string ToString() { }
         public static bool operator !=(GraphQLParser.AST.GraphQLLocation left, GraphQLParser.AST.GraphQLLocation right) { }
@@ -381,8 +381,8 @@ namespace GraphQLParser.AST
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public string StringValue { get; }
         public GraphQLParser.ROM Value { get; }
-        public bool Equals(GraphQLParser.AST.GraphQLName other) { }
-        public override bool Equals(object obj) { }
+        public bool Equals(GraphQLParser.AST.GraphQLName? other) { }
+        public override bool Equals(object? obj) { }
         public override int GetHashCode() { }
         public override string ToString() { }
         public static string op_Explicit(GraphQLParser.AST.GraphQLName? node) { }
@@ -657,7 +657,7 @@ namespace GraphQLParser
         public int Length { get; }
         public System.ReadOnlySpan<char> Span { get; }
         public bool Equals(GraphQLParser.ROM other) { }
-        public override bool Equals(object obj) { }
+        public override bool Equals(object? obj) { }
         public override int GetHashCode() { }
         public GraphQLParser.ROM Slice(int start) { }
         public GraphQLParser.ROM Slice(int start, int length) { }

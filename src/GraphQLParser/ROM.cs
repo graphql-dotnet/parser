@@ -44,7 +44,7 @@ public readonly struct ROM : IEquatable<ROM>
     public ROM Slice(int start, int length) => _memory.Slice(start, length);
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is ROM rom && Equals(rom);
+    public override bool Equals(object? obj) => obj is ROM rom && Equals(rom);
 
     /// <inheritdoc/>
     public bool Equals(ROM other)
@@ -106,6 +106,9 @@ public readonly struct ROM : IEquatable<ROM>
     /// <inheritdoc/>
     public override int GetHashCode()
     {
+#if NET6_0_OR_GREATER
+        return string.GetHashCode(_memory.Span);
+#else
         // ReadOnlyMemory<T> implementation has issue - see MemoryTests.GetHashCode_Issue
         // public override int GetHashCode()
         // {
@@ -143,6 +146,7 @@ public readonly struct ROM : IEquatable<ROM>
         }
 
         return num1 + num2 * 1566083941;
+#endif
     }
 
     /// <inheritdoc/>
