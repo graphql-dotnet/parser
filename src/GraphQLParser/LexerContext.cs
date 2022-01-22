@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using GraphQLParser.Exceptions;
 
@@ -57,11 +58,13 @@ internal struct LexerContext
         return Throw_From_GetToken2(code);
     }
 
+    [DoesNotReturn]
     private void Throw_From_GetToken1(int code)
     {
         throw new GraphQLSyntaxErrorException($"Invalid character \"\\u{code:D4}\".", _source, _currentIndex);
     }
 
+    [DoesNotReturn]
     private Token Throw_From_GetToken2(char code)
     {
         throw new GraphQLSyntaxErrorException($"Unexpected character {ResolveCharName(code, IfUnicodeGetString())}", _source, _currentIndex);
@@ -119,6 +122,7 @@ internal struct LexerContext
         return isFloat ? CreateFloatToken(start) : CreateIntToken(start);
     }
 
+    [DoesNotReturn]
     private void Throw_From_ReadNumber(char code, char nextCode)
     {
         throw new GraphQLSyntaxErrorException($"Invalid number, unexpected digit after {code}: \"{nextCode}\"", _source, _currentIndex);
@@ -447,21 +451,25 @@ internal struct LexerContext
         );
     }
 
+    [DoesNotReturn]
     private void Throw_From_ReadString1(char code)
     {
         throw new GraphQLSyntaxErrorException($"Invalid character within String: \\u{(int)code:D4}.", _source, _currentIndex);
     }
 
+    [DoesNotReturn]
     private void Throw_From_ReadString2()
     {
         throw new GraphQLSyntaxErrorException("Unterminated string.", _source, _currentIndex);
     }
 
+    [DoesNotReturn]
     private void Throw_From_ReadBlockString1(char code)
     {
         throw new GraphQLSyntaxErrorException($"Invalid character within block string: \\u{(int)code:D4}.", _source, _currentIndex);
     }
 
+    [DoesNotReturn]
     private void Throw_From_ReadBlockString2()
     {
         throw new GraphQLSyntaxErrorException("Unterminated block string.", _source, _currentIndex);
@@ -495,6 +503,7 @@ internal struct LexerContext
         }
     }
 
+    [DoesNotReturn]
     private char Throw_From_ReadCharacterFromString(char escapedChar)
     {
         throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\{escapedChar}.", _source, _currentIndex);
@@ -522,11 +531,13 @@ internal struct LexerContext
             CharToHex(NextCode()));
     }
 
+    [DoesNotReturn]
     private void Throw_From_GetUnicodeChar1(string truncatedExpression)
     {
         throw new GraphQLSyntaxErrorException($"Invalid character escape sequence at EOF: \\{truncatedExpression}.", _source, _currentIndex);
     }
 
+    [DoesNotReturn]
     private void Throw_From_GetUnicodeChar2(ReadOnlySpan<char> expression)
     {
         throw new GraphQLSyntaxErrorException($"Invalid character escape sequence: \\u{expression.ToString()}.", _source, _currentIndex);
@@ -698,6 +709,7 @@ internal struct LexerContext
         return position;
     }
 
+    [DoesNotReturn]
     private void Throw_From_ReadDigits(char code)
     {
         throw new GraphQLSyntaxErrorException($"Invalid number, expected digit but got: {ResolveCharName(code)}", _source, _currentIndex);
