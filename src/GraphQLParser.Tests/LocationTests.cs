@@ -116,7 +116,7 @@ query q {
     name
   }
 }";
-        query = query.Replace("\r\n", "\r").Substring(16);
+        query = query.Replace("\r\n", "\n").Substring(16).Replace("\n", "\r");
         query[start].ShouldBe(c);
         var location = new Location(query, start);
         location.Line.ShouldBe(line);
