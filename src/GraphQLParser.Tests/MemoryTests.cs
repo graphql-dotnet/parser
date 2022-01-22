@@ -7,31 +7,19 @@ namespace GraphQLParser.Tests;
 
 public class MemoryTests
 {
-    [Fact]//(Skip = "ReadOnlyMemory<T>.GetHashCode demonstration")]
-    public void GetHashCode_Issue()
+    [Fact]
+    public void GetHashCode_ShouldBe_Equal()
     {
-        // ReadOnlyMemory<T> implementation
-        // public override int GetHashCode()
-        // {
-        //     if (_object == null)
-        //     {
-        //         return 0;
-        //     }
-        //
-        //     return CombineHashCodes(_object.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
-        // }
+        ROM r = "abcabc";
+        var r1 = r.Slice(0, 3);
+        var r2 = r.Slice(3, 3);
 
-        string s = "abcabc";
-        var m = s.AsMemory();
-        var s1 = m.Slice(0, 3);
-        var s2 = m.Slice(3, 3);
+        r1.ToString().ShouldBe("abc");
+        r2.ToString().ShouldBe("abc");
 
-        s1.ToString().ShouldBe("abc");
-        s2.ToString().ShouldBe("abc");
-
-        var h1 = s1.GetHashCode();
-        var h2 = s2.GetHashCode();
-        h1.ShouldBe(h2); // failed
+        var h1 = r1.GetHashCode();
+        var h2 = r2.GetHashCode();
+        h1.ShouldBe(h2);
     }
 
     [Fact]
@@ -117,10 +105,13 @@ public class MemoryTests
         rom2.Length.ShouldBe(5);
         rom2.GetHashCode().ShouldNotBe(0);
         rom2.GetHashCode().ShouldNotBe(rom.GetHashCode());
+#if NET6_0_OR_GREATER
+        rom.Slice(6).GetHashCode().ShouldNotBe(0);
+        default(ROM).GetHashCode().ShouldNotBe(0);
+#else
         rom.Slice(6).GetHashCode().ShouldBe(0);
-
         default(ROM).GetHashCode().ShouldBe(0);
-
+#endif
         (rom2 == str).ShouldBeFalse();
         (str == rom2).ShouldBeFalse();
         (rom2 != str).ShouldBeTrue();
