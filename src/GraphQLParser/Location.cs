@@ -27,10 +27,14 @@ public readonly struct Location
 
         for (int i = 0; i <= position; ++i)
         {
+            // each case should either
+            // 1) increment Column by 1
+            // or
+            // 2) increment Line by 1 and reset Column to 0
             switch (span[i])
             {
                 case '\n':
-                    if (i == position)
+                    if (i == position) // \n at the end
                     {
                         ++Column;
                     }
@@ -42,22 +46,21 @@ public readonly struct Location
                     break;
 
                 case '\r':
-                    if (i == position)
+                    if (i == position) // \r at the end
                     {
                         ++Column;
                     }
                     else
                     {
                         char next = span[i + 1];
-                        bool nextIncreaseLine = next == '\r' || next == '\n';
-                        if (!nextIncreaseLine)
+                        if (next == '\n') // \r\n at the end
+                        {
+                            ++Column;
+                        }
+                        else
                         {
                             ++Line;
                             Column = 0;
-                        }
-                        else if (i + 1 == position)
-                        {
-                            ++Column;
                         }
                     }
                     break;

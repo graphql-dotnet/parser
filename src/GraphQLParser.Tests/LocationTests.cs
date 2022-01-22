@@ -126,8 +126,25 @@ query q {
     [Theory]
     [InlineData("\r", 0, 1, 1)]
     [InlineData("\r", 1, 1, 2)]
+
     [InlineData("\n", 0, 1, 1)]
     [InlineData("\n", 1, 1, 2)]
+
+    [InlineData("\n\n", 0, 1, 1)]
+    [InlineData("\n\n", 1, 2, 1)]
+    [InlineData("\n\n", 2, 2, 2)]
+    [InlineData("\n\n ", 2, 3, 1)]
+
+    [InlineData("\r\r", 0, 1, 1)]
+    [InlineData("\r\r", 1, 2, 1)]
+    [InlineData("\r\r", 2, 2, 2)]
+    [InlineData("\r\r ", 2, 3, 1)]
+
+    [InlineData("\r\n", 0, 1, 1)]
+    [InlineData("\r\n", 1, 1, 2)]
+    [InlineData("\r\n", 2, 1, 3)]
+    [InlineData("\r\n ", 2, 2, 1)]
+
     [InlineData("a", 100, 1, 101)]
     public void SpecialCases(string query, int start, int line, int column)
     {
