@@ -4,7 +4,11 @@ namespace GraphQLParser;
 
 /// <summary>
 /// A wrapper around ReadOnlyMemory{char} allowing you to use simple syntax when working with it.
-/// <br/>
+/// <br/><br/>
+/// This struct is designed to unify work with objects of <see cref="ReadOnlyMemory{T}"/>,
+/// <see cref="ReadOnlySpan{T}"/> ans <see cref="string"/>. For example, you can directly
+/// pass the string object to all methods accepting <see cref="ROM"/>.
+/// <br/><br/>
 /// Marshal.SizeOf(ROM) = Marshal.SizeOf(ReadOnlyMemory{char}) = 16
 /// </summary>
 public readonly struct ROM : IEquatable<ROM>
