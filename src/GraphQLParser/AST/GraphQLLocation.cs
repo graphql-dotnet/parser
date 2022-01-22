@@ -44,7 +44,7 @@ public readonly struct GraphQLLocation : IEquatable<GraphQLLocation>
     public bool Equals(GraphQLLocation other) => Start == other.Start && End == other.End;
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is GraphQLLocation l && Equals(l);
+    public override bool Equals(object? obj) => obj is GraphQLLocation l && Equals(l);
 
     /// <inheritdoc/>
     public override int GetHashCode() => (Start, End).GetHashCode();

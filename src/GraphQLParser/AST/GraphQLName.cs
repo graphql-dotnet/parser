@@ -92,7 +92,7 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     public static bool operator !=(string? name1, GraphQLName? name2) => name2 != name1;
 
     /// <inheritdoc/>
-    public bool Equals(GraphQLName other) => Equals(this, other);
+    public bool Equals(GraphQLName? other) => Equals(this, other);
 
     private static bool Equals(GraphQLName? name1, GraphQLName? name2)
     {
@@ -117,7 +117,7 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     }
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is GraphQLName name && Equals(name);
+    public override bool Equals(object? obj) => obj is GraphQLName name && Equals(name);
 
     /// <inheritdoc/>
     public override int GetHashCode() => Value.GetHashCode();
