@@ -618,14 +618,30 @@ extend union Unity =
     }
 
     [Fact]
-    public async Task TryPeek_Should_Return_False_If_No_Parents()
+    public async Task SelectionSet_Without_Parent_Should_Be_Printed_On_New_Line()
     {
         var selectionSet = new GraphQLSelectionSet { Selections = new List<ASTNode>() };
         var context = new TestContext();
         var writer = new SDLWriter<TestContext>();
         await writer.Visit(selectionSet, context);
         var actual = context.Writer.ToString();
-        actual.ShouldBe(@" {
+        actual.ShouldBe(@"{
+}
+");
+    }
+
+    [Fact]
+    public async Task SelectionSet_Under_Operation_With_Null_Name_Should_Be_Printed_On_New_Line()
+    {
+        var def = new GraphQLOperationDefinition
+        {
+            SelectionSet = new GraphQLSelectionSet { Selections = new List<ASTNode>() }
+        };
+        var context = new TestContext();
+        var writer = new SDLWriter<TestContext>();
+        await writer.Visit(def, context);
+        var actual = context.Writer.ToString();
+        actual.ShouldBe(@"{
 }
 ");
     }

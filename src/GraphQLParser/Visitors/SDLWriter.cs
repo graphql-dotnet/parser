@@ -99,7 +99,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
 
         static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context)
         {
-            return TryPeek<ASTNode>(context, 2, out var node) &&
+            return TryPeekParent(context, out var node) &&
                 node is GraphQLArguments ||
                 node is GraphQLObjectField ||
                 node is GraphQLName ||
@@ -278,7 +278,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         await Visit(selectionSet.Comment, context).ConfigureAwait(false);
 
         bool freshLine = selectionSet.Comment != null && Options.WriteComments;
-        if (!freshLine && (TryPeek<GraphQLOperationDefinition>(context, 2, out var op) && op.Name is not null || op is null))
+        if (!freshLine && TryPeekParent(context, out var node) && (node is GraphQLOperationDefinition op && op.Name is not null || node is not GraphQLOperationDefinition))
         {
             await context.Write(" {").ConfigureAwait(false);
         }
@@ -1003,23 +1003,17 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
             await context.Write("  ").ConfigureAwait(false);
     }
 
-    private static bool TryPeek<TNode>(TContext context, int level, [NotNullWhen(true)] out TNode? node)
-        where TNode : ASTNode
+    private static bool TryPeekParent(TContext context, [NotNullWhen(true)] out ASTNode? node)
     {
         node = null;
 
         using var e = context.Parents.GetEnumerator();
-        for (int i = 0; i < level; ++i)
+        for (int i = 0; i < 2; ++i)
             if (!e.MoveNext())
                 return false;
 
-        if (e.Current is TNode n)
-        {
-            node = n;
-            return true;
-        }
-
-        return false;
+        node = e.Current;
+        return true;
     }
 
     // http://spec.graphql.org/October2021/#StringCharacter
