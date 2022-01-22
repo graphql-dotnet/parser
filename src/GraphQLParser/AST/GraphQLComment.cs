@@ -5,7 +5,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.Comment"/>.
 /// </summary>
-[DebuggerDisplay("GraphQLComment: {Text}")]
+[DebuggerDisplay("GraphQLComment: {Value}")]
 public class GraphQLComment : ASTNode, IHasValueNode
 {
     /// <inheritdoc/>

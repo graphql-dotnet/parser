@@ -1,9 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildThisFileDirectory)Tests.local.props" Condition="Exists('$(MSBuildThisFileDirectory)Tests.local.props')" />
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net5;net6</TargetFrameworks>
+    <SingleTestPlatform Condition="'$(SingleTestPlatform)' == ''">false</SingleTestPlatform>
     <Nullable>disable</Nullable>
     <NoWarn>$(NoWarn);1591;IDE0008;IDE0022;IDE0058;IDE1006</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SingleTestPlatform)' == 'true'">
+    <TargetFramework>net6</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SingleTestPlatform)' != 'true'">
+    <TargetFrameworks>netcoreapp3.1;net5;net6</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

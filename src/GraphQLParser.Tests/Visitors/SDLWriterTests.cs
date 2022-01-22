@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GraphQLParser.AST;
 using GraphQLParser.Visitors;
 using Shouldly;
 using Xunit;
@@ -16,7 +17,7 @@ public class SDLWriterTests
     {
         public TextWriter Writer { get; set; } = new StringWriter();
 
-        public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
+        public Stack<ASTNode> Parents { get; set; } = new Stack<ASTNode>();
 
         public CancellationToken CancellationToken { get; set; }
 
@@ -613,6 +614,86 @@ extend union Unity =
             {
                 // should be parsed back
             }
+        }
+    }
+
+    [Fact]
+    public async Task SelectionSet_Without_Parent_Should_Be_Printed_On_New_Line()
+    {
+        var selectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() };
+        var context = new TestContext();
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
+        await writer.Visit(selectionSet, context);
+        context.Writer.ToString().ShouldBe(@"{
+}
+");
+        selectionSet.Comment = new GraphQLComment("comment");
+        context = new TestContext();
+        await writer.Visit(selectionSet, context);
+        context.Writer.ToString().ShouldBe(@"#comment
+{
+}
+");
+    }
+
+    [Fact]
+    public async Task SelectionSet_Under_Operation_With_Null_Name_Should_Be_Printed_On_New_Line()
+    {
+        var def = new GraphQLOperationDefinition
+        {
+            SelectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() }
+        };
+        var context = new TestContext();
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
+        await writer.Visit(def, context);
+        var actual = context.Writer.ToString();
+        actual.ShouldBe(@"{
+}
+");
+        def.SelectionSet.Comment = new GraphQLComment("comment");
+        context = new TestContext();
+        await writer.Visit(def, context);
+        context.Writer.ToString().ShouldBe(@"#comment
+{
+}
+");
+    }
+
+    [Theory]
+    [InlineData("query a { name }")]
+    [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    public async Task WriteDocumentVisitor_Should_Throw_On_Unknown_Values(string text)
+    {
+        var context = new TestContext();
+        var writer = new SDLWriter<TestContext>();
+        using (var document = text.Parse())
+        {
+            await new DoBadThingsVisitor().Visit(document, new Context());
+
+            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await writer.Visit(document, context));
+            ex.Message.ShouldStartWith("Unknown ");
+        }
+    }
+
+    private class Context : INodeVisitorContext
+    {
+        public CancellationToken CancellationToken => throw new NotImplementedException();
+    }
+
+    private sealed class DoBadThingsVisitor : DefaultNodeVisitor<Context>
+    {
+        public override ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, Context context)
+        {
+            operationDefinition.Operation = (OperationType)99;
+            return base.VisitOperationDefinition(operationDefinition, context);
+        }
+
+        public override ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, Context context)
+        {
+            for (int i = 0; i < directiveLocations.Items.Count; ++i)
+                directiveLocations.Items[i] = (DirectiveLocation)(100 + i);
+
+            return base.VisitDirectiveLocations(directiveLocations, context);
         }
     }
 }
