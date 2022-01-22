@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using GraphQLParser.AST;
-using GraphQLParser.Exceptions;
 
 namespace GraphQLParser;
 
@@ -205,11 +204,6 @@ internal partial struct ParserContext
             return ParseNamedDefinitionWithDescription();
 
         return Throw_Unexpected_Token();
-    }
-
-    private ASTNode Throw_Unexpected_Token(string? description = null)
-    {
-        throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}{description}", _source, _currentToken.Start);
     }
 
     private List<ASTNode> ParseDefinitionsIfNotEOF()
