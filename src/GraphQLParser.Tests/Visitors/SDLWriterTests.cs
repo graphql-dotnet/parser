@@ -17,7 +17,7 @@ public class SDLWriterTests
     {
         public TextWriter Writer { get; set; } = new StringWriter();
 
-        public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
+        public Stack<ASTNode> Parents { get; set; } = new Stack<ASTNode>();
 
         public CancellationToken CancellationToken { get; set; }
 
@@ -620,12 +620,18 @@ extend union Unity =
     [Fact]
     public async Task SelectionSet_Without_Parent_Should_Be_Printed_On_New_Line()
     {
-        var selectionSet = new GraphQLSelectionSet { Selections = new List<ASTNode>() };
+        var selectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() };
         var context = new TestContext();
-        var writer = new SDLWriter<TestContext>();
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
         await writer.Visit(selectionSet, context);
-        var actual = context.Writer.ToString();
-        actual.ShouldBe(@"{
+        context.Writer.ToString().ShouldBe(@"{
+}
+");
+        selectionSet.Comment = new GraphQLComment("comment");
+        context = new TestContext();
+        await writer.Visit(selectionSet, context);
+        context.Writer.ToString().ShouldBe(@"#comment
+{
 }
 ");
     }
@@ -635,13 +641,20 @@ extend union Unity =
     {
         var def = new GraphQLOperationDefinition
         {
-            SelectionSet = new GraphQLSelectionSet { Selections = new List<ASTNode>() }
+            SelectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() }
         };
         var context = new TestContext();
-        var writer = new SDLWriter<TestContext>();
+        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
         await writer.Visit(def, context);
         var actual = context.Writer.ToString();
         actual.ShouldBe(@"{
+}
+");
+        def.SelectionSet.Comment = new GraphQLComment("comment");
+        context = new TestContext();
+        await writer.Visit(def, context);
+        context.Writer.ToString().ShouldBe(@"#comment
+{
 }
 ");
     }
