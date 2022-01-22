@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
 
@@ -110,6 +111,7 @@ internal partial struct ParserContext
 
     private void DecreaseDepth() => --_currentDepth;
 
+    [DoesNotReturn]
     private void ThrowMaxDepthException()
     {
         throw new GraphQLMaxDepthExceededException(_source, _currentToken.Start);
@@ -182,6 +184,7 @@ internal partial struct ParserContext
         }
     }
 
+    [DoesNotReturn]
     private void Throw_From_Expect(TokenKind kind, string? description = null)
     {
         throw new GraphQLSyntaxErrorException($"Expected {Token.GetTokenKindDescription(kind)}, found {_currentToken}{description}", _source, _currentToken.Start);
@@ -195,6 +198,7 @@ internal partial struct ParserContext
             Throw_From_ExpectKeyword(keyword);
     }
 
+    [DoesNotReturn]
     private void Throw_From_ExpectKeyword(string keyword)
     {
         throw new GraphQLSyntaxErrorException($"Expected \"{keyword}\", found {_currentToken}", _source, _currentToken.Start);
@@ -225,8 +229,15 @@ internal partial struct ParserContext
         }
     }
 
+    [DoesNotReturn]
     private string Throw_From_ExpectOneOf(string[] oneOf)
     {
         throw new GraphQLSyntaxErrorException($"Expected \"{string.Join("/", oneOf)}\", found {_currentToken}", _source, _currentToken.Start);
+    }
+
+    [DoesNotReturn]
+    private ASTNode Throw_Unexpected_Token(string? description = null)
+    {
+        throw new GraphQLSyntaxErrorException($"Unexpected {_currentToken}{description}", _source, _currentToken.Start);
     }
 }

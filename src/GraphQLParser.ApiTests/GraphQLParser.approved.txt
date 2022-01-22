@@ -141,10 +141,10 @@ namespace GraphQLParser.AST
         public GraphQLArgumentsDefinition() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
-    public class GraphQLBooleanValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
+    public abstract class GraphQLBooleanValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.IHasValueNode
     {
-        public GraphQLBooleanValue(bool value) { }
-        public bool BoolValue { get; }
+        protected GraphQLBooleanValue() { }
+        public abstract bool BoolValue { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; }
     }
@@ -232,6 +232,11 @@ namespace GraphQLParser.AST
         protected GraphQLExecutableDefinition() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLSelectionSet SelectionSet { get; set; }
+    }
+    public class GraphQLFalseBooleanValue : GraphQLParser.AST.GraphQLBooleanValue
+    {
+        public GraphQLFalseBooleanValue() { }
+        public override bool BoolValue { get; }
     }
     public class GraphQLField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode, GraphQLParser.AST.INamedNode, GraphQLParser.AST.ISelectionNode
     {
@@ -496,6 +501,11 @@ namespace GraphQLParser.AST
         public GraphQLStringValue(string value) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.ROM Value { get; }
+    }
+    public class GraphQLTrueBooleanValue : GraphQLParser.AST.GraphQLBooleanValue
+    {
+        public GraphQLTrueBooleanValue() { }
+        public override bool BoolValue { get; }
     }
     public abstract class GraphQLType : GraphQLParser.AST.ASTNode
     {
