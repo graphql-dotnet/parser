@@ -648,12 +648,22 @@ internal static class NodeHelper
 
     public static GraphQLBooleanValue CreateGraphQLBooleanValue(IgnoreOptions options, bool value)
     {
-        return options switch
+        return value switch
         {
-            IgnoreOptions.All => new GraphQLBooleanValue(value),
-            IgnoreOptions.Comments => new GraphQLBooleanValueWithLocation(value),
-            IgnoreOptions.Locations => new GraphQLBooleanValueWithComment(value),
-            _ => new GraphQLBooleanValueFull(value),
+            true => options switch
+            {
+                IgnoreOptions.All => new GraphQLTrueBooleanValue(),
+                IgnoreOptions.Comments => new GraphQLTrueBooleanValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLTrueBooleanValueWithComment(),
+                _ => new GraphQLTrueBooleanValueFull(),
+            },
+            false => options switch
+            {
+                IgnoreOptions.All => new GraphQLFalseBooleanValue(),
+                IgnoreOptions.Comments => new GraphQLFalseBooleanValueWithLocation(),
+                IgnoreOptions.Locations => new GraphQLFalseBooleanValueWithComment(),
+                _ => new GraphQLFalseBooleanValueFull(),
+            }
         };
     }
 
