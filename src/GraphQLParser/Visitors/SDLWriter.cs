@@ -966,7 +966,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         OperationType.Mutation => "mutation",
         OperationType.Subscription => "subscription",
 
-        _ => throw new NotSupportedException(type.ToString()),
+        _ => throw new NotSupportedException($"Unknown operation {type}"),
     };
 
     private static string GetDirectiveLocation(DirectiveLocation location) => location switch
@@ -994,7 +994,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         DirectiveLocation.InputObject => "INPUT_OBJECT",
         DirectiveLocation.InputFieldDefinition => "INPUT_FIELD_DEFINITION",
 
-        _ => throw new NotSupportedException(location.ToString()),
+        _ => throw new NotSupportedException($"Unknown directive location {location}"),
     };
 
     private static async ValueTask WriteIndent(TContext context)

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GraphQLParser.AST;
 using GraphQLParser.Visitors;
 using Shouldly;
 using Xunit;
@@ -613,6 +614,58 @@ extend union Unity =
             {
                 // should be parsed back
             }
+        }
+    }
+
+
+    [Fact]
+    public async Task TryPeek_Should_Return_False_If_No_Parents()
+    {
+        var selectionSet = new GraphQLSelectionSet { Selections = new List<ASTNode>() };
+        var context = new TestContext();
+        var writer = new SDLWriter<TestContext>();
+        await writer.Visit(selectionSet, context);
+        var actual = context.Writer.ToString();
+        actual.ShouldBe(@" {
+}
+");
+    }
+
+    [Theory]
+    [InlineData("query a { name }")]
+    [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    public async Task WriteDocumentVisitor_Should_Throw_On_Unknown_Values(string text)
+    {
+        var context = new TestContext();
+        var writer = new SDLWriter<TestContext>();
+        using (var document = text.Parse())
+        {
+            await new DoBadThingsVisitor().Visit(document, new Context());
+
+            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await writer.Visit(document, context));
+            ex.Message.ShouldStartWith("Unknown ");
+        }
+    }
+
+    private class Context : INodeVisitorContext
+    {
+        public CancellationToken CancellationToken => throw new NotImplementedException();
+    }
+
+    private sealed class DoBadThingsVisitor : DefaultNodeVisitor<Context>
+    {
+        public override ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, Context context)
+        {
+            operationDefinition.Operation = (OperationType)99;
+            return base.VisitOperationDefinition(operationDefinition, context);
+        }
+
+        public override ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, Context context)
+        {
+            for (int i = 0; i < directiveLocations.Items.Count; ++i)
+                directiveLocations.Items[i] = (DirectiveLocation)(100 + i);
+
+            return base.VisitDirectiveLocations(directiveLocations, context);
         }
     }
 }
