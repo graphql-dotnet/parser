@@ -617,7 +617,6 @@ extend union Unity =
         }
     }
 
-
     [Fact]
     public async Task TryPeek_Should_Return_False_If_No_Parents()
     {
