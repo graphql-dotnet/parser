@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -32,18 +34,18 @@ internal sealed class GraphQLFragmentDefinitionWithLocation : GraphQLFragmentDef
 
 internal sealed class GraphQLFragmentDefinitionWithComment : GraphQLFragmentDefinition
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 internal sealed class GraphQLFragmentDefinitionFull : GraphQLFragmentDefinition
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -51,9 +53,9 @@ internal sealed class GraphQLFragmentDefinitionFull : GraphQLFragmentDefinition
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

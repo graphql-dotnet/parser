@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GraphQLParser.AST;
 using Shouldly;
@@ -17,7 +18,7 @@ public class NodeHelperTests
                 ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.None })
                 : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.None, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment("abcdef");
+            node.Comments = new List<GraphQLComment> { new GraphQLComment("abcdef") };
             if (node is not GraphQLComment &&
                 node is not GraphQLDocument &&
                 node is not GraphQLDescription &&
@@ -38,7 +39,7 @@ public class NodeHelperTests
                 ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Comments })
                 : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Comments, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment("abcdef");
+            node.Comments = new List<GraphQLComment> { new GraphQLComment("abcdef") };
             node.Comment.ShouldBeNull();
 
             node.Location = new GraphQLLocation(100, 200);
@@ -55,7 +56,7 @@ public class NodeHelperTests
               ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Locations })
               : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.Locations, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment("abcdef");
+            node.Comments = new List<GraphQLComment> { new GraphQLComment("abcdef") };
             if (node is not GraphQLComment &&
                 node is not GraphQLDocument &&
                 node is not GraphQLDescription &&
@@ -76,7 +77,7 @@ public class NodeHelperTests
                 ? (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.All })
                 : (ASTNode)method.Invoke(null, new object[] { IgnoreOptions.All, Activator.CreateInstance(method.GetParameters()[1].ParameterType) });
 
-            node.Comment = new GraphQLComment("abcdef");
+            node.Comments = new List<GraphQLComment> { new GraphQLComment("abcdef") };
             node.Comment.ShouldBeNull();
 
             node.Location = new GraphQLLocation(100, 200);

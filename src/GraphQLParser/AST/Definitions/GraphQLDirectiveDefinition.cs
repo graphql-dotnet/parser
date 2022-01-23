@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -42,19 +44,19 @@ internal sealed class GraphQLDirectiveDefinitionWithLocation : GraphQLDirectiveD
 
 internal sealed class GraphQLDirectiveDefinitionWithComment : GraphQLDirectiveDefinition
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLDirectiveDefinitionFull : GraphQLDirectiveDefinition
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -62,9 +64,9 @@ internal sealed class GraphQLDirectiveDefinitionFull : GraphQLDirectiveDefinitio
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

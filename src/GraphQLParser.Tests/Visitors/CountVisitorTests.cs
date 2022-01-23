@@ -39,12 +39,11 @@ field: Int }", 10)]
         var context = new DefaultCountContext(_ => true);
         context.CancellationToken.ShouldBe(CancellationToken.None);
 
-        using (var document = text.Parse())
-        {
-            await visitor.VisitAsync(document, context).ConfigureAwait(false);
-            context.Count.ShouldBe(expectedCount);
-            document.AllNestedCount().ShouldBe(expectedCount);
-        }
+        var document = text.Parse();
+
+        await visitor.VisitAsync(document, context).ConfigureAwait(false);
+        context.Count.ShouldBe(expectedCount);
+        document.AllNestedCount().ShouldBe(expectedCount);
     }
 
     [Theory]
@@ -57,10 +56,9 @@ field: Int }", 10)]
         var context = new DefaultCountContext(_ => false);
         context.CancellationToken.ShouldBe(CancellationToken.None);
 
-        using (var document = text.Parse())
-        {
-            await visitor.VisitAsync(document, context).ConfigureAwait(false);
-            context.Count.ShouldBe(0);
-        }
+        var document = text.Parse();
+
+        await visitor.VisitAsync(document, context).ConfigureAwait(false);
+        context.Count.ShouldBe(0);
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -22,19 +24,19 @@ internal sealed class GraphQLVariablesDefinitionWithLocation : GraphQLVariablesD
 
 internal sealed class GraphQLVariablesDefinitionWithComment : GraphQLVariablesDefinition
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLVariablesDefinitionFull : GraphQLVariablesDefinition
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -42,9 +44,9 @@ internal sealed class GraphQLVariablesDefinitionFull : GraphQLVariablesDefinitio
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

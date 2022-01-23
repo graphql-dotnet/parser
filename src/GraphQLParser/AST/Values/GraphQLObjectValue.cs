@@ -48,19 +48,19 @@ internal sealed class GraphQLObjectValueWithLocation : GraphQLObjectValue
 
 internal sealed class GraphQLObjectValueWithComment : GraphQLObjectValue
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLObjectValueFull : GraphQLObjectValue
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -68,9 +68,9 @@ internal sealed class GraphQLObjectValueFull : GraphQLObjectValue
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

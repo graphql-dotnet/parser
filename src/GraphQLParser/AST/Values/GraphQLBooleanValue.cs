@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace GraphQLParser.AST;
@@ -53,19 +54,19 @@ internal sealed class GraphQLTrueBooleanValueWithLocation : GraphQLTrueBooleanVa
 
 internal sealed class GraphQLTrueBooleanValueWithComment : GraphQLTrueBooleanValue
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLTrueBooleanValueFull : GraphQLTrueBooleanValue
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -73,10 +74,10 @@ internal sealed class GraphQLTrueBooleanValueFull : GraphQLTrueBooleanValue
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
@@ -93,19 +94,19 @@ internal sealed class GraphQLFalseBooleanValueWithLocation : GraphQLFalseBoolean
 
 internal sealed class GraphQLFalseBooleanValueWithComment : GraphQLFalseBooleanValue
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLFalseBooleanValueFull : GraphQLFalseBooleanValue
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -113,9 +114,9 @@ internal sealed class GraphQLFalseBooleanValueFull : GraphQLFalseBooleanValue
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

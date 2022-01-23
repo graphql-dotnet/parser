@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -22,19 +24,19 @@ internal sealed class GraphQLUnionMemberTypesWithLocation : GraphQLUnionMemberTy
 
 internal sealed class GraphQLUnionMemberTypesWithComment : GraphQLUnionMemberTypes
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLUnionMemberTypesFull : GraphQLUnionMemberTypes
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -42,9 +44,9 @@ internal sealed class GraphQLUnionMemberTypesFull : GraphQLUnionMemberTypes
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

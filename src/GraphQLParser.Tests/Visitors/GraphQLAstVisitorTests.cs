@@ -221,7 +221,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_BooleanValueArgument_VisitsOneBooleanValue(IgnoreOptions options)
     {
-        using var d = "{ stuff(id : true) }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ stuff(id : true) }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedBooleanValues.ShouldHaveSingleItem();
@@ -234,7 +234,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_DefinitionWithSingleFragmentSpread_VisitsFragmentSpreadOneTime(IgnoreOptions options)
     {
-        using var d = "{ foo { ...fragment } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ foo { ...fragment } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFragmentSpreads.ShouldHaveSingleItem();
@@ -247,7 +247,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_DefinitionWithSingleFragmentSpread_VisitsNameOfPropertyAndFragmentSpread(IgnoreOptions options)
     {
-        using var d = "{ foo { ...fragment } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ foo { ...fragment } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedNames.Count.ShouldBe(2);
@@ -260,7 +260,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_DirectiveWithVariable_VisitsVariableOnce(IgnoreOptions options)
     {
-        using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedVariables.ShouldHaveSingleItem();
@@ -273,7 +273,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_EnumValueArgument_VisitsOneEnumValue(IgnoreOptions options)
     {
-        using var d = "{ stuff(id : TEST_ENUM) }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ stuff(id : TEST_ENUM) }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedEnumValues.ShouldHaveSingleItem();
@@ -286,7 +286,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_FloatValueArgument_VisitsOneFloatValue(IgnoreOptions options)
     {
-        using var d = "{ stuff(id : 1.2) }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ stuff(id : 1.2) }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFloatValues.ShouldHaveSingleItem();
@@ -299,7 +299,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_FragmentWithTypeCondition_VisitsFragmentDefinitionOnce(IgnoreOptions options)
     {
-        using var d = "fragment testFragment on Stuff { field }".Parse(new ParserOptions { Ignore = options });
+        var d = "fragment testFragment on Stuff { field }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFragmentDefinitions.ShouldHaveSingleItem();
@@ -312,7 +312,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_FragmentWithTypeCondition_VisitsTypeConditionOnce(IgnoreOptions options)
     {
-        using var d = "fragment testFragment on Stuff { field }".Parse(new ParserOptions { Ignore = options });
+        var d = "fragment testFragment on Stuff { field }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFragmentTypeConditions.ShouldHaveSingleItem();
@@ -325,7 +325,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsArgumentsOnce(IgnoreOptions options)
     {
-        using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedArguments.ShouldHaveSingleItem();
@@ -338,7 +338,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsDirectiveOnce(IgnoreOptions options)
     {
-        using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedDirectives.ShouldHaveSingleItem();
@@ -351,7 +351,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_InlineFragmentWithDirectiveAndArgument_VisitsNameThreeTimes(IgnoreOptions options)
     {
-        using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedNames.Count.ShouldBe(4);
@@ -364,7 +364,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_InlineFragmentWithOneField_VisitsOneField(IgnoreOptions options)
     {
-        using var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ ... @include(if : $stuff) { field } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFields.ShouldHaveSingleItem();
@@ -377,7 +377,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_InlineFragmentWithTypeCondition_VisitsInlineFragmentOnce(IgnoreOptions options)
     {
-        using var d = "{ ... on Stuff { field } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ ... on Stuff { field } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedInlineFragments.ShouldHaveSingleItem();
@@ -390,7 +390,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_InlineFragmentWithTypeCondition_VisitsTypeConditionOnce(IgnoreOptions options)
     {
-        using var d = "{ ... on Stuff { field } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ ... on Stuff { field } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFragmentTypeConditions.ShouldHaveSingleItem();
@@ -403,7 +403,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_IntValueArgument_VisitsOneIntValue(IgnoreOptions options)
     {
-        using var d = "{ stuff(id : 1) }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ stuff(id : 1) }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedIntValues.ShouldHaveSingleItem();
@@ -416,7 +416,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_OneDefinition_CallsVisitDefinitionOnce(IgnoreOptions options)
     {
-        using var d = "{ a }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ a }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedDefinitions.ShouldHaveSingleItem();
@@ -429,7 +429,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_OneDefinition_ProvidesCorrectDefinitionAsParameter(IgnoreOptions options)
     {
-        using var d = "{ a }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ a }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedDefinitions.Single().ShouldBe(d.Definitions.Single());
@@ -442,7 +442,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_OneDefinition_VisitsOneSelectionSet(IgnoreOptions options)
     {
-        using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedSelectionSets.ShouldHaveSingleItem();
@@ -455,7 +455,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_OneDefinitionWithOneAliasedField_VisitsOneAlias(IgnoreOptions options)
     {
-        using var d = "{ foo, foo : bar }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ foo, foo : bar }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedAliases.ShouldHaveSingleItem();
@@ -468,7 +468,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_OneDefinitionWithOneArgument_VisitsOneArgument(IgnoreOptions options)
     {
-        using var d = "{ foo(id : 1) { name } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ foo(id : 1) { name } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedArguments.ShouldHaveSingleItem();
@@ -481,7 +481,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_OneDefinitionWithOneNestedArgument_VisitsOneArgument(IgnoreOptions options)
     {
-        using var d = "{ foo{ names(size: 10) } }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ foo{ names(size: 10) } }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedArguments.ShouldHaveSingleItem();
@@ -494,7 +494,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_StringValueArgument_VisitsOneStringValue(IgnoreOptions options)
     {
-        using var d = "{ stuff(id : \"abc\") }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ stuff(id : \"abc\") }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedStringValues.ShouldHaveSingleItem();
@@ -507,7 +507,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_TwoDefinitions_CallsVisitDefinitionTwice(IgnoreOptions options)
     {
-        using var d = "{ a }\n{ b }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ a }\n{ b }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedDefinitions.Count.ShouldBe(2);
@@ -520,7 +520,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_TwoFields_VisitsFieldTwice(IgnoreOptions options)
     {
-        using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFields.Count.ShouldBe(2);
@@ -533,7 +533,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_TwoFields_VisitsTwoFieldNames(IgnoreOptions options)
     {
-        using var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
+        var d = "{ a, b }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedNames.Count.ShouldBe(2);
@@ -546,7 +546,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_TwoFields_VisitsTwoFieldNamesAndDefinitionName(IgnoreOptions options)
     {
-        using var d = "query foo { a, b }".Parse(new ParserOptions { Ignore = options });
+        var d = "query foo { a, b }".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedNames.Count.ShouldBe(3);
@@ -559,7 +559,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_TwoFieldsWithOneNested_VisitsFiveFields(IgnoreOptions options)
     {
-        using var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
+        var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedFields.Count.ShouldBe(5);
@@ -572,7 +572,7 @@ public class GraphQLAstVisitorTests
     [InlineData(IgnoreOptions.All)]
     public void Visit_TwoFieldsWithOneNested_VisitsFiveNames(IgnoreOptions options)
     {
-        using var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
+        var d = "{a, nested { x,  y }, b}".Parse(new ParserOptions { Ignore = options });
         _visitor.VisitAsync(d, Context);
 
         Context.VisitedNames.Count.ShouldBe(5);

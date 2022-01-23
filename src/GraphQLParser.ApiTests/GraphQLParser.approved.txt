@@ -12,7 +12,7 @@ namespace GraphQLParser.AST
     {
         protected ASTNode() { }
         public abstract GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public virtual GraphQLParser.AST.GraphQLComment? Comment { get; set; }
+        public virtual System.Collections.Generic.List<GraphQLParser.AST.GraphQLComment>? Comments { get; set; }
         public virtual GraphQLParser.AST.GraphQLLocation Location { get; set; }
     }
     public enum ASTNodeKind
@@ -186,14 +186,12 @@ namespace GraphQLParser.AST
         public GraphQLDirectives() { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
-    public class GraphQLDocument : GraphQLParser.AST.ASTNode, System.IDisposable
+    public class GraphQLDocument : GraphQLParser.AST.ASTNode
     {
         public GraphQLDocument() { }
         public System.Collections.Generic.List<GraphQLParser.AST.ASTNode> Definitions { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
-        public System.Collections.Generic.List<GraphQLParser.AST.GraphQLComment>? UnattachedComments { get; set; }
-        public void Dispose() { }
-        protected virtual void Dispose(bool disposing) { }
+        public System.Collections.Generic.List<System.Collections.Generic.List<GraphQLParser.AST.GraphQLComment>>? UnattachedComments { get; set; }
     }
     public class GraphQLEnumTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
     {

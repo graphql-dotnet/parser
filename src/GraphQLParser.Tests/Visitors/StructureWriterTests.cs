@@ -292,12 +292,11 @@ field: Int }", @"Document
     {
         var context = new TestContext();
 
-        using (var document = text.Parse())
-        {
-            await _structWriter1.VisitAsync(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
-            actual.ShouldBe(expected);
-        }
+        var document = text.Parse();
+        
+        await _structWriter1.VisitAsync(document, context).ConfigureAwait(false);
+        var actual = context.Writer.ToString();
+        actual.ShouldBe(expected);
     }
 
     [Theory]
@@ -314,12 +313,11 @@ field: Int }", @"Document
     {
         var context = new TestContext();
 
-        using (var document = text.Parse())
-        {
-            await _structWriter2.VisitAsync(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
-            actual.ShouldBe(expected);
-        }
+        var document = text.Parse();
+
+        await _structWriter2.VisitAsync(document, context).ConfigureAwait(false);
+        var actual = context.Writer.ToString();
+        actual.ShouldBe(expected);
     }
 
     [Theory]
@@ -562,12 +560,11 @@ scalar S", @"Document (10,30)
 
             var context = new TestContext();
 
-            using (var document = text.Parse(new ParserOptions { Ignore = option }))
-            {
-                await _structWriter3.VisitAsync(document, context).ConfigureAwait(false);
-                var actual = context.Writer.ToString();
-                actual.ShouldBe(expected);
-            }
+            var document = text.Parse(new ParserOptions { Ignore = option });
+
+            await _structWriter3.VisitAsync(document, context).ConfigureAwait(false);
+            var actual = context.Writer.ToString();
+            actual.ShouldBe(expected);
         }
     }
 }

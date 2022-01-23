@@ -512,17 +512,13 @@ extend union Unity =
             EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
             EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
         });
-        using (var document = text.Parse())
-        {
-            await writer.VisitAsync(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
-            actual.ShouldBe(expected, $"Test {number} failed");
+        var document = text.Parse();
 
-            using (actual.Parse())
-            {
-                // should be parsed back
-            }
-        }
+        await writer.VisitAsync(document, context).ConfigureAwait(false);
+        var actual = context.Writer.ToString();
+        actual.ShouldBe(expected, $"Test {number} failed");
+
+        actual.Parse(); // should be parsed back
     }
 
     [Theory]
@@ -571,21 +567,17 @@ extend union Unity =
         var context = new TestContext();
         var writer = new SDLWriter<TestContext>();
 
-        using (var document = (input + " scalar a").Parse())
-        {
-            await writer.VisitAsync(document, context).ConfigureAwait(false);
-            var renderedOriginal = context.Writer.ToString();
+        var document = (input + " scalar a").Parse();
 
-            var lines = renderedOriginal.Split(Environment.NewLine);
-            var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
-            renderedDescription = renderedDescription.Replace("\r\n", "\n");
-            renderedDescription.ShouldBe(expected);
+        await writer.VisitAsync(document, context).ConfigureAwait(false);
+        var renderedOriginal = context.Writer.ToString();
 
-            using (renderedOriginal.Parse())
-            {
-                // should be parsed back
-            }
-        }
+        var lines = renderedOriginal.Split(Environment.NewLine);
+        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
+        renderedDescription = renderedDescription.Replace("\r\n", "\n");
+        renderedDescription.ShouldBe(expected);
+
+        renderedOriginal.Parse(); // should be parsed back
     }
 
     [Theory]
@@ -604,17 +596,13 @@ extend union Unity =
         var context = new TestContext();
         var writer = new SDLWriter<TestContext>();
 
-        using (var document = query.Parse())
-        {
-            await writer.VisitAsync(document, context).ConfigureAwait(false);
-            var rendered = context.Writer.ToString();
-            rendered.ShouldBe(expected);
+        var document = query.Parse();
 
-            using (rendered.Parse())
-            {
-                // should be parsed back
-            }
-        }
+        await writer.VisitAsync(document, context).ConfigureAwait(false);
+        var rendered = context.Writer.ToString();
+        rendered.ShouldBe(expected);
+
+        rendered.Parse(); // should be parsed back
     }
 
     [Fact]
@@ -627,7 +615,7 @@ extend union Unity =
         context.Writer.ToString().ShouldBe(@"{
 }
 ");
-        selectionSet.Comment = new GraphQLComment("comment");
+        selectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
         context = new TestContext();
         await writer.VisitAsync(selectionSet, context);
         context.Writer.ToString().ShouldBe(@"#comment
@@ -650,7 +638,7 @@ extend union Unity =
         actual.ShouldBe(@"{
 }
 ");
-        def.SelectionSet.Comment = new GraphQLComment("comment");
+        def.SelectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
         context = new TestContext();
         await writer.VisitAsync(def, context);
         context.Writer.ToString().ShouldBe(@"#comment
@@ -666,13 +654,12 @@ extend union Unity =
     {
         var context = new TestContext();
         var writer = new SDLWriter<TestContext>();
-        using (var document = text.Parse())
-        {
-            await new DoBadThingsVisitor().VisitAsync(document, new Context());
+        var document = text.Parse();
 
-            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await writer.VisitAsync(document, context));
-            ex.Message.ShouldStartWith("Unknown ");
-        }
+        await new DoBadThingsVisitor().VisitAsync(document, new Context());
+
+        var ex = await Should.ThrowAsync<NotSupportedException>(async () => await writer.VisitAsync(document, context));
+        ex.Message.ShouldStartWith("Unknown ");
     }
 
     private class Context : INodeVisitorContext

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -32,19 +34,19 @@ internal sealed class GraphQLRootOperationTypeDefinitionWithLocation : GraphQLRo
 
 internal sealed class GraphQLRootOperationTypeDefinitionWithComment : GraphQLRootOperationTypeDefinition
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLRootOperationTypeDefinitionFull : GraphQLRootOperationTypeDefinition
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -52,9 +54,9 @@ internal sealed class GraphQLRootOperationTypeDefinitionFull : GraphQLRootOperat
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace GraphQLParser.AST;
@@ -142,12 +143,12 @@ internal sealed class GraphQLNameWithLocation : GraphQLName
 
 internal sealed class GraphQLNameWithComment : GraphQLName
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 
     /// <inheritdoc cref="GraphQLName(ROM)"/>
@@ -160,7 +161,7 @@ internal sealed class GraphQLNameWithComment : GraphQLName
 internal sealed class GraphQLNameFull : GraphQLName
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -168,10 +169,10 @@ internal sealed class GraphQLNameFull : GraphQLName
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 
     /// <inheritdoc cref="GraphQLName(ROM)"/>

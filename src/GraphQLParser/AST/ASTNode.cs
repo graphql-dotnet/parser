@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -18,5 +20,10 @@ public abstract class ASTNode
     /// <summary>
     /// Comments for this node if any.
     /// </summary>
-    public virtual GraphQLComment? Comment { get => default; set { } }
+    public virtual List<GraphQLComment>? Comments { get => default; set { } }
+
+    /// <summary>
+    /// First comment for this node if any. For tests only.
+    /// </summary>
+    internal GraphQLComment? Comment => Comments?.Count > 0 ? Comments[0] : null;
 }

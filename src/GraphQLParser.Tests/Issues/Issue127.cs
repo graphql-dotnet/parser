@@ -19,7 +19,7 @@ public class Issue127
         string query = @"interface Foo
 
 { alpha: beta }";
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.ShouldNotBeNull();
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
