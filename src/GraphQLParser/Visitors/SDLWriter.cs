@@ -30,7 +30,10 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         Options = options;
     }
 
-    private SDLWriterOptions Options { get; }
+    /// <summary>
+    /// Options used by visitor.
+    /// </summary>
+    public SDLWriterOptions Options { get; }
 
     /// <inheritdoc/>
     public override async ValueTask VisitDocument(GraphQLDocument document, TContext context)

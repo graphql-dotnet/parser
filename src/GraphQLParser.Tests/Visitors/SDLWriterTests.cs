@@ -13,6 +13,16 @@ namespace GraphQLParser.Tests.Visitors;
 
 public class SDLWriterTests
 {
+    [Fact]
+    public void SDLWriter_Should_Have_Default_Options()
+    {
+        var writer = new SDLWriter<DefaultWriteContext>();
+        writer.Options.ShouldNotBeNull();
+        writer.Options.WriteComments.ShouldBeFalse();
+        writer.Options.EachDirectiveLocationOnNewLine.ShouldBeFalse();
+        writer.Options.EachUnionMemberOnNewLine.ShouldBeFalse();
+    }
+
     [Theory]
     [InlineData(1,
 @"#comment that ignored
