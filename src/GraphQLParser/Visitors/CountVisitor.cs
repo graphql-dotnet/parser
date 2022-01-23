@@ -13,12 +13,12 @@ public class CountVisitor<TContext> : DefaultNodeVisitor<TContext>
     where TContext : ICountContext
 {
     /// <inheritdoc/>
-    public override ValueTask Visit(ASTNode? node, TContext context)
+    public override ValueTask VisitAsync(ASTNode? node, TContext context)
     {
         if (node != null && context.ShouldInclude(node))
             ++context.Count;
 
-        return base.Visit(node, context);
+        return base.VisitAsync(node, context);
     }
 }
 

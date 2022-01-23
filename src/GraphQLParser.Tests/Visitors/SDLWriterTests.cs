@@ -514,7 +514,7 @@ extend union Unity =
         });
         using (var document = text.Parse())
         {
-            await writer.Visit(document, context).ConfigureAwait(false);
+            await writer.VisitAsync(document, context).ConfigureAwait(false);
             var actual = context.Writer.ToString();
             actual.ShouldBe(expected, $"Test {number} failed");
 
@@ -573,7 +573,7 @@ extend union Unity =
 
         using (var document = (input + " scalar a").Parse())
         {
-            await writer.Visit(document, context).ConfigureAwait(false);
+            await writer.VisitAsync(document, context).ConfigureAwait(false);
             var renderedOriginal = context.Writer.ToString();
 
             var lines = renderedOriginal.Split(Environment.NewLine);
@@ -606,7 +606,7 @@ extend union Unity =
 
         using (var document = query.Parse())
         {
-            await writer.Visit(document, context).ConfigureAwait(false);
+            await writer.VisitAsync(document, context).ConfigureAwait(false);
             var rendered = context.Writer.ToString();
             rendered.ShouldBe(expected);
 
@@ -623,13 +623,13 @@ extend union Unity =
         var selectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() };
         var context = new TestContext();
         var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
-        await writer.Visit(selectionSet, context);
+        await writer.VisitAsync(selectionSet, context);
         context.Writer.ToString().ShouldBe(@"{
 }
 ");
         selectionSet.Comment = new GraphQLComment("comment");
         context = new TestContext();
-        await writer.Visit(selectionSet, context);
+        await writer.VisitAsync(selectionSet, context);
         context.Writer.ToString().ShouldBe(@"#comment
 {
 }
@@ -645,14 +645,14 @@ extend union Unity =
         };
         var context = new TestContext();
         var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
-        await writer.Visit(def, context);
+        await writer.VisitAsync(def, context);
         var actual = context.Writer.ToString();
         actual.ShouldBe(@"{
 }
 ");
         def.SelectionSet.Comment = new GraphQLComment("comment");
         context = new TestContext();
-        await writer.Visit(def, context);
+        await writer.VisitAsync(def, context);
         context.Writer.ToString().ShouldBe(@"#comment
 {
 }
@@ -668,9 +668,9 @@ extend union Unity =
         var writer = new SDLWriter<TestContext>();
         using (var document = text.Parse())
         {
-            await new DoBadThingsVisitor().Visit(document, new Context());
+            await new DoBadThingsVisitor().VisitAsync(document, new Context());
 
-            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await writer.Visit(document, context));
+            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await writer.VisitAsync(document, context));
             ex.Message.ShouldStartWith("Unknown ");
         }
     }
@@ -682,18 +682,18 @@ extend union Unity =
 
     private sealed class DoBadThingsVisitor : DefaultNodeVisitor<Context>
     {
-        public override ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, Context context)
+        public override ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, Context context)
         {
             operationDefinition.Operation = (OperationType)99;
-            return base.VisitOperationDefinition(operationDefinition, context);
+            return base.VisitOperationDefinitionAsync(operationDefinition, context);
         }
 
-        public override ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, Context context)
+        public override ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, Context context)
         {
             for (int i = 0; i < directiveLocations.Items.Count; ++i)
                 directiveLocations.Items[i] = (DirectiveLocation)(100 + i);
 
-            return base.VisitDirectiveLocations(directiveLocations, context);
+            return base.VisitDirectiveLocationsAsync(directiveLocations, context);
         }
     }
 }

@@ -26,7 +26,7 @@ public class MaxDepthVisitorTests
 
         using (var document = text.Parse())
         {
-            await visitor.Visit(document, context).ConfigureAwait(false);
+            await visitor.VisitAsync(document, context).ConfigureAwait(false);
             context.MaxDepth.ShouldBe(expectedMaxDepth);
             document.MaxNestedDepth().ShouldBe(expectedMaxDepth);
         }
