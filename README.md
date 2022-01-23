@@ -96,7 +96,7 @@ Document
 ### Usage
 
 ```csharp
-public static void Parse(string text)
+public static async Task Parse(string text)
 {
     using var document = Parser.Parse(text);
     var writer = new StringWriter(); 
