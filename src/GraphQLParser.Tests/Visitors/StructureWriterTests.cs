@@ -293,7 +293,7 @@ field: Int }", @"Document
         var context = new TestContext();
 
         var document = text.Parse();
-        
+
         await _structWriter1.VisitAsync(document, context).ConfigureAwait(false);
         var actual = context.Writer.ToString();
         actual.ShouldBe(expected);
