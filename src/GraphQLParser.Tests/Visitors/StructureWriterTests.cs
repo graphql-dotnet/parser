@@ -281,7 +281,7 @@ field: Int }", @"Document
 
         using (var document = text.Parse())
         {
-            await _structWriter1.Visit(document, context).ConfigureAwait(false);
+            await _structWriter1.VisitAsync(document, context).ConfigureAwait(false);
             var actual = context.Writer.ToString();
             actual.ShouldBe(expected);
         }
@@ -303,7 +303,7 @@ field: Int }", @"Document
 
         using (var document = text.Parse())
         {
-            await _structWriter2.Visit(document, context).ConfigureAwait(false);
+            await _structWriter2.VisitAsync(document, context).ConfigureAwait(false);
             var actual = context.Writer.ToString();
             actual.ShouldBe(expected);
         }
@@ -551,7 +551,7 @@ scalar S", @"Document (10,30)
 
             using (var document = text.Parse(new ParserOptions { Ignore = option }))
             {
-                await _structWriter3.Visit(document, context).ConfigureAwait(false);
+                await _structWriter3.VisitAsync(document, context).ConfigureAwait(false);
                 var actual = context.Writer.ToString();
                 actual.ShouldBe(expected);
             }

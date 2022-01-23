@@ -29,7 +29,7 @@ does not allocate memory on the managed heap at all.
 
 ### Usage
 
-```c#
+```csharp
 var token = Lexer.Lex("\"str\"");
 ```
 
@@ -43,7 +43,7 @@ Parses provided GraphQL expression into AST (abstract syntax tree). Parser also 
 
 ### Usage
 
-```c#
+```csharp
 var ast1 = Parser.Parse(@"
 {
   field
@@ -95,26 +95,14 @@ Document
 
 ### Usage
 
-```c#
-public class Context : IWriteContext
-{
-    public TextWriter Writer { get; set; } = new StringWriter();
-
-    public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
-
-    public CancellationToken CancellationToken { get; set; }
-
-    public int IndentLevel { get; set; }
-}
-
+```csharp
 public static void Parse(string text)
 {
-    var document = Parser.Parse(text);
-
-    var context = new Context();
-    var visitor = new SDLWriter<Context>()
-    await visitor.Visit(document, context);
-    var rendered = context.Writer.ToString();
+    using var document = Parser.Parse(text);
+    var writer = new StringWriter(); 
+    var visitor = new SDLWriter<DefaultWriteContext>()
+    await visitor.VisitAsync(document, new DefaultWriteContext(writer));
+    var rendered = writer.ToString();
     Console.WriteLine(rendered);
 }
 ```

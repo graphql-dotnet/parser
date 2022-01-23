@@ -14,7 +14,7 @@ public class MaxDepthVisitor<TContext> : DefaultNodeVisitor<TContext>
     where TContext : IMaxDepthContext
 {
     /// <inheritdoc/>
-    public override async ValueTask Visit(ASTNode? node, TContext context)
+    public override async ValueTask VisitAsync(ASTNode? node, TContext context)
     {
         if (node != null)
         {
@@ -23,7 +23,7 @@ public class MaxDepthVisitor<TContext> : DefaultNodeVisitor<TContext>
             if (context.Parents.Count > context.MaxDepth)
                 context.MaxDepth = context.Parents.Count;
 
-            await base.Visit(node, context).ConfigureAwait(false);
+            await base.VisitAsync(node, context).ConfigureAwait(false);
 
             context.Parents.Pop();
         }

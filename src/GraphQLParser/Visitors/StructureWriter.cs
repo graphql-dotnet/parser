@@ -23,29 +23,29 @@ public class StructureWriter<TContext> : DefaultNodeVisitor<TContext>
     private StructureWriterOptions Options { get; }
 
     /// <inheritdoc/>
-    public override async ValueTask Visit(ASTNode? node, TContext context)
+    public override async ValueTask VisitAsync(ASTNode? node, TContext context)
     {
         if (node == null)
             return;
 
         for (int i = 0; i < context.Parents.Count; ++i)
-            await context.Write("  ").ConfigureAwait(false);
+            await context.WriteAsync("  ").ConfigureAwait(false);
 
         context.Parents.Push(node);
-        await context.Write(node.Kind.ToString()).ConfigureAwait(false);
+        await context.WriteAsync(node.Kind.ToString()).ConfigureAwait(false);
         if (Options.WriteNames && node is GraphQLName name)
         {
-            await context.Write(" [").ConfigureAwait(false);
-            await context.Write(name.Value).ConfigureAwait(false);
-            await context.Write("]").ConfigureAwait(false);
+            await context.WriteAsync(" [").ConfigureAwait(false);
+            await context.WriteAsync(name.Value).ConfigureAwait(false);
+            await context.WriteAsync("]").ConfigureAwait(false);
         }
         if (Options.WriteLocations)
         {
-            await context.Write(" ").ConfigureAwait(false);
-            await context.Write(node.Location.ToString()).ConfigureAwait(false); //TODO: allocations
+            await context.WriteAsync(" ").ConfigureAwait(false);
+            await context.WriteAsync(node.Location.ToString()).ConfigureAwait(false); //TODO: allocations
         }
-        await context.WriteLine().ConfigureAwait(false);
-        await base.Visit(node, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
+        await base.VisitAsync(node, context).ConfigureAwait(false);
         _ = context.Parents.Pop();
     }
 }

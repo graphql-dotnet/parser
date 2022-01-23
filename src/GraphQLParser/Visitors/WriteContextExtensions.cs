@@ -18,7 +18,7 @@ public static class WriteContextExtensions
     /// using <see cref="CancellationToken"/> from it.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ValueTask Write<TContext>(this TContext context, ROM value)
+    public static ValueTask WriteAsync<TContext>(this TContext context, ROM value)
         where TContext : IWriteContext
     {
         var task =
@@ -36,7 +36,7 @@ public static class WriteContextExtensions
     /// using <see cref="CancellationToken"/> from it.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ValueTask WriteLine<TContext>(this TContext context)
+    public static ValueTask WriteLineAsync<TContext>(this TContext context)
         where TContext : IWriteContext
-        => Write(context, _newLine);
+        => WriteAsync(context, _newLine);
 }

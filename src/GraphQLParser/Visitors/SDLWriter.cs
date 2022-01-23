@@ -36,36 +36,36 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     public SDLWriterOptions Options { get; }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDocument(GraphQLDocument document, TContext context)
+    public override async ValueTask VisitDocumentAsync(GraphQLDocument document, TContext context)
     {
-        await Visit(document.Comment, context).ConfigureAwait(false); // Comment always null
+        await VisitAsync(document.Comment, context).ConfigureAwait(false); // Comment always null
 
         if (document.Definitions.Count > 0) // Definitions always > 0
         {
             for (int i = 0; i < document.Definitions.Count; ++i)
             {
-                await Visit(document.Definitions[i], context).ConfigureAwait(false);
+                await VisitAsync(document.Definitions[i], context).ConfigureAwait(false);
 
                 if (i < document.Definitions.Count - 1)
                 {
-                    await context.WriteLine().ConfigureAwait(false);
+                    await context.WriteLineAsync().ConfigureAwait(false);
                 }
             }
         }
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitComment(GraphQLComment comment, TContext context)
+    public override async ValueTask VisitCommentAsync(GraphQLComment comment, TContext context)
     {
         if (!Options.WriteComments)
             return;
 
         if (CommentedNodeShouldBeCloseToPreviousNode(context))
-            await context.WriteLine().ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
 
         // starting # should always be printed in case of empty comment
-        await WriteIndent(context).ConfigureAwait(false);
-        await context.Write("#").ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
+        await context.WriteAsync("#").ConfigureAwait(false);
         bool needStartNewLine = false;
 
         int length = comment.Value.Span.Length;
@@ -73,8 +73,8 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         {
             if (needStartNewLine)
             {
-                await WriteIndent(context).ConfigureAwait(false);
-                await context.Write("#").ConfigureAwait(false);
+                await WriteIndentAsync(context).ConfigureAwait(false);
+                await context.WriteAsync("#").ConfigureAwait(false);
                 needStartNewLine = false;
             }
 
@@ -85,20 +85,20 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
                     break;
 
                 case '\n':
-                    await context.WriteLine().ConfigureAwait(false);
+                    await context.WriteLineAsync().ConfigureAwait(false);
                     needStartNewLine = true;
                     break;
 
                 default:
-                    await context.Write(comment.Value.Slice(i, 1)/*code*/).ConfigureAwait(false);
+                    await context.WriteAsync(comment.Value.Slice(i, 1)/*code*/).ConfigureAwait(false);
                     break;
             }
         }
 
-        await context.WriteLine().ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
 
         if (CommentedNodeShouldBeCloseToPreviousNode(context))
-            await WriteIndent(context).ConfigureAwait(false);
+            await WriteIndentAsync(context).ConfigureAwait(false);
 
         static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context)
         {
@@ -111,7 +111,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDescription(GraphQLDescription description, TContext context)
+    public override async ValueTask VisitDescriptionAsync(GraphQLDescription description, TContext context)
     {
         bool ShouldBeMultilineBlockString()
         {
@@ -138,9 +138,9 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
 
         async ValueTask WriteMultilineBlockString()
         {
-            await WriteIndent(context).ConfigureAwait(false);
-            await context.Write("\"\"\"").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await WriteIndentAsync(context).ConfigureAwait(false);
+            await context.WriteAsync("\"\"\"").ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
 
             bool needStartNewLine = true;
             int length = description.Value.Span.Length;
@@ -149,7 +149,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
             {
                 if (needStartNewLine)
                 {
-                    await WriteIndent(context).ConfigureAwait(false);
+                    await WriteIndentAsync(context).ConfigureAwait(false);
                     needStartNewLine = false;
                 }
 
@@ -160,38 +160,38 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
                         break;
 
                     case '\n':
-                        await context.WriteLine().ConfigureAwait(false);
+                        await context.WriteLineAsync().ConfigureAwait(false);
                         needStartNewLine = true;
                         break;
 
                     case '"':
                         if (i < length - 2 && description.Value.Span[i + 1] == '"' && description.Value.Span[i + 2] == '"')
                         {
-                            await context.Write("\\\"").ConfigureAwait(false);
+                            await context.WriteAsync("\\\"").ConfigureAwait(false);
                         }
                         else
                         {
-                            await context.Write(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
+                            await context.WriteAsync(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
                         }
                         break;
 
                     default:
-                        await context.Write(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
+                        await context.WriteAsync(description.Value.Slice(i, 1)/*code*/).ConfigureAwait(false); //TODO: change
                         break;
                 }
             }
 
-            await context.WriteLine().ConfigureAwait(false);
-            await WriteIndent(context).ConfigureAwait(false);
-            await context.Write("\"\"\"").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
+            await WriteIndentAsync(context).ConfigureAwait(false);
+            await context.WriteAsync("\"\"\"").ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
         }
 
         async ValueTask WriteString()
         {
-            await WriteIndent(context).ConfigureAwait(false);
-            await WriteEncodedString(context, description.Value).ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await WriteIndentAsync(context).ConfigureAwait(false);
+            await WriteEncodedStringAsync(context, description.Value).ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
         }
 
         // http://spec.graphql.org/October2021/#StringValue
@@ -202,738 +202,738 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitName(GraphQLName name, TContext context)
+    public override async ValueTask VisitNameAsync(GraphQLName name, TContext context)
     {
-        await Visit(name.Comment, context).ConfigureAwait(false);
-        await context.Write(name.Value).ConfigureAwait(false);
+        await VisitAsync(name.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync(name.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFragmentName(GraphQLFragmentName fragmentName, TContext context)
+    public override async ValueTask VisitFragmentNameAsync(GraphQLFragmentName fragmentName, TContext context)
     {
-        await Visit(fragmentName.Comment, context).ConfigureAwait(false);
-        await Visit(fragmentName.Name, context).ConfigureAwait(false);
+        await VisitAsync(fragmentName.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fragmentName.Name, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context)
+    public override async ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, TContext context)
     {
-        await Visit(fragmentDefinition.Comment, context).ConfigureAwait(false);
-        await context.Write("fragment ").ConfigureAwait(false);
-        await Visit(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
-        await context.Write(" ").ConfigureAwait(false);
-        await Visit(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
-        await Visit(fragmentDefinition.Directives, context).ConfigureAwait(false);
-        await Visit(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
+        await VisitAsync(fragmentDefinition.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("fragment ").ConfigureAwait(false);
+        await VisitAsync(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
+        await context.WriteAsync(" ").ConfigureAwait(false);
+        await VisitAsync(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
+        await VisitAsync(fragmentDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context)
+    public override async ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, TContext context)
     {
-        await Visit(fragmentSpread.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fragmentSpread.Comment, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await context.Write("...").ConfigureAwait(false);
-        await Visit(fragmentSpread.FragmentName, context).ConfigureAwait(false);
-        await Visit(fragmentSpread.Directives, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await context.WriteAsync("...").ConfigureAwait(false);
+        await VisitAsync(fragmentSpread.FragmentName, context).ConfigureAwait(false);
+        await VisitAsync(fragmentSpread.Directives, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInlineFragment(GraphQLInlineFragment inlineFragment, TContext context)
+    public override async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, TContext context)
     {
-        await Visit(inlineFragment.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inlineFragment.Comment, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await context.Write("... ").ConfigureAwait(false);
-        await Visit(inlineFragment.TypeCondition, context).ConfigureAwait(false);
-        await Visit(inlineFragment.Directives, context).ConfigureAwait(false);
-        await Visit(inlineFragment.SelectionSet, context).ConfigureAwait(false);
+        await context.WriteAsync("... ").ConfigureAwait(false);
+        await VisitAsync(inlineFragment.TypeCondition, context).ConfigureAwait(false);
+        await VisitAsync(inlineFragment.Directives, context).ConfigureAwait(false);
+        await VisitAsync(inlineFragment.SelectionSet, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitTypeCondition(GraphQLTypeCondition typeCondition, TContext context)
+    public override async ValueTask VisitTypeConditionAsync(GraphQLTypeCondition typeCondition, TContext context)
     {
-        await Visit(typeCondition.Comment, context).ConfigureAwait(false);
-        await context.Write("on ").ConfigureAwait(false);
-        await Visit(typeCondition.Type, context).ConfigureAwait(false);
+        await VisitAsync(typeCondition.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("on ").ConfigureAwait(false);
+        await VisitAsync(typeCondition.Type, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitImplementsInterfaces(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
+    public override async ValueTask VisitImplementsInterfacesAsync(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
     {
-        await Visit(implementsInterfaces.Comment, context).ConfigureAwait(false);
-        await context.Write(" implements ").ConfigureAwait(false);
+        await VisitAsync(implementsInterfaces.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync(" implements ").ConfigureAwait(false);
 
         for (int i = 0; i < implementsInterfaces.Items.Count; ++i)
         {
-            await Visit(implementsInterfaces.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(implementsInterfaces.Items[i], context).ConfigureAwait(false);
             if (i < implementsInterfaces.Items.Count - 1)
-                await context.Write(" & ").ConfigureAwait(false);
+                await context.WriteAsync(" & ").ConfigureAwait(false);
         }
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context)
+    public override async ValueTask VisitSelectionSetAsync(GraphQLSelectionSet selectionSet, TContext context)
     {
-        await Visit(selectionSet.Comment, context).ConfigureAwait(false);
+        await VisitAsync(selectionSet.Comment, context).ConfigureAwait(false);
 
         bool freshLine = selectionSet.Comment != null && Options.WriteComments;
         if (!freshLine && TryPeekParent(context, out var node) && (node is GraphQLOperationDefinition op && op.Name is not null || node is not GraphQLOperationDefinition))
         {
-            await context.Write(" {").ConfigureAwait(false);
+            await context.WriteAsync(" {").ConfigureAwait(false);
         }
         else
         {
-            await WriteIndent(context).ConfigureAwait(false);
-            await context.Write("{").ConfigureAwait(false);
+            await WriteIndentAsync(context).ConfigureAwait(false);
+            await context.WriteAsync("{").ConfigureAwait(false);
         }
-        await context.WriteLine().ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
 
         foreach (var selection in selectionSet.Selections)
-            await Visit(selection, context).ConfigureAwait(false);
+            await VisitAsync(selection, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
-        await context.Write("}").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
+        await context.WriteAsync("}").ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitAlias(GraphQLAlias alias, TContext context)
+    public override async ValueTask VisitAliasAsync(GraphQLAlias alias, TContext context)
     {
-        await Visit(alias.Comment, context).ConfigureAwait(false);
+        await VisitAsync(alias.Comment, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await Visit(alias.Name, context).ConfigureAwait(false);
-        await context.Write(":").ConfigureAwait(false);
+        await VisitAsync(alias.Name, context).ConfigureAwait(false);
+        await context.WriteAsync(":").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitField(GraphQLField field, TContext context)
+    public override async ValueTask VisitFieldAsync(GraphQLField field, TContext context)
     {
-        await Visit(field.Comment, context).ConfigureAwait(false);
-        await Visit(field.Alias, context).ConfigureAwait(false);
+        await VisitAsync(field.Comment, context).ConfigureAwait(false);
+        await VisitAsync(field.Alias, context).ConfigureAwait(false);
 
         if (field.Alias == null)
-            await WriteIndent(context).ConfigureAwait(false);
+            await WriteIndentAsync(context).ConfigureAwait(false);
         else if (field.Name.Comment == null || !Options.WriteComments)
-            await context.Write(" ").ConfigureAwait(false);
+            await context.WriteAsync(" ").ConfigureAwait(false);
 
-        await Visit(field.Name, context).ConfigureAwait(false);
-        await Visit(field.Arguments, context).ConfigureAwait(false);
-        await Visit(field.Directives, context).ConfigureAwait(false);
-        await Visit(field.SelectionSet, context).ConfigureAwait(false);
+        await VisitAsync(field.Name, context).ConfigureAwait(false);
+        await VisitAsync(field.Arguments, context).ConfigureAwait(false);
+        await VisitAsync(field.Directives, context).ConfigureAwait(false);
+        await VisitAsync(field.SelectionSet, context).ConfigureAwait(false);
 
         if (field.SelectionSet == null)
-            await context.WriteLine().ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context)
+    public override async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, TContext context)
     {
-        await Visit(operationDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(operationDefinition.Comment, context).ConfigureAwait(false);
         if (operationDefinition.Name is not null)
         {
-            await context.Write(GetOperationType(operationDefinition.Operation)).ConfigureAwait(false);
-            await context.Write(" ").ConfigureAwait(false);
-            await Visit(operationDefinition.Name, context).ConfigureAwait(false);
+            await context.WriteAsync(GetOperationType(operationDefinition.Operation)).ConfigureAwait(false);
+            await context.WriteAsync(" ").ConfigureAwait(false);
+            await VisitAsync(operationDefinition.Name, context).ConfigureAwait(false);
         }
-        await Visit(operationDefinition.Variables, context).ConfigureAwait(false);
-        await Visit(operationDefinition.Directives, context).ConfigureAwait(false);
-        await Visit(operationDefinition.SelectionSet, context).ConfigureAwait(false);
+        await VisitAsync(operationDefinition.Variables, context).ConfigureAwait(false);
+        await VisitAsync(operationDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(operationDefinition.SelectionSet, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context)
+    public override async ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, TContext context)
     {
-        await Visit(directiveDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(directiveDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("directive @").ConfigureAwait(false);
-        await Visit(directiveDefinition.Name, context).ConfigureAwait(false);
-        await Visit(directiveDefinition.Arguments, context).ConfigureAwait(false);
+        await VisitAsync(directiveDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(directiveDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("directive @").ConfigureAwait(false);
+        await VisitAsync(directiveDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(directiveDefinition.Arguments, context).ConfigureAwait(false);
         if (directiveDefinition.Repeatable)
-            await context.Write(" repeatable").ConfigureAwait(false);
-        await Visit(directiveDefinition.Locations, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+            await context.WriteAsync(" repeatable").ConfigureAwait(false);
+        await VisitAsync(directiveDefinition.Locations, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context)
+    public override async ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, TContext context)
     {
-        await Visit(directiveLocations.Comment, context).ConfigureAwait(false);
+        await VisitAsync(directiveLocations.Comment, context).ConfigureAwait(false);
         if (Options.EachDirectiveLocationOnNewLine)
         {
-            await context.Write(" on").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await context.WriteAsync(" on").ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
             for (int i = 0; i < directiveLocations.Items.Count; ++i)
             {
-                await WriteIndent(context).ConfigureAwait(false);
-                await context.Write("| ").ConfigureAwait(false);
-                await context.Write(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
+                await WriteIndentAsync(context).ConfigureAwait(false);
+                await context.WriteAsync("| ").ConfigureAwait(false);
+                await context.WriteAsync(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
                 if (i < directiveLocations.Items.Count - 1)
-                    await context.WriteLine().ConfigureAwait(false);
+                    await context.WriteLineAsync().ConfigureAwait(false);
             }
         }
         else
         {
-            await context.Write(" on ").ConfigureAwait(false);
+            await context.WriteAsync(" on ").ConfigureAwait(false);
             for (int i = 0; i < directiveLocations.Items.Count; ++i)
             {
-                await context.Write(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
+                await context.WriteAsync(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
                 if (i < directiveLocations.Items.Count - 1)
-                    await context.Write(" | ").ConfigureAwait(false);
+                    await context.WriteAsync(" | ").ConfigureAwait(false);
             }
         }
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context)
+    public override async ValueTask VisitVariableDefinitionAsync(GraphQLVariableDefinition variableDefinition, TContext context)
     {
-        await Visit(variableDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(variableDefinition.Variable, context).ConfigureAwait(false);
-        await context.Write(": ").ConfigureAwait(false);
-        await Visit(variableDefinition.Type, context).ConfigureAwait(false);
+        await VisitAsync(variableDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(variableDefinition.Variable, context).ConfigureAwait(false);
+        await context.WriteAsync(": ").ConfigureAwait(false);
+        await VisitAsync(variableDefinition.Type, context).ConfigureAwait(false);
         if (variableDefinition.DefaultValue != null)
         {
-            await context.Write(" = ").ConfigureAwait(false);
-            await Visit(variableDefinition.DefaultValue, context).ConfigureAwait(false);
+            await context.WriteAsync(" = ").ConfigureAwait(false);
+            await VisitAsync(variableDefinition.DefaultValue, context).ConfigureAwait(false);
         }
-        await Visit(variableDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(variableDefinition.Directives, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context)
+    public override async ValueTask VisitVariablesDefinitionAsync(GraphQLVariablesDefinition variablesDefinition, TContext context)
     {
-        await Visit(variablesDefinition.Comment, context).ConfigureAwait(false);
-        await context.Write("(").ConfigureAwait(false);
+        await VisitAsync(variablesDefinition.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("(").ConfigureAwait(false);
 
         for (int i = 0; i < variablesDefinition.Items.Count; ++i)
         {
-            await Visit(variablesDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(variablesDefinition.Items[i], context).ConfigureAwait(false);
             if (i < variablesDefinition.Items.Count - 1)
-                await context.Write(", ").ConfigureAwait(false);
+                await context.WriteAsync(", ").ConfigureAwait(false);
         }
 
-        await context.Write(")").ConfigureAwait(false);
+        await context.WriteAsync(")").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitVariable(GraphQLVariable variable, TContext context)
+    public override async ValueTask VisitVariableAsync(GraphQLVariable variable, TContext context)
     {
-        await Visit(variable.Comment, context).ConfigureAwait(false);
-        await context.Write("$").ConfigureAwait(false);
-        await Visit(variable.Name, context).ConfigureAwait(false);
+        await VisitAsync(variable.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("$").ConfigureAwait(false);
+        await VisitAsync(variable.Name, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitBooleanValue(GraphQLBooleanValue booleanValue, TContext context)
+    public override async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, TContext context)
     {
-        await Visit(booleanValue.Comment, context).ConfigureAwait(false);
-        await context.Write(booleanValue.Value).ConfigureAwait(false);
+        await VisitAsync(booleanValue.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync(booleanValue.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitScalarTypeDefinition(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
+    public override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
     {
-        await Visit(scalarTypeDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(scalarTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("scalar ").ConfigureAwait(false);
-        await Visit(scalarTypeDefinition.Name, context).ConfigureAwait(false);
-        await Visit(scalarTypeDefinition.Directives, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(scalarTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(scalarTypeDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("scalar ").ConfigureAwait(false);
+        await VisitAsync(scalarTypeDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(scalarTypeDefinition.Directives, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitSchemaExtension(GraphQLSchemaExtension schemaExtension, TContext context)
+    public override async ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, TContext context)
     {
-        await Visit(schemaExtension.Comment, context).ConfigureAwait(false);
-        await context.Write("extend schema").ConfigureAwait(false);
-        await Visit(schemaExtension.Directives, context).ConfigureAwait(false);
+        await VisitAsync(schemaExtension.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("extend schema").ConfigureAwait(false);
+        await VisitAsync(schemaExtension.Directives, context).ConfigureAwait(false);
 
         //TODO: https://github.com/graphql/graphql-spec/issues/921
         if (schemaExtension.OperationTypes?.Count > 0)
         {
-            await context.WriteLine().ConfigureAwait(false);
-            await context.Write("{").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
+            await context.WriteAsync("{").ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
 
             for (int i = 0; i < schemaExtension.OperationTypes.Count; ++i)
             {
-                await Visit(schemaExtension.OperationTypes[i], context).ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
+                await VisitAsync(schemaExtension.OperationTypes[i], context).ConfigureAwait(false);
+                await context.WriteLineAsync().ConfigureAwait(false);
             }
 
-            await context.Write("}").ConfigureAwait(false);
+            await context.WriteAsync("}").ConfigureAwait(false);
         }
-        await context.WriteLine().ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
+    public override async ValueTask VisitScalarTypeExtensionAsync(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
     {
-        await Visit(scalarTypeExtension.Comment, context).ConfigureAwait(false);
-        await context.Write("extend scalar ").ConfigureAwait(false);
-        await Visit(scalarTypeExtension.Name, context).ConfigureAwait(false);
-        await Visit(scalarTypeExtension.Directives, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(scalarTypeExtension.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("extend scalar ").ConfigureAwait(false);
+        await VisitAsync(scalarTypeExtension.Name, context).ConfigureAwait(false);
+        await VisitAsync(scalarTypeExtension.Directives, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
+    public override async ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
     {
-        await Visit(enumTypeDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(enumTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("enum ").ConfigureAwait(false);
-        await Visit(enumTypeDefinition.Name, context).ConfigureAwait(false);
-        await Visit(enumTypeDefinition.Directives, context).ConfigureAwait(false);
-        await Visit(enumTypeDefinition.Values, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(enumTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumTypeDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("enum ").ConfigureAwait(false);
+        await VisitAsync(enumTypeDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(enumTypeDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(enumTypeDefinition.Values, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumTypeExtension(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
+    public override async ValueTask VisitEnumTypeExtensionAsync(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
     {
-        await Visit(enumTypeExtension.Comment, context).ConfigureAwait(false);
-        await context.Write("extend enum ").ConfigureAwait(false);
-        await Visit(enumTypeExtension.Name, context).ConfigureAwait(false);
-        await Visit(enumTypeExtension.Directives, context).ConfigureAwait(false);
-        await Visit(enumTypeExtension.Values, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(enumTypeExtension.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("extend enum ").ConfigureAwait(false);
+        await VisitAsync(enumTypeExtension.Name, context).ConfigureAwait(false);
+        await VisitAsync(enumTypeExtension.Directives, context).ConfigureAwait(false);
+        await VisitAsync(enumTypeExtension.Values, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
+    public override async ValueTask VisitEnumValueDefinitionAsync(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
     {
-        await Visit(enumValueDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(enumValueDefinition.Description, context).ConfigureAwait(false);
+        await VisitAsync(enumValueDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumValueDefinition.Description, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await Visit(enumValueDefinition.Name, context).ConfigureAwait(false);
-        await Visit(enumValueDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(enumValueDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(enumValueDefinition.Directives, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
+    public override async ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
-        await Visit(enumValuesDefinition.Comment, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
-        await context.Write("{").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(enumValuesDefinition.Comment, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
+        await context.WriteAsync("{").ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
 
         for (int i = 0; i < enumValuesDefinition.Items.Count; ++i)
         {
-            await Visit(enumValuesDefinition.Items[i], context).ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await VisitAsync(enumValuesDefinition.Items[i], context).ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
         }
 
-        await context.Write("}").ConfigureAwait(false);
+        await context.WriteAsync("}").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
+    public override async ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
     {
-        await Visit(inputObjectTypeDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(inputObjectTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("input ").ConfigureAwait(false);
-        await Visit(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
-        await Visit(inputObjectTypeDefinition.Directives, context).ConfigureAwait(false);
-        await Visit(inputObjectTypeDefinition.Fields, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("input ").ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeDefinition.Fields, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputObjectTypeExtension(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
+    public override async ValueTask VisitInputObjectTypeExtensionAsync(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
     {
-        await Visit(inputObjectTypeExtension.Comment, context).ConfigureAwait(false);
-        await context.Write("extend input ").ConfigureAwait(false);
-        await Visit(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
-        await Visit(inputObjectTypeExtension.Directives, context).ConfigureAwait(false);
-        await Visit(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeExtension.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("extend input ").ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeExtension.Directives, context).ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context)
+    public override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context)
     {
-        await Visit(inputValueDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(inputValueDefinition.Description, context).ConfigureAwait(false);
+        await VisitAsync(inputValueDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await Visit(inputValueDefinition.Name, context).ConfigureAwait(false);
-        await context.Write(": ").ConfigureAwait(false);
-        await Visit(inputValueDefinition.Type, context).ConfigureAwait(false);
+        await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);
+        await context.WriteAsync(": ").ConfigureAwait(false);
+        await VisitAsync(inputValueDefinition.Type, context).ConfigureAwait(false);
         if (inputValueDefinition.DefaultValue != null)
         {
-            await context.Write(" = ").ConfigureAwait(false);
-            await Visit(inputValueDefinition.DefaultValue, context).ConfigureAwait(false);
+            await context.WriteAsync(" = ").ConfigureAwait(false);
+            await VisitAsync(inputValueDefinition.DefaultValue, context).ConfigureAwait(false);
         }
-        await Visit(inputValueDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(inputValueDefinition.Directives, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputFieldsDefinition(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
+    public override async ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
-        await Visit(inputFieldsDefinition.Comment, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
-        await context.Write("{").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(inputFieldsDefinition.Comment, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
+        await context.WriteAsync("{").ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
 
         for (int i = 0; i < inputFieldsDefinition.Items.Count; ++i)
         {
-            await Visit(inputFieldsDefinition.Items[i], context).ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await VisitAsync(inputFieldsDefinition.Items[i], context).ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
         }
 
-        await context.Write("}").ConfigureAwait(false);
+        await context.WriteAsync("}").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectTypeDefinition(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
+    public override async ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
     {
-        await Visit(objectTypeDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(objectTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("type ").ConfigureAwait(false);
-        await Visit(objectTypeDefinition.Name, context).ConfigureAwait(false);
-        await Visit(objectTypeDefinition.Interfaces, context).ConfigureAwait(false);
-        await Visit(objectTypeDefinition.Directives, context).ConfigureAwait(false);
-        await Visit(objectTypeDefinition.Fields, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(objectTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("type ").ConfigureAwait(false);
+        await VisitAsync(objectTypeDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeDefinition.Interfaces, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeDefinition.Fields, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectTypeExtension(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
+    public override async ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
     {
-        await Visit(objectTypeExtension.Comment, context).ConfigureAwait(false);
-        await context.Write("extend type ").ConfigureAwait(false);
-        await Visit(objectTypeExtension.Name, context).ConfigureAwait(false);
-        await Visit(objectTypeExtension.Interfaces, context).ConfigureAwait(false);
-        await Visit(objectTypeExtension.Directives, context).ConfigureAwait(false);
-        await Visit(objectTypeExtension.Fields, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(objectTypeExtension.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("extend type ").ConfigureAwait(false);
+        await VisitAsync(objectTypeExtension.Name, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeExtension.Interfaces, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeExtension.Directives, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeExtension.Fields, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
+    public override async ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
     {
-        await Visit(interfaceTypeDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(interfaceTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("interface ").ConfigureAwait(false);
-        await Visit(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
-        await Visit(interfaceTypeDefinition.Interfaces, context).ConfigureAwait(false);
-        await Visit(interfaceTypeDefinition.Directives, context).ConfigureAwait(false);
-        await Visit(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(interfaceTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("interface ").ConfigureAwait(false);
+        await VisitAsync(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeDefinition.Interfaces, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInterfaceTypeExtension(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
+    public override async ValueTask VisitInterfaceTypeExtensionAsync(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
     {
-        await Visit(interfaceTypeExtension.Comment, context).ConfigureAwait(false);
-        await context.Write("extend interface ").ConfigureAwait(false);
-        await Visit(interfaceTypeExtension.Name, context).ConfigureAwait(false);
-        await Visit(interfaceTypeExtension.Interfaces, context).ConfigureAwait(false);
-        await Visit(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
-        await Visit(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(interfaceTypeExtension.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("extend interface ").ConfigureAwait(false);
+        await VisitAsync(interfaceTypeExtension.Name, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeExtension.Interfaces, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context)
+    public override async ValueTask VisitFieldDefinitionAsync(GraphQLFieldDefinition fieldDefinition, TContext context)
     {
-        await Visit(fieldDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(fieldDefinition.Description, context).ConfigureAwait(false);
+        await VisitAsync(fieldDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fieldDefinition.Description, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await Visit(fieldDefinition.Name, context).ConfigureAwait(false);
-        await Visit(fieldDefinition.Arguments, context).ConfigureAwait(false);
-        await context.Write(": ").ConfigureAwait(false);
-        await Visit(fieldDefinition.Type, context).ConfigureAwait(false);
-        await Visit(fieldDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(fieldDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(fieldDefinition.Arguments, context).ConfigureAwait(false);
+        await context.WriteAsync(": ").ConfigureAwait(false);
+        await VisitAsync(fieldDefinition.Type, context).ConfigureAwait(false);
+        await VisitAsync(fieldDefinition.Directives, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFieldsDefinition(GraphQLFieldsDefinition fieldsDefinition, TContext context)
+    public override async ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
-        await Visit(fieldsDefinition.Comment, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
-        await context.Write("{").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(fieldsDefinition.Comment, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
+        await context.WriteAsync("{").ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
 
         for (int i = 0; i < fieldsDefinition.Items.Count; ++i)
         {
-            await Visit(fieldsDefinition.Items[i], context).ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await VisitAsync(fieldsDefinition.Items[i], context).ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
         }
 
-        await context.Write("}").ConfigureAwait(false);
+        await context.WriteAsync("}").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitSchemaDefinition(GraphQLSchemaDefinition schemaDefinition, TContext context)
+    public override async ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, TContext context)
     {
-        await Visit(schemaDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(schemaDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("schema").ConfigureAwait(false);
-        await Visit(schemaDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(schemaDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(schemaDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("schema").ConfigureAwait(false);
+        await VisitAsync(schemaDefinition.Directives, context).ConfigureAwait(false);
 
-        await context.WriteLine().ConfigureAwait(false);
-        await context.Write("{").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
+        await context.WriteAsync("{").ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
 
         if (schemaDefinition.OperationTypes.Count > 0)
         {
             for (int i = 0; i < schemaDefinition.OperationTypes.Count; ++i)
             {
-                await Visit(schemaDefinition.OperationTypes[i], context).ConfigureAwait(false);
-                await context.WriteLine().ConfigureAwait(false);
+                await VisitAsync(schemaDefinition.OperationTypes[i], context).ConfigureAwait(false);
+                await context.WriteLineAsync().ConfigureAwait(false);
             }
         }
 
-        await context.Write("}").ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await context.WriteAsync("}").ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitRootOperationTypeDefinition(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
+    public override async ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
     {
-        await Visit(rootOperationTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(rootOperationTypeDefinition.Comment, context).ConfigureAwait(false);
 
-        await WriteIndent(context).ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await context.Write(GetOperationType(rootOperationTypeDefinition.Operation)).ConfigureAwait(false);
-        await context.Write(": ").ConfigureAwait(false);
-        await Visit(rootOperationTypeDefinition.Type, context).ConfigureAwait(false);
+        await context.WriteAsync(GetOperationType(rootOperationTypeDefinition.Operation)).ConfigureAwait(false);
+        await context.WriteAsync(": ").ConfigureAwait(false);
+        await VisitAsync(rootOperationTypeDefinition.Type, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
+    public override async ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
     {
-        await Visit(unionTypeDefinition.Comment, context).ConfigureAwait(false);
-        await Visit(unionTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.Write("union ").ConfigureAwait(false);
-        await Visit(unionTypeDefinition.Name, context).ConfigureAwait(false);
-        await Visit(unionTypeDefinition.Directives, context).ConfigureAwait(false);
-        await Visit(unionTypeDefinition.Types, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(unionTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(unionTypeDefinition.Description, context).ConfigureAwait(false);
+        await context.WriteAsync("union ").ConfigureAwait(false);
+        await VisitAsync(unionTypeDefinition.Name, context).ConfigureAwait(false);
+        await VisitAsync(unionTypeDefinition.Directives, context).ConfigureAwait(false);
+        await VisitAsync(unionTypeDefinition.Types, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitUnionTypeExtension(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
+    public override async ValueTask VisitUnionTypeExtensionAsync(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
     {
-        await Visit(unionTypeExtension.Comment, context).ConfigureAwait(false);
-        await context.Write("extend union ").ConfigureAwait(false);
-        await Visit(unionTypeExtension.Name, context).ConfigureAwait(false);
-        await Visit(unionTypeExtension.Directives, context).ConfigureAwait(false);
-        await Visit(unionTypeExtension.Types, context).ConfigureAwait(false);
-        await context.WriteLine().ConfigureAwait(false);
+        await VisitAsync(unionTypeExtension.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("extend union ").ConfigureAwait(false);
+        await VisitAsync(unionTypeExtension.Name, context).ConfigureAwait(false);
+        await VisitAsync(unionTypeExtension.Directives, context).ConfigureAwait(false);
+        await VisitAsync(unionTypeExtension.Types, context).ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
+    public override async ValueTask VisitUnionMemberTypesAsync(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
     {
-        await Visit(unionMemberTypes.Comment, context).ConfigureAwait(false);
+        await VisitAsync(unionMemberTypes.Comment, context).ConfigureAwait(false);
 
         if (unionMemberTypes.Comment == null || !Options.WriteComments)
-            await context.Write(" ").ConfigureAwait(false);
+            await context.WriteAsync(" ").ConfigureAwait(false);
 
         if (Options.EachUnionMemberOnNewLine)
         {
-            await context.Write("=").ConfigureAwait(false);
-            await context.WriteLine().ConfigureAwait(false);
+            await context.WriteAsync("=").ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
 
             for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
             {
-                await WriteIndent(context).ConfigureAwait(false);
-                await context.Write("| ").ConfigureAwait(false);
-                await Visit(unionMemberTypes.Items[i], context).ConfigureAwait(false);
+                await WriteIndentAsync(context).ConfigureAwait(false);
+                await context.WriteAsync("| ").ConfigureAwait(false);
+                await VisitAsync(unionMemberTypes.Items[i], context).ConfigureAwait(false);
                 if (i < unionMemberTypes.Items.Count - 1)
-                    await context.WriteLine().ConfigureAwait(false);
+                    await context.WriteLineAsync().ConfigureAwait(false);
             }
         }
         else
         {
-            await context.Write("= ").ConfigureAwait(false);
+            await context.WriteAsync("= ").ConfigureAwait(false);
 
             for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
             {
-                await Visit(unionMemberTypes.Items[i], context).ConfigureAwait(false);
+                await VisitAsync(unionMemberTypes.Items[i], context).ConfigureAwait(false);
                 if (i < unionMemberTypes.Items.Count - 1)
-                    await context.Write(" | ").ConfigureAwait(false);
+                    await context.WriteAsync(" | ").ConfigureAwait(false);
             }
         }
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirective(GraphQLDirective directive, TContext context)
+    public override async ValueTask VisitDirectiveAsync(GraphQLDirective directive, TContext context)
     {
-        await Visit(directive.Comment, context).ConfigureAwait(false);
-        await context.Write("@").ConfigureAwait(false);
-        await Visit(directive.Name, context).ConfigureAwait(false);
-        await Visit(directive.Arguments, context).ConfigureAwait(false);
+        await VisitAsync(directive.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("@").ConfigureAwait(false);
+        await VisitAsync(directive.Name, context).ConfigureAwait(false);
+        await VisitAsync(directive.Arguments, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirectives(GraphQLDirectives directives, TContext context)
+    public override async ValueTask VisitDirectivesAsync(GraphQLDirectives directives, TContext context)
     {
-        await Visit(directives.Comment, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
-        await context.Write(" ").ConfigureAwait(false);
+        await VisitAsync(directives.Comment, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
+        await context.WriteAsync(" ").ConfigureAwait(false);
 
         for (int i = 0; i < directives.Items.Count; ++i)
         {
-            await Visit(directives.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(directives.Items[i], context).ConfigureAwait(false);
             if (i < directives.Items.Count - 1)
-                await context.Write(" ").ConfigureAwait(false);
+                await context.WriteAsync(" ").ConfigureAwait(false);
         }
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitArgument(GraphQLArgument argument, TContext context)
+    public override async ValueTask VisitArgumentAsync(GraphQLArgument argument, TContext context)
     {
-        await Visit(argument.Comment, context).ConfigureAwait(false);
-        await Visit(argument.Name, context).ConfigureAwait(false);
-        await context.Write(": ").ConfigureAwait(false);
-        await Visit(argument.Value, context).ConfigureAwait(false);
+        await VisitAsync(argument.Comment, context).ConfigureAwait(false);
+        await VisitAsync(argument.Name, context).ConfigureAwait(false);
+        await context.WriteAsync(": ").ConfigureAwait(false);
+        await VisitAsync(argument.Value, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
+    public override async ValueTask VisitArgumentsDefinitionAsync(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
     {
-        await Visit(argumentsDefinition.Comment, context).ConfigureAwait(false);
-        await context.Write("(").ConfigureAwait(false);
+        await VisitAsync(argumentsDefinition.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("(").ConfigureAwait(false);
 
         for (int i = 0; i < argumentsDefinition.Items.Count; ++i)
         {
-            await Visit(argumentsDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(argumentsDefinition.Items[i], context).ConfigureAwait(false);
             if (i < argumentsDefinition.Items.Count - 1)
-                await context.Write(", ").ConfigureAwait(false);
+                await context.WriteAsync(", ").ConfigureAwait(false);
         }
 
-        await context.Write(")").ConfigureAwait(false);
+        await context.WriteAsync(")").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitArguments(GraphQLArguments arguments, TContext context)
+    public override async ValueTask VisitArgumentsAsync(GraphQLArguments arguments, TContext context)
     {
-        await Visit(arguments.Comment, context).ConfigureAwait(false);
-        await context.Write("(").ConfigureAwait(false);
+        await VisitAsync(arguments.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("(").ConfigureAwait(false);
         for (int i = 0; i < arguments.Items.Count; ++i)
         {
-            await Visit(arguments.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(arguments.Items[i], context).ConfigureAwait(false);
             if (i < arguments.Items.Count - 1)
-                await context.Write(", ").ConfigureAwait(false);
+                await context.WriteAsync(", ").ConfigureAwait(false);
         }
-        await context.Write(")").ConfigureAwait(false);
+        await context.WriteAsync(")").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitNonNullType(GraphQLNonNullType nonNullType, TContext context)
+    public override async ValueTask VisitNonNullTypeAsync(GraphQLNonNullType nonNullType, TContext context)
     {
-        await Visit(nonNullType.Comment, context).ConfigureAwait(false);
-        await Visit(nonNullType.Type, context).ConfigureAwait(false);
-        await context.Write("!").ConfigureAwait(false);
+        await VisitAsync(nonNullType.Comment, context).ConfigureAwait(false);
+        await VisitAsync(nonNullType.Type, context).ConfigureAwait(false);
+        await context.WriteAsync("!").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitListType(GraphQLListType listType, TContext context)
+    public override async ValueTask VisitListTypeAsync(GraphQLListType listType, TContext context)
     {
-        await Visit(listType.Comment, context).ConfigureAwait(false);
-        await context.Write("[").ConfigureAwait(false);
-        await Visit(listType.Type, context).ConfigureAwait(false);
-        await context.Write("]").ConfigureAwait(false);
+        await VisitAsync(listType.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("[").ConfigureAwait(false);
+        await VisitAsync(listType.Type, context).ConfigureAwait(false);
+        await context.WriteAsync("]").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitListValue(GraphQLListValue listValue, TContext context)
+    public override async ValueTask VisitListValueAsync(GraphQLListValue listValue, TContext context)
     {
-        await Visit(listValue.Comment, context).ConfigureAwait(false);
-        await context.Write("[").ConfigureAwait(false);
+        await VisitAsync(listValue.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("[").ConfigureAwait(false);
         if (listValue.Values?.Count > 0)
         {
             for (int i = 0; i < listValue.Values.Count; ++i)
             {
-                await Visit(listValue.Values[i], context).ConfigureAwait(false);
+                await VisitAsync(listValue.Values[i], context).ConfigureAwait(false);
                 if (i < listValue.Values.Count - 1)
-                    await context.Write(", ").ConfigureAwait(false);
+                    await context.WriteAsync(", ").ConfigureAwait(false);
             }
         }
-        await context.Write("]").ConfigureAwait(false);
+        await context.WriteAsync("]").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitNullValue(GraphQLNullValue nullValue, TContext context)
+    public override async ValueTask VisitNullValueAsync(GraphQLNullValue nullValue, TContext context)
     {
-        await Visit(nullValue.Comment, context).ConfigureAwait(false);
-        await context.Write("null").ConfigureAwait(false);
+        await VisitAsync(nullValue.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("null").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitStringValue(GraphQLStringValue stringValue, TContext context)
+    public override async ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, TContext context)
     {
-        await Visit(stringValue.Comment, context).ConfigureAwait(false);
-        await WriteEncodedString(context, stringValue.Value);
+        await VisitAsync(stringValue.Comment, context).ConfigureAwait(false);
+        await WriteEncodedStringAsync(context, stringValue.Value);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitIntValue(GraphQLIntValue intValue, TContext context)
+    public override async ValueTask VisitIntValueAsync(GraphQLIntValue intValue, TContext context)
     {
-        await Visit(intValue.Comment, context).ConfigureAwait(false);
-        await context.Write(intValue.Value).ConfigureAwait(false);
+        await VisitAsync(intValue.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync(intValue.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFloatValue(GraphQLFloatValue floatValue, TContext context)
+    public override async ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, TContext context)
     {
-        await Visit(floatValue.Comment, context).ConfigureAwait(false);
-        await context.Write(floatValue.Value).ConfigureAwait(false);
+        await VisitAsync(floatValue.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync(floatValue.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumValue(GraphQLEnumValue enumValue, TContext context)
+    public override async ValueTask VisitEnumValueAsync(GraphQLEnumValue enumValue, TContext context)
     {
-        await Visit(enumValue.Comment, context).ConfigureAwait(false);
-        await Visit(enumValue.Name, context).ConfigureAwait(false);
+        await VisitAsync(enumValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumValue.Name, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectValue(GraphQLObjectValue objectValue, TContext context)
+    public override async ValueTask VisitObjectValueAsync(GraphQLObjectValue objectValue, TContext context)
     {
-        await Visit(objectValue.Comment, context).ConfigureAwait(false);
-        await context.Write("{").ConfigureAwait(false);
+        await VisitAsync(objectValue.Comment, context).ConfigureAwait(false);
+        await context.WriteAsync("{").ConfigureAwait(false);
         if (objectValue.Fields?.Count > 0)
         {
             for (int i = 0; i < objectValue.Fields.Count; ++i)
             {
-                await Visit(objectValue.Fields[i], context).ConfigureAwait(false);
+                await VisitAsync(objectValue.Fields[i], context).ConfigureAwait(false);
                 if (i < objectValue.Fields.Count - 1)
-                    await context.Write(", ").ConfigureAwait(false);
+                    await context.WriteAsync(", ").ConfigureAwait(false);
             }
         }
-        await context.Write("}").ConfigureAwait(false);
+        await context.WriteAsync("}").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectField(GraphQLObjectField objectField, TContext context)
+    public override async ValueTask VisitObjectFieldAsync(GraphQLObjectField objectField, TContext context)
     {
-        await Visit(objectField.Comment, context).ConfigureAwait(false);
-        await Visit(objectField.Name, context).ConfigureAwait(false);
-        await context.Write(": ").ConfigureAwait(false);
-        await Visit(objectField.Value, context).ConfigureAwait(false);
+        await VisitAsync(objectField.Comment, context).ConfigureAwait(false);
+        await VisitAsync(objectField.Name, context).ConfigureAwait(false);
+        await context.WriteAsync(": ").ConfigureAwait(false);
+        await VisitAsync(objectField.Value, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context)
+    public override ValueTask VisitNamedTypeAsync(GraphQLNamedType namedType, TContext context)
     {
-        return base.VisitNamedType(namedType, context);
+        return base.VisitNamedTypeAsync(namedType, context);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask Visit(ASTNode? node, TContext context)
+    public override async ValueTask VisitAsync(ASTNode? node, TContext context)
     {
         if (node == null)
             return;
@@ -957,7 +957,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
 
         context.Parents.Push(node);
 
-        await base.Visit(node, context).ConfigureAwait(false);
+        await base.VisitAsync(node, context).ConfigureAwait(false);
 
         context.Parents.Pop();
         context.IndentLevel = prevLevel;
@@ -1000,10 +1000,10 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         _ => throw new NotSupportedException($"Unknown directive location {location}"),
     };
 
-    private static async ValueTask WriteIndent(TContext context)
+    private static async ValueTask WriteIndentAsync(TContext context)
     {
         for (int i = 0; i < context.IndentLevel; ++i)
-            await context.Write("  ").ConfigureAwait(false);
+            await context.WriteAsync("  ").ConfigureAwait(false);
     }
 
     private static bool TryPeekParent(TContext context, [NotNullWhen(true)] out ASTNode? node)
@@ -1020,9 +1020,9 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     // http://spec.graphql.org/October2021/#StringCharacter
-    private static async ValueTask WriteEncodedString(TContext context, ROM value)
+    private static async ValueTask WriteEncodedStringAsync(TContext context, ROM value)
     {
-        await context.Write("\"").ConfigureAwait(false);
+        await context.WriteAsync("\"").ConfigureAwait(false);
 
         for (int i = 0; i < value.Span.Length; ++i)
         {
@@ -1030,27 +1030,27 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
             if (code < ' ')
             {
                 if (code == '\b')
-                    await context.Write("\\b").ConfigureAwait(false);
+                    await context.WriteAsync("\\b").ConfigureAwait(false);
                 else if (code == '\f')
-                    await context.Write("\\f").ConfigureAwait(false);
+                    await context.WriteAsync("\\f").ConfigureAwait(false);
                 else if (code == '\n')
-                    await context.Write("\\n").ConfigureAwait(false);
+                    await context.WriteAsync("\\n").ConfigureAwait(false);
                 else if (code == '\r')
-                    await context.Write("\\r").ConfigureAwait(false);
+                    await context.WriteAsync("\\r").ConfigureAwait(false);
                 else if (code == '\t')
-                    await context.Write("\\t").ConfigureAwait(false);
+                    await context.WriteAsync("\\t").ConfigureAwait(false);
                 else
-                    await context.Write("\\u" + ((int)code).ToString("X4")).ConfigureAwait(false);
+                    await context.WriteAsync("\\u" + ((int)code).ToString("X4")).ConfigureAwait(false);
             }
             else if (code == '\\')
-                await context.Write("\\\\").ConfigureAwait(false);
+                await context.WriteAsync("\\\\").ConfigureAwait(false);
             else if (code == '"')
-                await context.Write("\\\"").ConfigureAwait(false);
+                await context.WriteAsync("\\\"").ConfigureAwait(false);
             else
-                await context.Write(value.Slice(i, 1)/*code*/).ConfigureAwait(false); // TODO: no method for char
+                await context.WriteAsync(value.Slice(i, 1)/*code*/).ConfigureAwait(false); // TODO: no method for char
         }
 
-        await context.Write("\"").ConfigureAwait(false);
+        await context.WriteAsync("\"").ConfigureAwait(false);
     }
 }
 

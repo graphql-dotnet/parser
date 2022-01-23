@@ -662,7 +662,7 @@ extend union Unity =
         var writer = new StringWriter();
         using (var document = text.Parse())
         {
-            await new DoBadThingsVisitor().Visit(document, new Context());
+            await new DoBadThingsVisitor().VisitAsync(document, new Context());
 
             var ex = await Should.ThrowAsync<NotSupportedException>(async () => await document.ToSDL(writer));
             ex.Message.ShouldStartWith("Unknown ");
@@ -676,18 +676,18 @@ extend union Unity =
 
     private sealed class DoBadThingsVisitor : DefaultNodeVisitor<Context>
     {
-        public override ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, Context context)
+        public override ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, Context context)
         {
             operationDefinition.Operation = (OperationType)99;
-            return base.VisitOperationDefinition(operationDefinition, context);
+            return base.VisitOperationDefinitionAsync(operationDefinition, context);
         }
 
-        public override ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, Context context)
+        public override ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, Context context)
         {
             for (int i = 0; i < directiveLocations.Items.Count; ++i)
                 directiveLocations.Items[i] = (DirectiveLocation)(100 + i);
 
-            return base.VisitDirectiveLocations(directiveLocations, context);
+            return base.VisitDirectiveLocationsAsync(directiveLocations, context);
         }
     }
 }

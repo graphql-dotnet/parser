@@ -13,290 +13,290 @@ public interface INodeVisitor<TContext>
     /// <summary>
     /// Visits <see cref="GraphQLName"/> node.
     /// </summary>
-    ValueTask VisitName(GraphQLName name, TContext context);
+    ValueTask VisitNameAsync(GraphQLName name, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLDocument"/> node.
     /// </summary>
-    ValueTask VisitDocument(GraphQLDocument document, TContext context);
+    ValueTask VisitDocumentAsync(GraphQLDocument document, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLOperationDefinition"/> node.
     /// </summary>
-    ValueTask VisitOperationDefinition(GraphQLOperationDefinition operationDefinition, TContext context);
+    ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLVariableDefinition"/> node.
     /// </summary>
-    ValueTask VisitVariableDefinition(GraphQLVariableDefinition variableDefinition, TContext context);
+    ValueTask VisitVariableDefinitionAsync(GraphQLVariableDefinition variableDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLVariablesDefinition"/> node.
     /// </summary>
-    ValueTask VisitVariablesDefinition(GraphQLVariablesDefinition variablesDefinition, TContext context);
+    ValueTask VisitVariablesDefinitionAsync(GraphQLVariablesDefinition variablesDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLVariable"/> node.
     /// </summary>
-    ValueTask VisitVariable(GraphQLVariable variable, TContext context);
+    ValueTask VisitVariableAsync(GraphQLVariable variable, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLSelectionSet"/> node.
     /// </summary>
-    ValueTask VisitSelectionSet(GraphQLSelectionSet selectionSet, TContext context);
+    ValueTask VisitSelectionSetAsync(GraphQLSelectionSet selectionSet, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLField"/> node.
     /// </summary>
-    ValueTask VisitField(GraphQLField field, TContext context);
+    ValueTask VisitFieldAsync(GraphQLField field, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLArgument"/> node.
     /// </summary>
-    ValueTask VisitArgument(GraphQLArgument argument, TContext context);
+    ValueTask VisitArgumentAsync(GraphQLArgument argument, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLArgumentsDefinition"/> node.
     /// </summary>
-    ValueTask VisitArgumentsDefinition(GraphQLArgumentsDefinition argumentsDefinition, TContext context);
+    ValueTask VisitArgumentsDefinitionAsync(GraphQLArgumentsDefinition argumentsDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLArguments"/> node.
     /// </summary>
-    ValueTask VisitArguments(GraphQLArguments arguments, TContext context);
+    ValueTask VisitArgumentsAsync(GraphQLArguments arguments, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLFragmentSpread"/> node.
     /// </summary>
-    ValueTask VisitFragmentSpread(GraphQLFragmentSpread fragmentSpread, TContext context);
+    ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLInlineFragment"/> node.
     /// </summary>
-    ValueTask VisitInlineFragment(GraphQLInlineFragment inlineFragment, TContext context);
+    ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLFragmentDefinition"/> node.
     /// </summary>
-    ValueTask VisitFragmentDefinition(GraphQLFragmentDefinition fragmentDefinition, TContext context);
+    ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLFragmentName"/> node.
     /// </summary>
-    ValueTask VisitFragmentName(GraphQLFragmentName fragmentName, TContext context);
+    ValueTask VisitFragmentNameAsync(GraphQLFragmentName fragmentName, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLIntValue"/> node.
     /// </summary>
-    ValueTask VisitIntValue(GraphQLIntValue intValue, TContext context);
+    ValueTask VisitIntValueAsync(GraphQLIntValue intValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLFloatValue"/> node.
     /// </summary>
-    ValueTask VisitFloatValue(GraphQLFloatValue floatValue, TContext context);
+    ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLStringValue"/> node.
     /// </summary>
-    ValueTask VisitStringValue(GraphQLStringValue stringValue, TContext context);
+    ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLBooleanValue"/> node.
     /// </summary>
-    ValueTask VisitBooleanValue(GraphQLBooleanValue booleanValue, TContext context);
+    ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLEnumValue"/> node.
     /// </summary>
-    ValueTask VisitEnumValue(GraphQLEnumValue enumValue, TContext context);
+    ValueTask VisitEnumValueAsync(GraphQLEnumValue enumValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLListValue"/> node.
     /// </summary>
-    ValueTask VisitListValue(GraphQLListValue listValue, TContext context);
+    ValueTask VisitListValueAsync(GraphQLListValue listValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLObjectValue"/> node.
     /// </summary>
-    ValueTask VisitObjectValue(GraphQLObjectValue objectValue, TContext context);
+    ValueTask VisitObjectValueAsync(GraphQLObjectValue objectValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLObjectField"/> node.
     /// </summary>
-    ValueTask VisitObjectField(GraphQLObjectField objectField, TContext context);
+    ValueTask VisitObjectFieldAsync(GraphQLObjectField objectField, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLDirective"/> node.
     /// </summary>
-    ValueTask VisitDirective(GraphQLDirective directive, TContext context);
+    ValueTask VisitDirectiveAsync(GraphQLDirective directive, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLDirectives"/> node.
     /// </summary>
-    ValueTask VisitDirectives(GraphQLDirectives directives, TContext context);
+    ValueTask VisitDirectivesAsync(GraphQLDirectives directives, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLNamedType"/> node.
     /// </summary>
-    ValueTask VisitNamedType(GraphQLNamedType namedType, TContext context);
+    ValueTask VisitNamedTypeAsync(GraphQLNamedType namedType, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLListType"/> node.
     /// </summary>
-    ValueTask VisitListType(GraphQLListType listType, TContext context);
+    ValueTask VisitListTypeAsync(GraphQLListType listType, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLNonNullType"/> node.
     /// </summary>
-    ValueTask VisitNonNullType(GraphQLNonNullType nonNullType, TContext context);
+    ValueTask VisitNonNullTypeAsync(GraphQLNonNullType nonNullType, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLNullValue"/> node.
     /// </summary>
-    ValueTask VisitNullValue(GraphQLNullValue nullValue, TContext context);
+    ValueTask VisitNullValueAsync(GraphQLNullValue nullValue, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLSchemaDefinition"/> node.
     /// </summary>
-    ValueTask VisitSchemaDefinition(GraphQLSchemaDefinition schemaDefinition, TContext context);
+    ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLRootOperationTypeDefinition"/> node.
     /// </summary>
-    ValueTask VisitRootOperationTypeDefinition(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context);
+    ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLScalarTypeDefinition"/> node.
     /// </summary>
-    ValueTask VisitScalarTypeDefinition(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context);
+    ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLObjectTypeDefinition"/> node.
     /// </summary>
-    ValueTask VisitObjectTypeDefinition(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context);
+    ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLFieldDefinition"/> node.
     /// </summary>
-    ValueTask VisitFieldDefinition(GraphQLFieldDefinition fieldDefinition, TContext context);
+    ValueTask VisitFieldDefinitionAsync(GraphQLFieldDefinition fieldDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLFieldsDefinition"/> node.
     /// </summary>
-    ValueTask VisitFieldsDefinition(GraphQLFieldsDefinition fieldsDefinition, TContext context);
+    ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLInputValueDefinition"/> node.
     /// </summary>
-    ValueTask VisitInputValueDefinition(GraphQLInputValueDefinition inputValueDefinition, TContext context);
+    ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLInputFieldsDefinition"/> node.
     /// </summary>
-    ValueTask VisitInputFieldsDefinition(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context);
+    ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLInterfaceTypeDefinition"/> node.
     /// </summary>
-    ValueTask VisitInterfaceTypeDefinition(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context);
+    ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLUnionTypeDefinition"/> node.
     /// </summary>
-    ValueTask VisitUnionTypeDefinition(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context);
+    ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLUnionMemberTypes"/> node.
     /// </summary>
-    ValueTask VisitUnionMemberTypes(GraphQLUnionMemberTypes unionMemberTypes, TContext context);
+    ValueTask VisitUnionMemberTypesAsync(GraphQLUnionMemberTypes unionMemberTypes, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLEnumTypeDefinition"/> node.
     /// </summary>
-    ValueTask VisitEnumTypeDefinition(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context);
+    ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLEnumValueDefinition"/> node.
     /// </summary>
-    ValueTask VisitEnumValueDefinition(GraphQLEnumValueDefinition enumValueDefinition, TContext context);
+    ValueTask VisitEnumValueDefinitionAsync(GraphQLEnumValueDefinition enumValueDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLEnumValuesDefinition"/> node.
     /// </summary>
-    ValueTask VisitEnumValuesDefinition(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context);
+    ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLInputObjectTypeDefinition"/> node.
     /// </summary>
-    ValueTask VisitInputObjectTypeDefinition(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context);
+    ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLDirectiveDefinition"/> node.
     /// </summary>
-    ValueTask VisitDirectiveDefinition(GraphQLDirectiveDefinition directiveDefinition, TContext context);
+    ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLDirectiveLocations"/> node.
     /// </summary>
-    ValueTask VisitDirectiveLocations(GraphQLDirectiveLocations directiveLocations, TContext context);
+    ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLComment"/> node.
     /// </summary>
-    ValueTask VisitComment(GraphQLComment comment, TContext context);
+    ValueTask VisitCommentAsync(GraphQLComment comment, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLDescription"/> node.
     /// </summary>
-    ValueTask VisitDescription(GraphQLDescription description, TContext context);
+    ValueTask VisitDescriptionAsync(GraphQLDescription description, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLTypeCondition"/> node.
     /// </summary>
-    ValueTask VisitTypeCondition(GraphQLTypeCondition typeCondition, TContext context);
+    ValueTask VisitTypeConditionAsync(GraphQLTypeCondition typeCondition, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLImplementsInterfaces"/> node.
     /// </summary>
-    ValueTask VisitImplementsInterfaces(GraphQLImplementsInterfaces implementsInterfaces, TContext context);
+    ValueTask VisitImplementsInterfacesAsync(GraphQLImplementsInterfaces implementsInterfaces, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLAlias"/> node.
     /// </summary>
-    ValueTask VisitAlias(GraphQLAlias alias, TContext context);
+    ValueTask VisitAliasAsync(GraphQLAlias alias, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLSchemaExtension"/> node.
     /// </summary>
-    ValueTask VisitSchemaExtension(GraphQLSchemaExtension schemaExtension, TContext context);
+    ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLScalarTypeExtension"/> node.
     /// </summary>
-    ValueTask VisitScalarTypeExtension(GraphQLScalarTypeExtension scalarTypeExtension, TContext context);
+    ValueTask VisitScalarTypeExtensionAsync(GraphQLScalarTypeExtension scalarTypeExtension, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLObjectTypeExtension"/> node.
     /// </summary>
-    ValueTask VisitObjectTypeExtension(GraphQLObjectTypeExtension objectTypeExtension, TContext context);
+    ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLInterfaceTypeExtension"/> node.
     /// </summary>
-    ValueTask VisitInterfaceTypeExtension(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context);
+    ValueTask VisitInterfaceTypeExtensionAsync(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLUnionTypeExtension"/> node.
     /// </summary>
-    ValueTask VisitUnionTypeExtension(GraphQLUnionTypeExtension unionTypeExtension, TContext context);
+    ValueTask VisitUnionTypeExtensionAsync(GraphQLUnionTypeExtension unionTypeExtension, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLEnumTypeExtension"/> node.
     /// </summary>
-    ValueTask VisitEnumTypeExtension(GraphQLEnumTypeExtension enumTypeExtension, TContext context);
+    ValueTask VisitEnumTypeExtensionAsync(GraphQLEnumTypeExtension enumTypeExtension, TContext context);
 
     /// <summary>
     /// Visits <see cref="GraphQLInputObjectTypeExtension"/> node.
     /// </summary>
-    ValueTask VisitInputObjectTypeExtension(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context);
+    ValueTask VisitInputObjectTypeExtensionAsync(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context);
 }

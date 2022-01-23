@@ -25,7 +25,7 @@ public class DefaultNodeVisitorTests
     {
         var visitor = new DefaultNodeVisitor<Context>();
         var context = new Context();
-        visitor.Visit(null, context).ShouldBe(new ValueTask());
+        visitor.VisitAsync(null, context).ShouldBe(new ValueTask());
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class DefaultNodeVisitorTests
         var visitor = new DefaultNodeVisitor<Context>();
         var context = new Context();
 
-        var ex = Should.Throw<NotSupportedException>(() => visitor.Visit(new MySuperNode(), context));
+        var ex = Should.Throw<NotSupportedException>(() => visitor.VisitAsync(new MySuperNode(), context));
         ex.Message.ShouldBe("Unknown node 'MySuperNode'.");
     }
 }

@@ -17,7 +17,7 @@ public static class ASTNodeExtensions
     {
         var visitor = new SDLWriter<DefaultWriteContext>(options ?? new SDLWriterOptions());
         var context = new DefaultWriteContext(writer);
-        await visitor.Visit(node, context);
+        await visitor.VisitAsync(node, context);
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ public static class ASTNodeExtensions
     {
         var visitor = new CountVisitor<DefaultCountContext>();
         var context = new DefaultCountContext(_ => true);
-        visitor.Visit(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
+        visitor.VisitAsync(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
         return context.Count;
     }
 
@@ -42,7 +42,7 @@ public static class ASTNodeExtensions
     {
         var visitor = new MaxDepthVisitor<DefaultMaxDepthContext>();
         var context = new DefaultMaxDepthContext();
-        visitor.Visit(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
+        visitor.VisitAsync(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
         return context.MaxDepth;
     }
 
