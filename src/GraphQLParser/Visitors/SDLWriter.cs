@@ -94,7 +94,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
 
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        if (CommentedNodeShouldBeCloseToPreviousNode(context , comment, false))
+        if (CommentedNodeShouldBeCloseToPreviousNode(context, comment, false))
             await WriteIndentAsync(context).ConfigureAwait(false);
 
         static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context, GraphQLComment comment, bool start)
