@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.Visitors;
 using Shouldly;
@@ -10,20 +8,9 @@ namespace GraphQLParser.Tests.Visitors;
 
 public class StructureWriterTests
 {
-    private class TestContext : IWriteContext
-    {
-        public TextWriter Writer { get; set; } = new StringWriter();
-
-        public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
-
-        public CancellationToken CancellationToken { get; set; }
-
-        public int IndentLevel { get; set; }
-    }
-
-    private static readonly StructureWriter<TestContext> _structWriter1 = new(new StructureWriterOptions { WriteNames = true });
-    private static readonly StructureWriter<TestContext> _structWriter2 = new(new StructureWriterOptions { WriteNames = false });
-    private static readonly StructureWriter<TestContext> _structWriter3 = new(new StructureWriterOptions { WriteNames = true, WriteLocations = true });
+    private static readonly StructureWriter<DefaultWriteContext> _structWriter1 = new(new StructureWriterOptions { WriteNames = true });
+    private static readonly StructureWriter<DefaultWriteContext> _structWriter2 = new(new StructureWriterOptions { WriteNames = false });
+    private static readonly StructureWriter<DefaultWriteContext> _structWriter3 = new(new StructureWriterOptions { WriteNames = true, WriteLocations = true });
 
     [Theory]
     [InlineData("query a { name age }", @"Document
@@ -290,7 +277,7 @@ field: Int }", @"Document
 ")]
     public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
     {
-        var context = new TestContext();
+        var context = new DefaultWriteContext(new StringWriter());
 
         using (var document = text.Parse())
         {
@@ -312,7 +299,7 @@ field: Int }", @"Document
 ")]
     public async Task WriteTreeVisitor_Should_Print_Tree_Without_Names(string text, string expected)
     {
-        var context = new TestContext();
+        var context = new DefaultWriteContext(new StringWriter());
 
         using (var document = text.Parse())
         {
@@ -560,7 +547,7 @@ scalar S", @"Document (10,30)
             if (option == IgnoreOptions.Comments && !ignoreComments)
                 continue;
 
-            var context = new TestContext();
+            var context = new DefaultWriteContext(new StringWriter());
 
             using (var document = text.Parse(new ParserOptions { Ignore = option }))
             {

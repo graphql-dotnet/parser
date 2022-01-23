@@ -52,11 +52,11 @@ public interface IMaxDepthContext : INodeVisitorContext
 public class DefaultMaxDepthContext : IMaxDepthContext
 {
     /// <inheritdoc/>
-    public CancellationToken CancellationToken { get; set; }
+    public CancellationToken CancellationToken { get; init; }
 
     /// <inheritdoc/>
     public int MaxDepth { get; set; }
 
     /// <inheritdoc/>
-    public Stack<ASTNode> Parents { get; set; } = new Stack<ASTNode>();
+    public Stack<ASTNode> Parents { get; init; } = new Stack<ASTNode>();
 }

@@ -631,6 +631,7 @@ namespace GraphQLParser
         public static int MaxNestedDepth(this GraphQLParser.AST.ASTNode node) { }
         public static GraphQLParser.AST.GraphQLOperationDefinition? OperationWithName(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM operationName) { }
         public static int OperationsCount(this GraphQLParser.AST.GraphQLDocument document) { }
+        public static System.Threading.Tasks.ValueTask ToSDL(this GraphQLParser.AST.ASTNode node, System.IO.TextWriter writer, GraphQLParser.Visitors.SDLWriterOptions? options = null) { }
     }
     [System.Flags]
     public enum IgnoreOptions
@@ -826,6 +827,14 @@ namespace GraphQLParser.Visitors
         public virtual System.Threading.Tasks.ValueTask VisitVariable(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitVariableDefinition(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitVariablesDefinition(GraphQLParser.AST.GraphQLVariablesDefinition variablesDefinition, TContext context) { }
+    }
+    public class DefaultWriteContext : GraphQLParser.Visitors.INodeVisitorContext, GraphQLParser.Visitors.IWriteContext
+    {
+        public DefaultWriteContext(System.IO.TextWriter writer) { }
+        public System.Threading.CancellationToken CancellationToken { get; set; }
+        public int IndentLevel { get; set; }
+        public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
+        public System.IO.TextWriter Writer { get; }
     }
     public interface ICountContext : GraphQLParser.Visitors.INodeVisitorContext
     {

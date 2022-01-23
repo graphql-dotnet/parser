@@ -1,3 +1,5 @@
+using System.IO;
+using System.Threading.Tasks;
 using GraphQLParser.AST;
 using GraphQLParser.Visitors;
 
@@ -8,6 +10,16 @@ namespace GraphQLParser;
 /// </summary>
 public static class ASTNodeExtensions
 {
+    /// <summary>
+    /// Prints <see cref="ASTNode"/> into the provided <see cref="TextWriter"/> as a SDL document.
+    /// </summary>
+    public static async ValueTask ToSDL(this ASTNode node, TextWriter writer, SDLWriterOptions? options = null)
+    {
+        var visitor = new SDLWriter<DefaultWriteContext>(options ?? new SDLWriterOptions());
+        var context = new DefaultWriteContext(writer);
+        await visitor.Visit(node, context);
+    }
+
     /// <summary>
     /// Counts the number of all nested nodes of the specified node along with that node itself.
     /// </summary>

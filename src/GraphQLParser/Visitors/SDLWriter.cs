@@ -1059,16 +1059,16 @@ public class SDLWriterOptions
     /// <summary>
     /// Write comments into the output.
     /// </summary>
-    public bool WriteComments { get; set; }
+    public bool WriteComments { get; init; }
 
     /// <summary>
     /// Whether to write each directive location on its own line.
     /// </summary>
-    public bool EachDirectiveLocationOnNewLine { get; set; }
+    public bool EachDirectiveLocationOnNewLine { get; init; }
 
     /// <summary>
     /// Whether to write each union member on its own line.
     /// </summary>
-    public bool EachUnionMemberOnNewLine { get; set; }
+    public bool EachUnionMemberOnNewLine { get; init; }
 }
 

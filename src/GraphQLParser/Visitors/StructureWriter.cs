@@ -58,10 +58,10 @@ public class StructureWriterOptions
     /// <summary>
     /// Write <see cref="GraphQLName.Value"/> into the output.
     /// </summary>
-    public bool WriteNames { get; set; } = true;
+    public bool WriteNames { get; init; } = true;
 
     /// <summary>
     /// Write <see cref="ASTNode.Location"/> into the output.
     /// </summary>
-    public bool WriteLocations { get; set; }
+    public bool WriteLocations { get; init; }
 }
