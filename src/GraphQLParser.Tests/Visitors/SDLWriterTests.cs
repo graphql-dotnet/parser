@@ -398,6 +398,7 @@ type Dog implements Animal
 @"{
   f
   #arguments comment
+  #multilined
   (x:10,
   y:{
   #comment on object field
@@ -409,6 +410,7 @@ type Dog implements Animal
 @"{
   f
   #arguments comment
+  #multilined
   (x: 10, y: {
   #comment on object field
   z: 1})

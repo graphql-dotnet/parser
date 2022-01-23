@@ -57,7 +57,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         if (!Options.WriteComments)
             return;
 
-        if (CommentedNodeShouldBeCloseToPreviousNode(context))
+        if (CommentedNodeShouldBeCloseToPreviousNode(context, comment, true))
             await context.WriteLineAsync().ConfigureAwait(false);
 
         // starting # should always be printed in case of empty comment
@@ -68,7 +68,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
         int length = comment.Value.Span.Length;
         for (int i = 0; i < length; ++i)
         {
-            if (needStartNewLine)
+            if (needStartNewLine) //TODO: check coverage, remove needStartNewLine?
             {
                 await WriteIndentAsync(context).ConfigureAwait(false);
                 await context.WriteAsync("#").ConfigureAwait(false);
@@ -94,12 +94,13 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
 
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        if (CommentedNodeShouldBeCloseToPreviousNode(context))
+        if (CommentedNodeShouldBeCloseToPreviousNode(context , comment, false))
             await WriteIndentAsync(context).ConfigureAwait(false);
 
-        static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context)
+        static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context, GraphQLComment comment, bool start)
         {
             return TryPeekParent(context, out var node) &&
+                ReferenceEquals(node.Comments![start ? 0 : node.Comments.Count - 1], comment) &&
                 node is GraphQLArguments ||
                 node is GraphQLObjectField ||
                 node is GraphQLName ||
