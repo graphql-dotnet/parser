@@ -385,7 +385,7 @@ internal struct LexerContext
             }
 
             // return the string value from the output buffer
-            return output.Slice(0, outputIndex).ToString(); //TODO: allocation, see GraphQLDocument.RentedMemoryTracker
+            return output.Slice(0, outputIndex).ToString(); //TODO: allocation
         }
     }
 
@@ -643,12 +643,10 @@ internal struct LexerContext
     private int GetPositionAfterWhitespace()
     {
         int position = _currentIndex;
-        var body = _source.Span;
 
         while (position < _source.Length)
         {
-            char code = body[position];
-            switch (code)
+            switch (_source.Span[position])
             {
                 case '\xFEFF': // BOM
                 case '\t': // tab
@@ -658,10 +656,6 @@ internal struct LexerContext
                 case ',': // Comma
                     ++position;
                     break;
-
-                //                    case '#':
-                //                        position = WaitForEndOfComment(body, position, code);
-                //                        break;
 
                 default:
                     return position;

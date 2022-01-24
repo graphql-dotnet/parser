@@ -131,6 +131,8 @@ public class LexerTests
     {
         var token = $"#abc\\tdef\nfoo".Lex();
         token.Kind.ShouldBe(TokenKind.COMMENT);
+        token.Start.ShouldBe(0);
+        token.End.ShouldBe(10);
         token.Value.Length.ShouldBe(7);
     }
 

@@ -65,38 +65,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         if (CommentedNodeShouldBeCloseToPreviousNode(context, comment, true))
             await context.WriteLineAsync().ConfigureAwait(false);
 
-        // starting # should always be printed in case of empty comment
         await WriteIndentAsync(context).ConfigureAwait(false);
         await context.WriteAsync("#").ConfigureAwait(false);
-        bool needStartNewLine = false;
-
-        int length = comment.Value.Span.Length;
-        for (int i = 0; i < length; ++i)
-        {
-            if (needStartNewLine) //TODO: check coverage, remove needStartNewLine?
-            {
-                await WriteIndentAsync(context).ConfigureAwait(false);
-                await context.WriteAsync("#").ConfigureAwait(false);
-                needStartNewLine = false;
-            }
-
-            char code = comment.Value.Span[i];
-            switch (code)
-            {
-                case '\r':
-                    break;
-
-                case '\n':
-                    await context.WriteLineAsync().ConfigureAwait(false);
-                    needStartNewLine = true;
-                    break;
-
-                default:
-                    await context.WriteAsync(comment.Value.Slice(i, 1)/*code*/).ConfigureAwait(false);
-                    break;
-            }
-        }
-
+        await context.WriteAsync(comment.Value).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (CommentedNodeShouldBeCloseToPreviousNode(context, comment, false))
