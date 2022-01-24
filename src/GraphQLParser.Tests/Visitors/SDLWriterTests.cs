@@ -16,9 +16,9 @@ public class SDLWriterTests
     [Fact]
     public void SDLWriter_Should_Have_Default_Options()
     {
-        var writer = new SDLWriter<DefaultWriteContext>();
+        var writer = new SDLPrinter();
         writer.Options.ShouldNotBeNull();
-        writer.Options.WriteComments.ShouldBeFalse();
+        writer.Options.PrintComments.ShouldBeFalse();
         writer.Options.EachDirectiveLocationOnNewLine.ShouldBeFalse();
         writer.Options.EachUnionMemberOnNewLine.ShouldBeFalse();
     }
@@ -504,15 +504,16 @@ extend union Unity =
         bool eachDirectiveLocationOnNewLine = false,
         bool eachUnionMemberOnNewLine = false)
     {
+        var printer = new SDLPrinter(new SDLPrinterOptions
+        {
+            PrintComments = writeComments,
+            EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
+            EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
+        });
         var writer = new StringWriter();
         using (var document = text.Parse())
         {
-            await document.ToSDL(writer, new SDLWriterOptions
-            {
-                WriteComments = writeComments,
-                EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
-                EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
-            }).ConfigureAwait(false);
+            await printer.PrintAsync(document, writer).ConfigureAwait(false);
             var actual = writer.ToString();
             actual.ShouldBe(expected, $"Test {number} failed");
 
@@ -570,7 +571,8 @@ extend union Unity =
 
         using (var document = (input + " scalar a").Parse())
         {
-            await document.ToSDL(writer).ConfigureAwait(false);
+            var printer = new SDLPrinter();
+            await printer.PrintAsync(document, writer).ConfigureAwait(false);
             var renderedOriginal = writer.ToString();
 
             var lines = renderedOriginal.Split(Environment.NewLine);
@@ -602,7 +604,8 @@ extend union Unity =
 
         using (var document = query.Parse())
         {
-            await document.ToSDL(writer).ConfigureAwait(false);
+            var printer = new SDLPrinter();
+            await printer.PrintAsync(document, writer).ConfigureAwait(false);
             var rendered = writer.ToString();
             rendered.ShouldBe(expected);
 
@@ -618,14 +621,14 @@ extend union Unity =
     {
         var selectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() };
         var writer = new StringWriter();
-        var options = new SDLWriterOptions { WriteComments = true };
-        await selectionSet.ToSDL(writer, options);
+        var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
+        await printer.PrintAsync(selectionSet, writer);
         writer.ToString().ShouldBe(@"{
 }
 ");
         selectionSet.Comment = new GraphQLComment("comment");
         writer = new StringWriter();
-        await selectionSet.ToSDL(writer, options);
+        await printer.PrintAsync(selectionSet, writer);
         writer.ToString().ShouldBe(@"#comment
 {
 }
@@ -640,14 +643,14 @@ extend union Unity =
             SelectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() }
         };
         var writer = new StringWriter();
-        var options = new SDLWriterOptions { WriteComments = true };
-        await def.ToSDL(writer, options);
+        var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
+        await printer.PrintAsync(def, writer);
         writer.ToString().ShouldBe(@"{
 }
 ");
         def.SelectionSet.Comment = new GraphQLComment("comment");
         writer = new StringWriter();
-        await def.ToSDL(writer, options);
+        await printer.PrintAsync(def, writer);
         writer.ToString().ShouldBe(@"#comment
 {
 }
@@ -664,7 +667,8 @@ extend union Unity =
         {
             await new DoBadThingsVisitor().VisitAsync(document, new Context());
 
-            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await document.ToSDL(writer));
+            var printer = new SDLPrinter();
+            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await printer.PrintAsync(document, writer));
             ex.Message.ShouldStartWith("Unknown ");
         }
     }

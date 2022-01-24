@@ -8,9 +8,18 @@ namespace GraphQLParser.Tests.Visitors;
 
 public class StructureWriterTests
 {
-    private static readonly StructureWriter<DefaultWriteContext> _structWriter1 = new(new StructureWriterOptions { WriteNames = true });
-    private static readonly StructureWriter<DefaultWriteContext> _structWriter2 = new(new StructureWriterOptions { WriteNames = false });
-    private static readonly StructureWriter<DefaultWriteContext> _structWriter3 = new(new StructureWriterOptions { WriteNames = true, WriteLocations = true });
+    private static readonly StructurePrinter _structPrinter1 = new(new StructurePrinterOptions { PrintNames = true });
+    private static readonly StructurePrinter _structPrinter2 = new(new StructurePrinterOptions { PrintNames = false });
+    private static readonly StructurePrinter _structPrinter3 = new(new StructurePrinterOptions { PrintNames = true, PrintLocations = true });
+
+    [Fact]
+    public void StructureWriter_Should_Have_Default_Options()
+    {
+        var writer = new StructurePrinter();
+        writer.Options.ShouldNotBeNull();
+        writer.Options.PrintNames.ShouldBeTrue();
+        writer.Options.PrintLocations.ShouldBeFalse();
+    }
 
     [Theory]
     [InlineData("query a { name age }", @"Document
@@ -277,12 +286,12 @@ field: Int }", @"Document
 ")]
     public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
     {
-        var context = new DefaultWriteContext(new StringWriter());
+        var writer = new StringWriter();
 
         using (var document = text.Parse())
         {
-            await _structWriter1.VisitAsync(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
+            await _structPrinter1.PrintAsync(document, writer).ConfigureAwait(false);
+            var actual = writer.ToString();
             actual.ShouldBe(expected);
         }
     }
@@ -299,12 +308,12 @@ field: Int }", @"Document
 ")]
     public async Task WriteTreeVisitor_Should_Print_Tree_Without_Names(string text, string expected)
     {
-        var context = new DefaultWriteContext(new StringWriter());
+        var writer = new StringWriter();
 
         using (var document = text.Parse())
         {
-            await _structWriter2.VisitAsync(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
+            await _structPrinter2.PrintAsync(document, writer).ConfigureAwait(false);
+            var actual = writer.ToString();
             actual.ShouldBe(expected);
         }
     }
@@ -547,12 +556,12 @@ scalar S", @"Document (10,30)
             if (option == IgnoreOptions.Comments && !ignoreComments)
                 continue;
 
-            var context = new DefaultWriteContext(new StringWriter());
+            var writer = new StringWriter();
 
             using (var document = text.Parse(new ParserOptions { Ignore = option }))
             {
-                await _structWriter3.VisitAsync(document, context).ConfigureAwait(false);
-                var actual = context.Writer.ToString();
+                await _structPrinter3.PrintAsync(document, writer).ConfigureAwait(false);
+                var actual = writer.ToString();
                 actual.ShouldBe(expected);
             }
         }

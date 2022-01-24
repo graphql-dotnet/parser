@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.AST;
 
@@ -10,14 +12,14 @@ namespace GraphQLParser.Visitors;
 /// Prints AST into the provided <see cref="TextWriter"/> as a SDL document.
 /// </summary>
 /// <typeparam name="TContext">Type of the context object passed into all VisitXXX methods.</typeparam>
-public class SDLWriter<TContext> : ASTVisitor<TContext>
-    where TContext : IWriteContext
+public class SDLPrinter<TContext> : ASTVisitor<TContext>
+    where TContext : IPrintContext
 {
     /// <summary>
     /// Creates visitor with default options.
     /// </summary>
-    public SDLWriter()
-        : this(new SDLWriterOptions())
+    public SDLPrinter()
+        : this(new SDLPrinterOptions())
     {
     }
 
@@ -25,7 +27,7 @@ public class SDLWriter<TContext> : ASTVisitor<TContext>
     /// Creates visitor with the specified options.
     /// </summary>
     /// <param name="options">Visitor options.</param>
-    public SDLWriter(SDLWriterOptions options)
+    public SDLPrinter(SDLPrinterOptions options)
     {
         Options = options;
     }
@@ -33,7 +35,7 @@ public class SDLWriter<TContext> : ASTVisitor<TContext>
     /// <summary>
     /// Options used by visitor.
     /// </summary>
-    public SDLWriterOptions Options { get; }
+    public SDLPrinterOptions Options { get; }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitDocumentAsync(GraphQLDocument document, TContext context)
@@ -57,7 +59,7 @@ public class SDLWriter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitCommentAsync(GraphQLComment comment, TContext context)
     {
-        if (!Options.WriteComments)
+        if (!Options.PrintComments)
             return;
 
         if (CommentedNodeShouldBeCloseToPreviousNode(context))
@@ -280,7 +282,7 @@ public class SDLWriter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(selectionSet.Comment, context).ConfigureAwait(false);
 
-        bool freshLine = selectionSet.Comment != null && Options.WriteComments;
+        bool freshLine = selectionSet.Comment != null && Options.PrintComments;
         if (!freshLine && TryPeekParent(context, out var node) && (node is GraphQLOperationDefinition op && op.Name is not null || node is not GraphQLOperationDefinition))
         {
             await context.WriteAsync(" {").ConfigureAwait(false);
@@ -319,7 +321,7 @@ public class SDLWriter<TContext> : ASTVisitor<TContext>
 
         if (field.Alias == null)
             await WriteIndentAsync(context).ConfigureAwait(false);
-        else if (field.Name.Comment == null || !Options.WriteComments)
+        else if (field.Name.Comment == null || !Options.PrintComments)
             await context.WriteAsync(" ").ConfigureAwait(false);
 
         await VisitAsync(field.Name, context).ConfigureAwait(false);
@@ -739,7 +741,7 @@ public class SDLWriter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(unionMemberTypes.Comment, context).ConfigureAwait(false);
 
-        if (unionMemberTypes.Comment == null || !Options.WriteComments)
+        if (unionMemberTypes.Comment == null || !Options.PrintComments)
             await context.WriteAsync(" ").ConfigureAwait(false);
 
         if (Options.EachUnionMemberOnNewLine)
@@ -1054,23 +1056,75 @@ public class SDLWriter<TContext> : ASTVisitor<TContext>
     }
 }
 
-/// <summary>
-/// Options for <see cref="SDLWriter{TContext}"/>.
-/// </summary>
-public class SDLWriterOptions
+/// <inheritdoc/>
+public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
 {
     /// <summary>
-    /// Write comments into the output.
+    /// Default implementation for <see cref="IPrintContext"/>.
     /// </summary>
-    public bool WriteComments { get; init; }
+    public class DefaultPrintContext : IPrintContext
+    {
+        /// <summary>
+        /// Creates an instance with the specified <see cref="TextWriter"/>.
+        /// </summary>
+        public DefaultPrintContext(TextWriter writer)
+        {
+            Writer = writer;
+        }
+
+        /// <inheritdoc/>
+        public TextWriter Writer { get; }
+
+        /// <inheritdoc/>
+        public Stack<ASTNode> Parents { get; init; } = new Stack<ASTNode>();
+
+        /// <inheritdoc/>
+        public CancellationToken CancellationToken { get; init; }
+
+        /// <inheritdoc/>
+        public int IndentLevel { get; set; }
+    }
+
+    /// <inheritdoc/>
+    public SDLPrinter()
+        : base()
+    {
+    }
+
+    /// <inheritdoc/>
+    public SDLPrinter(SDLPrinterOptions options)
+        : base(options)
+    {
+    }
+
+    /// <inheritdoc cref="SDLPrinter{TContext}"/>
+    public virtual ValueTask PrintAsync(ASTNode node, TextWriter writer, CancellationToken cancellationToken = default)
+    {
+        var context = new DefaultPrintContext(writer)
+        {
+            CancellationToken = cancellationToken,
+        };
+        return VisitAsync(node, context);
+    }
+}
+
+/// <summary>
+/// Options for <see cref="SDLPrinter{TContext}"/>.
+/// </summary>
+public class SDLPrinterOptions
+{
+    /// <summary>
+    /// Print comments into the output.
+    /// </summary>
+    public bool PrintComments { get; init; }
 
     /// <summary>
-    /// Whether to write each directive location on its own line.
+    /// Whether to print each directive location on its own line.
     /// </summary>
     public bool EachDirectiveLocationOnNewLine { get; init; }
 
     /// <summary>
-    /// Whether to write each union member on its own line.
+    /// Whether to print each union member on its own line.
     /// </summary>
     public bool EachUnionMemberOnNewLine { get; init; }
 }

@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.AST;
 
@@ -8,19 +9,30 @@ namespace GraphQLParser.Visitors;
 /// Prints AST into the provided <see cref="TextWriter"/> as a hierarchy of node types.
 /// </summary>
 /// <typeparam name="TContext">Type of the context object passed into all VisitXXX methods.</typeparam>
-public class StructureWriter<TContext> : ASTVisitor<TContext>
-    where TContext : IWriteContext
+public class StructurePrinter<TContext> : ASTVisitor<TContext>
+    where TContext : IPrintContext
 {
+    /// <summary>
+    /// Creates visitor with default options.
+    /// </summary>
+    public StructurePrinter()
+        : this(new StructurePrinterOptions())
+    {
+    }
+
     /// <summary>
     /// Creates visitor with the specified options.
     /// </summary>
     /// <param name="options">Visitor options.</param>
-    public StructureWriter(StructureWriterOptions options)
+    public StructurePrinter(StructurePrinterOptions options)
     {
         Options = options;
     }
 
-    private StructureWriterOptions Options { get; }
+    /// <summary>
+    /// Options used by visitor.
+    /// </summary>
+    public StructurePrinterOptions Options { get; }
 
     /// <inheritdoc/>
     public override async ValueTask VisitAsync(ASTNode? node, TContext context)
@@ -33,13 +45,13 @@ public class StructureWriter<TContext> : ASTVisitor<TContext>
 
         context.Parents.Push(node);
         await context.WriteAsync(node.Kind.ToString()).ConfigureAwait(false);
-        if (Options.WriteNames && node is GraphQLName name)
+        if (Options.PrintNames && node is GraphQLName name)
         {
             await context.WriteAsync(" [").ConfigureAwait(false);
             await context.WriteAsync(name.Value).ConfigureAwait(false);
             await context.WriteAsync("]").ConfigureAwait(false);
         }
-        if (Options.WriteLocations)
+        if (Options.PrintLocations)
         {
             await context.WriteAsync(" ").ConfigureAwait(false);
             await context.WriteAsync(node.Location.ToString()).ConfigureAwait(false); //TODO: allocations
@@ -50,18 +62,44 @@ public class StructureWriter<TContext> : ASTVisitor<TContext>
     }
 }
 
+/// <inheritdoc/>
+public class StructurePrinter : StructurePrinter<SDLPrinter.DefaultPrintContext>
+{
+    /// <inheritdoc/>
+    public StructurePrinter()
+        : base()
+    {
+    }
+
+    /// <inheritdoc/>
+    public StructurePrinter(StructurePrinterOptions options)
+        : base(options)
+    {
+    }
+
+    /// <inheritdoc cref="StructurePrinter{TContext}"/>
+    public virtual ValueTask PrintAsync(ASTNode node, TextWriter writer, CancellationToken cancellationToken = default)
+    {
+        var context = new SDLPrinter.DefaultPrintContext(writer)
+        {
+            CancellationToken = cancellationToken,
+        };
+        return VisitAsync(node, context);
+    }
+}
+
 /// <summary>
-/// Options for <see cref="StructureWriter{TContext}"/>.
+/// Options for <see cref="StructurePrinter{TContext}"/>.
 /// </summary>
-public class StructureWriterOptions
+public class StructurePrinterOptions
 {
     /// <summary>
-    /// Write <see cref="GraphQLName.Value"/> into the output.
+    /// Print <see cref="GraphQLName.Value"/> into the output.
     /// </summary>
-    public bool WriteNames { get; init; } = true;
+    public bool PrintNames { get; init; } = true;
 
     /// <summary>
-    /// Write <see cref="ASTNode.Location"/> into the output.
+    /// Print <see cref="ASTNode.Location"/> into the output.
     /// </summary>
-    public bool WriteLocations { get; init; }
+    public bool PrintLocations { get; init; }
 }
