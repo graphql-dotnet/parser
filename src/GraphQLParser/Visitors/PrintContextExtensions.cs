@@ -9,7 +9,7 @@ namespace GraphQLParser.Visitors;
 /// <summary>
 /// Extension methods for writing into <see cref="TextWriter"/>.
 /// </summary>
-public static class WriteContextExtensions
+public static class PrintContextExtensions
 {
     private static readonly ROM _newLine = Environment.NewLine;
 
@@ -19,7 +19,7 @@ public static class WriteContextExtensions
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ValueTask WriteAsync<TContext>(this TContext context, ROM value)
-        where TContext : IWriteContext
+        where TContext : IPrintContext
     {
         var task =
 #if NETSTANDARD2_0
@@ -37,6 +37,6 @@ public static class WriteContextExtensions
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ValueTask WriteLineAsync<TContext>(this TContext context)
-        where TContext : IWriteContext
+        where TContext : IPrintContext
         => WriteAsync(context, _newLine);
 }

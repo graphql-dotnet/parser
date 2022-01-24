@@ -29,7 +29,7 @@ does not allocate memory on the managed heap at all.
 
 ### Usage
 
-```c#
+```csharp
 var token = Lexer.Lex("\"str\"");
 ```
 
@@ -43,7 +43,7 @@ Parses provided GraphQL expression into AST (abstract syntax tree). Parser also 
 
 ### Usage
 
-```c#
+```csharp
 var ast1 = Parser.Parse(@"
 {
   field
@@ -59,20 +59,20 @@ By default `ParserOptions.Ignore` is `IgnoreOptions.IgnoreComments` to improve p
 If you don't need information about tokens locations in the source document, then use `IgnoreOptions.IgnoreCommentsAndLocations`.
 This will maximize the saving of memory allocated in the managed heap for AST.
 
-## 3. INodeVisitor
+## 3. ASTVisitor
 
-`INodeVisitor` provides API to traverse AST of the parsed GraphQL document.
-Default implementation of this interface is `DefaultNodeVisitor` that
-traverses all AST nodes of the provided one. You can inherit from it and
-implement your own AST processing algorithm.
+`ASTVisitor` provides API to traverse AST of the parsed GraphQL document.
+Default implementation traverses all AST nodes of the provided one. You can
+inherit from it and override desired methods to implement your own AST
+processing algorithm.
 
-For printing SDL from AST, you can use `SDLWriter<TContext>` visitor.
-This is a highly optimized visitor for asynchronous non-blocking SDL output
-into provided `TextWriter`. In the majority of cases it does not allocate
-memory in the managed heap at all.
+For printing SDL from AST, you can use `SDLPrinter`. This is a highly
+optimized visitor for asynchronous non-blocking SDL output into provided
+`TextWriter`. In the majority of cases it does not allocate memory in
+the managed heap at all.
 
-You can also find a `StructureWriter<TContext>` visitor that prints AST
-into the provided `TextWriter` as a hierarchy of node types. It can be useful
+You can also find a `StructurePrinter` visitor that prints AST into the
+provided `TextWriter` as a hierarchy of node types. It can be useful
 when debugging for better understanding the AST structure.
 Consider GraphQL document
 
@@ -80,7 +80,7 @@ Consider GraphQL document
 query a { name age }
 ```
 
-After `StructureWriter` processing the output text will be
+After `StructurePrinter` processing the output text will be
 
 ```
 Document
@@ -95,26 +95,14 @@ Document
 
 ### Usage
 
-```c#
-public class Context : IWriteContext
+```csharp
+public static async Task Print(string text)
 {
-    public TextWriter Writer { get; set; } = new StringWriter();
-
-    public Stack<AST.ASTNode> Parents { get; set; } = new Stack<AST.ASTNode>();
-
-    public CancellationToken CancellationToken { get; set; }
-
-    public int IndentLevel { get; set; }
-}
-
-public static void Parse(string text)
-{
-    var document = Parser.Parse(text);
-
-    var context = new Context();
-    var visitor = new SDLWriter<Context>()
-    await visitor.Visit(document, context);
-    var rendered = context.Writer.ToString();
+    using var document = Parser.Parse(text);
+    var writer = new StringWriter(); 
+    var printer = new SDLPrinter()
+    await printer.PrintAsync(document, writer);
+    var rendered = writer.ToString();
     Console.WriteLine(rendered);
 }
 ```

@@ -741,269 +741,230 @@ namespace GraphQLParser.Exceptions
 }
 namespace GraphQLParser.Visitors
 {
-    public class CountVisitor<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
+    public class ASTVisitor<TContext>
+        where TContext : GraphQLParser.Visitors.IASTVisitorContext
+    {
+        public ASTVisitor() { }
+        protected virtual System.Threading.Tasks.ValueTask VisitAliasAsync(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitArgumentAsync(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitArgumentsAsync(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitArgumentsDefinitionAsync(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context) { }
+        public virtual System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
+        protected System.Threading.Tasks.ValueTask VisitAsync<T>(System.Collections.Generic.List<T>? nodes, TContext context)
+            where T : GraphQLParser.AST.ASTNode { }
+        protected virtual System.Threading.Tasks.ValueTask VisitBooleanValueAsync(GraphQLParser.AST.GraphQLBooleanValue booleanValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitCommentAsync(GraphQLParser.AST.GraphQLComment comment, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitDescriptionAsync(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitDirectiveAsync(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitDirectiveDefinitionAsync(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitDirectiveLocationsAsync(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitDirectivesAsync(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitDocumentAsync(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitEnumTypeDefinitionAsync(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitEnumTypeExtensionAsync(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitEnumValueAsync(GraphQLParser.AST.GraphQLEnumValue enumValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitEnumValueDefinitionAsync(GraphQLParser.AST.GraphQLEnumValueDefinition enumValueDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitEnumValuesDefinitionAsync(GraphQLParser.AST.GraphQLEnumValuesDefinition enumValuesDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitFieldAsync(GraphQLParser.AST.GraphQLField field, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitFieldDefinitionAsync(GraphQLParser.AST.GraphQLFieldDefinition fieldDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitFieldsDefinitionAsync(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitFloatValueAsync(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitFragmentDefinitionAsync(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitFragmentNameAsync(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitFragmentSpreadAsync(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitImplementsInterfacesAsync(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitInlineFragmentAsync(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitInputFieldsDefinitionAsync(GraphQLParser.AST.GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitInputObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitInputValueDefinitionAsync(GraphQLParser.AST.GraphQLInputValueDefinition inputValueDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitIntValueAsync(GraphQLParser.AST.GraphQLIntValue intValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLParser.AST.GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitInterfaceTypeExtensionAsync(GraphQLParser.AST.GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitListTypeAsync(GraphQLParser.AST.GraphQLListType listType, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitListValueAsync(GraphQLParser.AST.GraphQLListValue listValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitNameAsync(GraphQLParser.AST.GraphQLName name, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitNamedTypeAsync(GraphQLParser.AST.GraphQLNamedType namedType, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitNonNullTypeAsync(GraphQLParser.AST.GraphQLNonNullType nonNullType, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitNullValueAsync(GraphQLParser.AST.GraphQLNullValue nullValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitObjectFieldAsync(GraphQLParser.AST.GraphQLObjectField objectField, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLObjectTypeDefinition objectTypeDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLObjectTypeExtension objectTypeExtension, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitObjectValueAsync(GraphQLParser.AST.GraphQLObjectValue objectValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitOperationDefinitionAsync(GraphQLParser.AST.GraphQLOperationDefinition operationDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLParser.AST.GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitScalarTypeDefinitionAsync(GraphQLParser.AST.GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitScalarTypeExtensionAsync(GraphQLParser.AST.GraphQLScalarTypeExtension scalarTypeExtension, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitSchemaDefinitionAsync(GraphQLParser.AST.GraphQLSchemaDefinition schemaDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitSchemaExtensionAsync(GraphQLParser.AST.GraphQLSchemaExtension schemaExtension, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitSelectionSetAsync(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitStringValueAsync(GraphQLParser.AST.GraphQLStringValue stringValue, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitTypeConditionAsync(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitUnionMemberTypesAsync(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitUnionTypeDefinitionAsync(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitUnionTypeExtensionAsync(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitVariableAsync(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitVariableDefinitionAsync(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
+        protected virtual System.Threading.Tasks.ValueTask VisitVariablesDefinitionAsync(GraphQLParser.AST.GraphQLVariablesDefinition variablesDefinition, TContext context) { }
+    }
+    public class CountVisitor<TContext> : GraphQLParser.Visitors.ASTVisitor<TContext>
         where TContext : GraphQLParser.Visitors.ICountContext
     {
         public CountVisitor() { }
         public override System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
     }
-    public class DefaultCountContext : GraphQLParser.Visitors.ICountContext, GraphQLParser.Visitors.INodeVisitorContext
+    public class DefaultCountContext : GraphQLParser.Visitors.IASTVisitorContext, GraphQLParser.Visitors.ICountContext
     {
         public DefaultCountContext(System.Func<GraphQLParser.AST.ASTNode, bool> shouldInclude) { }
         public System.Threading.CancellationToken CancellationToken { get; set; }
         public int Count { get; set; }
         public System.Func<GraphQLParser.AST.ASTNode, bool> ShouldInclude { get; }
     }
-    public class DefaultMaxDepthContext : GraphQLParser.Visitors.IMaxDepthContext, GraphQLParser.Visitors.INodeVisitorContext
+    public class DefaultMaxDepthContext : GraphQLParser.Visitors.IASTVisitorContext, GraphQLParser.Visitors.IMaxDepthContext
     {
         public DefaultMaxDepthContext() { }
         public System.Threading.CancellationToken CancellationToken { get; set; }
         public int MaxDepth { get; set; }
         public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
     }
-    public class DefaultNodeVisitor<TContext> : GraphQLParser.Visitors.INodeVisitor<TContext>
-        where TContext : GraphQLParser.Visitors.INodeVisitorContext
+    public interface IASTVisitorContext
     {
-        public DefaultNodeVisitor() { }
-        public virtual System.Threading.Tasks.ValueTask VisitAliasAsync(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitArgumentAsync(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitArgumentsAsync(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitArgumentsDefinitionAsync(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
-        protected System.Threading.Tasks.ValueTask VisitAsync<T>(System.Collections.Generic.List<T>? nodes, TContext context)
-            where T : GraphQLParser.AST.ASTNode { }
-        public virtual System.Threading.Tasks.ValueTask VisitBooleanValueAsync(GraphQLParser.AST.GraphQLBooleanValue booleanValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitCommentAsync(GraphQLParser.AST.GraphQLComment comment, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitDescriptionAsync(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitDirectiveAsync(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitDirectiveDefinitionAsync(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitDirectiveLocationsAsync(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitDirectivesAsync(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitDocumentAsync(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitEnumTypeDefinitionAsync(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitEnumTypeExtensionAsync(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitEnumValueAsync(GraphQLParser.AST.GraphQLEnumValue enumValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitEnumValueDefinitionAsync(GraphQLParser.AST.GraphQLEnumValueDefinition enumValueDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitEnumValuesDefinitionAsync(GraphQLParser.AST.GraphQLEnumValuesDefinition enumValuesDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitFieldAsync(GraphQLParser.AST.GraphQLField field, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitFieldDefinitionAsync(GraphQLParser.AST.GraphQLFieldDefinition fieldDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitFieldsDefinitionAsync(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitFloatValueAsync(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitFragmentDefinitionAsync(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitFragmentNameAsync(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitFragmentSpreadAsync(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitImplementsInterfacesAsync(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitInlineFragmentAsync(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitInputFieldsDefinitionAsync(GraphQLParser.AST.GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitInputObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitInputValueDefinitionAsync(GraphQLParser.AST.GraphQLInputValueDefinition inputValueDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitIntValueAsync(GraphQLParser.AST.GraphQLIntValue intValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLParser.AST.GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitInterfaceTypeExtensionAsync(GraphQLParser.AST.GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitListTypeAsync(GraphQLParser.AST.GraphQLListType listType, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitListValueAsync(GraphQLParser.AST.GraphQLListValue listValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitNameAsync(GraphQLParser.AST.GraphQLName name, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitNamedTypeAsync(GraphQLParser.AST.GraphQLNamedType namedType, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitNonNullTypeAsync(GraphQLParser.AST.GraphQLNonNullType nonNullType, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitNullValueAsync(GraphQLParser.AST.GraphQLNullValue nullValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitObjectFieldAsync(GraphQLParser.AST.GraphQLObjectField objectField, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLObjectTypeDefinition objectTypeDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLObjectTypeExtension objectTypeExtension, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitObjectValueAsync(GraphQLParser.AST.GraphQLObjectValue objectValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitOperationDefinitionAsync(GraphQLParser.AST.GraphQLOperationDefinition operationDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLParser.AST.GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitScalarTypeDefinitionAsync(GraphQLParser.AST.GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitScalarTypeExtensionAsync(GraphQLParser.AST.GraphQLScalarTypeExtension scalarTypeExtension, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitSchemaDefinitionAsync(GraphQLParser.AST.GraphQLSchemaDefinition schemaDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitSchemaExtensionAsync(GraphQLParser.AST.GraphQLSchemaExtension schemaExtension, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitSelectionSetAsync(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitStringValueAsync(GraphQLParser.AST.GraphQLStringValue stringValue, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitTypeConditionAsync(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitUnionMemberTypesAsync(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitUnionTypeDefinitionAsync(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitUnionTypeExtensionAsync(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitVariableAsync(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitVariableDefinitionAsync(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
-        public virtual System.Threading.Tasks.ValueTask VisitVariablesDefinitionAsync(GraphQLParser.AST.GraphQLVariablesDefinition variablesDefinition, TContext context) { }
+        System.Threading.CancellationToken CancellationToken { get; }
     }
-    public interface ICountContext : GraphQLParser.Visitors.INodeVisitorContext
+    public interface ICountContext : GraphQLParser.Visitors.IASTVisitorContext
     {
         int Count { get; set; }
         System.Func<GraphQLParser.AST.ASTNode, bool> ShouldInclude { get; }
     }
-    public interface IMaxDepthContext : GraphQLParser.Visitors.INodeVisitorContext
+    public interface IMaxDepthContext : GraphQLParser.Visitors.IASTVisitorContext
     {
         int MaxDepth { get; set; }
         System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
     }
-    public interface INodeVisitorContext
-    {
-        System.Threading.CancellationToken CancellationToken { get; }
-    }
-    public interface INodeVisitor<TContext>
-        where TContext : GraphQLParser.Visitors.INodeVisitorContext
-    {
-        System.Threading.Tasks.ValueTask VisitAliasAsync(GraphQLParser.AST.GraphQLAlias alias, TContext context);
-        System.Threading.Tasks.ValueTask VisitArgumentAsync(GraphQLParser.AST.GraphQLArgument argument, TContext context);
-        System.Threading.Tasks.ValueTask VisitArgumentsAsync(GraphQLParser.AST.GraphQLArguments arguments, TContext context);
-        System.Threading.Tasks.ValueTask VisitArgumentsDefinitionAsync(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitBooleanValueAsync(GraphQLParser.AST.GraphQLBooleanValue booleanValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitCommentAsync(GraphQLParser.AST.GraphQLComment comment, TContext context);
-        System.Threading.Tasks.ValueTask VisitDescriptionAsync(GraphQLParser.AST.GraphQLDescription description, TContext context);
-        System.Threading.Tasks.ValueTask VisitDirectiveAsync(GraphQLParser.AST.GraphQLDirective directive, TContext context);
-        System.Threading.Tasks.ValueTask VisitDirectiveDefinitionAsync(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitDirectiveLocationsAsync(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context);
-        System.Threading.Tasks.ValueTask VisitDirectivesAsync(GraphQLParser.AST.GraphQLDirectives directives, TContext context);
-        System.Threading.Tasks.ValueTask VisitDocumentAsync(GraphQLParser.AST.GraphQLDocument document, TContext context);
-        System.Threading.Tasks.ValueTask VisitEnumTypeDefinitionAsync(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitEnumTypeExtensionAsync(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context);
-        System.Threading.Tasks.ValueTask VisitEnumValueAsync(GraphQLParser.AST.GraphQLEnumValue enumValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitEnumValueDefinitionAsync(GraphQLParser.AST.GraphQLEnumValueDefinition enumValueDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitEnumValuesDefinitionAsync(GraphQLParser.AST.GraphQLEnumValuesDefinition enumValuesDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitFieldAsync(GraphQLParser.AST.GraphQLField field, TContext context);
-        System.Threading.Tasks.ValueTask VisitFieldDefinitionAsync(GraphQLParser.AST.GraphQLFieldDefinition fieldDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitFieldsDefinitionAsync(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitFloatValueAsync(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitFragmentDefinitionAsync(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitFragmentNameAsync(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context);
-        System.Threading.Tasks.ValueTask VisitFragmentSpreadAsync(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context);
-        System.Threading.Tasks.ValueTask VisitImplementsInterfacesAsync(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context);
-        System.Threading.Tasks.ValueTask VisitInlineFragmentAsync(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context);
-        System.Threading.Tasks.ValueTask VisitInputFieldsDefinitionAsync(GraphQLParser.AST.GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitInputObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context);
-        System.Threading.Tasks.ValueTask VisitInputValueDefinitionAsync(GraphQLParser.AST.GraphQLInputValueDefinition inputValueDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitIntValueAsync(GraphQLParser.AST.GraphQLIntValue intValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLParser.AST.GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitInterfaceTypeExtensionAsync(GraphQLParser.AST.GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context);
-        System.Threading.Tasks.ValueTask VisitListTypeAsync(GraphQLParser.AST.GraphQLListType listType, TContext context);
-        System.Threading.Tasks.ValueTask VisitListValueAsync(GraphQLParser.AST.GraphQLListValue listValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitNameAsync(GraphQLParser.AST.GraphQLName name, TContext context);
-        System.Threading.Tasks.ValueTask VisitNamedTypeAsync(GraphQLParser.AST.GraphQLNamedType namedType, TContext context);
-        System.Threading.Tasks.ValueTask VisitNonNullTypeAsync(GraphQLParser.AST.GraphQLNonNullType nonNullType, TContext context);
-        System.Threading.Tasks.ValueTask VisitNullValueAsync(GraphQLParser.AST.GraphQLNullValue nullValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitObjectFieldAsync(GraphQLParser.AST.GraphQLObjectField objectField, TContext context);
-        System.Threading.Tasks.ValueTask VisitObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLObjectTypeDefinition objectTypeDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLObjectTypeExtension objectTypeExtension, TContext context);
-        System.Threading.Tasks.ValueTask VisitObjectValueAsync(GraphQLParser.AST.GraphQLObjectValue objectValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitOperationDefinitionAsync(GraphQLParser.AST.GraphQLOperationDefinition operationDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLParser.AST.GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitScalarTypeDefinitionAsync(GraphQLParser.AST.GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitScalarTypeExtensionAsync(GraphQLParser.AST.GraphQLScalarTypeExtension scalarTypeExtension, TContext context);
-        System.Threading.Tasks.ValueTask VisitSchemaDefinitionAsync(GraphQLParser.AST.GraphQLSchemaDefinition schemaDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitSchemaExtensionAsync(GraphQLParser.AST.GraphQLSchemaExtension schemaExtension, TContext context);
-        System.Threading.Tasks.ValueTask VisitSelectionSetAsync(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context);
-        System.Threading.Tasks.ValueTask VisitStringValueAsync(GraphQLParser.AST.GraphQLStringValue stringValue, TContext context);
-        System.Threading.Tasks.ValueTask VisitTypeConditionAsync(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context);
-        System.Threading.Tasks.ValueTask VisitUnionMemberTypesAsync(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context);
-        System.Threading.Tasks.ValueTask VisitUnionTypeDefinitionAsync(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitUnionTypeExtensionAsync(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context);
-        System.Threading.Tasks.ValueTask VisitVariableAsync(GraphQLParser.AST.GraphQLVariable variable, TContext context);
-        System.Threading.Tasks.ValueTask VisitVariableDefinitionAsync(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context);
-        System.Threading.Tasks.ValueTask VisitVariablesDefinitionAsync(GraphQLParser.AST.GraphQLVariablesDefinition variablesDefinition, TContext context);
-    }
-    public interface IWriteContext : GraphQLParser.Visitors.INodeVisitorContext
+    public interface IPrintContext : GraphQLParser.Visitors.IASTVisitorContext
     {
         int IndentLevel { get; set; }
         System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
         System.IO.TextWriter Writer { get; }
     }
-    public class MaxDepthVisitor<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
+    public class MaxDepthVisitor<TContext> : GraphQLParser.Visitors.ASTVisitor<TContext>
         where TContext : GraphQLParser.Visitors.IMaxDepthContext
     {
         public MaxDepthVisitor() { }
         public override System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
     }
-    public class SDLWriterOptions
-    {
-        public SDLWriterOptions() { }
-        public bool EachDirectiveLocationOnNewLine { get; set; }
-        public bool EachUnionMemberOnNewLine { get; set; }
-        public bool WriteComments { get; set; }
-    }
-    public class SDLWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
-        where TContext : GraphQLParser.Visitors.IWriteContext
-    {
-        public SDLWriter() { }
-        public SDLWriter(GraphQLParser.Visitors.SDLWriterOptions options) { }
-        public override System.Threading.Tasks.ValueTask VisitAliasAsync(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitArgumentAsync(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitArgumentsAsync(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitArgumentsDefinitionAsync(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitBooleanValueAsync(GraphQLParser.AST.GraphQLBooleanValue booleanValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitCommentAsync(GraphQLParser.AST.GraphQLComment comment, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitDescriptionAsync(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitDirectiveAsync(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitDirectiveDefinitionAsync(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitDirectiveLocationsAsync(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitDirectivesAsync(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitDocumentAsync(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitEnumTypeDefinitionAsync(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitEnumTypeExtensionAsync(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitEnumValueAsync(GraphQLParser.AST.GraphQLEnumValue enumValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitEnumValueDefinitionAsync(GraphQLParser.AST.GraphQLEnumValueDefinition enumValueDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitEnumValuesDefinitionAsync(GraphQLParser.AST.GraphQLEnumValuesDefinition enumValuesDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitFieldAsync(GraphQLParser.AST.GraphQLField field, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitFieldDefinitionAsync(GraphQLParser.AST.GraphQLFieldDefinition fieldDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitFieldsDefinitionAsync(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitFloatValueAsync(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitFragmentDefinitionAsync(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitFragmentNameAsync(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitFragmentSpreadAsync(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitImplementsInterfacesAsync(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitInlineFragmentAsync(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitInputFieldsDefinitionAsync(GraphQLParser.AST.GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitInputObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitInputValueDefinitionAsync(GraphQLParser.AST.GraphQLInputValueDefinition inputValueDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitIntValueAsync(GraphQLParser.AST.GraphQLIntValue intValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLParser.AST.GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitInterfaceTypeExtensionAsync(GraphQLParser.AST.GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitListTypeAsync(GraphQLParser.AST.GraphQLListType listType, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitListValueAsync(GraphQLParser.AST.GraphQLListValue listValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitNameAsync(GraphQLParser.AST.GraphQLName name, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitNamedTypeAsync(GraphQLParser.AST.GraphQLNamedType namedType, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitNonNullTypeAsync(GraphQLParser.AST.GraphQLNonNullType nonNullType, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitNullValueAsync(GraphQLParser.AST.GraphQLNullValue nullValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitObjectFieldAsync(GraphQLParser.AST.GraphQLObjectField objectField, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLObjectTypeDefinition objectTypeDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLObjectTypeExtension objectTypeExtension, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitObjectValueAsync(GraphQLParser.AST.GraphQLObjectValue objectValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitOperationDefinitionAsync(GraphQLParser.AST.GraphQLOperationDefinition operationDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLParser.AST.GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitScalarTypeDefinitionAsync(GraphQLParser.AST.GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitScalarTypeExtensionAsync(GraphQLParser.AST.GraphQLScalarTypeExtension scalarTypeExtension, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitSchemaDefinitionAsync(GraphQLParser.AST.GraphQLSchemaDefinition schemaDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitSchemaExtensionAsync(GraphQLParser.AST.GraphQLSchemaExtension schemaExtension, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitSelectionSetAsync(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitStringValueAsync(GraphQLParser.AST.GraphQLStringValue stringValue, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitTypeConditionAsync(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitUnionMemberTypesAsync(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitUnionTypeDefinitionAsync(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitUnionTypeExtensionAsync(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitVariableAsync(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitVariableDefinitionAsync(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
-        public override System.Threading.Tasks.ValueTask VisitVariablesDefinitionAsync(GraphQLParser.AST.GraphQLVariablesDefinition variablesDefinition, TContext context) { }
-    }
-    public class StructureWriterOptions
-    {
-        public StructureWriterOptions() { }
-        public bool WriteLocations { get; set; }
-        public bool WriteNames { get; set; }
-    }
-    public class StructureWriter<TContext> : GraphQLParser.Visitors.DefaultNodeVisitor<TContext>
-        where TContext : GraphQLParser.Visitors.IWriteContext
-    {
-        public StructureWriter(GraphQLParser.Visitors.StructureWriterOptions options) { }
-        public override System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
-    }
-    public static class WriteContextExtensions
+    public static class PrintContextExtensions
     {
         public static System.Threading.Tasks.ValueTask WriteAsync<TContext>(this TContext context, GraphQLParser.ROM value)
-            where TContext : GraphQLParser.Visitors.IWriteContext { }
+            where TContext : GraphQLParser.Visitors.IPrintContext { }
         public static System.Threading.Tasks.ValueTask WriteLineAsync<TContext>(this TContext context)
-            where TContext : GraphQLParser.Visitors.IWriteContext { }
+            where TContext : GraphQLParser.Visitors.IPrintContext { }
+    }
+    public class SDLPrinter : GraphQLParser.Visitors.SDLPrinter<GraphQLParser.Visitors.SDLPrinter.DefaultPrintContext>
+    {
+        public SDLPrinter() { }
+        public SDLPrinter(GraphQLParser.Visitors.SDLPrinterOptions options) { }
+        public virtual System.Threading.Tasks.ValueTask PrintAsync(GraphQLParser.AST.ASTNode node, System.IO.TextWriter writer, System.Threading.CancellationToken cancellationToken = default) { }
+        public class DefaultPrintContext : GraphQLParser.Visitors.IASTVisitorContext, GraphQLParser.Visitors.IPrintContext
+        {
+            public DefaultPrintContext(System.IO.TextWriter writer) { }
+            public System.Threading.CancellationToken CancellationToken { get; set; }
+            public int IndentLevel { get; set; }
+            public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
+            public System.IO.TextWriter Writer { get; }
+        }
+    }
+    public class SDLPrinterOptions
+    {
+        public SDLPrinterOptions() { }
+        public bool EachDirectiveLocationOnNewLine { get; set; }
+        public bool EachUnionMemberOnNewLine { get; set; }
+        public bool PrintComments { get; set; }
+    }
+    public class SDLPrinter<TContext> : GraphQLParser.Visitors.ASTVisitor<TContext>
+        where TContext : GraphQLParser.Visitors.IPrintContext
+    {
+        public SDLPrinter() { }
+        public SDLPrinter(GraphQLParser.Visitors.SDLPrinterOptions options) { }
+        public GraphQLParser.Visitors.SDLPrinterOptions Options { get; }
+        protected override System.Threading.Tasks.ValueTask VisitAliasAsync(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitArgumentAsync(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitArgumentsAsync(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitArgumentsDefinitionAsync(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context) { }
+        public override System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitBooleanValueAsync(GraphQLParser.AST.GraphQLBooleanValue booleanValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitCommentAsync(GraphQLParser.AST.GraphQLComment comment, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitDescriptionAsync(GraphQLParser.AST.GraphQLDescription description, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitDirectiveAsync(GraphQLParser.AST.GraphQLDirective directive, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitDirectiveDefinitionAsync(GraphQLParser.AST.GraphQLDirectiveDefinition directiveDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitDirectiveLocationsAsync(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitDirectivesAsync(GraphQLParser.AST.GraphQLDirectives directives, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitDocumentAsync(GraphQLParser.AST.GraphQLDocument document, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitEnumTypeDefinitionAsync(GraphQLParser.AST.GraphQLEnumTypeDefinition enumTypeDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitEnumTypeExtensionAsync(GraphQLParser.AST.GraphQLEnumTypeExtension enumTypeExtension, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitEnumValueAsync(GraphQLParser.AST.GraphQLEnumValue enumValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitEnumValueDefinitionAsync(GraphQLParser.AST.GraphQLEnumValueDefinition enumValueDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitEnumValuesDefinitionAsync(GraphQLParser.AST.GraphQLEnumValuesDefinition enumValuesDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitFieldAsync(GraphQLParser.AST.GraphQLField field, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitFieldDefinitionAsync(GraphQLParser.AST.GraphQLFieldDefinition fieldDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitFieldsDefinitionAsync(GraphQLParser.AST.GraphQLFieldsDefinition fieldsDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitFloatValueAsync(GraphQLParser.AST.GraphQLFloatValue floatValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitFragmentDefinitionAsync(GraphQLParser.AST.GraphQLFragmentDefinition fragmentDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitFragmentNameAsync(GraphQLParser.AST.GraphQLFragmentName fragmentName, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitFragmentSpreadAsync(GraphQLParser.AST.GraphQLFragmentSpread fragmentSpread, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitImplementsInterfacesAsync(GraphQLParser.AST.GraphQLImplementsInterfaces implementsInterfaces, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitInlineFragmentAsync(GraphQLParser.AST.GraphQLInlineFragment inlineFragment, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitInputFieldsDefinitionAsync(GraphQLParser.AST.GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitInputObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitInputValueDefinitionAsync(GraphQLParser.AST.GraphQLInputValueDefinition inputValueDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitIntValueAsync(GraphQLParser.AST.GraphQLIntValue intValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLParser.AST.GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitInterfaceTypeExtensionAsync(GraphQLParser.AST.GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitListTypeAsync(GraphQLParser.AST.GraphQLListType listType, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitListValueAsync(GraphQLParser.AST.GraphQLListValue listValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitNameAsync(GraphQLParser.AST.GraphQLName name, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitNamedTypeAsync(GraphQLParser.AST.GraphQLNamedType namedType, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitNonNullTypeAsync(GraphQLParser.AST.GraphQLNonNullType nonNullType, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitNullValueAsync(GraphQLParser.AST.GraphQLNullValue nullValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitObjectFieldAsync(GraphQLParser.AST.GraphQLObjectField objectField, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitObjectTypeDefinitionAsync(GraphQLParser.AST.GraphQLObjectTypeDefinition objectTypeDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitObjectTypeExtensionAsync(GraphQLParser.AST.GraphQLObjectTypeExtension objectTypeExtension, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitObjectValueAsync(GraphQLParser.AST.GraphQLObjectValue objectValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitOperationDefinitionAsync(GraphQLParser.AST.GraphQLOperationDefinition operationDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLParser.AST.GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitScalarTypeDefinitionAsync(GraphQLParser.AST.GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitScalarTypeExtensionAsync(GraphQLParser.AST.GraphQLScalarTypeExtension scalarTypeExtension, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitSchemaDefinitionAsync(GraphQLParser.AST.GraphQLSchemaDefinition schemaDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitSchemaExtensionAsync(GraphQLParser.AST.GraphQLSchemaExtension schemaExtension, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitSelectionSetAsync(GraphQLParser.AST.GraphQLSelectionSet selectionSet, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitStringValueAsync(GraphQLParser.AST.GraphQLStringValue stringValue, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitTypeConditionAsync(GraphQLParser.AST.GraphQLTypeCondition typeCondition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitUnionMemberTypesAsync(GraphQLParser.AST.GraphQLUnionMemberTypes unionMemberTypes, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitUnionTypeDefinitionAsync(GraphQLParser.AST.GraphQLUnionTypeDefinition unionTypeDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitUnionTypeExtensionAsync(GraphQLParser.AST.GraphQLUnionTypeExtension unionTypeExtension, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitVariableAsync(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitVariableDefinitionAsync(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
+        protected override System.Threading.Tasks.ValueTask VisitVariablesDefinitionAsync(GraphQLParser.AST.GraphQLVariablesDefinition variablesDefinition, TContext context) { }
+    }
+    public class StructurePrinter : GraphQLParser.Visitors.StructurePrinter<GraphQLParser.Visitors.SDLPrinter.DefaultPrintContext>
+    {
+        public StructurePrinter() { }
+        public StructurePrinter(GraphQLParser.Visitors.StructurePrinterOptions options) { }
+        public virtual System.Threading.Tasks.ValueTask PrintAsync(GraphQLParser.AST.ASTNode node, System.IO.TextWriter writer, System.Threading.CancellationToken cancellationToken = default) { }
+    }
+    public class StructurePrinterOptions
+    {
+        public StructurePrinterOptions() { }
+        public bool PrintLocations { get; set; }
+        public bool PrintNames { get; set; }
+    }
+    public class StructurePrinter<TContext> : GraphQLParser.Visitors.ASTVisitor<TContext>
+        where TContext : GraphQLParser.Visitors.IPrintContext
+    {
+        public StructurePrinter() { }
+        public StructurePrinter(GraphQLParser.Visitors.StructurePrinterOptions options) { }
+        public GraphQLParser.Visitors.StructurePrinterOptions Options { get; }
+        public override System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
     }
 }

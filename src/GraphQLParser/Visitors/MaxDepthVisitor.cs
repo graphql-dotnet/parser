@@ -10,7 +10,7 @@ namespace GraphQLParser.Visitors;
 /// Minimum depth is 1.
 /// </summary>
 /// <typeparam name="TContext">Type of the context object passed into all VisitXXX methods.</typeparam>
-public class MaxDepthVisitor<TContext> : DefaultNodeVisitor<TContext>
+public class MaxDepthVisitor<TContext> : ASTVisitor<TContext>
     where TContext : IMaxDepthContext
 {
     /// <inheritdoc/>
@@ -33,7 +33,7 @@ public class MaxDepthVisitor<TContext> : DefaultNodeVisitor<TContext>
 /// <summary>
 /// Context used by <see cref="MaxDepthVisitor{TContext}"/>.
 /// </summary>
-public interface IMaxDepthContext : INodeVisitorContext
+public interface IMaxDepthContext : IASTVisitorContext
 {
     /// <summary>
     /// Maximum depth of AST found. Minimum depth is 1.
@@ -52,11 +52,11 @@ public interface IMaxDepthContext : INodeVisitorContext
 public class DefaultMaxDepthContext : IMaxDepthContext
 {
     /// <inheritdoc/>
-    public CancellationToken CancellationToken { get; set; }
+    public CancellationToken CancellationToken { get; init; }
 
     /// <inheritdoc/>
     public int MaxDepth { get; set; }
 
     /// <inheritdoc/>
-    public Stack<ASTNode> Parents { get; set; } = new Stack<ASTNode>();
+    public Stack<ASTNode> Parents { get; init; } = new Stack<ASTNode>();
 }

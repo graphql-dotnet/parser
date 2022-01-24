@@ -13,15 +13,14 @@ namespace GraphQLParser.Tests.Visitors;
 
 public class SDLWriterTests
 {
-    private class TestContext : IWriteContext
+    [Fact]
+    public void SDLWriter_Should_Have_Default_Options()
     {
-        public TextWriter Writer { get; set; } = new StringWriter();
-
-        public Stack<ASTNode> Parents { get; set; } = new Stack<ASTNode>();
-
-        public CancellationToken CancellationToken { get; set; }
-
-        public int IndentLevel { get; set; }
+        var writer = new SDLPrinter();
+        writer.Options.ShouldNotBeNull();
+        writer.Options.PrintComments.ShouldBeFalse();
+        writer.Options.EachDirectiveLocationOnNewLine.ShouldBeFalse();
+        writer.Options.EachUnionMemberOnNewLine.ShouldBeFalse();
     }
 
     [Theory]
@@ -505,17 +504,17 @@ extend union Unity =
         bool eachDirectiveLocationOnNewLine = false,
         bool eachUnionMemberOnNewLine = false)
     {
-        var context = new TestContext();
-        var writer = new SDLWriter<TestContext>(new SDLWriterOptions
+        var printer = new SDLPrinter(new SDLPrinterOptions
         {
-            WriteComments = writeComments,
+            PrintComments = writeComments,
             EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
             EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
         });
+        var writer = new StringWriter();
         using (var document = text.Parse())
         {
-            await writer.VisitAsync(document, context).ConfigureAwait(false);
-            var actual = context.Writer.ToString();
+            await printer.PrintAsync(document, writer).ConfigureAwait(false);
+            var actual = writer.ToString();
             actual.ShouldBe(expected, $"Test {number} failed");
 
             using (actual.Parse())
@@ -568,13 +567,13 @@ extend union Unity =
             ? "\"\"\"" + expected + "\"\"\""
             : "\"" + expected + "\"";
 
-        var context = new TestContext();
-        var writer = new SDLWriter<TestContext>();
+        var writer = new StringWriter();
 
         using (var document = (input + " scalar a").Parse())
         {
-            await writer.VisitAsync(document, context).ConfigureAwait(false);
-            var renderedOriginal = context.Writer.ToString();
+            var printer = new SDLPrinter();
+            await printer.PrintAsync(document, writer).ConfigureAwait(false);
+            var renderedOriginal = writer.ToString();
 
             var lines = renderedOriginal.Split(Environment.NewLine);
             var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
@@ -601,13 +600,13 @@ extend union Unity =
   a(p: {stringValue})
 }}
 ";
-        var context = new TestContext();
-        var writer = new SDLWriter<TestContext>();
+        var writer = new StringWriter();
 
         using (var document = query.Parse())
         {
-            await writer.VisitAsync(document, context).ConfigureAwait(false);
-            var rendered = context.Writer.ToString();
+            var printer = new SDLPrinter();
+            await printer.PrintAsync(document, writer).ConfigureAwait(false);
+            var rendered = writer.ToString();
             rendered.ShouldBe(expected);
 
             using (rendered.Parse())
@@ -621,16 +620,16 @@ extend union Unity =
     public async Task SelectionSet_Without_Parent_Should_Be_Printed_On_New_Line()
     {
         var selectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() };
-        var context = new TestContext();
-        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
-        await writer.VisitAsync(selectionSet, context);
-        context.Writer.ToString().ShouldBe(@"{
+        var writer = new StringWriter();
+        var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
+        await printer.PrintAsync(selectionSet, writer);
+        writer.ToString().ShouldBe(@"{
 }
 ");
         selectionSet.Comment = new GraphQLComment("comment");
-        context = new TestContext();
-        await writer.VisitAsync(selectionSet, context);
-        context.Writer.ToString().ShouldBe(@"#comment
+        writer = new StringWriter();
+        await printer.PrintAsync(selectionSet, writer);
+        writer.ToString().ShouldBe(@"#comment
 {
 }
 ");
@@ -643,17 +642,16 @@ extend union Unity =
         {
             SelectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() }
         };
-        var context = new TestContext();
-        var writer = new SDLWriter<TestContext>(new SDLWriterOptions { WriteComments = true });
-        await writer.VisitAsync(def, context);
-        var actual = context.Writer.ToString();
-        actual.ShouldBe(@"{
+        var writer = new StringWriter();
+        var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
+        await printer.PrintAsync(def, writer);
+        writer.ToString().ShouldBe(@"{
 }
 ");
         def.SelectionSet.Comment = new GraphQLComment("comment");
-        context = new TestContext();
-        await writer.VisitAsync(def, context);
-        context.Writer.ToString().ShouldBe(@"#comment
+        writer = new StringWriter();
+        await printer.PrintAsync(def, writer);
+        writer.ToString().ShouldBe(@"#comment
 {
 }
 ");
@@ -664,31 +662,31 @@ extend union Unity =
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task WriteDocumentVisitor_Should_Throw_On_Unknown_Values(string text)
     {
-        var context = new TestContext();
-        var writer = new SDLWriter<TestContext>();
+        var writer = new StringWriter();
         using (var document = text.Parse())
         {
             await new DoBadThingsVisitor().VisitAsync(document, new Context());
 
-            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await writer.VisitAsync(document, context));
+            var printer = new SDLPrinter();
+            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await printer.PrintAsync(document, writer));
             ex.Message.ShouldStartWith("Unknown ");
         }
     }
 
-    private class Context : INodeVisitorContext
+    private class Context : IASTVisitorContext
     {
         public CancellationToken CancellationToken => throw new NotImplementedException();
     }
 
-    private sealed class DoBadThingsVisitor : DefaultNodeVisitor<Context>
+    private sealed class DoBadThingsVisitor : ASTVisitor<Context>
     {
-        public override ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, Context context)
+        protected override ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, Context context)
         {
             operationDefinition.Operation = (OperationType)99;
             return base.VisitOperationDefinitionAsync(operationDefinition, context);
         }
 
-        public override ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, Context context)
+        protected override ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, Context context)
         {
             for (int i = 0; i < directiveLocations.Items.Count; ++i)
                 directiveLocations.Items[i] = (DirectiveLocation)(100 + i);

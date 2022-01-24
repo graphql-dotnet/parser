@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using GraphQLParser.AST;
 
@@ -10,14 +12,14 @@ namespace GraphQLParser.Visitors;
 /// Prints AST into the provided <see cref="TextWriter"/> as a SDL document.
 /// </summary>
 /// <typeparam name="TContext">Type of the context object passed into all VisitXXX methods.</typeparam>
-public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
-    where TContext : IWriteContext
+public class SDLPrinter<TContext> : ASTVisitor<TContext>
+    where TContext : IPrintContext
 {
     /// <summary>
     /// Creates visitor with default options.
     /// </summary>
-    public SDLWriter()
-        : this(new SDLWriterOptions())
+    public SDLPrinter()
+        : this(new SDLPrinterOptions())
     {
     }
 
@@ -25,15 +27,18 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     /// Creates visitor with the specified options.
     /// </summary>
     /// <param name="options">Visitor options.</param>
-    public SDLWriter(SDLWriterOptions options)
+    public SDLPrinter(SDLPrinterOptions options)
     {
         Options = options;
     }
 
-    private SDLWriterOptions Options { get; }
+    /// <summary>
+    /// Options used by visitor.
+    /// </summary>
+    public SDLPrinterOptions Options { get; }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDocumentAsync(GraphQLDocument document, TContext context)
+    protected override async ValueTask VisitDocumentAsync(GraphQLDocument document, TContext context)
     {
         await VisitAsync(document.Comment, context).ConfigureAwait(false); // Comment always null
 
@@ -52,9 +57,9 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitCommentAsync(GraphQLComment comment, TContext context)
+    protected override async ValueTask VisitCommentAsync(GraphQLComment comment, TContext context)
     {
-        if (!Options.WriteComments)
+        if (!Options.PrintComments)
             return;
 
         if (CommentedNodeShouldBeCloseToPreviousNode(context))
@@ -108,7 +113,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDescriptionAsync(GraphQLDescription description, TContext context)
+    protected override async ValueTask VisitDescriptionAsync(GraphQLDescription description, TContext context)
     {
         bool ShouldBeMultilineBlockString()
         {
@@ -199,21 +204,21 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitNameAsync(GraphQLName name, TContext context)
+    protected override async ValueTask VisitNameAsync(GraphQLName name, TContext context)
     {
         await VisitAsync(name.Comment, context).ConfigureAwait(false);
         await context.WriteAsync(name.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFragmentNameAsync(GraphQLFragmentName fragmentName, TContext context)
+    protected override async ValueTask VisitFragmentNameAsync(GraphQLFragmentName fragmentName, TContext context)
     {
         await VisitAsync(fragmentName.Comment, context).ConfigureAwait(false);
         await VisitAsync(fragmentName.Name, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, TContext context)
+    protected override async ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, TContext context)
     {
         await VisitAsync(fragmentDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("fragment ").ConfigureAwait(false);
@@ -225,7 +230,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, TContext context)
+    protected override async ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, TContext context)
     {
         await VisitAsync(fragmentSpread.Comment, context).ConfigureAwait(false);
 
@@ -238,7 +243,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, TContext context)
+    protected override async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, TContext context)
     {
         await VisitAsync(inlineFragment.Comment, context).ConfigureAwait(false);
 
@@ -251,7 +256,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitTypeConditionAsync(GraphQLTypeCondition typeCondition, TContext context)
+    protected override async ValueTask VisitTypeConditionAsync(GraphQLTypeCondition typeCondition, TContext context)
     {
         await VisitAsync(typeCondition.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("on ").ConfigureAwait(false);
@@ -259,7 +264,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitImplementsInterfacesAsync(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
+    protected override async ValueTask VisitImplementsInterfacesAsync(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
     {
         await VisitAsync(implementsInterfaces.Comment, context).ConfigureAwait(false);
         await context.WriteAsync(" implements ").ConfigureAwait(false);
@@ -273,11 +278,11 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitSelectionSetAsync(GraphQLSelectionSet selectionSet, TContext context)
+    protected override async ValueTask VisitSelectionSetAsync(GraphQLSelectionSet selectionSet, TContext context)
     {
         await VisitAsync(selectionSet.Comment, context).ConfigureAwait(false);
 
-        bool freshLine = selectionSet.Comment != null && Options.WriteComments;
+        bool freshLine = selectionSet.Comment != null && Options.PrintComments;
         if (!freshLine && TryPeekParent(context, out var node) && (node is GraphQLOperationDefinition op && op.Name is not null || node is not GraphQLOperationDefinition))
         {
             await context.WriteAsync(" {").ConfigureAwait(false);
@@ -298,7 +303,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitAliasAsync(GraphQLAlias alias, TContext context)
+    protected override async ValueTask VisitAliasAsync(GraphQLAlias alias, TContext context)
     {
         await VisitAsync(alias.Comment, context).ConfigureAwait(false);
 
@@ -309,14 +314,14 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFieldAsync(GraphQLField field, TContext context)
+    protected override async ValueTask VisitFieldAsync(GraphQLField field, TContext context)
     {
         await VisitAsync(field.Comment, context).ConfigureAwait(false);
         await VisitAsync(field.Alias, context).ConfigureAwait(false);
 
         if (field.Alias == null)
             await WriteIndentAsync(context).ConfigureAwait(false);
-        else if (field.Name.Comment == null || !Options.WriteComments)
+        else if (field.Name.Comment == null || !Options.PrintComments)
             await context.WriteAsync(" ").ConfigureAwait(false);
 
         await VisitAsync(field.Name, context).ConfigureAwait(false);
@@ -329,7 +334,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, TContext context)
+    protected override async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, TContext context)
     {
         await VisitAsync(operationDefinition.Comment, context).ConfigureAwait(false);
         if (operationDefinition.Name is not null)
@@ -344,7 +349,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, TContext context)
+    protected override async ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, TContext context)
     {
         await VisitAsync(directiveDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Description, context).ConfigureAwait(false);
@@ -358,7 +363,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, TContext context)
+    protected override async ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, TContext context)
     {
         await VisitAsync(directiveLocations.Comment, context).ConfigureAwait(false);
         if (Options.EachDirectiveLocationOnNewLine)
@@ -387,7 +392,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitVariableDefinitionAsync(GraphQLVariableDefinition variableDefinition, TContext context)
+    protected override async ValueTask VisitVariableDefinitionAsync(GraphQLVariableDefinition variableDefinition, TContext context)
     {
         await VisitAsync(variableDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(variableDefinition.Variable, context).ConfigureAwait(false);
@@ -402,7 +407,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitVariablesDefinitionAsync(GraphQLVariablesDefinition variablesDefinition, TContext context)
+    protected override async ValueTask VisitVariablesDefinitionAsync(GraphQLVariablesDefinition variablesDefinition, TContext context)
     {
         await VisitAsync(variablesDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("(").ConfigureAwait(false);
@@ -418,7 +423,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitVariableAsync(GraphQLVariable variable, TContext context)
+    protected override async ValueTask VisitVariableAsync(GraphQLVariable variable, TContext context)
     {
         await VisitAsync(variable.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("$").ConfigureAwait(false);
@@ -426,14 +431,14 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, TContext context)
+    protected override async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, TContext context)
     {
         await VisitAsync(booleanValue.Comment, context).ConfigureAwait(false);
         await context.WriteAsync(booleanValue.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
+    protected override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
     {
         await VisitAsync(scalarTypeDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeDefinition.Description, context).ConfigureAwait(false);
@@ -444,7 +449,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, TContext context)
+    protected override async ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, TContext context)
     {
         await VisitAsync(schemaExtension.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("extend schema").ConfigureAwait(false);
@@ -469,7 +474,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitScalarTypeExtensionAsync(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
+    protected override async ValueTask VisitScalarTypeExtensionAsync(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
     {
         await VisitAsync(scalarTypeExtension.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("extend scalar ").ConfigureAwait(false);
@@ -479,7 +484,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
+    protected override async ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
     {
         await VisitAsync(enumTypeDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Description, context).ConfigureAwait(false);
@@ -491,7 +496,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumTypeExtensionAsync(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
+    protected override async ValueTask VisitEnumTypeExtensionAsync(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
     {
         await VisitAsync(enumTypeExtension.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("extend enum ").ConfigureAwait(false);
@@ -502,7 +507,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumValueDefinitionAsync(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
+    protected override async ValueTask VisitEnumValueDefinitionAsync(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
     {
         await VisitAsync(enumValueDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(enumValueDefinition.Description, context).ConfigureAwait(false);
@@ -514,7 +519,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
+    protected override async ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
         await VisitAsync(enumValuesDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
@@ -531,7 +536,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
+    protected override async ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
     {
         await VisitAsync(inputObjectTypeDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Description, context).ConfigureAwait(false);
@@ -543,7 +548,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputObjectTypeExtensionAsync(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
+    protected override async ValueTask VisitInputObjectTypeExtensionAsync(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
     {
         await VisitAsync(inputObjectTypeExtension.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("extend input ").ConfigureAwait(false);
@@ -554,7 +559,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context)
+    protected override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context)
     {
         await VisitAsync(inputValueDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
@@ -573,7 +578,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
+    protected override async ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
         await VisitAsync(inputFieldsDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
@@ -590,7 +595,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
+    protected override async ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
     {
         await VisitAsync(objectTypeDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Description, context).ConfigureAwait(false);
@@ -603,7 +608,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
+    protected override async ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
     {
         await VisitAsync(objectTypeExtension.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("extend type ").ConfigureAwait(false);
@@ -615,7 +620,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
+    protected override async ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
     {
         await VisitAsync(interfaceTypeDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Description, context).ConfigureAwait(false);
@@ -628,7 +633,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitInterfaceTypeExtensionAsync(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
+    protected override async ValueTask VisitInterfaceTypeExtensionAsync(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
     {
         await VisitAsync(interfaceTypeExtension.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("extend interface ").ConfigureAwait(false);
@@ -640,7 +645,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFieldDefinitionAsync(GraphQLFieldDefinition fieldDefinition, TContext context)
+    protected override async ValueTask VisitFieldDefinitionAsync(GraphQLFieldDefinition fieldDefinition, TContext context)
     {
         await VisitAsync(fieldDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(fieldDefinition.Description, context).ConfigureAwait(false);
@@ -655,7 +660,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context)
+    protected override async ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
         await VisitAsync(fieldsDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
@@ -672,7 +677,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, TContext context)
+    protected override async ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, TContext context)
     {
         await VisitAsync(schemaDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Description, context).ConfigureAwait(false);
@@ -697,7 +702,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
+    protected override async ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
     {
         await VisitAsync(rootOperationTypeDefinition.Comment, context).ConfigureAwait(false);
 
@@ -709,7 +714,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
+    protected override async ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
     {
         await VisitAsync(unionTypeDefinition.Comment, context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Description, context).ConfigureAwait(false);
@@ -721,7 +726,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitUnionTypeExtensionAsync(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
+    protected override async ValueTask VisitUnionTypeExtensionAsync(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
     {
         await VisitAsync(unionTypeExtension.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("extend union ").ConfigureAwait(false);
@@ -732,11 +737,11 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitUnionMemberTypesAsync(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
+    protected override async ValueTask VisitUnionMemberTypesAsync(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
     {
         await VisitAsync(unionMemberTypes.Comment, context).ConfigureAwait(false);
 
-        if (unionMemberTypes.Comment == null || !Options.WriteComments)
+        if (unionMemberTypes.Comment == null || !Options.PrintComments)
             await context.WriteAsync(" ").ConfigureAwait(false);
 
         if (Options.EachUnionMemberOnNewLine)
@@ -767,7 +772,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirectiveAsync(GraphQLDirective directive, TContext context)
+    protected override async ValueTask VisitDirectiveAsync(GraphQLDirective directive, TContext context)
     {
         await VisitAsync(directive.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("@").ConfigureAwait(false);
@@ -776,7 +781,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitDirectivesAsync(GraphQLDirectives directives, TContext context)
+    protected override async ValueTask VisitDirectivesAsync(GraphQLDirectives directives, TContext context)
     {
         await VisitAsync(directives.Comment, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
         await context.WriteAsync(" ").ConfigureAwait(false);
@@ -790,7 +795,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitArgumentAsync(GraphQLArgument argument, TContext context)
+    protected override async ValueTask VisitArgumentAsync(GraphQLArgument argument, TContext context)
     {
         await VisitAsync(argument.Comment, context).ConfigureAwait(false);
         await VisitAsync(argument.Name, context).ConfigureAwait(false);
@@ -799,7 +804,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitArgumentsDefinitionAsync(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
+    protected override async ValueTask VisitArgumentsDefinitionAsync(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
     {
         await VisitAsync(argumentsDefinition.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("(").ConfigureAwait(false);
@@ -815,7 +820,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitArgumentsAsync(GraphQLArguments arguments, TContext context)
+    protected override async ValueTask VisitArgumentsAsync(GraphQLArguments arguments, TContext context)
     {
         await VisitAsync(arguments.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("(").ConfigureAwait(false);
@@ -829,7 +834,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitNonNullTypeAsync(GraphQLNonNullType nonNullType, TContext context)
+    protected override async ValueTask VisitNonNullTypeAsync(GraphQLNonNullType nonNullType, TContext context)
     {
         await VisitAsync(nonNullType.Comment, context).ConfigureAwait(false);
         await VisitAsync(nonNullType.Type, context).ConfigureAwait(false);
@@ -837,7 +842,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitListTypeAsync(GraphQLListType listType, TContext context)
+    protected override async ValueTask VisitListTypeAsync(GraphQLListType listType, TContext context)
     {
         await VisitAsync(listType.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("[").ConfigureAwait(false);
@@ -846,7 +851,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitListValueAsync(GraphQLListValue listValue, TContext context)
+    protected override async ValueTask VisitListValueAsync(GraphQLListValue listValue, TContext context)
     {
         await VisitAsync(listValue.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("[").ConfigureAwait(false);
@@ -863,42 +868,42 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitNullValueAsync(GraphQLNullValue nullValue, TContext context)
+    protected override async ValueTask VisitNullValueAsync(GraphQLNullValue nullValue, TContext context)
     {
         await VisitAsync(nullValue.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("null").ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, TContext context)
+    protected override async ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, TContext context)
     {
         await VisitAsync(stringValue.Comment, context).ConfigureAwait(false);
         await WriteEncodedStringAsync(context, stringValue.Value);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitIntValueAsync(GraphQLIntValue intValue, TContext context)
+    protected override async ValueTask VisitIntValueAsync(GraphQLIntValue intValue, TContext context)
     {
         await VisitAsync(intValue.Comment, context).ConfigureAwait(false);
         await context.WriteAsync(intValue.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, TContext context)
+    protected override async ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, TContext context)
     {
         await VisitAsync(floatValue.Comment, context).ConfigureAwait(false);
         await context.WriteAsync(floatValue.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitEnumValueAsync(GraphQLEnumValue enumValue, TContext context)
+    protected override async ValueTask VisitEnumValueAsync(GraphQLEnumValue enumValue, TContext context)
     {
         await VisitAsync(enumValue.Comment, context).ConfigureAwait(false);
         await VisitAsync(enumValue.Name, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectValueAsync(GraphQLObjectValue objectValue, TContext context)
+    protected override async ValueTask VisitObjectValueAsync(GraphQLObjectValue objectValue, TContext context)
     {
         await VisitAsync(objectValue.Comment, context).ConfigureAwait(false);
         await context.WriteAsync("{").ConfigureAwait(false);
@@ -915,7 +920,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override async ValueTask VisitObjectFieldAsync(GraphQLObjectField objectField, TContext context)
+    protected override async ValueTask VisitObjectFieldAsync(GraphQLObjectField objectField, TContext context)
     {
         await VisitAsync(objectField.Comment, context).ConfigureAwait(false);
         await VisitAsync(objectField.Name, context).ConfigureAwait(false);
@@ -924,7 +929,7 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    public override ValueTask VisitNamedTypeAsync(GraphQLNamedType namedType, TContext context)
+    protected override ValueTask VisitNamedTypeAsync(GraphQLNamedType namedType, TContext context)
     {
         return base.VisitNamedTypeAsync(namedType, context);
     }
@@ -1051,24 +1056,76 @@ public class SDLWriter<TContext> : DefaultNodeVisitor<TContext>
     }
 }
 
-/// <summary>
-/// Options for <see cref="SDLWriter{TContext}"/>.
-/// </summary>
-public class SDLWriterOptions
+/// <inheritdoc/>
+public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
 {
     /// <summary>
-    /// Write comments into the output.
+    /// Default implementation for <see cref="IPrintContext"/>.
     /// </summary>
-    public bool WriteComments { get; set; }
+    public class DefaultPrintContext : IPrintContext
+    {
+        /// <summary>
+        /// Creates an instance with the specified <see cref="TextWriter"/>.
+        /// </summary>
+        public DefaultPrintContext(TextWriter writer)
+        {
+            Writer = writer;
+        }
+
+        /// <inheritdoc/>
+        public TextWriter Writer { get; }
+
+        /// <inheritdoc/>
+        public Stack<ASTNode> Parents { get; init; } = new Stack<ASTNode>();
+
+        /// <inheritdoc/>
+        public CancellationToken CancellationToken { get; init; }
+
+        /// <inheritdoc/>
+        public int IndentLevel { get; set; }
+    }
+
+    /// <inheritdoc/>
+    public SDLPrinter()
+        : base()
+    {
+    }
+
+    /// <inheritdoc/>
+    public SDLPrinter(SDLPrinterOptions options)
+        : base(options)
+    {
+    }
+
+    /// <inheritdoc cref="SDLPrinter{TContext}"/>
+    public virtual ValueTask PrintAsync(ASTNode node, TextWriter writer, CancellationToken cancellationToken = default)
+    {
+        var context = new DefaultPrintContext(writer)
+        {
+            CancellationToken = cancellationToken,
+        };
+        return VisitAsync(node, context);
+    }
+}
+
+/// <summary>
+/// Options for <see cref="SDLPrinter{TContext}"/>.
+/// </summary>
+public class SDLPrinterOptions
+{
+    /// <summary>
+    /// Print comments into the output.
+    /// </summary>
+    public bool PrintComments { get; init; }
 
     /// <summary>
-    /// Whether to write each directive location on its own line.
+    /// Whether to print each directive location on its own line.
     /// </summary>
-    public bool EachDirectiveLocationOnNewLine { get; set; }
+    public bool EachDirectiveLocationOnNewLine { get; init; }
 
     /// <summary>
-    /// Whether to write each union member on its own line.
+    /// Whether to print each union member on its own line.
     /// </summary>
-    public bool EachUnionMemberOnNewLine { get; set; }
+    public bool EachUnionMemberOnNewLine { get; init; }
 }
 
