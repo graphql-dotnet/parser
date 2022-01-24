@@ -287,13 +287,10 @@ field: Int }", @"Document
     public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
     {
         var writer = new StringWriter();
-
-        using (var document = text.Parse())
-        {
-            await _structPrinter1.PrintAsync(document, writer).ConfigureAwait(false);
-            var actual = writer.ToString();
-            actual.ShouldBe(expected);
-        }
+        var document = text.Parse();
+        await _structPrinter1.PrintAsync(document, writer).ConfigureAwait(false);
+        var actual = writer.ToString();
+        actual.ShouldBe(expected);
     }
 
     [Theory]
@@ -309,13 +306,10 @@ field: Int }", @"Document
     public async Task WriteTreeVisitor_Should_Print_Tree_Without_Names(string text, string expected)
     {
         var writer = new StringWriter();
-
-        using (var document = text.Parse())
-        {
-            await _structPrinter2.PrintAsync(document, writer).ConfigureAwait(false);
-            var actual = writer.ToString();
-            actual.ShouldBe(expected);
-        }
+        var document = text.Parse();
+        await _structPrinter2.PrintAsync(document, writer).ConfigureAwait(false);
+        var actual = writer.ToString();
+        actual.ShouldBe(expected);
     }
 
     [Theory]
@@ -558,12 +552,10 @@ scalar S", @"Document (10,30)
 
             var writer = new StringWriter();
 
-            using (var document = text.Parse(new ParserOptions { Ignore = option }))
-            {
-                await _structPrinter3.PrintAsync(document, writer).ConfigureAwait(false);
-                var actual = writer.ToString();
-                actual.ShouldBe(expected);
-            }
+            var document = text.Parse(new ParserOptions { Ignore = option });
+            await _structPrinter3.PrintAsync(document, writer).ConfigureAwait(false);
+            var actual = writer.ToString();
+            actual.ShouldBe(expected);
         }
     }
 }

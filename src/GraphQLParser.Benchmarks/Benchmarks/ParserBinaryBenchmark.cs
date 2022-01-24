@@ -19,7 +19,7 @@ public class ParserBinaryBenchmark : IBenchmark
     {
         try
         {
-            Parser.Parse(_binaryTest).Dispose();
+            Parser.Parse(_binaryTest);
         }
         catch (GraphQLSyntaxErrorException)
         {

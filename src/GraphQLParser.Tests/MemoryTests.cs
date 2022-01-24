@@ -88,6 +88,10 @@ public class MemoryTests
     {
         var str = "string";
         ROM rom = str;
+
+        var romImplicitMem = str.AsMemory();
+        (rom == romImplicitMem).ShouldBeTrue();
+
         rom.IsEmpty.ShouldBeFalse();
         rom.Length.ShouldBe(6);
         rom.GetHashCode().ShouldNotBe(0);

@@ -20,7 +20,7 @@ public class Issue82
     [InlineData(IgnoreOptions.All)]
     public void Parse_Named_And_Literal_Variables(IgnoreOptions options)
     {
-        using var document = _query.Parse(new ParserOptions { Ignore = options });
+        var document = _query.Parse(new ParserOptions { Ignore = options });
 
         var def = document.Definitions[0] as GraphQLOperationDefinition;
         def.Variables.Count.ShouldBe(1);

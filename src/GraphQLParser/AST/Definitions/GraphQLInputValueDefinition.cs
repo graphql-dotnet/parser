@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -33,19 +35,19 @@ internal sealed class GraphQLInputValueDefinitionWithLocation : GraphQLInputValu
 
 internal sealed class GraphQLInputValueDefinitionWithComment : GraphQLInputValueDefinition
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLInputValueDefinitionFull : GraphQLInputValueDefinition
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -53,9 +55,9 @@ internal sealed class GraphQLInputValueDefinitionFull : GraphQLInputValueDefinit
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

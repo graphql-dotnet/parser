@@ -33,7 +33,7 @@ public class Issue2478_GraphQL_NET
             }
         ";
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(4);
         var def = document.Definitions.Last() as GraphQLObjectTypeDefinition;
         def.Interfaces.Count.ShouldBe(2);

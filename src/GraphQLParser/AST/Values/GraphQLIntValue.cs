@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
@@ -78,12 +79,12 @@ internal sealed class GraphQLIntValueWithLocation : GraphQLIntValue
 
 internal sealed class GraphQLIntValueWithComment : GraphQLIntValue
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 
     /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
@@ -96,7 +97,7 @@ internal sealed class GraphQLIntValueWithComment : GraphQLIntValue
 internal sealed class GraphQLIntValueFull : GraphQLIntValue
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -104,10 +105,10 @@ internal sealed class GraphQLIntValueFull : GraphQLIntValue
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 
     /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>

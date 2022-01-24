@@ -32,19 +32,19 @@ internal sealed class GraphQLSchemaExtensionWithLocation : GraphQLSchemaExtensio
 
 internal sealed class GraphQLSchemaExtensionWithComment : GraphQLSchemaExtension
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLSchemaExtensionFull : GraphQLSchemaExtension
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -52,9 +52,9 @@ internal sealed class GraphQLSchemaExtensionFull : GraphQLSchemaExtension
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

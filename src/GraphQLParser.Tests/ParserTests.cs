@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Linq;
 using GraphQLParser.AST;
@@ -10,8 +9,6 @@ namespace GraphQLParser.Tests;
 
 public class ParserTests
 {
-    private static readonly string _nl = Environment.NewLine;
-
     [Fact]
     public void Should_Throw_With_Deep_Query()
     {
@@ -123,7 +120,7 @@ public class ParserTests
     {
         string query = "ExtraComments".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         // query
         var def = document.Definitions.First() as GraphQLOperationDefinition;
@@ -143,9 +140,9 @@ public class ParserTests
         subField.Comment.ShouldBeNull();
         // extra document comments
         document.UnattachedComments.Count.ShouldBe(3);
-        document.UnattachedComments[0].Value.ShouldBe("comment1");
-        document.UnattachedComments[1].Value.ShouldBe("comment3");
-        document.UnattachedComments[2].Value.ShouldBe("comment4");
+        document.UnattachedComments[0][0].Value.ShouldBe("comment1");
+        document.UnattachedComments[1][0].Value.ShouldBe("comment3");
+        document.UnattachedComments[2][0].Value.ShouldBe("comment4");
     }
 
     [Theory]
@@ -181,7 +178,7 @@ public class ParserTests
     {
         string query = "CommentsOnFragmentSpread".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions.First() as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(1);
@@ -205,7 +202,7 @@ public class ParserTests
     {
         string query = "CommentsOnValues".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions.First() as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(1);
@@ -250,7 +247,7 @@ public class ParserTests
     {
         string query = "CommentsOnInlineFragment".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions.First() as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(1);
@@ -269,7 +266,7 @@ public class ParserTests
     {
         string query = "CommentsOnArguments".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(1);
@@ -291,7 +288,7 @@ public class ParserTests
     {
         string query = "CommentsOnNamedType".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(5);
 
         var def1 = document.Definitions[0] as GraphQLOperationDefinition;
@@ -321,7 +318,7 @@ public class ParserTests
     {
         string query = "CommentsOnSelectionSet".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLOperationDefinition;
         def.SelectionSet.Comment.Value.ShouldBe("comment on selection set");
@@ -336,7 +333,7 @@ public class ParserTests
     {
         string query = "CommentsOnRootOperationType".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLSchemaDefinition;
         def.OperationTypes[0].Comment.Value.ShouldBe("comment for root operation type");
@@ -351,7 +348,7 @@ public class ParserTests
     {
         string query = "CommentsOnDirective".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLScalarTypeDefinition;
         def.Directives[0].Comment.Value.ShouldBe("comment for directive");
@@ -366,7 +363,7 @@ public class ParserTests
     {
         string query = "CommentsOnType".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(3);
         var def = document.Definitions[0] as GraphQLObjectTypeDefinition;
         def.Comment.Value.ShouldBe("very good type");
@@ -394,7 +391,7 @@ public class ParserTests
     {
         string query = "CommentsOnInput".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLInputObjectTypeDefinition;
         def.Comment.Value.ShouldBe("very good input");
@@ -417,7 +414,7 @@ public class ParserTests
     {
         string query = "CommentsOnAlias".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLOperationDefinition;
         def.SelectionSet.Selections.Count.ShouldBe(1);
@@ -429,7 +426,7 @@ public class ParserTests
         field.Name.Comment.Value.ShouldBe("field name (GraphQLName) comment");
 
         document.UnattachedComments.Count.ShouldBe(1);
-        document.UnattachedComments[0].Value.ShouldBe("colon comment");
+        document.UnattachedComments[0][0].Value.ShouldBe("colon comment");
     }
 
     [Theory]
@@ -441,7 +438,7 @@ public class ParserTests
     {
         string query = "CommentsOnDirectiveDefinition".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0] as GraphQLDirectiveDefinition;
         def.Comment.Value.ShouldBe("very good directive");
@@ -459,7 +456,7 @@ public class ParserTests
     {
         string query = "CommentsOnEnum".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         document.OperationWithName("qwerty").ShouldBeNull();
         document.OperationWithName("").ShouldBeNull();
@@ -484,7 +481,7 @@ public class ParserTests
     {
         string query = "CommentsOnSchema".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLSchemaDefinition;
         def.Comment.Value.ShouldBe("very good schema");
@@ -504,7 +501,7 @@ public class ParserTests
     {
         string query = "CommentsOnScalar".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLScalarTypeDefinition;
         def.Comment.Value.ShouldBe("very good scalar");
@@ -524,7 +521,7 @@ public class ParserTests
     {
         string query = "CommentsOnUnion".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(2);
         var def = document.Definitions[0] as GraphQLUnionTypeDefinition;
         def.Comment.Value.ShouldBe("very good union");
@@ -545,7 +542,7 @@ public class ParserTests
     {
         string query = "CommentsOnVariables".ReadGraphQLFile();
 
-        using var document = query.Parse(new ParserOptions { Ignore = options });
+        var document = query.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions.First() as GraphQLOperationDefinition;
         def.Variables.Count.ShouldBe(3);
@@ -562,7 +559,7 @@ public class ParserTests
     //[InlineData(IgnoreOptions.All)]
     public void Comments_On_SelectionSet_Should_Read_Correctly(IgnoreOptions options)
     {
-        using var document = @"
+        var document = @"
 query {
     # a comment below query
     field1
@@ -586,7 +583,7 @@ query {
     //[InlineData(IgnoreOptions.All)]
     public void Comments_On_Enum_Definitions_Should_Read_Correctly(IgnoreOptions options)
     {
-        using var document = @"
+        var document = @"
 # different animals
 enum Animal {
     #a cat
@@ -640,7 +637,7 @@ scalar JSON
     public void Parse_FieldInput_HasCorrectLocations(IgnoreOptions options)
     {
         // { field }
-        using var document = ParseGraphQLFieldSource(options);
+        var document = ParseGraphQLFieldSource(options);
 
         document.Location.ShouldBe(new GraphQLLocation(0, 9)); // { field }
         document.Definitions.First().Location.ShouldBe(new GraphQLLocation(0, 9)); // { field }
@@ -655,7 +652,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldInput_HasOneOperationDefinition(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldSource(options);
+        var document = ParseGraphQLFieldSource(options);
 
         document.Definitions.First().Kind.ShouldBe(ASTNodeKind.OperationDefinition);
     }
@@ -667,7 +664,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldInput_NameIsNull(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldSource(options);
+        var document = ParseGraphQLFieldSource(options);
 
         GetSingleOperationDefinition(document).Name.ShouldBeNull();
     }
@@ -679,7 +676,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldInput_OperationIsQuery(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldSource(options);
+        var document = ParseGraphQLFieldSource(options);
 
         GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Query);
     }
@@ -712,7 +709,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldInput_ReturnsDocumentNode(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldSource(options);
+        var document = ParseGraphQLFieldSource(options);
 
         document.Kind.ShouldBe(ASTNodeKind.Document);
     }
@@ -724,7 +721,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldInput_SelectionSetContainsSingleField(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldSource(options);
+        var document = ParseGraphQLFieldSource(options);
 
         GetSingleSelection(document).Kind.ShouldBe(ASTNodeKind.Field);
     }
@@ -737,7 +734,7 @@ scalar JSON
     public void Parse_FieldWithOperationTypeAndNameInput_HasCorrectLocations(IgnoreOptions options)
     {
         // mutation Foo { field }
-        using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
+        var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
 
         document.Location.ShouldBe(new GraphQLLocation(0, 22));
         document.Definitions.First().Location.ShouldBe(new GraphQLLocation(0, 22));
@@ -753,7 +750,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldWithOperationTypeAndNameInput_HasOneOperationDefinition(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
+        var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
 
         document.Definitions.First().Kind.ShouldBe(ASTNodeKind.OperationDefinition);
     }
@@ -765,7 +762,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldWithOperationTypeAndNameInput_NameIsNull(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
+        var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
 
         GetSingleOperationDefinition(document).Name.Value.ShouldBe("Foo");
     }
@@ -777,7 +774,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldWithOperationTypeAndNameInput_OperationIsQuery(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
+        var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
 
         GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Mutation);
     }
@@ -789,7 +786,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldWithOperationTypeAndNameInput_ReturnsDocumentNode(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
+        var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
 
         document.Kind.ShouldBe(ASTNodeKind.Document);
     }
@@ -801,7 +798,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_FieldWithOperationTypeAndNameInput_SelectionSetContainsSingleFieldWithOperationTypeAndNameSelection(IgnoreOptions options)
     {
-        using var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
+        var document = ParseGraphQLFieldWithOperationTypeAndNameSource(options);
 
         GetSingleSelection(document).Kind.ShouldBe(ASTNodeKind.Field);
     }
@@ -813,7 +810,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_KitchenSink_DoesNotThrowError(IgnoreOptions options)
     {
-        using var document = "KitchenSink".ReadGraphQLFile().Parse(new ParserOptions { Ignore = options });
+        var document = "KitchenSink".ReadGraphQLFile().Parse(new ParserOptions { Ignore = options });
 
         document.OperationsCount().ShouldBe(5);
         document.FragmentsCount().ShouldBe(1);
@@ -826,21 +823,29 @@ scalar JSON
         var typeDef = document.Definitions.OfType<GraphQLObjectTypeDefinition>().First(d => d.Name.Value == "Foo");
         var fieldDef = typeDef.Fields.First(d => d.Name.Value == "three");
         if (options.HasFlag(IgnoreOptions.Comments))
-            fieldDef.Comment.ShouldBeNull();
-        else
-            fieldDef.Comment.ShouldNotBeNull().Value.ShouldBe($" multiline comments{_nl} with very importand description #{_nl} # and symbol # and ##");
-
-        // Schema description
-        // https://github.com/graphql/graphql-spec/pull/466
-        var comment = document.Definitions.OfType<GraphQLSchemaDefinition>().First().Comment;
-        if (options.HasFlag(IgnoreOptions.Comments))
         {
-            comment.ShouldBeNull();
+            fieldDef.Comment.ShouldBeNull();
         }
         else
         {
-            comment.ShouldNotBeNull();
-            ((string)comment.Value).StartsWith("﻿ Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
+            fieldDef.Comments.ShouldNotBeNull();
+            fieldDef.Comments.Count.ShouldBe(3);
+            fieldDef.Comments[0].Value.ShouldBe(" multiline comments");
+            fieldDef.Comments[1].Value.ShouldBe(" with very importand description #");
+            fieldDef.Comments[2].Value.ShouldBe(" # and symbol # and ##");
+        }
+
+        // Schema description
+        // https://github.com/graphql/graphql-spec/pull/466
+        var comments = document.Definitions.OfType<GraphQLSchemaDefinition>().First().Comments;
+        if (options.HasFlag(IgnoreOptions.Comments))
+        {
+            comments.ShouldBeNull();
+        }
+        else
+        {
+            comments.ShouldNotBeNull();
+            (comments[0].Value == " Copyright (c) 2015, Facebook, Inc.").ShouldBeTrue();
         }
     }
 
@@ -851,7 +856,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_NullInput_EmptyDocument(IgnoreOptions options)
     {
-        using var document = ((string)null).Parse(new ParserOptions { Ignore = options });
+        var document = ((string)null).Parse(new ParserOptions { Ignore = options });
 
         document.Definitions.ShouldBeEmpty();
     }
@@ -863,9 +868,7 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Parse_VariableInlineValues_DoesNotThrowError(IgnoreOptions options)
     {
-        using ("{ field(complex: { a: { b: [ $var ] } }) }".Parse(new ParserOptions { Ignore = options }))
-        {
-        }
+        "{ field(complex: { a: { b: [ $var ] } }) }".Parse(new ParserOptions { Ignore = options });
     }
 
     [Theory]
@@ -875,19 +878,18 @@ scalar JSON
     [InlineData(IgnoreOptions.All)]
     public void Should_Read_Directives_on_VariableDefinition(IgnoreOptions options)
     {
-        using (var document = "query A($id: String @a @b(priority: 1, managed: true)) { name }".Parse(new ParserOptions { Ignore = options }))
-        {
-            document.Definitions.Count.ShouldBe(1);
-            var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLOperationDefinition>();
-            def.Variables.Count.ShouldBe(1);
-            def.Variables[0].Directives.Count.ShouldBe(2);
-            def.Variables[0].Directives[0].Name.Value.ShouldBe("a");
-            def.Variables[0].Directives[1].Name.Value.ShouldBe("b");
-            def.Variables[0].Directives[1].Arguments.Count.ShouldBe(2);
+        var document = "query A($id: String @a @b(priority: 1, managed: true)) { name }".Parse(new ParserOptions { Ignore = options });
 
-            // ASTListNode small test
-            def.Variables.GetEnumerator().ShouldBe(((IEnumerable)def.Variables).GetEnumerator());
-        }
+        document.Definitions.Count.ShouldBe(1);
+        var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLOperationDefinition>();
+        def.Variables.Count.ShouldBe(1);
+        def.Variables[0].Directives.Count.ShouldBe(2);
+        def.Variables[0].Directives[0].Name.Value.ShouldBe("a");
+        def.Variables[0].Directives[1].Name.Value.ShouldBe("b");
+        def.Variables[0].Directives[1].Arguments.Count.ShouldBe(2);
+
+        // ASTListNode small test
+        def.Variables.GetEnumerator().ShouldBe(((IEnumerable)def.Variables).GetEnumerator());
     }
 
     [Theory]
@@ -972,7 +974,7 @@ FIELD_DEFINITION
 |          ENUM_VALUE", false)]
     public void Should_Parse_Directives(string text, bool repeatable)
     {
-        using var document = text.Parse();
+        var document = text.Parse();
         document.ShouldNotBeNull();
         document.Definitions.Count.ShouldBe(1);
         document.Definitions[0].ShouldBeAssignableTo<GraphQLDirectiveDefinition>().Repeatable.ShouldBe(repeatable);
@@ -1007,7 +1009,7 @@ OOPS
     public void Should_Parse_SpecifiedBy()
     {
         string text = @"scalar UUID @specifiedBy(url: ""https://tools.ietf.org/html/rfc4122"")";
-        using var document = text.Parse();
+        var document = text.Parse();
         document.ShouldNotBeNull();
         document.Definitions.Count.ShouldBe(1);
         var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLScalarTypeDefinition>();
@@ -1039,7 +1041,7 @@ OOPS
     {
         string text = "InterfacesOnInterface".ReadGraphQLFile();
 
-        using var document = text.Parse(new ParserOptions { Ignore = options });
+        var document = text.Parse(new ParserOptions { Ignore = options });
         document.Definitions.Count.ShouldBe(4);
         var def1 = document.Definitions[0].ShouldBeAssignableTo<GraphQLInterfaceTypeDefinition>();
         def1.Name.Value.ShouldBe("Dog");
@@ -1093,7 +1095,7 @@ Cat
 |       Dog")]
     public void Should_Parse_Unions(string text)
     {
-        using var document = text.Parse();
+        var document = text.Parse();
         document.ShouldNotBeNull();
     }
 
@@ -1120,7 +1122,7 @@ Cat
     [InlineData("extend input Foo @exportable", ASTNodeKind.InputObjectTypeExtension)]
     public void Should_Parse_Extensions(string text, ASTNodeKind kind)
     {
-        using var document = text.Parse();
+        var document = text.Parse();
         document.ShouldNotBeNull();
         document.Definitions[0].Kind.ShouldBe(kind);
     }
@@ -1160,7 +1162,7 @@ Cat
     [InlineData("enum Empty", ASTNodeKind.EnumTypeDefinition)]
     public void Should_Parse_Empty_Types(string text, ASTNodeKind kind)
     {
-        using var document = text.Parse();
+        var document = text.Parse();
         document.ShouldNotBeNull();
         document.Definitions[0].Kind.ShouldBe(kind);
     }
@@ -1209,7 +1211,7 @@ extend type User implements Person")]
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_Should_Read_Correctly(IgnoreOptions options)
     {
-        using var document = @"
+        var document = @"
 ""Super schema""
 schema {
   query: String
@@ -1342,7 +1344,7 @@ directive @TestDirective (
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_WithComments_Should_Read_Correctly_1(IgnoreOptions options)
     {
-        using var document = @"
+        var document = @"
 # comment -1
 ""Super schema""
 # comment 0
@@ -1542,7 +1544,7 @@ directive @TestDirective (
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_WithComments_Should_Read_Correctly_2(IgnoreOptions options)
     {
-        using var document = @"
+        var document = @"
 ""Super schema""
 # comment 1
 schema {
@@ -1726,7 +1728,7 @@ directive @TestDirective (
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_WithComments_Should_Read_Correctly_3(IgnoreOptions options)
     {
-        using var document = @"
+        var document = @"
 # comment 0
 ""Super schema""
 schema {

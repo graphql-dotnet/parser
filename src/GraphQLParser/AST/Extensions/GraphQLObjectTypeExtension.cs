@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -31,19 +33,19 @@ internal sealed class GraphQLObjectTypeExtensionWithLocation : GraphQLObjectType
 
 internal sealed class GraphQLObjectTypeExtensionWithComment : GraphQLObjectTypeExtension
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLObjectTypeExtensionFull : GraphQLObjectTypeExtension
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -51,9 +53,9 @@ internal sealed class GraphQLObjectTypeExtensionFull : GraphQLObjectTypeExtensio
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

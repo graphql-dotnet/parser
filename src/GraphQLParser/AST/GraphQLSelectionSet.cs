@@ -36,19 +36,19 @@ internal sealed class GraphQLSelectionSetWithLocation : GraphQLSelectionSet
 
 internal sealed class GraphQLSelectionSetWithComment : GraphQLSelectionSet
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLSelectionSetFull : GraphQLSelectionSet
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -56,9 +56,9 @@ internal sealed class GraphQLSelectionSetFull : GraphQLSelectionSet
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

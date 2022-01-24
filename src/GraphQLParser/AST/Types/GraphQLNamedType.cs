@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
@@ -25,19 +27,19 @@ internal sealed class GraphQLNamedTypeWithLocation : GraphQLNamedType
 
 internal sealed class GraphQLNamedTypeWithComment : GraphQLNamedType
 {
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }
 
 internal sealed class GraphQLNamedTypeFull : GraphQLNamedType
 {
     private GraphQLLocation _location;
-    private GraphQLComment? _comment;
+    private List<GraphQLComment>? _comments;
 
     public override GraphQLLocation Location
     {
@@ -45,9 +47,9 @@ internal sealed class GraphQLNamedTypeFull : GraphQLNamedType
         set => _location = value;
     }
 
-    public override GraphQLComment? Comment
+    public override List<GraphQLComment>? Comments
     {
-        get => _comment;
-        set => _comment = value;
+        get => _comments;
+        set => _comments = value;
     }
 }

@@ -16,7 +16,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitDocumentAsync(GraphQLDocument document, TContext context)
     {
-        await VisitAsync(document.Comment, context).ConfigureAwait(false); // Comment always null
+        await VisitAsync(document.Comments, context).ConfigureAwait(false); // Comments always null
         await VisitAsync(document.Definitions, context).ConfigureAwait(false);
     }
 
@@ -25,7 +25,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitArgumentAsync(GraphQLArgument argument, TContext context)
     {
-        await VisitAsync(argument.Comment, context).ConfigureAwait(false);
+        await VisitAsync(argument.Comments, context).ConfigureAwait(false);
         await VisitAsync(argument.Name, context).ConfigureAwait(false);
         await VisitAsync(argument.Value, context).ConfigureAwait(false);
     }
@@ -35,7 +35,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitArgumentsDefinitionAsync(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
     {
-        await VisitAsync(argumentsDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(argumentsDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(argumentsDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -44,7 +44,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitArgumentsAsync(GraphQLArguments arguments, TContext context)
     {
-        await VisitAsync(arguments.Comment, context).ConfigureAwait(false);
+        await VisitAsync(arguments.Comments, context).ConfigureAwait(false);
         await VisitAsync(arguments.Items, context).ConfigureAwait(false);
     }
 
@@ -69,7 +69,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, TContext context)
     {
-        await VisitAsync(operationDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(operationDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(operationDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(operationDefinition.Variables, context).ConfigureAwait(false);
         await VisitAsync(operationDefinition.Directives, context).ConfigureAwait(false);
@@ -81,7 +81,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitNameAsync(GraphQLName name, TContext context)
     {
-        await VisitAsync(name.Comment, context).ConfigureAwait(false);
+        await VisitAsync(name.Comments, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitVariableDefinitionAsync(GraphQLVariableDefinition variableDefinition, TContext context)
     {
-        await VisitAsync(variableDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(variableDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(variableDefinition.Variable, context).ConfigureAwait(false);
         await VisitAsync(variableDefinition.Type, context).ConfigureAwait(false);
         await VisitAsync(variableDefinition.DefaultValue, context).ConfigureAwait(false);
@@ -101,7 +101,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitVariablesDefinitionAsync(GraphQLVariablesDefinition variablesDefinition, TContext context)
     {
-        await VisitAsync(variablesDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(variablesDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(variablesDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -110,7 +110,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitVariableAsync(GraphQLVariable variable, TContext context)
     {
-        await VisitAsync(variable.Comment, context).ConfigureAwait(false);
+        await VisitAsync(variable.Comments, context).ConfigureAwait(false);
         await VisitAsync(variable.Name, context).ConfigureAwait(false);
     }
 
@@ -119,7 +119,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitSelectionSetAsync(GraphQLSelectionSet selectionSet, TContext context)
     {
-        await VisitAsync(selectionSet.Comment, context).ConfigureAwait(false);
+        await VisitAsync(selectionSet.Comments, context).ConfigureAwait(false);
         await VisitAsync(selectionSet.Selections, context).ConfigureAwait(false);
     }
 
@@ -128,7 +128,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitAliasAsync(GraphQLAlias alias, TContext context)
     {
-        await VisitAsync(alias.Comment, context).ConfigureAwait(false);
+        await VisitAsync(alias.Comments, context).ConfigureAwait(false);
         await VisitAsync(alias.Name, context).ConfigureAwait(false);
     }
 
@@ -137,7 +137,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitFieldAsync(GraphQLField field, TContext context)
     {
-        await VisitAsync(field.Comment, context).ConfigureAwait(false);
+        await VisitAsync(field.Comments, context).ConfigureAwait(false);
         await VisitAsync(field.Alias, context).ConfigureAwait(false);
         await VisitAsync(field.Name, context).ConfigureAwait(false);
         await VisitAsync(field.Arguments, context).ConfigureAwait(false);
@@ -150,7 +150,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitFragmentNameAsync(GraphQLFragmentName fragmentName, TContext context)
     {
-        await VisitAsync(fragmentName.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fragmentName.Comments, context).ConfigureAwait(false);
         await VisitAsync(fragmentName.Name, context).ConfigureAwait(false);
     }
 
@@ -159,7 +159,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, TContext context)
     {
-        await VisitAsync(fragmentSpread.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fragmentSpread.Comments, context).ConfigureAwait(false);
         await VisitAsync(fragmentSpread.FragmentName, context).ConfigureAwait(false);
         await VisitAsync(fragmentSpread.Directives, context).ConfigureAwait(false);
     }
@@ -169,7 +169,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, TContext context)
     {
-        await VisitAsync(inlineFragment.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inlineFragment.Comments, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.Directives, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.SelectionSet, context).ConfigureAwait(false);
@@ -180,7 +180,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitTypeConditionAsync(GraphQLTypeCondition typeCondition, TContext context)
     {
-        await VisitAsync(typeCondition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(typeCondition.Comments, context).ConfigureAwait(false);
         await VisitAsync(typeCondition.Type, context).ConfigureAwait(false);
     }
 
@@ -189,7 +189,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitImplementsInterfacesAsync(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
     {
-        await VisitAsync(implementsInterfaces.Comment, context).ConfigureAwait(false);
+        await VisitAsync(implementsInterfaces.Comments, context).ConfigureAwait(false);
         await VisitAsync(implementsInterfaces.Items, context).ConfigureAwait(false);
     }
 
@@ -198,7 +198,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, TContext context)
     {
-        await VisitAsync(fragmentDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fragmentDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.Directives, context).ConfigureAwait(false);
@@ -210,7 +210,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitIntValueAsync(GraphQLIntValue intValue, TContext context)
     {
-        await VisitAsync(intValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(intValue.Comments, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -218,7 +218,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, TContext context)
     {
-        await VisitAsync(floatValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(floatValue.Comments, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, TContext context)
     {
-        await VisitAsync(stringValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(stringValue.Comments, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -234,7 +234,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, TContext context)
     {
-        await VisitAsync(booleanValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(booleanValue.Comments, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -242,7 +242,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitEnumValueAsync(GraphQLEnumValue enumValue, TContext context)
     {
-        await VisitAsync(enumValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumValue.Comments, context).ConfigureAwait(false);
         await VisitAsync(enumValue.Name, context).ConfigureAwait(false);
     }
 
@@ -251,7 +251,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitListValueAsync(GraphQLListValue listValue, TContext context)
     {
-        await VisitAsync(listValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(listValue.Comments, context).ConfigureAwait(false);
         await VisitAsync(listValue.Values, context).ConfigureAwait(false);
     }
 
@@ -260,7 +260,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitObjectValueAsync(GraphQLObjectValue objectValue, TContext context)
     {
-        await VisitAsync(objectValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(objectValue.Comments, context).ConfigureAwait(false);
         await VisitAsync(objectValue.Fields, context).ConfigureAwait(false);
     }
 
@@ -269,7 +269,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitObjectFieldAsync(GraphQLObjectField objectField, TContext context)
     {
-        await VisitAsync(objectField.Comment, context).ConfigureAwait(false);
+        await VisitAsync(objectField.Comments, context).ConfigureAwait(false);
         await VisitAsync(objectField.Name, context).ConfigureAwait(false);
         await VisitAsync(objectField.Value, context).ConfigureAwait(false);
     }
@@ -279,7 +279,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitDirectiveAsync(GraphQLDirective directive, TContext context)
     {
-        await VisitAsync(directive.Comment, context).ConfigureAwait(false);
+        await VisitAsync(directive.Comments, context).ConfigureAwait(false);
         await VisitAsync(directive.Name, context).ConfigureAwait(false);
         await VisitAsync(directive.Arguments, context).ConfigureAwait(false);
     }
@@ -289,7 +289,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitDirectivesAsync(GraphQLDirectives directives, TContext context)
     {
-        await VisitAsync(directives.Comment, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
+        await VisitAsync(directives.Comments, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
         await VisitAsync(directives.Items, context).ConfigureAwait(false);
     }
 
@@ -298,7 +298,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitNamedTypeAsync(GraphQLNamedType namedType, TContext context)
     {
-        await VisitAsync(namedType.Comment, context).ConfigureAwait(false);
+        await VisitAsync(namedType.Comments, context).ConfigureAwait(false);
         await VisitAsync(namedType.Name, context).ConfigureAwait(false);
     }
 
@@ -307,7 +307,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitListTypeAsync(GraphQLListType listType, TContext context)
     {
-        await VisitAsync(listType.Comment, context).ConfigureAwait(false);
+        await VisitAsync(listType.Comments, context).ConfigureAwait(false);
         await VisitAsync(listType.Type, context).ConfigureAwait(false);
     }
 
@@ -316,7 +316,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitNonNullTypeAsync(GraphQLNonNullType nonNullType, TContext context)
     {
-        await VisitAsync(nonNullType.Comment, context).ConfigureAwait(false);
+        await VisitAsync(nonNullType.Comments, context).ConfigureAwait(false);
         await VisitAsync(nonNullType.Type, context).ConfigureAwait(false);
     }
 
@@ -325,7 +325,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitNullValueAsync(GraphQLNullValue nullValue, TContext context)
     {
-        await VisitAsync(nullValue.Comment, context).ConfigureAwait(false);
+        await VisitAsync(nullValue.Comments, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -333,7 +333,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, TContext context)
     {
-        await VisitAsync(schemaDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(schemaDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.OperationTypes, context).ConfigureAwait(false);
@@ -344,7 +344,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
     {
-        await VisitAsync(rootOperationTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(rootOperationTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(rootOperationTypeDefinition.Type, context).ConfigureAwait(false);
     }
 
@@ -353,7 +353,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
     {
-        await VisitAsync(scalarTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(scalarTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeDefinition.Directives, context).ConfigureAwait(false);
@@ -364,7 +364,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
     {
-        await VisitAsync(objectTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Interfaces, context).ConfigureAwait(false);
@@ -377,7 +377,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitFieldDefinitionAsync(GraphQLFieldDefinition fieldDefinition, TContext context)
     {
-        await VisitAsync(fieldDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fieldDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(fieldDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(fieldDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(fieldDefinition.Arguments, context).ConfigureAwait(false);
@@ -390,7 +390,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
-        await VisitAsync(fieldsDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(fieldsDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(fieldsDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -399,7 +399,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context)
     {
-        await VisitAsync(inputValueDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Type, context).ConfigureAwait(false);
@@ -412,7 +412,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
-        await VisitAsync(inputFieldsDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inputFieldsDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputFieldsDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -421,7 +421,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
     {
-        await VisitAsync(interfaceTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Interfaces, context).ConfigureAwait(false);
@@ -434,7 +434,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
     {
-        await VisitAsync(unionTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(unionTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Directives, context).ConfigureAwait(false);
@@ -446,7 +446,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitUnionMemberTypesAsync(GraphQLUnionMemberTypes unionMemberTypes, TContext context)
     {
-        await VisitAsync(unionMemberTypes.Comment, context).ConfigureAwait(false);
+        await VisitAsync(unionMemberTypes.Comments, context).ConfigureAwait(false);
         await VisitAsync(unionMemberTypes.Items, context).ConfigureAwait(false);
     }
 
@@ -455,7 +455,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
     {
-        await VisitAsync(enumTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Directives, context).ConfigureAwait(false);
@@ -467,7 +467,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitEnumValueDefinitionAsync(GraphQLEnumValueDefinition enumValueDefinition, TContext context)
     {
-        await VisitAsync(enumValueDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(enumValueDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(enumValueDefinition.EnumValue, context).ConfigureAwait(false);
         await VisitAsync(enumValueDefinition.Directives, context).ConfigureAwait(false);
@@ -478,7 +478,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
-        await VisitAsync(enumValuesDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumValuesDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(enumValuesDefinition.Items, context).ConfigureAwait(false);
     }
 
@@ -487,7 +487,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
     {
-        await VisitAsync(inputObjectTypeDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Directives, context).ConfigureAwait(false);
@@ -499,7 +499,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, TContext context)
     {
-        await VisitAsync(directiveDefinition.Comment, context).ConfigureAwait(false);
+        await VisitAsync(directiveDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Arguments, context).ConfigureAwait(false);
@@ -511,7 +511,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, TContext context)
     {
-        await VisitAsync(directiveLocations.Comment, context).ConfigureAwait(false);
+        await VisitAsync(directiveLocations.Comments, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -519,7 +519,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, TContext context)
     {
-        await VisitAsync(schemaExtension.Comment, context).ConfigureAwait(false);
+        await VisitAsync(schemaExtension.Comments, context).ConfigureAwait(false);
         await VisitAsync(schemaExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(schemaExtension.OperationTypes, context).ConfigureAwait(false);
     }
@@ -529,7 +529,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitScalarTypeExtensionAsync(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
     {
-        await VisitAsync(scalarTypeExtension.Comment, context).ConfigureAwait(false);
+        await VisitAsync(scalarTypeExtension.Comments, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeExtension.Directives, context).ConfigureAwait(false);
     }
@@ -539,7 +539,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
     {
-        await VisitAsync(objectTypeExtension.Comment, context).ConfigureAwait(false);
+        await VisitAsync(objectTypeExtension.Comments, context).ConfigureAwait(false);
         await VisitAsync(objectTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(objectTypeExtension.Interfaces, context).ConfigureAwait(false);
         await VisitAsync(objectTypeExtension.Directives, context).ConfigureAwait(false);
@@ -551,7 +551,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitInterfaceTypeExtensionAsync(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
     {
-        await VisitAsync(interfaceTypeExtension.Comment, context).ConfigureAwait(false);
+        await VisitAsync(interfaceTypeExtension.Comments, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeExtension.Interfaces, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
@@ -563,7 +563,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitUnionTypeExtensionAsync(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
     {
-        await VisitAsync(unionTypeExtension.Comment, context).ConfigureAwait(false);
+        await VisitAsync(unionTypeExtension.Comments, context).ConfigureAwait(false);
         await VisitAsync(unionTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(unionTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(unionTypeExtension.Types, context).ConfigureAwait(false);
@@ -574,7 +574,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitEnumTypeExtensionAsync(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
     {
-        await VisitAsync(enumTypeExtension.Comment, context).ConfigureAwait(false);
+        await VisitAsync(enumTypeExtension.Comments, context).ConfigureAwait(false);
         await VisitAsync(enumTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(enumTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(enumTypeExtension.Values, context).ConfigureAwait(false);
@@ -585,7 +585,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// </summary>
     protected virtual async ValueTask VisitInputObjectTypeExtensionAsync(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
     {
-        await VisitAsync(inputObjectTypeExtension.Comment, context).ConfigureAwait(false);
+        await VisitAsync(inputObjectTypeExtension.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);

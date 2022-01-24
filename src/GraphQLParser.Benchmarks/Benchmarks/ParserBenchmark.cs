@@ -57,7 +57,7 @@ public class ParserBenchmark : BenchmarkBase
     public void Parse(string name, IgnoreOptions options)
     {
         var source = GetQueryByName(name);
-        Parser.Parse(source, new ParserOptions { Ignore = options }).Dispose();
+        Parser.Parse(source, new ParserOptions { Ignore = options });
     }
 
     public IEnumerable<object[]> NamesAndOptions()

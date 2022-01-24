@@ -24,11 +24,10 @@ public class MaxDepthVisitorTests
         var context = new DefaultMaxDepthContext();
         context.CancellationToken.ShouldBe(CancellationToken.None);
 
-        using (var document = text.Parse())
-        {
-            await visitor.VisitAsync(document, context).ConfigureAwait(false);
-            context.MaxDepth.ShouldBe(expectedMaxDepth);
-            document.MaxNestedDepth().ShouldBe(expectedMaxDepth);
-        }
+        var document = text.Parse();
+
+        await visitor.VisitAsync(document, context).ConfigureAwait(false);
+        context.MaxDepth.ShouldBe(expectedMaxDepth);
+        document.MaxNestedDepth().ShouldBe(expectedMaxDepth);
     }
 }

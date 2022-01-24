@@ -14,7 +14,7 @@ internal partial struct ParserContext
         int start = _currentToken.Start;
         var definitions = ParseDefinitionsIfNotEOF();
 
-        SetCurrentComment(null); // push current (last) comment into _unattachedComments
+        SetCurrentComments(null); // push current (last) comment into _unattachedComments
 
         _document.Location = new GraphQLLocation
         (
@@ -44,7 +44,7 @@ internal partial struct ParserContext
 
         var condition = NodeHelper.CreateGraphQLTypeCondition(_ignoreOptions);
 
-        condition.Comment = GetComment();
+        condition.Comments = GetComments();
         ExpectKeyword("on");
         condition.Type = ParseNamedType();
         condition.Location = GetLocation(start);
@@ -62,7 +62,7 @@ internal partial struct ParserContext
 
         var arg = NodeHelper.CreateGraphQLArgument(_ignoreOptions);
 
-        arg.Comment = GetComment();
+        arg.Comments = GetComments();
         arg.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#Argument");
         Expect(TokenKind.COLON);
         arg.Value = ParseValueLiteral(false);
@@ -81,7 +81,7 @@ internal partial struct ParserContext
 
         var args = NodeHelper.CreateGraphQLArguments(_ignoreOptions);
 
-        args.Comment = GetComment();
+        args.Comments = GetComments();
         args.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseArgument(), TokenKind.PAREN_R);
         args.Location = GetLocation(start);
 
@@ -98,7 +98,7 @@ internal partial struct ParserContext
 
         var argsDef = NodeHelper.CreateGraphQLArgumentsDefinition(_ignoreOptions);
 
-        argsDef.Comment = GetComment();
+        argsDef.Comments = GetComments();
         argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
         argsDef.Location = GetLocation(start);
 
@@ -115,7 +115,7 @@ internal partial struct ParserContext
 
         var inputFieldsDef = NodeHelper.CreateGraphQLInputFieldsDefinition(_ignoreOptions);
 
-        inputFieldsDef.Comment = GetComment();
+        inputFieldsDef.Comments = GetComments();
         inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
         inputFieldsDef.Location = GetLocation(start);
 
@@ -132,7 +132,7 @@ internal partial struct ParserContext
 
         var fieldsDef = NodeHelper.CreateGraphQLFieldsDefinition(_ignoreOptions);
 
-        fieldsDef.Comment = GetComment();
+        fieldsDef.Comments = GetComments();
         fieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseFieldDefinition(), TokenKind.BRACE_R);
         fieldsDef.Location = GetLocation(start);
 
@@ -149,7 +149,7 @@ internal partial struct ParserContext
 
         var enumValuesDef = NodeHelper.CreateGraphQLEnumValuesDefinition(_ignoreOptions);
 
-        enumValuesDef.Comment = GetComment();
+        enumValuesDef.Comments = GetComments();
         enumValuesDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseEnumValueDefinition(), TokenKind.BRACE_R);
         enumValuesDef.Location = GetLocation(start);
 
@@ -166,7 +166,7 @@ internal partial struct ParserContext
 
         var variablesDef = NodeHelper.CreateGraphQLVariablesDefinition(_ignoreOptions);
 
-        variablesDef.Comment = GetComment();
+        variablesDef.Comments = GetComments();
         variablesDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseVariableDefinition(), TokenKind.PAREN_R);
         variablesDef.Location = GetLocation(start);
 
@@ -184,7 +184,7 @@ internal partial struct ParserContext
 
         var val = NodeHelper.CreateGraphQLBooleanValue(_ignoreOptions, value);
 
-        val.Comment = GetComment();
+        val.Comments = GetComments();
         Advance();
         val.Location = GetLocation(token.Start);
 
@@ -223,7 +223,8 @@ internal partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Comment
-    private void ParseComment()
+    // NOTE: method parses zero or more comments into list, they are not merged into one comment!
+    private void ParseComments()
     {
         // skip comments
         if (_ignoreOptions.HasFlag(IgnoreOptions.Comments))
@@ -242,48 +243,33 @@ internal partial struct ParserContext
 
         IncreaseDepth();
 
-        var text = new List<ROM>();
-        int start = _currentToken.Start;
-        int end;
+        var comments = new List<GraphQLComment>();
 
         do
         {
-            text.Add(_currentToken.Value);
-            end = _currentToken.End;
+            var comment = NodeHelper.CreateGraphQLComment(_ignoreOptions, _currentToken.Value);
+            comment.Location = new GraphQLLocation(_currentToken.Start, _currentToken.End);
+            comments.Add(comment);
             Advance(fromParseComment: true);
         }
         while (_currentToken.Kind == TokenKind.COMMENT);
 
-        GraphQLComment comment = null!;
-        if (text.Count == 1)
-        {
-            comment = NodeHelper.CreateGraphQLComment(_ignoreOptions, text[0]);
-        }
-        else if (text.Count > 1)
-        {
-            var (owner, result) = text.Concat();
-            comment = NodeHelper.CreateGraphQLComment(_ignoreOptions, result);
-            (_document.RentedMemoryTracker ??= new List<(System.Buffers.IMemoryOwner<char>, ASTNode)>()).Add((owner, comment));
-        }
-
-        comment.Location = new GraphQLLocation(start, end);
-
-        SetCurrentComment(comment);
+        SetCurrentComments(comments);
         DecreaseDepth();
     }
 
-    private void SetCurrentComment(GraphQLComment? comment)
+    private void SetCurrentComments(List<GraphQLComment>? comments)
     {
-        if (_currentComment != null)
-            (_unattachedComments ??= new List<GraphQLComment>()).Add(_currentComment);
+        if (_currentComments != null)
+            (_unattachedComments ??= new List<List<GraphQLComment>>()).Add(_currentComments);
 
-        _currentComment = comment;
+        _currentComments = comments;
     }
 
-    private GraphQLComment? GetComment()
+    private List<GraphQLComment>? GetComments()
     {
-        var ret = _currentComment;
-        _currentComment = null;
+        var ret = _currentComments;
+        _currentComments = null;
         return ret;
     }
 
@@ -296,7 +282,7 @@ internal partial struct ParserContext
 
         var dir = NodeHelper.CreateGraphQLDirective(_ignoreOptions);
 
-        dir.Comment = GetComment();
+        dir.Comments = GetComments();
         Expect(TokenKind.AT);
         dir.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#Directive");
         dir.Arguments = Peek(TokenKind.PAREN_L) ? ParseArguments() : null;
@@ -316,7 +302,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLDirectiveDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("directive");
         Expect(TokenKind.AT);
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#DirectiveDefinition");
@@ -348,7 +334,7 @@ internal partial struct ParserContext
     private GraphQLDirectiveLocations ParseDirectiveLocations()
     {
         IncreaseDepth();
-        var comment = GetComment();
+        var comments = GetComments();
 
         int start = _currentToken.Start;
 
@@ -367,7 +353,7 @@ internal partial struct ParserContext
         while (Skip(TokenKind.PIPE));
 
         directiveLocations.Items = items;
-        directiveLocations.Comment = comment;
+        directiveLocations.Comments = comments;
         directiveLocations.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -381,7 +367,7 @@ internal partial struct ParserContext
         // Directives go one after another without any "list prefix", so it is impossible
         // to distinguish the comment of the first directive from the comment to the entire
         // list of directives. Therefore, a comment for the directive itself is used.
-        //var comment = GetComment();
+        //var comments = GetComments();
 
         int start = _currentToken.Start;
 
@@ -411,7 +397,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLEnumTypeDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("enum");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#EnumTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -424,7 +410,7 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#EnumTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLEnumTypeExtension ParseEnumTypeExtension(int start, GraphQLComment? comment)
+    private GraphQLEnumTypeExtension ParseEnumTypeExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
@@ -435,7 +421,7 @@ internal partial struct ParserContext
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#EnumTypeExtension");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         extension.Values = Peek(TokenKind.BRACE_L) ? ParseEnumValuesDefinition() : null;
-        extension.Comment = comment;
+        extension.Comments = comments;
         extension.Location = GetLocation(start);
 
         if (extension.Directives == null && extension.Values == null)
@@ -459,7 +445,7 @@ internal partial struct ParserContext
 
         var enumVal = NodeHelper.CreateGraphQLEnumValue(_ignoreOptions);
 
-        enumVal.Comment = GetComment();
+        enumVal.Comments = GetComments();
         enumVal.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#EnumValue");
         enumVal.Location = GetLocation(start);
 
@@ -477,7 +463,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLEnumValueDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         def.EnumValue = ParseEnumValue();
         def.Name = def.EnumValue.Name; // ATTENTION: should set Name property (inherited from GraphQLTypeDefinition)
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -497,7 +483,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLFieldDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#FieldDefinition");
         def.Arguments = Peek(TokenKind.PAREN_L) ? ParseArgumentsDefinition() : null;
         Expect(TokenKind.COLON);
@@ -518,7 +504,7 @@ internal partial struct ParserContext
         // start of alias (if exists) equals start of field
         int start = _currentToken.Start;
 
-        var comment = GetComment(); // Greedy parsing for comment here - we read comment for field itself, not for alias.
+        var comments = GetComments(); // Greedy parsing for comment here - we read comment for field itself, not for alias.
         var nameOrAlias = ParseName("; for more information see http://spec.graphql.org/October2021/#Field");
 
         GraphQLName name;
@@ -560,7 +546,7 @@ internal partial struct ParserContext
 
             field.Alias = aliasNode;
         }
-        field.Comment = comment;
+        field.Comments = comments;
         field.Name = name;
         field.Arguments = Peek(TokenKind.PAREN_L) ? ParseArguments() : null;
         field.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -580,7 +566,7 @@ internal partial struct ParserContext
 
         var val = NodeHelper.CreateGraphQLFloatValue(_ignoreOptions, token.Value);
 
-        val.Comment = GetComment();
+        val.Comments = GetComments();
         Advance();
         val.Location = GetLocation(token.Start);
 
@@ -591,16 +577,16 @@ internal partial struct ParserContext
     private ASTNode ParseFragment()
     {
         int start = _currentToken.Start;
-        var comment = GetComment();
+        var comments = GetComments();
         Expect(TokenKind.SPREAD);
 
         return Peek(TokenKind.NAME) && _currentToken.Value != "on"
-            ? ParseFragmentSpread(start, comment)
-            : ParseInlineFragment(start, comment);
+            ? ParseFragmentSpread(start, comments)
+            : ParseInlineFragment(start, comments);
     }
 
     // http://spec.graphql.org/October2021/#FragmentSpread
-    private GraphQLFragmentSpread ParseFragmentSpread(int start, GraphQLComment? comment)
+    private GraphQLFragmentSpread ParseFragmentSpread(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
@@ -608,7 +594,7 @@ internal partial struct ParserContext
 
         spread.FragmentName = ParseFragmentName();
         spread.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
-        spread.Comment = comment;
+        spread.Comments = comments;
         spread.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -616,7 +602,7 @@ internal partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#InlineFragment
-    private GraphQLInlineFragment ParseInlineFragment(int start, GraphQLComment? comment)
+    private GraphQLInlineFragment ParseInlineFragment(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
@@ -625,7 +611,7 @@ internal partial struct ParserContext
         frag.TypeCondition = ParseTypeCondition(optional: true);
         frag.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         frag.SelectionSet = ParseSelectionSet();
-        frag.Comment = comment;
+        frag.Comments = comments;
         frag.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -641,7 +627,7 @@ internal partial struct ParserContext
 
         var def = NodeHelper.CreateGraphQLFragmentDefinition(_ignoreOptions);
 
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("fragment");
         def.FragmentName = ParseFragmentName();
         def.TypeCondition = ParseTypeCondition(optional: false)!; // never returns null
@@ -667,7 +653,7 @@ internal partial struct ParserContext
 
         var fragName = NodeHelper.CreateGraphQLFragmentName(_ignoreOptions);
 
-        fragName.Comment = GetComment();
+        fragName.Comments = GetComments();
         fragName.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#FragmentName");
         fragName.Location = GetLocation(start);
 
@@ -679,7 +665,7 @@ internal partial struct ParserContext
     private GraphQLImplementsInterfaces ParseImplementsInterfaces()
     {
         IncreaseDepth();
-        var comment = GetComment();
+        var comments = GetComments();
 
         int start = _currentToken.Start;
 
@@ -700,7 +686,7 @@ internal partial struct ParserContext
         while (Skip(TokenKind.AMPERSAND));
 
         implementsInterfaces.Items = types;
-        implementsInterfaces.Comment = comment;
+        implementsInterfaces.Comments = comments;
         implementsInterfaces.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -717,7 +703,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLInputObjectTypeDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("input");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InputObjectTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -730,13 +716,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#InputObjectTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLInputObjectTypeExtension ParseInputObjectTypeExtension(int start, GraphQLComment? comment)
+    private GraphQLInputObjectTypeExtension ParseInputObjectTypeExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
         var extension = NodeHelper.CreateGraphQLInputObjectTypeExtension(_ignoreOptions);
 
-        extension.Comment = comment;
+        extension.Comments = comments;
         ExpectKeyword("input");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -760,7 +746,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLInputValueDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InputValueDefinition");
         Expect(TokenKind.COLON);
         def.Type = ParseType();
@@ -781,7 +767,7 @@ internal partial struct ParserContext
 
         var val = NodeHelper.CreateGraphQLIntValue(_ignoreOptions, token.Value);
 
-        val.Comment = GetComment();
+        val.Comments = GetComments();
         Advance();
         val.Location = GetLocation(token.Start);
 
@@ -799,7 +785,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLInterfaceTypeDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("interface");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InterfaceTypeDefinition");
         def.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
@@ -813,13 +799,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#InterfaceTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLInterfaceTypeExtension ParseInterfaceTypeExtension(int start, GraphQLComment? comment)
+    private GraphQLInterfaceTypeExtension ParseInterfaceTypeExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
         var extension = NodeHelper.CreateGraphQLInterfaceTypeExtension(_ignoreOptions);
 
-        extension.Comment = comment;
+        extension.Comments = comments;
         ExpectKeyword("interface");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension");
         extension.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
@@ -847,7 +833,7 @@ internal partial struct ParserContext
 
         var val = NodeHelper.CreateGraphQLListValue(_ignoreOptions);
 
-        val.Comment = GetComment();
+        val.Comments = GetComments();
         val.Values = ZeroOrMore(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R);
         val.Location = GetLocation(start);
 
@@ -865,7 +851,7 @@ internal partial struct ParserContext
 
         var name = NodeHelper.CreateGraphQLName(_ignoreOptions, value);
 
-        name.Comment = GetComment();
+        name.Comments = GetComments();
         Expect(TokenKind.NAME, description);
         name.Location = GetLocation(start);
 
@@ -950,7 +936,7 @@ internal partial struct ParserContext
 
         var named = NodeHelper.CreateGraphQLNamedType(_ignoreOptions);
 
-        named.Comment = GetComment();
+        named.Comments = GetComments();
         named.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#NamedType");
         named.Location = GetLocation(start);
 
@@ -993,7 +979,7 @@ internal partial struct ParserContext
 
         var val = NodeHelper.CreateGraphQLObjectValue(_ignoreOptions);
 
-        val.Comment = GetComment();
+        val.Comments = GetComments();
         val.Fields = ZeroOrMore(TokenKind.BRACE_L, isConstant ? constant : value, TokenKind.BRACE_R);
         val.Location = GetLocation(start);
 
@@ -1010,7 +996,7 @@ internal partial struct ParserContext
 
         var val = NodeHelper.CreateGraphQLNullValue(_ignoreOptions);
 
-        val.Comment = GetComment();
+        val.Comments = GetComments();
         Advance();
         val.Location = GetLocation(token.Start);
 
@@ -1027,7 +1013,7 @@ internal partial struct ParserContext
 
         var field = NodeHelper.CreateGraphQLObjectField(_ignoreOptions);
 
-        field.Comment = GetComment();
+        field.Comments = GetComments();
         field.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ObjectField");
         Expect(TokenKind.COLON);
         field.Value = ParseValueLiteral(isConstant);
@@ -1047,7 +1033,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLObjectTypeDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("type");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ObjectTypeDefinition");
         def.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
@@ -1061,13 +1047,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#ObjectTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLObjectTypeExtension ParseObjectTypeExtension(int start, GraphQLComment? comment)
+    private GraphQLObjectTypeExtension ParseObjectTypeExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
         var extension = NodeHelper.CreateGraphQLObjectTypeExtension(_ignoreOptions);
 
-        extension.Comment = comment;
+        extension.Comments = comments;
         ExpectKeyword("type");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension");
         extension.Interfaces = _currentToken.Value == "implements" ? ParseImplementsInterfaces() : null;
@@ -1091,7 +1077,7 @@ internal partial struct ParserContext
 
         var def = NodeHelper.CreateGraphQLOperationDefinition(_ignoreOptions);
 
-        def.Comment = GetComment();
+        def.Comments = GetComments();
 
         if (Peek(TokenKind.BRACE_L))
         {
@@ -1167,7 +1153,7 @@ internal partial struct ParserContext
 
         var def = NodeHelper.CreateGraphQLOperationTypeDefinition(_ignoreOptions);
 
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         def.Operation = ParseOperationType();
         Expect(TokenKind.COLON);
         def.Type = ParseNamedType();
@@ -1187,7 +1173,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLScalarTypeDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("scalar");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ScalarTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -1199,13 +1185,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#SchemaExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLSchemaExtension ParseSchemaExtension(int start, GraphQLComment? comment)
+    private GraphQLSchemaExtension ParseSchemaExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
         var extension = NodeHelper.CreateGraphQLSchemaExtension(_ignoreOptions);
 
-        extension.Comment = comment;
+        extension.Comments = comments;
         ExpectKeyword("schema");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         extension.OperationTypes = Peek(TokenKind.BRACE_L) ? OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseRootOperationTypeDefinition(), TokenKind.BRACE_R) : null;
@@ -1220,13 +1206,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#ScalarTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLScalarTypeExtension ParseScalarTypeExtension(int start, GraphQLComment? comment)
+    private GraphQLScalarTypeExtension ParseScalarTypeExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
         var extension = NodeHelper.CreateGraphQLScalarTypeExtension(_ignoreOptions);
 
-        extension.Comment = comment;
+        extension.Comments = comments;
         ExpectKeyword("scalar");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -1249,7 +1235,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLSchemaDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("schema");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.OperationTypes = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseRootOperationTypeDefinition(), TokenKind.BRACE_R);
@@ -1276,7 +1262,7 @@ internal partial struct ParserContext
 
         var selection = NodeHelper.CreateGraphQLSelectionSet(_ignoreOptions);
 
-        selection.Comment = GetComment();
+        selection.Comments = GetComments();
         selection.Selections = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseSelection(), TokenKind.BRACE_R);
         selection.Location = GetLocation(start);
 
@@ -1293,7 +1279,7 @@ internal partial struct ParserContext
 
         var val = NodeHelper.CreateGraphQLStringValue(_ignoreOptions, token.Value);
 
-        val.Comment = GetComment();
+        val.Comments = GetComments();
         Advance();
         val.Location = GetLocation(token.Start);
 
@@ -1328,7 +1314,7 @@ internal partial struct ParserContext
         {
             var listType = NodeHelper.CreateGraphQLListType(_ignoreOptions);
 
-            listType.Comment = GetComment();
+            listType.Comments = GetComments();
 
             Advance(); // skip BRACKET_L
 
@@ -1354,8 +1340,8 @@ internal partial struct ParserContext
 
         nonNull.Type = type;
         // move comment from wrapped type to wrapping type
-        nonNull.Comment = type.Comment;
-        type.Comment = null;
+        nonNull.Comments = type.Comments;
+        type.Comments = null;
         nonNull.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1366,19 +1352,19 @@ internal partial struct ParserContext
     private ASTNode ParseTypeExtension()
     {
         int start = _currentToken.Start;
-        var comment = GetComment();
+        var comments = GetComments();
 
         ExpectKeyword("extend");
 
         return ExpectOneOf(TypeExtensionOneOf, advance: false) switch
         {
-            "schema" => ParseSchemaExtension(start, comment),
-            "scalar" => ParseScalarTypeExtension(start, comment),
-            "type" => ParseObjectTypeExtension(start, comment),
-            "interface" => ParseInterfaceTypeExtension(start, comment),
-            "union" => ParseUnionTypeExtension(start, comment),
-            "enum" => ParseEnumTypeExtension(start, comment),
-            "input" => ParseInputObjectTypeExtension(start, comment),
+            "schema" => ParseSchemaExtension(start, comments),
+            "scalar" => ParseScalarTypeExtension(start, comments),
+            "type" => ParseObjectTypeExtension(start, comments),
+            "interface" => ParseInterfaceTypeExtension(start, comments),
+            "union" => ParseUnionTypeExtension(start, comments),
+            "enum" => ParseEnumTypeExtension(start, comments),
+            "input" => ParseInputObjectTypeExtension(start, comments),
 
             _ => throw new NotSupportedException("Compiler never gets here since ExpectOneOf throws.")
         };
@@ -1388,7 +1374,7 @@ internal partial struct ParserContext
     private GraphQLUnionMemberTypes ParseUnionMemberTypes()
     {
         IncreaseDepth();
-        var comment = GetComment();
+        var comments = GetComments();
 
         int start = _currentToken.Start;
 
@@ -1409,7 +1395,7 @@ internal partial struct ParserContext
         while (Skip(TokenKind.PIPE));
 
         unionMemberTypes.Items = types;
-        unionMemberTypes.Comment = comment;
+        unionMemberTypes.Comments = comments;
         unionMemberTypes.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -1426,7 +1412,7 @@ internal partial struct ParserContext
         var def = NodeHelper.CreateGraphQLUnionTypeDefinition(_ignoreOptions);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         ExpectKeyword("union");
         def.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#UnionTypeDefinition");
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -1439,13 +1425,13 @@ internal partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#UnionTypeExtension
     // Note that due to the spec type extensions have no descriptions.
-    private GraphQLUnionTypeExtension ParseUnionTypeExtension(int start, GraphQLComment? comment)
+    private GraphQLUnionTypeExtension ParseUnionTypeExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
 
         var extension = NodeHelper.CreateGraphQLUnionTypeExtension(_ignoreOptions);
 
-        extension.Comment = comment;
+        extension.Comments = comments;
         ExpectKeyword("union");
         extension.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#UnionTypeExtension");
         extension.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
@@ -1483,7 +1469,7 @@ internal partial struct ParserContext
 
         var variable = NodeHelper.CreateGraphQLVariable(_ignoreOptions);
 
-        variable.Comment = GetComment();
+        variable.Comments = GetComments();
         Expect(TokenKind.DOLLAR);
         variable.Name = ParseName("; for more information see http://spec.graphql.org/October2021/#Variable");
         variable.Location = GetLocation(start);
@@ -1501,7 +1487,7 @@ internal partial struct ParserContext
 
         var def = NodeHelper.CreateGraphQLVariableDefinition(_ignoreOptions);
 
-        def.Comment = GetComment();
+        def.Comments = GetComments();
         def.Variable = ParseVariable();
         Expect(TokenKind.COLON);
         def.Type = ParseType();

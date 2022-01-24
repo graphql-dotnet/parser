@@ -73,8 +73,8 @@ internal partial struct ParserContext
 
     private readonly ROM _source;
     private readonly IgnoreOptions _ignoreOptions;
-    private GraphQLComment? _currentComment;
-    private List<GraphQLComment>? _unattachedComments;
+    private List<GraphQLComment>? _currentComments;
+    private List<List<GraphQLComment>>? _unattachedComments;
     private Token _currentToken;
     private Token _prevToken;
     private readonly GraphQLDocument _document;
@@ -83,7 +83,7 @@ internal partial struct ParserContext
 
     public ParserContext(ROM source, ParserOptions options)
     {
-        _currentComment = null;
+        _currentComments = null;
         _unattachedComments = null;
         _source = source;
         _ignoreOptions = options.Ignore;
@@ -168,7 +168,7 @@ internal partial struct ParserContext
             _currentToken = Lexer.Lex(_source, _currentToken.End);
             // Comments may appear everywhere
             if (!fromParseComment)
-                ParseComment();
+                ParseComments();
         }
     }
 

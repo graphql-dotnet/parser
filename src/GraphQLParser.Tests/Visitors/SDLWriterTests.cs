@@ -397,6 +397,7 @@ type Dog implements Animal
 @"{
   f
   #arguments comment
+  #multilined
   (x:10,
   y:{
   #comment on object field
@@ -408,6 +409,7 @@ type Dog implements Animal
 @"{
   f
   #arguments comment
+  #multilined
   (x: 10, y: {
   #comment on object field
   z: 1})
@@ -511,17 +513,13 @@ extend union Unity =
             EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
         });
         var writer = new StringWriter();
-        using (var document = text.Parse())
-        {
-            await printer.PrintAsync(document, writer).ConfigureAwait(false);
-            var actual = writer.ToString();
-            actual.ShouldBe(expected, $"Test {number} failed");
+        var document = text.Parse();
 
-            using (actual.Parse())
-            {
-                // should be parsed back
-            }
-        }
+        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        var actual = writer.ToString();
+        actual.ShouldBe(expected, $"Test {number} failed");
+
+        actual.Parse(); // should be parsed back
     }
 
     [Theory]
@@ -569,22 +567,18 @@ extend union Unity =
 
         var writer = new StringWriter();
 
-        using (var document = (input + " scalar a").Parse())
-        {
-            var printer = new SDLPrinter();
-            await printer.PrintAsync(document, writer).ConfigureAwait(false);
-            var renderedOriginal = writer.ToString();
+        var document = (input + " scalar a").Parse();
 
-            var lines = renderedOriginal.Split(Environment.NewLine);
-            var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
-            renderedDescription = renderedDescription.Replace("\r\n", "\n");
-            renderedDescription.ShouldBe(expected);
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        var renderedOriginal = writer.ToString();
 
-            using (renderedOriginal.Parse())
-            {
-                // should be parsed back
-            }
-        }
+        var lines = renderedOriginal.Split(Environment.NewLine);
+        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
+        renderedDescription = renderedDescription.Replace("\r\n", "\n");
+        renderedDescription.ShouldBe(expected);
+
+        renderedOriginal.Parse(); // should be parsed back
     }
 
     [Theory]
@@ -602,18 +596,14 @@ extend union Unity =
 ";
         var writer = new StringWriter();
 
-        using (var document = query.Parse())
-        {
-            var printer = new SDLPrinter();
-            await printer.PrintAsync(document, writer).ConfigureAwait(false);
-            var rendered = writer.ToString();
-            rendered.ShouldBe(expected);
+        var document = query.Parse();
 
-            using (rendered.Parse())
-            {
-                // should be parsed back
-            }
-        }
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        var rendered = writer.ToString();
+        rendered.ShouldBe(expected);
+
+        rendered.Parse(); // should be parsed back
     }
 
     [Fact]
@@ -626,7 +616,7 @@ extend union Unity =
         writer.ToString().ShouldBe(@"{
 }
 ");
-        selectionSet.Comment = new GraphQLComment("comment");
+        selectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
         writer = new StringWriter();
         await printer.PrintAsync(selectionSet, writer);
         writer.ToString().ShouldBe(@"#comment
@@ -648,7 +638,7 @@ extend union Unity =
         writer.ToString().ShouldBe(@"{
 }
 ");
-        def.SelectionSet.Comment = new GraphQLComment("comment");
+        def.SelectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
         writer = new StringWriter();
         await printer.PrintAsync(def, writer);
         writer.ToString().ShouldBe(@"#comment
@@ -663,14 +653,13 @@ extend union Unity =
     public async Task WriteDocumentVisitor_Should_Throw_On_Unknown_Values(string text)
     {
         var writer = new StringWriter();
-        using (var document = text.Parse())
-        {
-            await new DoBadThingsVisitor().VisitAsync(document, new Context());
+        var document = text.Parse();
 
-            var printer = new SDLPrinter();
-            var ex = await Should.ThrowAsync<NotSupportedException>(async () => await printer.PrintAsync(document, writer));
-            ex.Message.ShouldStartWith("Unknown ");
-        }
+        await new DoBadThingsVisitor().VisitAsync(document, new Context());
+
+        var printer = new SDLPrinter();
+        var ex = await Should.ThrowAsync<NotSupportedException>(async () => await printer.PrintAsync(document, writer));
+        ex.Message.ShouldStartWith("Unknown ");
     }
 
     private class Context : IASTVisitorContext
