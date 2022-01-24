@@ -89,10 +89,7 @@ public class MemoryTests
         var str = "string";
         ROM rom = str;
 
-        var romImplicitMem = str.AsMemory(); // ReadOnlyMemory
-        (rom == romImplicitMem).ShouldBeTrue();
-
-        romImplicitMem = new Memory<char>(new char[] { 's', 't', 'r', 'i', 'n', 'g' }); // Memory
+        var romImplicitMem = str.AsMemory();
         (rom == romImplicitMem).ShouldBeTrue();
 
         rom.IsEmpty.ShouldBeFalse();

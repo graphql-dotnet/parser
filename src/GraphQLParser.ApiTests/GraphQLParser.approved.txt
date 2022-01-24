@@ -675,7 +675,6 @@ namespace GraphQLParser
         public static System.ReadOnlyMemory<char> op_Implicit(GraphQLParser.ROM rom) { }
         public static System.ReadOnlySpan<char> op_Implicit(GraphQLParser.ROM rom) { }
         public static GraphQLParser.ROM op_Implicit(char[] array) { }
-        public static GraphQLParser.ROM op_Implicit(System.Memory<char> memory) { }
         public static GraphQLParser.ROM op_Implicit(System.ReadOnlyMemory<char> memory) { }
         public static GraphQLParser.ROM op_Implicit(string? s) { }
         public static bool operator !=(GraphQLParser.ROM rom, string? s) { }

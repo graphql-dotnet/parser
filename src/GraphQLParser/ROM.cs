@@ -168,11 +168,6 @@ public readonly struct ROM : IEquatable<ROM>
     public static implicit operator ReadOnlySpan<char>(ROM rom) => rom._memory.Span;
 
     /// <summary>
-    /// Implicitly casts Memory&lt;char&gt; to <see cref="ROM"/>.
-    /// </summary>
-    public static implicit operator ROM(Memory<char> memory) => new(memory);
-
-    /// <summary>
     /// Implicitly casts string to <see cref="ROM"/>.
     /// </summary>
     public static implicit operator ROM(string? s) => s.AsMemory();
