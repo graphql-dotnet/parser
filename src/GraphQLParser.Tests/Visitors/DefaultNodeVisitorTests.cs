@@ -10,7 +10,7 @@ namespace GraphQLParser.Tests.Visitors;
 
 public class DefaultNodeVisitorTests
 {
-    private class Context : INodeVisitorContext
+    private class Context : IASTVisitorContext
     {
         public CancellationToken CancellationToken => default;
     }
@@ -23,7 +23,7 @@ public class DefaultNodeVisitorTests
     [Fact]
     public void DefaultNodeVisitor_Should_Handle_Null()
     {
-        var visitor = new DefaultNodeVisitor<Context>();
+        var visitor = new ASTVisitor<Context>();
         var context = new Context();
         visitor.VisitAsync(null, context).ShouldBe(new ValueTask());
     }
@@ -31,7 +31,7 @@ public class DefaultNodeVisitorTests
     [Fact]
     public void DefaultNodeVisitor_Should_Throw_On_Unknown_Node()
     {
-        var visitor = new DefaultNodeVisitor<Context>();
+        var visitor = new ASTVisitor<Context>();
         var context = new Context();
 
         var ex = Should.Throw<NotSupportedException>(() => visitor.VisitAsync(new MySuperNode(), context));

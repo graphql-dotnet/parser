@@ -9,7 +9,7 @@ namespace GraphQLParser.Visitors;
 /// Counts AST nodes.
 /// </summary>
 /// <typeparam name="TContext">Type of the context object passed into all VisitXXX methods.</typeparam>
-public class CountVisitor<TContext> : DefaultNodeVisitor<TContext>
+public class CountVisitor<TContext> : ASTVisitor<TContext>
     where TContext : ICountContext
 {
     /// <inheritdoc/>
@@ -25,7 +25,7 @@ public class CountVisitor<TContext> : DefaultNodeVisitor<TContext>
 /// <summary>
 /// Context used by <see cref="CountVisitor{TContext}"/>.
 /// </summary>
-public interface ICountContext : INodeVisitorContext
+public interface ICountContext : IASTVisitorContext
 {
     /// <summary>
     /// Number of found AST nodes.
@@ -53,7 +53,7 @@ public class DefaultCountContext : ICountContext
     }
 
     /// <inheritdoc/>
-    public CancellationToken CancellationToken { get; set; }
+    public CancellationToken CancellationToken { get; init; }
 
     /// <inheritdoc/>
     public int Count { get; set; }
