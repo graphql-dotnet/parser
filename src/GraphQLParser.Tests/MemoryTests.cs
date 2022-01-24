@@ -88,8 +88,13 @@ public class MemoryTests
     {
         var str = "string";
         ROM rom = str;
-        var romImplicitMem = str.AsMemory();
+
+        var romImplicitMem = str.AsMemory(); // ReadOnlyMemory
         (rom == romImplicitMem).ShouldBeTrue();
+
+        romImplicitMem = new Memory<char>(new char[] { 's', 't', 'r', 'i', 'n', 'g' }); // Memory
+        (rom == romImplicitMem).ShouldBeTrue();
+
         rom.IsEmpty.ShouldBeFalse();
         rom.Length.ShouldBe(6);
         rom.GetHashCode().ShouldNotBe(0);
