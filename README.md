@@ -66,13 +66,13 @@ Default implementation traverses all AST nodes of the provided one. You can
 inherit from it and override desired methods to implement your own AST
 processing algorithm.
 
-For printing SDL from AST, you can use `SDLWriter<TContext>` visitor.
-This is a highly optimized visitor for asynchronous non-blocking SDL output
-into provided `TextWriter`. In the majority of cases it does not allocate
-memory in the managed heap at all.
+For printing SDL from AST, you can use `SDLPrinter`. This is a highly
+optimized visitor for asynchronous non-blocking SDL output into provided
+`TextWriter`. In the majority of cases it does not allocate memory in
+the managed heap at all.
 
-You can also find a `StructureWriter<TContext>` visitor that prints AST
-into the provided `TextWriter` as a hierarchy of node types. It can be useful
+You can also find a `StructurePrinter` visitor that prints AST into the
+provided `TextWriter` as a hierarchy of node types. It can be useful
 when debugging for better understanding the AST structure.
 Consider GraphQL document
 
@@ -80,7 +80,7 @@ Consider GraphQL document
 query a { name age }
 ```
 
-After `StructureWriter` processing the output text will be
+After `StructurePrinter` processing the output text will be
 
 ```
 Document
@@ -96,12 +96,12 @@ Document
 ### Usage
 
 ```csharp
-public static async Task Parse(string text)
+public static async Task Print(string text)
 {
     using var document = Parser.Parse(text);
     var writer = new StringWriter(); 
-    var visitor = new SDLWriter<DefaultWriteContext>()
-    await visitor.VisitAsync(document, new DefaultWriteContext(writer));
+    var printer = new SDLPrinter()
+    await printer.PrintAsync(document, writer);
     var rendered = writer.ToString();
     Console.WriteLine(rendered);
 }
