@@ -12,69 +12,69 @@ namespace GraphQLParser.Tests.Visitors;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2012:Use ValueTasks correctly", Justification = "CountVisitor is sync")]
 public class GraphQLAstVisitorTests
 {
-    public class CountVisitor : DefaultNodeVisitor<CountContext>
+    public class CountVisitor : ASTVisitor<CountContext>
     {
-        public override async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, CountContext context)
+        protected override async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, CountContext context)
         {
             context.VisitedBooleanValues.Add(booleanValue);
             await base.VisitBooleanValueAsync(booleanValue, context);
         }
 
-        public override async ValueTask VisitIntValueAsync(GraphQLIntValue intValue, CountContext context)
+        protected override async ValueTask VisitIntValueAsync(GraphQLIntValue intValue, CountContext context)
         {
             context.VisitedIntValues.Add(intValue);
             await base.VisitIntValueAsync(intValue, context);
         }
 
-        public override async ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, CountContext context)
+        protected override async ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, CountContext context)
         {
             context.VisitedFragmentSpreads.Add(fragmentSpread);
             await base.VisitFragmentSpreadAsync(fragmentSpread, context);
         }
 
-        public override async ValueTask VisitArgumentAsync(GraphQLArgument argument, CountContext context)
+        protected override async ValueTask VisitArgumentAsync(GraphQLArgument argument, CountContext context)
         {
             context.VisitedArguments.Add(argument);
             await base.VisitArgumentAsync(argument, context);
         }
 
-        public override async ValueTask VisitVariableAsync(GraphQLVariable variable, CountContext context)
+        protected override async ValueTask VisitVariableAsync(GraphQLVariable variable, CountContext context)
         {
             context.VisitedVariables.Add(variable);
             await base.VisitVariableAsync(variable, context);
         }
 
-        public override async ValueTask VisitSelectionSetAsync(GraphQLSelectionSet selectionSet, CountContext context)
+        protected override async ValueTask VisitSelectionSetAsync(GraphQLSelectionSet selectionSet, CountContext context)
         {
             context.VisitedSelectionSets.Add(selectionSet);
             await base.VisitSelectionSetAsync(selectionSet, context);
         }
 
-        public override async ValueTask VisitDirectiveAsync(GraphQLDirective directive, CountContext context)
+        protected override async ValueTask VisitDirectiveAsync(GraphQLDirective directive, CountContext context)
         {
             context.VisitedDirectives.Add(directive);
             await base.VisitDirectiveAsync(directive, context);
         }
 
-        public override async ValueTask VisitEnumValueAsync(GraphQLEnumValue enumValue, CountContext context)
+        protected override async ValueTask VisitEnumValueAsync(GraphQLEnumValue enumValue, CountContext context)
         {
             context.VisitedEnumValues.Add(enumValue);
             await base.VisitEnumValueAsync(enumValue, context);
         }
 
-        public override async ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, CountContext context)
+        protected override async ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, CountContext context)
         {
             context.VisitedStringValues.Add(stringValue);
             await base.VisitStringValueAsync(stringValue, context);
         }
 
-        public override async ValueTask VisitNameAsync(GraphQLName name, CountContext context)
+        protected override async ValueTask VisitNameAsync(GraphQLName name, CountContext context)
         {
             context.VisitedNames.Add(name);
             await base.VisitNameAsync(name, context);
         }
 
-        public override async ValueTask VisitFieldAsync(GraphQLField field, CountContext context)
+        protected override async ValueTask VisitFieldAsync(GraphQLField field, CountContext context)
         {
             context.VisitedFields.Add(field);
             if (field.Alias != null)
@@ -82,112 +82,112 @@ public class GraphQLAstVisitorTests
             await base.VisitFieldAsync(field, context);
         }
 
-        public override async ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, CountContext context)
+        protected override async ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, CountContext context)
         {
             context.VisitedFloatValues.Add(floatValue);
             await base.VisitFloatValueAsync(floatValue, context);
         }
 
-        public override async ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, CountContext context)
+        protected override async ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(enumTypeDefinition);
             await base.VisitEnumTypeDefinitionAsync(enumTypeDefinition, context);
         }
 
-        public override async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, CountContext context)
+        protected override async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, CountContext context)
         {
             context.VisitedInlineFragments.Add(inlineFragment);
             context.VisitedFragmentTypeConditions.Add(inlineFragment.TypeCondition);
             await base.VisitInlineFragmentAsync(inlineFragment, context);
         }
 
-        public override async ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, CountContext context)
+        protected override async ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, CountContext context)
         {
             context.VisitedFragmentDefinitions.Add(fragmentDefinition);
             context.VisitedFragmentTypeConditions.Add(fragmentDefinition.TypeCondition);
             await base.VisitFragmentDefinitionAsync(fragmentDefinition, context);
         }
 
-        public override async ValueTask VisitFieldDefinitionAsync(GraphQLFieldDefinition fieldDefinition, CountContext context)
+        protected override async ValueTask VisitFieldDefinitionAsync(GraphQLFieldDefinition fieldDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(fieldDefinition);
             await base.VisitFieldDefinitionAsync(fieldDefinition, context);
         }
 
-        public override async ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, CountContext context)
+        protected override async ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(directiveDefinition);
             await base.VisitDirectiveDefinitionAsync(directiveDefinition, context);
         }
 
-        public override async ValueTask VisitEnumValueDefinitionAsync(GraphQLEnumValueDefinition enumValueDefinition, CountContext context)
+        protected override async ValueTask VisitEnumValueDefinitionAsync(GraphQLEnumValueDefinition enumValueDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(enumValueDefinition);
             await base.VisitEnumValueDefinitionAsync(enumValueDefinition, context);
         }
 
-        public override async ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, CountContext context)
+        protected override async ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(inputObjectTypeDefinition);
             await base.VisitInputObjectTypeDefinitionAsync(inputObjectTypeDefinition, context);
         }
 
-        public override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, CountContext context)
+        protected override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(inputValueDefinition);
             await base.VisitInputValueDefinitionAsync(inputValueDefinition, context);
         }
 
-        public override async ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, CountContext context)
+        protected override async ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(interfaceTypeDefinition);
             await base.VisitInterfaceTypeDefinitionAsync(interfaceTypeDefinition, context);
         }
 
-        public override async ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, CountContext context)
+        protected override async ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(objectTypeDefinition);
             await base.VisitObjectTypeDefinitionAsync(objectTypeDefinition, context);
         }
 
-        public override async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, CountContext context)
+        protected override async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(operationDefinition);
             await base.VisitOperationDefinitionAsync(operationDefinition, context);
         }
 
-        public override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, CountContext context)
+        protected override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(scalarTypeDefinition);
             await base.VisitScalarTypeDefinitionAsync(scalarTypeDefinition, context);
         }
 
-        public override async ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, CountContext context)
+        protected override async ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(rootOperationTypeDefinition);
             await base.VisitRootOperationTypeDefinitionAsync(rootOperationTypeDefinition, context);
         }
 
-        public override async ValueTask VisitVariableDefinitionAsync(GraphQLVariableDefinition variableDefinition, CountContext context)
+        protected override async ValueTask VisitVariableDefinitionAsync(GraphQLVariableDefinition variableDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(variableDefinition);
             await base.VisitVariableDefinitionAsync(variableDefinition, context);
         }
 
-        public override async ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, CountContext context)
+        protected override async ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(unionTypeDefinition);
             await base.VisitUnionTypeDefinitionAsync(unionTypeDefinition, context);
         }
 
-        public override async ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, CountContext context)
+        protected override async ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, CountContext context)
         {
             context.VisitedDefinitions.Add(schemaDefinition);
             await base.VisitSchemaDefinitionAsync(schemaDefinition, context);
         }
     }
 
-    public class CountContext : INodeVisitorContext
+    public class CountContext : IASTVisitorContext
     {
         public List<GraphQLAlias> VisitedAliases = new();
         public List<GraphQLArgument> VisitedArguments = new();

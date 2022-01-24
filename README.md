@@ -59,12 +59,12 @@ By default `ParserOptions.Ignore` is `IgnoreOptions.IgnoreComments` to improve p
 If you don't need information about tokens locations in the source document, then use `IgnoreOptions.IgnoreCommentsAndLocations`.
 This will maximize the saving of memory allocated in the managed heap for AST.
 
-## 3. INodeVisitor
+## 3. ASTVisitor
 
-`INodeVisitor` provides API to traverse AST of the parsed GraphQL document.
-Default implementation of this interface is `DefaultNodeVisitor` that
-traverses all AST nodes of the provided one. You can inherit from it and
-implement your own AST processing algorithm.
+`ASTVisitor` provides API to traverse AST of the parsed GraphQL document.
+Default implementation traverses all AST nodes of the provided one. You can
+inherit from it and override desired methods to implement your own AST
+processing algorithm.
 
 For printing SDL from AST, you can use `SDLWriter<TContext>` visitor.
 This is a highly optimized visitor for asynchronous non-blocking SDL output

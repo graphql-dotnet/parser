@@ -8,7 +8,7 @@ namespace GraphQLParser.Visitors;
 /// <summary>
 /// Context used by <see cref="SDLWriter{TContext}"/> and <see cref="StructureWriter{TContext}"/>.
 /// </summary>
-public interface IWriteContext : INodeVisitorContext
+public interface IWriteContext : IASTVisitorContext
 {
     /// <summary>
     /// A writer to write document.

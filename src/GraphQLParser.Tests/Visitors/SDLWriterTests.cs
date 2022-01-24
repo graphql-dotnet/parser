@@ -669,20 +669,20 @@ extend union Unity =
         }
     }
 
-    private class Context : INodeVisitorContext
+    private class Context : IASTVisitorContext
     {
         public CancellationToken CancellationToken => throw new NotImplementedException();
     }
 
-    private sealed class DoBadThingsVisitor : DefaultNodeVisitor<Context>
+    private sealed class DoBadThingsVisitor : ASTVisitor<Context>
     {
-        public override ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, Context context)
+        protected override ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, Context context)
         {
             operationDefinition.Operation = (OperationType)99;
             return base.VisitOperationDefinitionAsync(operationDefinition, context);
         }
 
-        public override ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, Context context)
+        protected override ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, Context context)
         {
             for (int i = 0; i < directiveLocations.Items.Count; ++i)
                 directiveLocations.Items[i] = (DirectiveLocation)(100 + i);
