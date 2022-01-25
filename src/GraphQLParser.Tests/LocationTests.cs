@@ -55,8 +55,11 @@ public class LocationTests
     [Fact]
     public void To_String()
     {
-        var loc = new GraphQLLocation(10, 100);
-        loc.ToString().ShouldBe("(10,100)");
+        var loc1 = new GraphQLLocation(10, 100);
+        loc1.ToString().ShouldBe("(10,100)");
+
+        var loc2 = new Location(11, 101);
+        loc2.ToString().ShouldBe("(11,101)");
     }
 
     [Theory]
