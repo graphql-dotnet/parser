@@ -19,6 +19,11 @@ public class GraphQLDocument : ASTNode
     /// Comments that have not been correlated to any AST node of GraphQL document.
     /// </summary>
     public List<List<GraphQLComment>>? UnattachedComments { get; set; }
+
+    /// <summary>
+    /// Input data from which this document was built.
+    /// </summary>
+    public ROM Source { get; set; }
 }
 
 internal sealed class GraphQLDocumentWithLocation : GraphQLDocument

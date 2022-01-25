@@ -191,6 +191,7 @@ namespace GraphQLParser.AST
         public GraphQLDocument() { }
         public System.Collections.Generic.List<GraphQLParser.AST.ASTNode> Definitions { get; set; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
+        public GraphQLParser.ROM Source { get; set; }
         public System.Collections.Generic.List<System.Collections.Generic.List<GraphQLParser.AST.GraphQLComment>>? UnattachedComments { get; set; }
     }
     public class GraphQLEnumTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode
