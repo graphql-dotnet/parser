@@ -7,7 +7,7 @@ namespace GraphQLParser.Tests;
 public class LocationTests
 {
     [Fact]
-    public void Equality()
+    public void Equality1()
     {
         var loc1 = new GraphQLLocation(10, 100);
         var loc2 = new GraphQLLocation(10, 100);
@@ -30,10 +30,36 @@ public class LocationTests
     }
 
     [Fact]
+    public void Equality2()
+    {
+        var loc1 = new Location(10, 100);
+        var loc2 = new Location(10, 100);
+
+        var (line, column) = loc1;
+        line.ShouldBe(10);
+        column.ShouldBe(100);
+
+        (loc1 == loc2).ShouldBeTrue();
+        (loc1 != loc2).ShouldBeFalse();
+
+        loc1.Equals(loc2).ShouldBeTrue();
+        loc1.Equals((object)loc2).ShouldBeTrue();
+        loc1.Equals(42).ShouldBeFalse();
+
+        loc1.GetHashCode().ShouldBe(loc2.GetHashCode());
+
+        loc1.Equals(new Location(10, 99)).ShouldBeFalse();
+        loc1.Equals(new Location(11, 100)).ShouldBeFalse();
+    }
+
+    [Fact]
     public void To_String()
     {
-        var loc = new GraphQLLocation(10, 100);
-        loc.ToString().ShouldBe("(10,100)");
+        var loc1 = new GraphQLLocation(10, 100);
+        loc1.ToString().ShouldBe("(10,100)");
+
+        var loc2 = new Location(11, 101);
+        loc2.ToString().ShouldBe("(11,101)");
     }
 
     [Theory]
@@ -62,7 +88,7 @@ query q {
 }";
         query = query.Replace("\r\n", "\n").Substring(16).Replace("\n", "\r\n");
         query[start].ShouldBe(c);
-        var location = new Location(query, start);
+        var location = Location.FromLinearPosition(query, start);
         location.Line.ShouldBe(line);
         location.Column.ShouldBe(column);
     }
@@ -92,7 +118,7 @@ query q {
 }";
         query = query.Replace("\r\n", "\n").Substring(16);
         query[start].ShouldBe(c);
-        var location = new Location(query, start);
+        var location = Location.FromLinearPosition(query, start);
         location.Line.ShouldBe(line);
         location.Column.ShouldBe(column);
     }
@@ -122,7 +148,7 @@ query q {
 }";
         query = query.Replace("\r\n", "\n").Substring(16).Replace("\n", "\r");
         query[start].ShouldBe(c);
-        var location = new Location(query, start);
+        var location = Location.FromLinearPosition(query, start);
         location.Line.ShouldBe(line);
         location.Column.ShouldBe(column);
     }
@@ -152,7 +178,7 @@ query q {
     [InlineData("a", 100, 1, 101)]
     public void SpecialCases(string query, int start, int line, int column)
     {
-        var location = new Location(query, start);
+        var location = Location.FromLinearPosition(query, start);
         location.Line.ShouldBe(line);
         location.Column.ShouldBe(column);
 
