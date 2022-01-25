@@ -714,8 +714,8 @@ scalar JSON
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => "superquery { a }".Parse());
         ex.Description.ShouldBe("Expected \"query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive\", found Name \"superquery\"");
-        ex.Line.ShouldBe(1);
-        ex.Column.ShouldBe(1);
+        ex.Location.Line.ShouldBe(1);
+        ex.Location.Column.ShouldBe(1);
     }
 
     [Theory]
@@ -726,8 +726,8 @@ scalar JSON
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse());
         ex.Description.ShouldBe(description);
-        ex.Line.ShouldBe(line);
-        ex.Column.ShouldBe(column);
+        ex.Location.Line.ShouldBe(line);
+        ex.Location.Column.ShouldBe(column);
     }
 
     [Theory]
@@ -1028,8 +1028,8 @@ OOPS
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
         ex.Description.ShouldBe("Expected \"QUERY/MUTATION/SUBSCRIPTION/FIELD/FRAGMENT_DEFINITION/FRAGMENT_SPREAD/INLINE_FRAGMENT/VARIABLE_DEFINITION/SCHEMA/SCALAR/OBJECT/FIELD_DEFINITION/ARGUMENT_DEFINITION/INTERFACE/UNION/ENUM/ENUM_VALUE/INPUT_OBJECT/INPUT_FIELD_DEFINITION\", found Name \"OOPS\"");
-        ex.Line.ShouldBe(line);
-        ex.Column.ShouldBe(column);
+        ex.Location.Line.ShouldBe(line);
+        ex.Location.Column.ShouldBe(column);
     }
 
     // http://spec.graphql.org/October2021/#sec--specifiedBy
@@ -1205,8 +1205,8 @@ Cat
     public void Should_Throw_On_Empty_Types_With_Braces(string text, int line, int column)
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
-        ex.Line.ShouldBe(line);
-        ex.Column.ShouldBe(column);
+        ex.Location.Line.ShouldBe(line);
+        ex.Location.Column.ShouldBe(column);
         ex.Message.ShouldContain("Expected Name, found }");
     }
 

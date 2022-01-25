@@ -20,8 +20,8 @@ public class ParserValidationTests
             "1: fragment on on on { on }\n" +
             "            ^\n");
         exception.Description.ShouldBe("Unexpected Name " + "\"on\"; fragment name can not be 'on'.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(10);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(10);
     }
 
     [Theory]
@@ -38,8 +38,8 @@ public class ParserValidationTests
             "1: query Foo($x: Complex = { a: { b: [ $var ] } }) { field }\n" +
             "                                       ^\n");
         exception.Description.ShouldBe("Unexpected $");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(37);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(37);
     }
 
     [Theory]
@@ -56,8 +56,8 @@ public class ParserValidationTests
             "1: { ...on }\n" +
             "           ^\n");
         exception.Description.ShouldBe("Expected Name, found }; for more information see http://spec.graphql.org/October2021/#NamedType");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(9);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(9);
     }
 
     [Theory]
@@ -74,8 +74,8 @@ public class ParserValidationTests
                 "1: ...\n" +
                 "   ^\n");
         exception.Description.ShouldBe("Unexpected ...");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Theory]
@@ -92,8 +92,8 @@ public class ParserValidationTests
             "1: {\n" +
             "    ^\n");
         exception.Description.ShouldBe("Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#Field");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(2);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(2);
     }
 
     [Theory]
@@ -110,8 +110,8 @@ public class ParserValidationTests
             "1: { field: {} }\n" +
             "            ^\n");
         exception.Description.ShouldBe("Expected Name, found {; for more information see http://spec.graphql.org/October2021/#Field");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(10);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(10);
     }
 
     [Theory]
@@ -129,8 +129,8 @@ public class ParserValidationTests
             "2: fragment MissingOn Type\n" +
             "                      ^\n");
         exception.Description.ShouldBe("Expected \"on\", found Name \"Type\"");
-        exception.Line.ShouldBe(2);
-        exception.Column.ShouldBe(20);
+        exception.Location.Line.ShouldBe(2);
+        exception.Location.Column.ShouldBe(20);
     }
 
     [Theory]
@@ -147,7 +147,7 @@ public class ParserValidationTests
             "1: notanoperation Foo { field }\n" +
             "   ^\n");
         exception.Description.ShouldBe("Expected \"query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive\", found Name \"notanoperation\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 }
