@@ -61,4 +61,13 @@ public readonly struct GraphQLLocation : IEquatable<GraphQLLocation>
     /// Indicates whether one object is not equal to another object of the same type.
     /// </summary>
     public static bool operator !=(GraphQLLocation left, GraphQLLocation right) => !(left == right);
+
+    /// <summary>
+    /// Deconstructs an instance of <see cref="GraphQLLocation"/> on start and end.
+    /// </summary>
+    public void Deconstruct(out int start, out int end)
+    {
+        start = Start;
+        end = End;
+    }
 }

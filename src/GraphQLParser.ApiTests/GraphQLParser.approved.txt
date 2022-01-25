@@ -372,6 +372,7 @@ namespace GraphQLParser.AST
         public GraphQLLocation(int start, int end) { }
         public int End { get; }
         public int Start { get; }
+        public void Deconstruct(out int start, out int end) { }
         public bool Equals(GraphQLParser.AST.GraphQLLocation other) { }
         public override bool Equals(object? obj) { }
         public override int GetHashCode() { }
@@ -648,6 +649,7 @@ namespace GraphQLParser
         public Location(GraphQLParser.ROM source, int position) { }
         public int Column { get; }
         public int Line { get; }
+        public void Deconstruct(out int line, out int column) { }
     }
     public static class Parser
     {
