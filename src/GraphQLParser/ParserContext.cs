@@ -91,6 +91,7 @@ internal partial struct ParserContext
         _maxDepth = options.MaxDepth ?? 128;
         // should create document beforehand to use RentedMemoryTracker while parsing comments
         _document = NodeHelper.CreateGraphQLDocument(options.Ignore);
+        _document.Source = source;
         _currentToken = _prevToken = new Token
         (
             TokenKind.UNKNOWN,

@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Linq;
+using System.Runtime.InteropServices;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
 using Shouldly;
@@ -9,6 +11,32 @@ namespace GraphQLParser.Tests;
 
 public class ParserTests
 {
+    [Fact]
+    public void GraphQLDocument_Source_ShouldBe_Original_String()
+    {
+        string text = "scalar JSON";
+        var doc = text.Parse();
+        (doc.Source == text).ShouldBeTrue();
+
+        // just to demonstrate how TryGetString works
+        MemoryMarshal.TryGetString(doc.Source, out var str1, out var start1, out var length1).ShouldBeTrue();
+        ReferenceEquals(text, str1).ShouldBeTrue();
+        start1.ShouldBe(0);
+        length1.ShouldBe(11);
+
+        var text2 = text.AsMemory().Slice(1);
+        MemoryMarshal.TryGetString(text2, out var str2, out var start2, out var length2).ShouldBeTrue();
+        ReferenceEquals(text, str2).ShouldBeTrue();
+        start2.ShouldBe(1);
+        length2.ShouldBe(10);
+
+        var text3 = text.AsMemory().Slice(2, 4);
+        MemoryMarshal.TryGetString(text3, out var str3, out var start3, out var length3).ShouldBeTrue();
+        ReferenceEquals(text, str3).ShouldBeTrue();
+        start3.ShouldBe(2);
+        length3.ShouldBe(4);
+    }
+
     [Fact]
     public void Should_Throw_With_Deep_Query()
     {
