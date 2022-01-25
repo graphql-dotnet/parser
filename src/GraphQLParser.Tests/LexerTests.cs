@@ -329,8 +329,8 @@ public class LexerTests
 
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => "foo-name".Lex(token.End));
         ex.Description.ShouldBe("Invalid number, expected digit but got: \"n\"");
-        ex.Line.ShouldBe(1);
-        ex.Column.ShouldBe(5);
+        ex.Location.Line.ShouldBe(1);
+        ex.Location.Column.ShouldBe(5);
     }
 
     [Fact]

@@ -16,8 +16,8 @@ public class LexerValidationTests
             "1: \"multi\rline\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Unterminated string.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -37,8 +37,8 @@ public class LexerValidationTests
             "1: a-b\n" +
             "     ^\n");
         exception.Description.ShouldBe("Invalid number, expected digit but got: \"b\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(3);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(3);
     }
 
     [Fact]
@@ -51,8 +51,8 @@ public class LexerValidationTests
             "1: ..\n" +
             "   ^\n");
         exception.Description.ShouldBe("Unexpected character \".\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Fact]
@@ -65,8 +65,8 @@ public class LexerValidationTests
             "1: \\u0007\n" +
             "   ^\n");
         exception.Description.ShouldBe("Invalid character \"\\u0007\".");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Fact]
@@ -79,8 +79,8 @@ public class LexerValidationTests
             "1: \"bad \\x esc\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Invalid character escape sequence: \\x.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -93,8 +93,8 @@ public class LexerValidationTests
             "1: \"bad \\z esc\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Invalid character escape sequence: \\z.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -107,8 +107,8 @@ public class LexerValidationTests
             "1: \"bad \\u1 esc\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Invalid character escape sequence: \\u1 es.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class LexerValidationTests
             "1: \"bad \\u0XX1 esc\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Invalid character escape sequence: \\u0XX1.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -135,8 +135,8 @@ public class LexerValidationTests
             "1: \"bad \\uFXXX esc\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Invalid character escape sequence: \\uFXXX.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -149,8 +149,8 @@ public class LexerValidationTests
             "1: \"bad \\uXXXX esc\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Invalid character escape sequence: \\uXXXX.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -163,8 +163,8 @@ public class LexerValidationTests
             "1: \"bad \\uXXXF esc\"\n" +
             "         ^\n");
         exception.Description.ShouldBe("Invalid character escape sequence: \\uXXXF.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -178,8 +178,8 @@ public class LexerValidationTests
             "         ^\n" +
             "2: line\"\n");
         exception.Description.ShouldBe("Unterminated string.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(7);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(7);
     }
 
     [Fact]
@@ -192,8 +192,8 @@ public class LexerValidationTests
             "1: ?\n" +
             "   ^\n");
         exception.Description.ShouldBe("Unexpected character \"?\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Fact]
@@ -206,8 +206,8 @@ public class LexerValidationTests
             "1: 1.0e\n" +
             "       ^\n");
         exception.Description.ShouldBe("Invalid number, expected digit but got: <EOF>");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(5);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(5);
     }
 
     [Fact]
@@ -220,8 +220,8 @@ public class LexerValidationTests
             "1: 1.0eA\n" +
             "       ^\n");
         exception.Description.ShouldBe("Invalid number, expected digit but got: \"A\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(5);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(5);
     }
 
     [Fact]
@@ -234,8 +234,8 @@ public class LexerValidationTests
             "1: 1.A\n" +
             "     ^\n");
         exception.Description.ShouldBe("Invalid number, expected digit but got: \"A\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(3);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(3);
     }
 
     [Fact]
@@ -248,8 +248,8 @@ public class LexerValidationTests
             "1: -A\n" +
             "    ^\n");
         exception.Description.ShouldBe("Invalid number, expected digit but got: \"A\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(2);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(2);
     }
 
     [Fact]
@@ -262,8 +262,8 @@ public class LexerValidationTests
             "1: \\u203B\n" +
             "   ^\n");
         exception.Description.ShouldBe("Unexpected character \"\\u203B\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Fact]
@@ -276,8 +276,8 @@ public class LexerValidationTests
             "1: \\u200b\n" +
             "   ^\n");
         exception.Description.ShouldBe("Unexpected character \"\\u200b\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Fact]
@@ -290,8 +290,8 @@ public class LexerValidationTests
             "1: \"null-byte is not \\u0000 end of file\n" +
             "                     ^\n");
         exception.Description.ShouldBe("Invalid character within String: \\u0000.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(19);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(19);
     }
 
     [Fact]
@@ -304,8 +304,8 @@ public class LexerValidationTests
             "1: 00\n" +
             "    ^\n");
         exception.Description.ShouldBe("Invalid number, unexpected digit after 0: " + "\"0\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(2);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(2);
     }
 
     [Fact]
@@ -318,8 +318,8 @@ public class LexerValidationTests
             "1: 1.\n" +
             "     ^\n");
         exception.Description.ShouldBe("Invalid number, expected digit but got: <EOF>");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(3);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(3);
     }
 
     [Fact]
@@ -332,8 +332,8 @@ public class LexerValidationTests
             "1: +1\n" +
             "   ^\n");
         exception.Description.ShouldBe("Unexpected character \"+\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Fact]
@@ -346,8 +346,8 @@ public class LexerValidationTests
             "1: .123\n" +
             "   ^\n");
         exception.Description.ShouldBe("Unexpected character \".\"");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(1);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(1);
     }
 
     [Fact]
@@ -360,8 +360,8 @@ public class LexerValidationTests
             "1: \"contains unescaped \\u0007 control char\n" +
             "                       ^\n");
         exception.Description.ShouldBe("Invalid character within String: \\u0007.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(21);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(21);
     }
 
     [Fact]
@@ -374,8 +374,8 @@ public class LexerValidationTests
             "1: \"\"\"contains unescaped \\u0007 control char\n" +
             "                         ^\n");
         exception.Description.ShouldBe("Invalid character within block string: \\u0007.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(23);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(23);
     }
 
     [Fact]
@@ -388,8 +388,8 @@ public class LexerValidationTests
             "1: \"\n" +
             "    ^\n");
         exception.Description.ShouldBe("Unterminated string.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(2);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(2);
     }
 
     [Fact]
@@ -402,8 +402,8 @@ public class LexerValidationTests
             "1: \"no end quote\n" +
             "                ^\n");
         exception.Description.ShouldBe("Unterminated string.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(14);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(14);
     }
 
     [Fact]
@@ -416,8 +416,8 @@ public class LexerValidationTests
             "1: \"\"\"\n" +
             "      ^\n");
         exception.Description.ShouldBe("Unterminated block string.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(4);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(4);
     }
 
     [Fact]
@@ -430,7 +430,7 @@ public class LexerValidationTests
             "1: \"\"\"no end triple-quote\"\"\n" +
             "                           ^\n");
         exception.Description.ShouldBe("Unterminated block string.");
-        exception.Line.ShouldBe(1);
-        exception.Column.ShouldBe(25);
+        exception.Location.Line.ShouldBe(1);
+        exception.Location.Column.ShouldBe(25);
     }
 }

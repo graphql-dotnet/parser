@@ -15,14 +15,9 @@ public class GraphQLParserException : Exception
     public string Description { get; private set; }
 
     /// <summary>
-    /// The line number on which the symbol that caused the error is located.
+    /// Location of the symbol that caused the error.
     /// </summary>
-    public int Line { get; private set; }
-
-    /// <summary>
-    /// The column number on which the symbol that caused the error is located.
-    /// </summary>
-    public int Column { get; private set; }
+    public Location Location { get; }
 
     /// <summary>
     /// Initializes a new instance with the specified parameters.
@@ -36,8 +31,7 @@ public class GraphQLParserException : Exception
         : base(ComposeMessage(description, source, location))
     {
         Description = description;
-        Line = location.Line;
-        Column = location.Column;
+        Location = location;
     }
 
     private static string ComposeMessage(string description, ReadOnlySpan<char> source, Location location)

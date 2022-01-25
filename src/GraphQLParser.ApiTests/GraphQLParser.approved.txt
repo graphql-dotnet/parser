@@ -737,9 +737,8 @@ namespace GraphQLParser.Exceptions
     public class GraphQLParserException : System.Exception
     {
         public GraphQLParserException(string description, GraphQLParser.ROM source, int location) { }
-        public int Column { get; }
         public string Description { get; }
-        public int Line { get; }
+        public GraphQLParser.Location Location { get; }
     }
     public class GraphQLSyntaxErrorException : GraphQLParser.Exceptions.GraphQLParserException
     {
