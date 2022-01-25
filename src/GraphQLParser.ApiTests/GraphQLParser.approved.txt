@@ -644,12 +644,19 @@ namespace GraphQLParser
     {
         public static GraphQLParser.Token Lex(GraphQLParser.ROM source, int start = 0) { }
     }
-    public readonly struct Location
+    public readonly struct Location : System.IEquatable<GraphQLParser.Location>
     {
-        public Location(GraphQLParser.ROM source, int position) { }
+        public Location(int line, int column) { }
         public int Column { get; }
         public int Line { get; }
         public void Deconstruct(out int line, out int column) { }
+        public bool Equals(GraphQLParser.Location other) { }
+        public override bool Equals(object? obj) { }
+        public override int GetHashCode() { }
+        public override string ToString() { }
+        public static GraphQLParser.Location FromLinearPosition(GraphQLParser.ROM source, int position) { }
+        public static bool operator !=(GraphQLParser.Location left, GraphQLParser.Location right) { }
+        public static bool operator ==(GraphQLParser.Location left, GraphQLParser.Location right) { }
     }
     public static class Parser
     {

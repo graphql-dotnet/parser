@@ -28,7 +28,7 @@ public class GraphQLParserException : Exception
     /// Initializes a new instance with the specified parameters.
     /// </summary>
     public GraphQLParserException(string description, ROM source, int location)
-        : this(description, source, new Location(source, location))
+        : this(description, source, Location.FromLinearPosition(source, location))
     {
     }
 
