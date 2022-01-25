@@ -598,6 +598,8 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// <param name="context">Context passed into all INodeVisitor.VisitXXX methods.</param>
     public virtual ValueTask VisitAsync(ASTNode? node, TContext context)
     {
+        context.CancellationToken.ThrowIfCancellationRequested();
+
         return node == null
             ? default
             : node switch
