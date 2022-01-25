@@ -12,6 +12,10 @@ public class LocationTests
         var loc1 = new GraphQLLocation(10, 100);
         var loc2 = new GraphQLLocation(10, 100);
 
+        var (start, end) = loc1;
+        start.ShouldBe(10);
+        end.ShouldBe(100);
+
         (loc1 == loc2).ShouldBeTrue();
         (loc1 != loc2).ShouldBeFalse();
 
@@ -151,5 +155,9 @@ query q {
         var location = new Location(query, start);
         location.Line.ShouldBe(line);
         location.Column.ShouldBe(column);
+
+        var (l, c) = location;
+        l.ShouldBe(line);
+        c.ShouldBe(column);
     }
 }

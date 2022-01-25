@@ -83,4 +83,13 @@ public readonly struct Location
     /// The line number on which the character is located.
     /// </summary>
     public int Line { get; }
+
+    /// <summary>
+    /// Deconstructs an instance of <see cref="Location"/> on line and column.
+    /// </summary>
+    public void Deconstruct(out int line, out int column)
+    {
+        line = Line;
+        column = Column;
+    }
 }
