@@ -664,7 +664,7 @@ extend union Unity =
 
     private class Context : IASTVisitorContext
     {
-        public CancellationToken CancellationToken => throw new NotImplementedException();
+        public CancellationToken CancellationToken { get; set; }
     }
 
     private sealed class DoBadThingsVisitor : ASTVisitor<Context>
