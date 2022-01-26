@@ -998,11 +998,16 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     {
         await context.WriteAsync("\"").ConfigureAwait(false);
 
+        int startIndexOfNotEncodedString = 0;
         for (int i = 0; i < value.Span.Length; ++i)
         {
             char code = value.Span[i];
             if (code < ' ')
             {
+                if (startIndexOfNotEncodedString != i)
+                    await context.WriteAsync(value.Slice(startIndexOfNotEncodedString, i - startIndexOfNotEncodedString)).ConfigureAwait(false);
+                startIndexOfNotEncodedString = i + 1;
+
                 if (code == '\b')
                     await context.WriteAsync("\\b").ConfigureAwait(false);
                 else if (code == '\f')
@@ -1017,13 +1022,25 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                     await context.WriteAsync("\\u" + ((int)code).ToString("X4")).ConfigureAwait(false);
             }
             else if (code == '\\')
+            {
+                if (startIndexOfNotEncodedString != i)
+                    await context.WriteAsync(value.Slice(startIndexOfNotEncodedString, i - startIndexOfNotEncodedString)).ConfigureAwait(false);
+                startIndexOfNotEncodedString = i + 1;
+
                 await context.WriteAsync("\\\\").ConfigureAwait(false);
+            }
             else if (code == '"')
+            {
+                if (startIndexOfNotEncodedString != i)
+                    await context.WriteAsync(value.Slice(startIndexOfNotEncodedString, i - startIndexOfNotEncodedString)).ConfigureAwait(false);
+                startIndexOfNotEncodedString = i + 1;
+
                 await context.WriteAsync("\\\"").ConfigureAwait(false);
-            else
-                await context.WriteAsync(value.Slice(i, 1)/*code*/).ConfigureAwait(false); // TODO: no method for char
+            }
         }
 
+        if (startIndexOfNotEncodedString != value.Span.Length)
+            await context.WriteAsync(value.Slice(startIndexOfNotEncodedString, value.Span.Length - startIndexOfNotEncodedString)).ConfigureAwait(false);
         await context.WriteAsync("\"").ConfigureAwait(false);
     }
 }
