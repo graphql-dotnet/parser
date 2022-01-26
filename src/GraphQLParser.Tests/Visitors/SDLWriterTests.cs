@@ -585,6 +585,7 @@ extend union Unity =
     [InlineData("\"\"")]
     [InlineData("\"\\\\\"")]
     [InlineData("\"\\n\\b\\f\\r\\t\"")]
+    [InlineData("\"\\tX\\t\"")]
     [InlineData("\" \u1234 \"")]
     [InlineData("\"normal text\"")]
     public async Task WriteDocumentVisitor_Should_Print_EscapedStrings(string stringValue)
