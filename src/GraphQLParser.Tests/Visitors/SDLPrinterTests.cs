@@ -309,7 +309,7 @@ type Dog implements &Animal
  docs
   """"""
   friends: [Dog!]
-  age: Int!
+  age(precise: Boolean!): Int!
 }",
 @"""""""
 description
@@ -329,7 +329,7 @@ type Dog implements Animal
   docs
   """"""
   friends: [Dog!]
-  age: Int!
+  age(precise: Boolean!): Int!
 }")]
     [InlineData(30,
 @"query q

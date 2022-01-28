@@ -608,7 +608,11 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
 
-        await WriteIndentAsync(context).ConfigureAwait(false);
+        // for input fields always use indent (=1)
+        // for arguments use indent only on fresh line
+        bool freshLine = inputValueDefinition.Comments != null && Options.PrintComments;
+        if (freshLine || TryPeekParent(context, out var node) && node is GraphQLInputFieldsDefinition)
+            await WriteIndentAsync(context).ConfigureAwait(false);
 
         await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);
         await context.WriteAsync(": ").ConfigureAwait(false);

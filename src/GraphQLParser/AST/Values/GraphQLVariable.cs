@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.Variable"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLVariable: {Name}")]
 public class GraphQLVariable : GraphQLValue, INamedNode
 {
     /// <inheritdoc/>

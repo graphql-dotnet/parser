@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.ObjectTypeDefinition"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLObjectTypeDefinition: {Name}")]
 public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
 {
     /// <inheritdoc/>

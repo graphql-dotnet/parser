@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.InputObjectTypeDefinition"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLInputObjectTypeDefinition: {Name}")]
 public class GraphQLInputObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
     /// <inheritdoc/>

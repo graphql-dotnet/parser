@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.EnumTypeDefinition"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLEnumTypeDefinition: {Name}")]
 public class GraphQLEnumTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
     /// <inheritdoc/>

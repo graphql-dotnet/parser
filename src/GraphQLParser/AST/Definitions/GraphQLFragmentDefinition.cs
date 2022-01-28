@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.FragmentDefinition"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLFragmentDefinition: {Name}")]
 public class GraphQLFragmentDefinition : GraphQLExecutableDefinition
 {
     /// <inheritdoc/>
