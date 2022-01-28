@@ -11,7 +11,7 @@ using Xunit;
 
 namespace GraphQLParser.Tests.Visitors;
 
-public class SDLWriterTests
+public class SDLPrinterTests
 {
     [Fact]
     public void SDLWriter_Should_Have_Default_Options()
@@ -142,15 +142,15 @@ String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRA
 @"extend input Foo @exportable")]
     [InlineData(19,
 @"#comment
-input Example @x {
+input Example @x
+{
   self: [Example!]!
   value: String = ""xyz""
 }
 input B
 input C",
 @"#comment
-input Example @x
-{
+input Example @x {
   self: [Example!]!
   value: String = ""xyz""
 }
@@ -250,8 +250,7 @@ fragment Frag on Query {
 }")]
     [InlineData(26,
 @"interface Dog implements & Eat & Bark { volume: Int! }",
-@"interface Dog implements Eat & Bark
-{
+@"interface Dog implements Eat & Bark {
   volume: Int!
 }")]
     [InlineData(27,
@@ -262,8 +261,7 @@ GREEN @directive(list: [1,2.7,3,null,{}, {name:""tom"" age:42}]),
 another good color
 """"""
 BLUE }",
-@"enum Color
-{
+@"enum Color {
   RED
   #good color
   GREEN @directive(list: [1, 2.7, 3, null, {}, {name: ""tom"", age: 42}])
@@ -316,8 +314,7 @@ description
 scalar JSON @exportable
 
 # A dog
-type Dog implements Animal
-{
+type Dog implements Animal {
   ""inline docs""
   volume: Float
   """"""
@@ -616,68 +613,6 @@ extend union Unity =
         var printer = new SDLPrinter();
         var ex = await Should.ThrowAsync<NotSupportedException>(async () => await printer.PrintAsync(document, writer));
         ex.Message.ShouldStartWith("Unknown ");
-    }
-
-    [Theory]
-    [InlineData(1,
-@"schema { query: Q }
-extend schema @good
-scalar A
-",
-@"scalar A")]
-    [InlineData(2,
-@"scalar A1
-scalar B
-scalar C
-scalar A2
-",
-@"scalar A1
-
-scalar A2")]
-    [InlineData(3,
-@"scalar A1
-scalar B
-scalar A2
-scalar E
-scalar D
-",
-@"scalar A1
-
-scalar A2")]
-    public async Task Printer_Should_Print_Pretty_If_Definitions_Skipped(
- int number,
- string text,
- string expected)
-    {
-        var printer = new MyPrinter();
-        var writer = new StringWriter();
-        var document = text.Parse();
-
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
-        var actual = writer.ToString();
-        actual.ShouldBe(expected, $"Test {number} failed");
-
-        actual.Parse(); // should be parsed back
-    }
-
-    private class MyPrinter : SDLPrinter
-    {
-        protected override ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, DefaultPrintContext context)
-        {
-            return default;
-        }
-
-        protected override ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, DefaultPrintContext context)
-        {
-            return default;
-        }
-
-        protected override ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, DefaultPrintContext context)
-        {
-            return scalarTypeDefinition.Name.Value.Span[0] == 'A'
-                ? base.VisitScalarTypeDefinitionAsync(scalarTypeDefinition, context)
-                : default;
-        }
     }
 
     private class Context : IASTVisitorContext

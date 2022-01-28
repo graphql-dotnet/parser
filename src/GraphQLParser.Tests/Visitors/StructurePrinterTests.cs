@@ -6,14 +6,14 @@ using Xunit;
 
 namespace GraphQLParser.Tests.Visitors;
 
-public class StructureWriterTests
+public class StructurePrinterTests
 {
     private static readonly StructurePrinter _structPrinter1 = new(new StructurePrinterOptions { PrintNames = true });
     private static readonly StructurePrinter _structPrinter2 = new(new StructurePrinterOptions { PrintNames = false });
     private static readonly StructurePrinter _structPrinter3 = new(new StructurePrinterOptions { PrintNames = true, PrintLocations = true });
 
     [Fact]
-    public void StructureWriter_Should_Have_Default_Options()
+    public void StructurePrinter_Should_Have_Default_Options()
     {
         var writer = new StructurePrinter();
         writer.Options.ShouldNotBeNull();

@@ -548,8 +548,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
         await VisitAsync(enumValuesDefinition.Comments, context).ConfigureAwait(false);
-        await context.WriteLineAsync().ConfigureAwait(false);
-        await context.WriteAsync("{").ConfigureAwait(false);
+
+        bool freshLine = enumValuesDefinition.Comments != null && Options.PrintComments;
+        await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         for (int i = 0; i < enumValuesDefinition.Items.Count; ++i)
@@ -621,8 +622,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
         await VisitAsync(inputFieldsDefinition.Comments, context).ConfigureAwait(false);
-        await context.WriteLineAsync().ConfigureAwait(false);
-        await context.WriteAsync("{").ConfigureAwait(false);
+
+        bool freshLine = inputFieldsDefinition.Comments != null && Options.PrintComments;
+        await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         for (int i = 0; i < inputFieldsDefinition.Items.Count; ++i)
@@ -731,8 +733,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
         await VisitAsync(fieldsDefinition.Comments, context).ConfigureAwait(false);
-        await context.WriteLineAsync().ConfigureAwait(false);
-        await context.WriteAsync("{").ConfigureAwait(false);
+
+        bool freshLine = fieldsDefinition.Comments != null && Options.PrintComments;
+        await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         for (int i = 0; i < fieldsDefinition.Items.Count; ++i)

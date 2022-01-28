@@ -10,7 +10,7 @@ public class MaxDepthVisitorTests
 {
     /// <summary>
     /// For structure examples see
-    /// <see cref="StructureWriterTests.WriteTreeVisitor_Should_Print_Tree(string, string)"/>
+    /// <see cref="StructurePrinterTests.WriteTreeVisitor_Should_Print_Tree(string, string)"/>
     /// </summary>
     [Theory]
     [InlineData("query a { name age }", 5)]
