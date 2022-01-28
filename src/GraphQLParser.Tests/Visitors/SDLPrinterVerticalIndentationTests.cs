@@ -151,6 +151,34 @@ union D = X | Y
 @"union A1 @vip
 
 union A2 = X | Y")]
+    [InlineData(13,
+@"extend input A1 { a: Int }
+extend input B { a: Int }
+extend input A2 { a: Int }
+extend input E { a: Int }
+extend input D { a: Int }
+",
+@"extend input A1 {
+  a: Int
+}
+
+extend input A2 {
+  a: Int
+}")]
+    [InlineData(14,
+@"extend type A1 { a: Int }
+extend type B { a: Int }
+extend type A2 { a: Int }
+extend type E { a: Int }
+extend type D { a: Int }
+",
+@"extend type A1 {
+  a: Int
+}
+
+extend type A2 {
+  a: Int
+}")]
     public async Task Printer_Should_Print_Pretty_If_Definitions_Skipped(
 int number,
 string text,
@@ -178,6 +206,20 @@ string expected)
         //{
         //    return default;
         //}
+
+        protected override ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, DefaultPrintContext context)
+        {
+            return objectTypeExtension.Name.Value.Span[0] == 'A'
+                ? base.VisitObjectTypeExtensionAsync(objectTypeExtension, context)
+                : default;
+        }
+
+        protected override ValueTask VisitInputObjectTypeExtensionAsync(GraphQLInputObjectTypeExtension inputObjectTypeExtension, DefaultPrintContext context)
+        {
+            return inputObjectTypeExtension.Name.Value.Span[0] == 'A'
+                ? base.VisitInputObjectTypeExtensionAsync(inputObjectTypeExtension, context)
+                : default;
+        }
 
         protected override ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, DefaultPrintContext context)
         {

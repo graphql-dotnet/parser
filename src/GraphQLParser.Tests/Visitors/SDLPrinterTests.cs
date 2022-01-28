@@ -143,6 +143,7 @@ String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRA
     [InlineData(19,
 @"#comment
 input Example @x
+#comment on fields
 {
   self: [Example!]!
   value: String = ""xyz""
@@ -150,7 +151,9 @@ input Example @x
 input B
 input C",
 @"#comment
-input Example @x {
+input Example @x
+#comment on fields
+{
   self: [Example!]!
   value: String = ""xyz""
 }
@@ -296,7 +299,9 @@ query summary($id: ID!, $detailed: Boolean! = true) {
 """"""
 scalar JSON @exportable
 # A dog
-type Dog implements &Animal {
+type Dog implements &Animal
+     #comment on fields
+ {
   """"""inline docs""""""
   volume: Float
   """"""
@@ -314,7 +319,9 @@ description
 scalar JSON @exportable
 
 # A dog
-type Dog implements Animal {
+type Dog implements Animal
+#comment on fields
+{
   ""inline docs""
   volume: Float
   """"""
@@ -453,6 +460,28 @@ extend union Unity =   C
 
 extend union Unity =
   | C", true, false, true)]
+    [InlineData(38,
+@"enum Color
+    #comment
+ {
+     GREEN   RED }
+
+extend enum Color
+#comment
+{   YELLOW }
+",
+@"enum Color
+#comment
+{
+  GREEN
+  RED
+}
+
+extend enum Color
+#comment
+{
+  YELLOW
+}", true)]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,

@@ -73,7 +73,10 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                 node is GraphQLArguments ||
                 node is GraphQLObjectField ||
                 node is GraphQLName ||
-                node is GraphQLUnionMemberTypes;
+                node is GraphQLUnionMemberTypes ||
+                node is GraphQLEnumValuesDefinition ||
+                node is GraphQLFieldsDefinition ||
+                node is GraphQLInputFieldsDefinition;
         }
     }
 
@@ -1036,11 +1039,13 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         if (node is GraphQLField ||
             node is GraphQLFieldDefinition ||
-            node is GraphQLInputFieldsDefinition ||
             node is GraphQLEnumValueDefinition ||
             node is GraphQLFragmentSpread ||
             node is GraphQLInlineFragment ||
             node is GraphQLRootOperationTypeDefinition)
+            ++context.IndentLevel;
+
+        if (node is GraphQLInputValueDefinition && context.Parents.Peek() is GraphQLInputFieldsDefinition)
             ++context.IndentLevel;
 
         if (node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine)
