@@ -130,8 +130,7 @@ String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRA
 ")]
     [InlineData(12,
 @"extend schema @exportable { mutation: M }",
-@"extend schema @exportable
-{
+@"extend schema @exportable {
   mutation: M
 }
 ")]
@@ -271,8 +270,7 @@ fragment Frag on Query {
 ")]
     [InlineData(25,
 @"schema @checked @documented { mutation: MyMutation subscription: MySub }",
-@"schema @checked @documented
-{
+@"schema @checked @documented {
   mutation: MyMutation
   subscription: MySub
 }

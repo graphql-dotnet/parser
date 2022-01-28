@@ -430,8 +430,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         //TODO: https://github.com/graphql/graphql-spec/issues/921
         if (schemaExtension.OperationTypes?.Count > 0)
         {
-            await context.WriteLineAsync().ConfigureAwait(false);
-            await context.WriteAsync("{").ConfigureAwait(false);
+            //bool freshLine = schemaExtension.Comments != null && Options.PrintComments; always false
+            await context.WriteAsync(/*freshLine ? "{" :*/" {").ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
 
             for (int i = 0; i < schemaExtension.OperationTypes.Count; ++i)
@@ -656,8 +656,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await context.WriteAsync("schema").ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Directives, context).ConfigureAwait(false);
 
-        await context.WriteLineAsync().ConfigureAwait(false);
-        await context.WriteAsync("{").ConfigureAwait(false);
+        //bool freshLine = schemaDefinition.Comments != null && Options.PrintComments; always false
+        await context.WriteAsync(/*freshLine? "{" : */" {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (schemaDefinition.OperationTypes.Count > 0)
