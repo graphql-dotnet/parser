@@ -11,17 +11,17 @@ public class SDLPrinterVerticalIndentationTests
 {
     [Theory]
     [InlineData(1,
-@"schema { query: Q }
+@"
 extend schema @good
-scalar A
+scalar A schema { query: Q }
 ",
-@"schema {
+@"extend schema @good
+
+scalar A
+
+schema {
   query: Q
-}
-
-extend schema @good
-
-scalar A")]
+}")]
     [InlineData(2,
 @"scalar A1
 scalar B
@@ -197,16 +197,6 @@ string expected)
 
     private class MyPrinter : SDLPrinter
     {
-        //protected override ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, DefaultPrintContext context)
-        //{
-        //    return default;
-        //}
-
-        //protected override ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, DefaultPrintContext context)
-        //{
-        //    return default;
-        //}
-
         protected override ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, DefaultPrintContext context)
         {
             return objectTypeExtension.Name.Value.Span[0] == 'A'
