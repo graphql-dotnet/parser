@@ -71,12 +71,14 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             return TryPeekParent(context, out var node) &&
                 ReferenceEquals(node.Comments![start ? 0 : node.Comments.Count - 1], comment) &&
                 node is GraphQLArguments ||
+                node is GraphQLArgument ||
                 node is GraphQLObjectField ||
                 node is GraphQLName ||
                 node is GraphQLUnionMemberTypes ||
                 node is GraphQLEnumValuesDefinition ||
                 node is GraphQLFieldsDefinition ||
-                node is GraphQLInputFieldsDefinition;
+                node is GraphQLInputFieldsDefinition ||
+                node is GraphQLInputValueDefinition;
         }
     }
 
@@ -608,10 +610,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
 
-        // for input fields always use indent (=1)
-        // for arguments use indent only on fresh line
-        bool freshLine = inputValueDefinition.Comments != null && Options.PrintComments;
-        if (freshLine || TryPeekParent(context, out var node) && node is GraphQLInputFieldsDefinition)
+        // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync
+        if (TryPeekParent(context, out var node) && node is GraphQLInputFieldsDefinition)
             await WriteIndentAsync(context).ConfigureAwait(false);
 
         await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);

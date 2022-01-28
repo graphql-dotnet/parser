@@ -482,6 +482,17 @@ extend enum Color
 {
   YELLOW
 }", true)]
+    [InlineData(39,
+@"type T  {
+    data(
+#comment
+rendered: Boolean) : String
+}",
+@"type T {
+  data(
+  #comment
+  rendered: Boolean): String
+}", true)]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
