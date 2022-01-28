@@ -850,6 +850,7 @@ namespace GraphQLParser.Visitors
     public interface IPrintContext : GraphQLParser.Visitors.IASTVisitorContext
     {
         int IndentLevel { get; set; }
+        bool LastDefinitionPrinted { get; set; }
         System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
         System.IO.TextWriter Writer { get; }
     }
@@ -862,6 +863,8 @@ namespace GraphQLParser.Visitors
     public static class PrintContextExtensions
     {
         public static System.Threading.Tasks.ValueTask WriteAsync<TContext>(this TContext context, GraphQLParser.ROM value)
+            where TContext : GraphQLParser.Visitors.IPrintContext { }
+        public static System.Threading.Tasks.ValueTask WriteDoubleLineAsync<TContext>(this TContext context)
             where TContext : GraphQLParser.Visitors.IPrintContext { }
         public static System.Threading.Tasks.ValueTask WriteLineAsync<TContext>(this TContext context)
             where TContext : GraphQLParser.Visitors.IPrintContext { }
@@ -876,6 +879,7 @@ namespace GraphQLParser.Visitors
             public DefaultPrintContext(System.IO.TextWriter writer) { }
             public System.Threading.CancellationToken CancellationToken { get; set; }
             public int IndentLevel { get; set; }
+            public bool LastDefinitionPrinted { get; set; }
             public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
             public System.IO.TextWriter Writer { get; }
         }

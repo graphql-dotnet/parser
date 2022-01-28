@@ -27,8 +27,7 @@ public class SDLWriterTests
     [InlineData(1,
 @"#comment that ignored
   scalar A     ",
-@"scalar A
-", false)]
+@"scalar A", false)]
     [InlineData(2,
 @"{
   #
@@ -37,8 +36,7 @@ public class SDLWriterTests
 @"{
   #
   field
-}
-")]
+}")]
     [InlineData(3,
 @"{
   complicatedArgs {
@@ -49,8 +47,7 @@ public class SDLWriterTests
   complicatedArgs {
     intArgField(intArg: 2)
   }
-}
-")]
+}")]
     [InlineData(4,
 @"mutation createUser($userInput: UserInput!) {
   createUser(userInput: $userInput) {
@@ -66,8 +63,7 @@ public class SDLWriterTests
     gender
     profileImage
   }
-}
-")]
+}")]
     [InlineData(5,
 @"query users {
   users {
@@ -95,69 +91,55 @@ public class SDLWriterTests
       }
     }
   }
-}
-")]
+}")]
     [InlineData(6,
 @"{ a(list: [], obj: {}) }",
 @"{
   a(list: [], obj: {})
-}
-")]
+}")]
     [InlineData(7,
 @"directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
 @"directive @skip(if: Boolean!) on
   | FIELD
   | FRAGMENT_SPREAD
-  | INLINE_FRAGMENT
-", false, true)]
+  | INLINE_FRAGMENT", false, true)]
     [InlineData(8,
 @"directive @twoArgs
 (a: Int, b:
 String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRAGMENT_SPREAD|INLINE_FRAGMENT|VARIABLE_DEFINITION|SCHEMA|SCALAR|OBJECT|FIELD_DEFINITION|ARGUMENT_DEFINITION|INTERFACE|UNION|ENUM|ENUM_VALUE|INPUT_OBJECT|INPUT_FIELD_DEFINITION",
-@"directive @twoArgs(a: Int, b: String!) repeatable on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | VARIABLE_DEFINITION | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
-")]
+@"directive @twoArgs(a: Int, b: String!) repeatable on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | VARIABLE_DEFINITION | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION")]
     [InlineData(9,
 @"directive @exportable on | SCHEMA",
-@"directive @exportable on SCHEMA
-")]
+@"directive @exportable on SCHEMA")]
     [InlineData(10,
 @"directive @exportable on | SCHEMA | ENUM",
-@"directive @exportable on SCHEMA | ENUM
-")]
+@"directive @exportable on SCHEMA | ENUM")]
     [InlineData(11,
 @"extend schema @exportable ",
-@"extend schema @exportable
-")]
+@"extend schema @exportable")]
     [InlineData(12,
 @"extend schema @exportable { mutation: M }",
 @"extend schema @exportable {
   mutation: M
-}
-")]
+}")]
     [InlineData(13,
 @"extend scalar Foo @exportable",
-@"extend scalar Foo @exportable
-")]
+@"extend scalar Foo @exportable")]
     [InlineData(14,
 @"extend type Foo @exportable",
-@"extend type Foo @exportable
-")]
+@"extend type Foo @exportable")]
     [InlineData(15,
 @"extend interface Foo @exportable",
-@"extend interface Foo @exportable
-")]
+@"extend interface Foo @exportable")]
     [InlineData(16,
 @"extend union Foo @exportable",
-@"extend union Foo @exportable
-")]
+@"extend union Foo @exportable")]
     [InlineData(17,
 @"extend enum Foo @exportable",
-@"extend enum Foo @exportable
-")]
+@"extend enum Foo @exportable")]
     [InlineData(18,
 @"extend input Foo @exportable",
-@"extend input Foo @exportable
-")]
+@"extend input Foo @exportable")]
     [InlineData(19,
 @"#comment
 input Example @x {
@@ -165,8 +147,7 @@ input Example @x {
   value: String = ""xyz""
 }
 input B
-input C
-",
+input C",
 @"#comment
 input Example @x
 {
@@ -176,8 +157,7 @@ input Example @x
 
 input B
 
-input C
-")]
+input C")]
     [InlineData(20,
 @"query inlineFragmentTyping {
   profiles(handles: [""zuck"", ""coca - cola""])
@@ -213,16 +193,14 @@ input C
       }
     }
   }
-}
-")]
+}")]
     [InlineData(21,
 @"scalar a scalar b scalar c",
 @"scalar a
 
 scalar b
 
-scalar c
-")]
+scalar c")]
     [InlineData(22,
 @"
 
@@ -237,8 +215,7 @@ fragment Frag on Query
 {
   bar
   baz
-}
-",
+}",
 @"{
   foo
   #comment on fragment
@@ -249,12 +226,10 @@ fragment Frag on Query
 fragment Frag on Query {
   bar
   baz
-}
-")]
+}")]
     [InlineData(23,
 @"union Animal @immutable = |Cat | Dog",
-@"union Animal @immutable = Cat | Dog
-")]
+@"union Animal @immutable = Cat | Dog")]
     [InlineData(24,
 @"query
     q
@@ -266,22 +241,19 @@ fragment Frag on Query {
   a: name
   b
   c: age
-}
-")]
+}")]
     [InlineData(25,
 @"schema @checked @documented { mutation: MyMutation subscription: MySub }",
 @"schema @checked @documented {
   mutation: MyMutation
   subscription: MySub
-}
-")]
+}")]
     [InlineData(26,
 @"interface Dog implements & Eat & Bark { volume: Int! }",
 @"interface Dog implements Eat & Bark
 {
   volume: Int!
-}
-")]
+}")]
     [InlineData(27,
 @"enum Color { RED,
 #good color
@@ -297,8 +269,7 @@ BLUE }",
   GREEN @directive(list: [1, 2.7, 3, null, {}, {name: ""tom"", age: 42}])
   ""another good color""
   BLUE
-}
-")]
+}")]
     [InlineData(28,
 @"# super query
 #
@@ -317,8 +288,7 @@ query summary($id: ID!, $detailed: Boolean! = true) {
     #need
     building
   }
-}
-")]
+}")]
     [InlineData(29,
 @"
 """"""
@@ -356,8 +326,7 @@ type Dog implements Animal
   """"""
   friends: [Dog!]
   age: Int!
-}
-")]
+}")]
     [InlineData(30,
 @"query q
 {
@@ -374,8 +343,7 @@ type Dog implements Animal
   a:
   #field name (GraphQLName) comment
   name
-}
-")]
+}")]
     [InlineData(31,
 @"query q
 {
@@ -389,8 +357,7 @@ type Dog implements Animal
 ",
 @"query q {
   a: name
-}
-", false)]
+}", false)]
     [InlineData(32,
 @"{
   f
@@ -411,8 +378,7 @@ type Dog implements Animal
   (x: 10, y: {
   #comment on object field
   z: 1})
-}
-")]
+}")]
     [InlineData(33,
 @"{
   f
@@ -427,8 +393,7 @@ type Dog implements Animal
 ",
 @"{
   f(x: 10, y: {z: 1})
-}
-", false)]
+}", false)]
     [InlineData(34,
 @"#very good scalar
 scalar JSON
@@ -440,8 +405,7 @@ extend scalar JSON @external
 scalar JSON
 
 #forgot about external!
-extend scalar JSON @external
-")]
+extend scalar JSON @external")]
     [InlineData(35,
 @"#very good scalar
 scalar JSON
@@ -451,8 +415,7 @@ extend scalar JSON @external
 ",
 @"scalar JSON
 
-extend scalar JSON @external
-", false)]
+extend scalar JSON @external", false)]
     [InlineData(36,
 @"#very good union
 union Unity
@@ -468,8 +431,7 @@ union Unity
 = A | B
 
 #forgot about C!
-extend union Unity = C
-")]
+extend union Unity = C")]
     [InlineData(37,
 @"#very good union
 union Unity
@@ -481,8 +443,7 @@ extend union Unity = C
 ",
 @"union Unity = A | B
 
-extend union Unity = C
-", false)]
+extend union Unity = C", false)]
     [InlineData(38,
 @"union Unity
 = A |    B
@@ -494,9 +455,8 @@ extend union Unity =   C
   | B
 
 extend union Unity =
-  | C
-", true, false, true)]
-    public async Task WriteDocumentVisitor_Should_Print_Document(
+  | C", true, false, true)]
+    public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
         string expected,
@@ -551,7 +511,7 @@ extend union Unity =
     [InlineData(28, "Test \\n escaping", "Test \\\\n escaping", false)]
     [InlineData(29, "Test \\u1234 escaping", "Test \\\\u1234 escaping", false)]
     [InlineData(30, "Test \\ escaping", "Test \\\\ escaping", false)]
-    public async Task WriteDocumentVisitor_Should_Print_BlockStrings(int number, string input, string expected, bool isBlockString)
+    public async Task SDLPrinter_Should_Print_BlockStrings(int number, string input, string expected, bool isBlockString)
     {
         number.ShouldBeGreaterThan(0);
 
@@ -572,7 +532,7 @@ extend union Unity =
         var renderedOriginal = writer.ToString();
 
         var lines = renderedOriginal.Split(Environment.NewLine);
-        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
+        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(1));
         renderedDescription = renderedDescription.Replace("\r\n", "\n");
         renderedDescription.ShouldBe(expected);
 
@@ -586,13 +546,12 @@ extend union Unity =
     [InlineData("\"\\tX\\t\"")]
     [InlineData("\" \u1234 \"")]
     [InlineData("\"normal text\"")]
-    public async Task WriteDocumentVisitor_Should_Print_EscapedStrings(string stringValue)
+    public async Task SDLPrinter_Should_Print_EscapedStrings(string stringValue)
     {
         string query = $"{{a(p:{stringValue})}}";
         string expected = @$"{{
   a(p: {stringValue})
-}}
-";
+}}";
         var writer = new StringWriter();
 
         var document = query.Parse();
@@ -635,21 +594,19 @@ extend union Unity =
         var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
         await printer.PrintAsync(def, writer);
         writer.ToString().ShouldBe(@"{
-}
-");
+}");
         def.SelectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
         writer = new StringWriter();
         await printer.PrintAsync(def, writer);
         writer.ToString().ShouldBe(@"#comment
 {
-}
-");
+}");
     }
 
     [Theory]
     [InlineData("query a { name }")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
-    public async Task WriteDocumentVisitor_Should_Throw_On_Unknown_Values(string text)
+    public async Task SDLPrinter_Should_Throw_On_Unknown_Values(string text)
     {
         var writer = new StringWriter();
         var document = text.Parse();
@@ -659,6 +616,68 @@ extend union Unity =
         var printer = new SDLPrinter();
         var ex = await Should.ThrowAsync<NotSupportedException>(async () => await printer.PrintAsync(document, writer));
         ex.Message.ShouldStartWith("Unknown ");
+    }
+
+    [Theory]
+    [InlineData(1,
+@"schema { query: Q }
+extend schema @good
+scalar A
+",
+@"scalar A")]
+    [InlineData(2,
+@"scalar A1
+scalar B
+scalar C
+scalar A2
+",
+@"scalar A1
+
+scalar A2")]
+    [InlineData(3,
+@"scalar A1
+scalar B
+scalar A2
+scalar E
+scalar D
+",
+@"scalar A1
+
+scalar A2")]
+    public async Task Printer_Should_Print_Pretty_If_Definitions_Skipped(
+ int number,
+ string text,
+ string expected)
+    {
+        var printer = new MyPrinter();
+        var writer = new StringWriter();
+        var document = text.Parse();
+
+        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        var actual = writer.ToString();
+        actual.ShouldBe(expected, $"Test {number} failed");
+
+        actual.Parse(); // should be parsed back
+    }
+
+    private class MyPrinter : SDLPrinter
+    {
+        protected override ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, DefaultPrintContext context)
+        {
+            return default;
+        }
+
+        protected override ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, DefaultPrintContext context)
+        {
+            return default;
+        }
+
+        protected override ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, DefaultPrintContext context)
+        {
+            return scalarTypeDefinition.Name.Value.Span[0] == 'A'
+                ? base.VisitScalarTypeDefinitionAsync(scalarTypeDefinition, context)
+                : default;
+        }
     }
 
     private class Context : IASTVisitorContext
