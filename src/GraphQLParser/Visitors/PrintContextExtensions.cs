@@ -12,6 +12,7 @@ namespace GraphQLParser.Visitors;
 public static class PrintContextExtensions
 {
     private static readonly ROM _newLine = Environment.NewLine;
+    private static readonly ROM _newLineDoubled = Environment.NewLine + Environment.NewLine;
 
     /// <summary>
     /// Writes the specified <see cref="ROM"/> to the provided context
@@ -39,4 +40,13 @@ public static class PrintContextExtensions
     public static ValueTask WriteLineAsync<TContext>(this TContext context)
         where TContext : IPrintContext
         => WriteAsync(context, _newLine);
+
+    /// <summary>
+    /// Writes doubled <see cref="Environment.NewLine"/> to the provided context
+    /// using <see cref="CancellationToken"/> from it.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValueTask WriteDoubleLineAsync<TContext>(this TContext context)
+        where TContext : IPrintContext
+        => WriteAsync(context, _newLineDoubled);
 }

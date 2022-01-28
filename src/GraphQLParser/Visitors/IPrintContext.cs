@@ -23,4 +23,12 @@ public interface IPrintContext : IASTVisitorContext
     /// Tracks the current indent level.
     /// </summary>
     int IndentLevel { get; set; }
+
+    /// <summary>
+    /// Indicates whether last GraphQL AST definition node (executable definition,
+    /// type system definition or type system extension) from printed document was
+    /// actualy printed. This property is required to properly print vertical
+    /// indents between definitions.
+    /// </summary>
+    bool LastDefinitionPrinted { get; set; }
 }
