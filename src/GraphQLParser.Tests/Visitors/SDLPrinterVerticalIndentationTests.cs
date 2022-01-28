@@ -14,6 +14,7 @@ public class SDLPrinterVerticalIndentationTests
 @"
 extend schema @good
 scalar A schema { query: Q }
+extend schema @bad
 ",
 @"extend schema @good
 
@@ -21,7 +22,9 @@ scalar A
 
 schema {
   query: Q
-}")]
+}
+
+extend schema @bad")]
     [InlineData(2,
 @"scalar A1
 scalar B
