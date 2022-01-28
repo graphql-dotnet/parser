@@ -284,7 +284,7 @@ field: Int }", @"Document
       Directive
         Name [dir]
 ")]
-    public async Task WriteTreeVisitor_Should_Print_Tree(string text, string expected)
+    public async Task StructurePrinter_Should_Print_Tree(string text, string expected)
     {
         var writer = new StringWriter();
         var document = text.Parse();
@@ -303,7 +303,7 @@ field: Int }", @"Document
       Field
         Name
 ")]
-    public async Task WriteTreeVisitor_Should_Print_Tree_Without_Names(string text, string expected)
+    public async Task StructurePrinter_Should_Print_Tree_Without_Names(string text, string expected)
     {
         var writer = new StringWriter();
         var document = text.Parse();
@@ -542,7 +542,7 @@ scalar S", @"Document (10,30)
             Name [b] (34,35)
             IntValue (36,38)
 ")]
-    public async Task WriteTreeVisitor_Should_Print_Tree_With_Locations(string text, string expected, bool ignoreComments = true)
+    public async Task StructurePrinter_Should_Print_Tree_With_Locations(string text, string expected, bool ignoreComments = true)
     {
         text = text.Replace("\r\n", "\n");
         foreach (var option in new[] { IgnoreOptions.None, IgnoreOptions.Comments })
