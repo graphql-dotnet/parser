@@ -14,7 +14,7 @@ namespace GraphQLParser.Tests.Visitors;
 public class SDLPrinterTests
 {
     [Fact]
-    public void SDLWriter_Should_Have_Default_Options()
+    public void SDLPrinter_Should_Have_Default_Options()
     {
         var writer = new SDLPrinter();
         writer.Options.ShouldNotBeNull();
@@ -492,6 +492,30 @@ rendered: Boolean) : String
   data(
   #comment
   rendered: Boolean): String
+}", true)]
+    [InlineData(40,
+@"""This is a Foo object type""
+type Foo {
+  ""This is of type Integer""
+  int: Int
+  ""This is of type String""
+  str: String
+}
+
+type Query
+{
+    foo: Foo
+}",
+@"""This is a Foo object type""
+type Foo {
+  ""This is of type Integer""
+  int: Int
+  ""This is of type String""
+  str: String
+}
+
+type Query {
+  foo: Foo
 }", true)]
     public async Task SDLPrinter_Should_Print_Document(
         int number,

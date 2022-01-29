@@ -874,7 +874,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitDirectiveAsync(GraphQLDirective directive, TContext context)
     {
         await VisitAsync(directive.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("@").ConfigureAwait(false);
+        await context.WriteAsync(" @").ConfigureAwait(false);
         await VisitAsync(directive.Name, context).ConfigureAwait(false);
         await VisitAsync(directive.Arguments, context).ConfigureAwait(false);
     }
@@ -883,14 +883,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitDirectivesAsync(GraphQLDirectives directives, TContext context)
     {
         await VisitAsync(directives.Comments, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
-        await context.WriteAsync(" ").ConfigureAwait(false);
 
         for (int i = 0; i < directives.Items.Count; ++i)
-        {
             await VisitAsync(directives.Items[i], context).ConfigureAwait(false);
-            if (i < directives.Items.Count - 1)
-                await context.WriteAsync(" ").ConfigureAwait(false);
-        }
     }
 
     /// <inheritdoc/>
