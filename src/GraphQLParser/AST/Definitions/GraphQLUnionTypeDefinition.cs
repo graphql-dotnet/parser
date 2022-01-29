@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.UnionTypeDefinition"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLUnionTypeDefinition: {Name}")]
 public class GraphQLUnionTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
     /// <inheritdoc/>

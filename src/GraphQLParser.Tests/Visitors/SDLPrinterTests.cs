@@ -309,7 +309,7 @@ type Dog implements &Animal
  docs
   """"""
   friends: [Dog!]
-  age: Int!
+  age(precise: Boolean!): Int!
 }",
 @"""""""
 description
@@ -329,7 +329,7 @@ type Dog implements Animal
   docs
   """"""
   friends: [Dog!]
-  age: Int!
+  age(precise: Boolean!): Int!
 }")]
     [InlineData(30,
 @"query q
@@ -481,6 +481,17 @@ extend enum Color
 #comment
 {
   YELLOW
+}", true)]
+    [InlineData(39,
+@"type T  {
+    data(
+#comment
+rendered: Boolean) : String
+}",
+@"type T {
+  data(
+  #comment
+  rendered: Boolean): String
 }", true)]
     public async Task SDLPrinter_Should_Print_Document(
         int number,

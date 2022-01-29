@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.Directive"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLDirective: {Name}")]
 public class GraphQLDirective : ASTNode, INamedNode, IHasArgumentsNode
 {
     /// <inheritdoc/>

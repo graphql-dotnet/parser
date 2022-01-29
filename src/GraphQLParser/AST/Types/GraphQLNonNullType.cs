@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.NonNullType"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLNonNullType: {Type}!")]
 public class GraphQLNonNullType : GraphQLType
 {
     /// <inheritdoc/>
