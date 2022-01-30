@@ -719,6 +719,16 @@ multilined
         writer.ToString().ShouldBe("field: String = \"abc\"");
     }
 
+    [Fact]
+    public async Task Directive_Without_Parent_Should_Be_Printed()
+    {
+        var directive = new GraphQLDirective { Name = new GraphQLName("upper") };
+        var writer = new StringWriter();
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(directive, writer);
+        writer.ToString().ShouldBe("@upper");
+    }
+
     [Theory]
     [InlineData("query a { name }")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]

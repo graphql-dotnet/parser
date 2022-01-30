@@ -894,7 +894,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitDirectiveAsync(GraphQLDirective directive, TContext context)
     {
         await VisitAsync(directive.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync(" @").ConfigureAwait(false);
+        await context.WriteAsync(TryPeekParent(context, out _) ? " @" : "@").ConfigureAwait(false);
         await VisitAsync(directive.Name, context).ConfigureAwait(false);
         await VisitAsync(directive.Arguments, context).ConfigureAwait(false);
     }
