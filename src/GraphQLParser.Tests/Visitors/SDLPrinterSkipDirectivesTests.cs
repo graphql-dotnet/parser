@@ -50,7 +50,7 @@ public class SDLPrinterSkipDirectivesTests
   f: Int
   k: Boolean
 }")]
-    public async Task Printer_Should_Print_Pretty_If_Direcives_Skipped(
+    public async Task Printer_Should_Print_Pretty_If_Directives_Skipped(
 int number,
 string text,
 string expected)

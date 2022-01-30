@@ -169,14 +169,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         static bool DescribedNodeShouldBeCloseToPreviousNode(TContext context)
         {
             return TryPeekParent(context, out var node) &&
-                node is GraphQLArguments ||
-                node is GraphQLArgument ||
-                node is GraphQLObjectField ||
-                node is GraphQLName ||
-                node is GraphQLUnionMemberTypes ||
-                node is GraphQLEnumValuesDefinition ||
-                node is GraphQLFieldsDefinition ||
-                node is GraphQLInputFieldsDefinition ||
                 node is GraphQLInputValueDefinition;
         }
 
