@@ -517,6 +517,11 @@ type Foo {
 type Query {
   foo: Foo
 }", true)]
+    [InlineData(41,
+@"directive @skip(""Skipped when true."" if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  ""Skipped when true.""
+  if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,

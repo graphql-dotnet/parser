@@ -166,11 +166,31 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
+        static bool DescribedNodeShouldBeCloseToPreviousNode(TContext context)
+        {
+            return TryPeekParent(context, out var node) &&
+                node is GraphQLArguments ||
+                node is GraphQLArgument ||
+                node is GraphQLObjectField ||
+                node is GraphQLName ||
+                node is GraphQLUnionMemberTypes ||
+                node is GraphQLEnumValuesDefinition ||
+                node is GraphQLFieldsDefinition ||
+                node is GraphQLInputFieldsDefinition ||
+                node is GraphQLInputValueDefinition;
+        }
+
+        if (DescribedNodeShouldBeCloseToPreviousNode(context))
+            await context.WriteLineAsync().ConfigureAwait(false);
+
         // http://spec.graphql.org/October2021/#StringValue
         if (ShouldBeMultilineBlockString())
             await WriteMultilineBlockString();
         else
             await WriteString();
+
+        if (DescribedNodeShouldBeCloseToPreviousNode(context))
+            await WriteIndentAsync(context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -610,7 +630,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
 
-        // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync
+        // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync/VisitDescriptionAsync
         if (TryPeekParent(context, out var node) && node is GraphQLInputFieldsDefinition)
             await WriteIndentAsync(context).ConfigureAwait(false);
 
@@ -1047,6 +1067,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         if (node is GraphQLInputValueDefinition && context.Parents.Peek() is GraphQLInputFieldsDefinition)
             ++context.IndentLevel;
 
+        if (node is GraphQLDescription && TryPeekParent(context, out var p) && p is GraphQLArgumentsDefinition)
+            ++context.IndentLevel;
+
         if (node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine)
             ++context.IndentLevel;
 
@@ -1104,6 +1127,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             await context.WriteAsync("  ").ConfigureAwait(false);
     }
 
+    // Returns parent if called inside ViisitXXX i.e. after context.Parents.Push(node);
+    // Returns grand-parent if called inside ViisitAsync i.e. before context.Parents.Push(node);
     private static bool TryPeekParent(TContext context, [NotNullWhen(true)] out ASTNode? node)
     {
         node = null;
