@@ -1068,7 +1068,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             node is GraphQLRootOperationTypeDefinition)
             ++context.IndentLevel;
 
-        if (node is GraphQLInputValueDefinition && context.Parents.Peek() is GraphQLInputFieldsDefinition)
+        if (node is GraphQLInputValueDefinition && (context.Parents.Count > 0 && context.Parents.Peek() is GraphQLInputFieldsDefinition))
             ++context.IndentLevel;
 
         if (node is GraphQLDescription && TryPeekParent(context, out var p) && p is GraphQLArgumentsDefinition)

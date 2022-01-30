@@ -703,6 +703,22 @@ multilined
         writer.ToString().ShouldBe(expected);
     }
 
+    [Fact]
+    public async Task InputValueDefinition_Without_Parent_Should_Be_Printed()
+    {
+        var def = new GraphQLInputValueDefinition
+        {
+            Name = new GraphQLName("field"),
+            Type = new GraphQLNamedType { Name = new GraphQLName("String") },
+            DefaultValue = new GraphQLStringValue("abc")
+        };
+
+        var writer = new StringWriter();
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(def, writer);
+        writer.ToString().ShouldBe("field: String = \"abc\"");
+    }
+
     [Theory]
     [InlineData("query a { name }")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
