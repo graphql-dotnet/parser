@@ -682,6 +682,28 @@ type Query {
     }
 
     [Theory]
+    [InlineData(
+@"description",
+@"""description""
+")]
+    [InlineData(
+@"description
+multilined",
+@"""""""
+description
+multilined
+""""""
+")]
+    public async Task Description_Without_Parent_Should_Be_Printed(string text, string expected)
+    {
+        var description = new GraphQLDescription(text);
+        var writer = new StringWriter();
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(description, writer);
+        writer.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
     [InlineData("query a { name }")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Throw_On_Unknown_Values(string text)
