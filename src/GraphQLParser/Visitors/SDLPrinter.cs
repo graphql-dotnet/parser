@@ -578,9 +578,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        for (int i = 0; i < enumValuesDefinition.Items.Count; ++i)
+        foreach (var enumValueDefinition in enumValuesDefinition.Items)
         {
-            await VisitAsync(enumValuesDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(enumValueDefinition, context).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
@@ -627,11 +627,19 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context)
     {
+        bool hasParent = TryPeekParent(context, out var node);
+
+        if (hasParent && node is GraphQLArgumentsDefinition argsDef)
+        {
+            if (argsDef.Items.IndexOf(inputValueDefinition) > 0)
+                await context.WriteAsync(inputValueDefinition.Description == null ? ", " : ",").ConfigureAwait(false);
+        }
+
         await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
 
         // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync/VisitDescriptionAsync
-        if (TryPeekParent(context, out var node) && node is GraphQLInputFieldsDefinition)
+        if (hasParent && node is GraphQLInputFieldsDefinition)
             await WriteIndentAsync(context).ConfigureAwait(false);
 
         await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);
@@ -654,9 +662,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        for (int i = 0; i < inputFieldsDefinition.Items.Count; ++i)
+        foreach (var inputFieldDefinition in inputFieldsDefinition.Items)
         {
-            await VisitAsync(inputFieldsDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(inputFieldDefinition, context).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
@@ -765,9 +773,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        for (int i = 0; i < fieldsDefinition.Items.Count; ++i)
+        foreach (var fieldDefinition in fieldsDefinition)
         {
-            await VisitAsync(fieldsDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(fieldDefinition, context).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
@@ -904,8 +912,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(directives.Comments, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
 
-        for (int i = 0; i < directives.Items.Count; ++i)
-            await VisitAsync(directives.Items[i], context).ConfigureAwait(false);
+        foreach (var directive in directives.Items)
+            await VisitAsync(directive, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -923,12 +931,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(argumentsDefinition.Comments, context).ConfigureAwait(false);
         await context.WriteAsync("(").ConfigureAwait(false);
 
-        for (int i = 0; i < argumentsDefinition.Items.Count; ++i)
-        {
-            await VisitAsync(argumentsDefinition.Items[i], context).ConfigureAwait(false);
-            if (i < argumentsDefinition.Items.Count - 1)
-                await context.WriteAsync(", ").ConfigureAwait(false);
-        }
+        foreach (var argumentDefinition in argumentsDefinition.Items)
+            await VisitAsync(argumentDefinition, context).ConfigureAwait(false);
 
         await context.WriteAsync(")").ConfigureAwait(false);
     }

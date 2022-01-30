@@ -522,6 +522,18 @@ type Query {
 @"directive @skip(
   ""Skipped when true.""
   if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    [InlineData(42,
+@"directive @skip(""Skipped when true."" if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  ""Skipped when true.""
+  if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    [InlineData(43,
+@"directive @skip(""Skipped when true."" if: Boolean!, ""Second argument"" x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  ""Skipped when true.""
+  if: Boolean!,
+  ""Second argument""
+  x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
