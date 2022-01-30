@@ -166,11 +166,23 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
+        static bool DescribedNodeShouldBeCloseToPreviousNode(TContext context)
+        {
+            return TryPeekParent(context, out var node) &&
+                node is GraphQLInputValueDefinition;
+        }
+
+        if (DescribedNodeShouldBeCloseToPreviousNode(context))
+            await context.WriteLineAsync().ConfigureAwait(false);
+
         // http://spec.graphql.org/October2021/#StringValue
         if (ShouldBeMultilineBlockString())
             await WriteMultilineBlockString();
         else
             await WriteString();
+
+        if (DescribedNodeShouldBeCloseToPreviousNode(context))
+            await WriteIndentAsync(context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -558,9 +570,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        for (int i = 0; i < enumValuesDefinition.Items.Count; ++i)
+        foreach (var enumValueDefinition in enumValuesDefinition.Items)
         {
-            await VisitAsync(enumValuesDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(enumValueDefinition, context).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
@@ -607,11 +619,19 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context)
     {
+        bool hasParent = TryPeekParent(context, out var node);
+
+        if (hasParent && node is GraphQLArgumentsDefinition argsDef)
+        {
+            if (argsDef.Items.IndexOf(inputValueDefinition) > 0)
+                await context.WriteAsync(inputValueDefinition.Description == null ? ", " : ",").ConfigureAwait(false);
+        }
+
         await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
 
-        // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync
-        if (TryPeekParent(context, out var node) && node is GraphQLInputFieldsDefinition)
+        // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync/VisitDescriptionAsync
+        if (hasParent && node is GraphQLInputFieldsDefinition)
             await WriteIndentAsync(context).ConfigureAwait(false);
 
         await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);
@@ -634,9 +654,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        for (int i = 0; i < inputFieldsDefinition.Items.Count; ++i)
+        foreach (var inputFieldDefinition in inputFieldsDefinition.Items)
         {
-            await VisitAsync(inputFieldsDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(inputFieldDefinition, context).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
@@ -745,9 +765,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        for (int i = 0; i < fieldsDefinition.Items.Count; ++i)
+        foreach (var fieldDefinition in fieldsDefinition)
         {
-            await VisitAsync(fieldsDefinition.Items[i], context).ConfigureAwait(false);
+            await VisitAsync(fieldDefinition, context).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
@@ -884,8 +904,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(directives.Comments, context).ConfigureAwait(false); // Comment always null - see ParserContext.ParseDirectives
 
-        for (int i = 0; i < directives.Items.Count; ++i)
-            await VisitAsync(directives.Items[i], context).ConfigureAwait(false);
+        foreach (var directive in directives.Items)
+            await VisitAsync(directive, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -903,12 +923,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(argumentsDefinition.Comments, context).ConfigureAwait(false);
         await context.WriteAsync("(").ConfigureAwait(false);
 
-        for (int i = 0; i < argumentsDefinition.Items.Count; ++i)
-        {
-            await VisitAsync(argumentsDefinition.Items[i], context).ConfigureAwait(false);
-            if (i < argumentsDefinition.Items.Count - 1)
-                await context.WriteAsync(", ").ConfigureAwait(false);
-        }
+        foreach (var argumentDefinition in argumentsDefinition.Items)
+            await VisitAsync(argumentDefinition, context).ConfigureAwait(false);
 
         await context.WriteAsync(")").ConfigureAwait(false);
     }
@@ -1044,7 +1060,10 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             node is GraphQLRootOperationTypeDefinition)
             ++context.IndentLevel;
 
-        if (node is GraphQLInputValueDefinition && context.Parents.Peek() is GraphQLInputFieldsDefinition)
+        if (node is GraphQLInputValueDefinition && (context.Parents.Count > 0 && context.Parents.Peek() is GraphQLInputFieldsDefinition))
+            ++context.IndentLevel;
+
+        if (node is GraphQLDescription && TryPeekParent(context, out var p) && p is GraphQLArgumentsDefinition)
             ++context.IndentLevel;
 
         if (node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine)
@@ -1104,6 +1123,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             await context.WriteAsync("  ").ConfigureAwait(false);
     }
 
+    // Returns parent if called inside ViisitXXX i.e. after context.Parents.Push(node);
+    // Returns grand-parent if called inside ViisitAsync i.e. before context.Parents.Push(node);
     private static bool TryPeekParent(TContext context, [NotNullWhen(true)] out ASTNode? node)
     {
         node = null;

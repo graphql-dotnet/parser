@@ -517,6 +517,23 @@ type Foo {
 type Query {
   foo: Foo
 }", true)]
+    [InlineData(41,
+@"directive @skip(""Skipped when true."" if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  ""Skipped when true.""
+  if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    [InlineData(42,
+@"directive @skip(""Skipped when true."" if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  ""Skipped when true.""
+  if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    [InlineData(43,
+@"directive @skip(""Skipped when true."" if: Boolean!, ""Second argument"" x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  ""Skipped when true.""
+  if: Boolean!,
+  ""Second argument""
+  x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
@@ -662,6 +679,44 @@ type Query {
         writer.ToString().ShouldBe(@"#comment
 {
 }");
+    }
+
+    [Theory]
+    [InlineData(
+@"description",
+@"""description""
+")]
+    [InlineData(
+@"description
+multilined",
+@"""""""
+description
+multilined
+""""""
+")]
+    public async Task Description_Without_Parent_Should_Be_Printed(string text, string expected)
+    {
+        var description = new GraphQLDescription(text);
+        var writer = new StringWriter();
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(description, writer);
+        writer.ToString().ShouldBe(expected);
+    }
+
+    [Fact]
+    public async Task InputValueDefinition_Without_Parent_Should_Be_Printed()
+    {
+        var def = new GraphQLInputValueDefinition
+        {
+            Name = new GraphQLName("field"),
+            Type = new GraphQLNamedType { Name = new GraphQLName("String") },
+            DefaultValue = new GraphQLStringValue("abc")
+        };
+
+        var writer = new StringWriter();
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(def, writer);
+        writer.ToString().ShouldBe("field: String = \"abc\"");
     }
 
     [Theory]
