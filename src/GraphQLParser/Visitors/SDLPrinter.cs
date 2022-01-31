@@ -1138,6 +1138,12 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         return true;
     }
 
+    private static readonly string[] _hex32 = new[]
+    {
+        "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
+        "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F"
+    };
+
     // http://spec.graphql.org/October2021/#StringCharacter
     private static async ValueTask WriteEncodedStringAsync(TContext context, ROM value)
     {
@@ -1164,7 +1170,10 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                 else if (code == '\t')
                     await context.WriteAsync("\\t").ConfigureAwait(false);
                 else
-                    await context.WriteAsync("\\u" + ((int)code).ToString("X4")).ConfigureAwait(false);
+                {
+                    await context.WriteAsync("\\u00").ConfigureAwait(false);
+                    await context.WriteAsync(_hex32[code]).ConfigureAwait(false);
+                }
             }
             else if (code == '\\')
             {

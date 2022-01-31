@@ -622,7 +622,9 @@ type Query {
     [InlineData("\"\\\\\"")]
     [InlineData("\"\\n\\b\\f\\r\\t\"")]
     [InlineData("\"\\tX\\t\"")]
-    [InlineData("\" \u1234 \"")]
+    [InlineData("\" \u1234 \"")] // unicode > ' ' (32)
+    [InlineData("\" \\u001F \"")] // unicode < ' ' (32)
+    [InlineData("\" \\u0000 \"")] // unicode < ' ' (32)
     [InlineData("\"normal text\"")]
     public async Task SDLPrinter_Should_Print_EscapedStrings(string stringValue)
     {
