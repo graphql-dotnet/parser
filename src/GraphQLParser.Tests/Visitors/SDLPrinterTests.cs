@@ -705,6 +705,20 @@ multilined
         writer.ToString().ShouldBe(expected);
     }
 
+    [Theory]
+    [InlineData(
+@"a \u001F b",
+@"""a \\u001F b""
+")]
+    public async Task Description_With_Escaped_Unicode_Should_Be_Printed(string text, string expected)
+    {
+        var description = new GraphQLDescription(text);
+        var writer = new StringWriter();
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(description, writer);
+        writer.ToString().ShouldBe(expected);
+    }
+
     [Fact]
     public async Task InputValueDefinition_Without_Parent_Should_Be_Printed()
     {
