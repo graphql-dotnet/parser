@@ -1,7 +1,3 @@
-using GraphQLParser.AST;
-using Shouldly;
-using Xunit;
-
 namespace GraphQLParser.Tests;
 
 // https://github.com/graphql-dotnet/parser/issues/127
