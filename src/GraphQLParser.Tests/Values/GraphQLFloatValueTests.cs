@@ -1,8 +1,3 @@
-using System;
-using GraphQLParser.AST;
-using Shouldly;
-using Xunit;
-
 namespace GraphQLParser.Tests;
 
 public class GraphQLFloatValueTests

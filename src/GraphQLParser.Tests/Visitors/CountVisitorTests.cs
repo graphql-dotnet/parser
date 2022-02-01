@@ -1,8 +1,4 @@
-using System.Threading;
-using System.Threading.Tasks;
 using GraphQLParser.Visitors;
-using Shouldly;
-using Xunit;
 
 namespace GraphQLParser.Tests.Visitors;
 

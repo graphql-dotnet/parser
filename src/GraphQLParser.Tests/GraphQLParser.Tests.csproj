@@ -36,4 +36,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="GraphQLParser.AST" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
 </Project>

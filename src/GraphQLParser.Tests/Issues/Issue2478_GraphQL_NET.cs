@@ -1,8 +1,3 @@
-using System.Linq;
-using GraphQLParser.AST;
-using Shouldly;
-using Xunit;
-
 namespace GraphQLParser.Tests;
 
 public class Issue2478_GraphQL_NET
