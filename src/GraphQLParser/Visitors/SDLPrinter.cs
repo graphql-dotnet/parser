@@ -1140,8 +1140,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
     private static readonly string[] _hex32 = new[]
     {
-        "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
-        "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F"
+        "\\u0000", "\\u0001", "\\u0002", "\\u0003", "\\u0004", "\\u0005", "\\u0006", "\\u0007", "\\u0008", "\\u0009", "\\u000A", "\\u000B", "\\u000C", "\\u000D", "\\u000E", "\\u000F",
+        "\\u0010", "\\u0011", "\\u0012", "\\u0013", "\\u0014", "\\u0015", "\\u0016", "\\u0017", "\\u0018", "\\u0019", "\\u001A", "\\u001B", "\\u001C", "\\u001D", "\\u001E", "\\u001F"
     };
 
     // http://spec.graphql.org/October2021/#StringCharacter
@@ -1170,10 +1170,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                 else if (code == '\t')
                     await context.WriteAsync("\\t").ConfigureAwait(false);
                 else
-                {
-                    await context.WriteAsync("\\u00").ConfigureAwait(false);
                     await context.WriteAsync(_hex32[code]).ConfigureAwait(false);
-                }
             }
             else if (code == '\\')
             {
