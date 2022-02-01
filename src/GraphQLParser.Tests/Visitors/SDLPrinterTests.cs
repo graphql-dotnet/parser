@@ -580,6 +580,8 @@ type Query {
     [InlineData(28, "Test \\n escaping", "Test \\\\n escaping", false)]
     [InlineData(29, "Test \\u1234 escaping", "Test \\\\u1234 escaping", false)]
     [InlineData(30, "Test \\ escaping", "Test \\\\ escaping", false)]
+    [InlineData(31, "t\"est\n  line2", "\nt\"est\nline2\n", true)] // BlockString with double quote inside
+    [InlineData(32, "t\\\"\"\"est\n  line2", "\nt\\\"\"\"est\nline2\n", true)] // BlockString with triple double quote inside
     public async Task SDLPrinter_Should_Print_BlockStrings(int number, string input, string expected, bool isBlockString)
     {
         number.ShouldBeGreaterThan(0);
