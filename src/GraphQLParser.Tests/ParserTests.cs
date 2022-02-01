@@ -1,11 +1,6 @@
-using System;
 using System.Collections;
-using System.Linq;
 using System.Runtime.InteropServices;
-using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
-using Shouldly;
-using Xunit;
 
 namespace GraphQLParser.Tests;
 

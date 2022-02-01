@@ -1,5 +1,3 @@
-using System;
-
 namespace GraphQLParser.AST;
 
 /// <summary>
