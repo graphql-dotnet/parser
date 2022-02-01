@@ -613,7 +613,9 @@ type Query {
     [InlineData("\"\\\\\"")]
     [InlineData("\"\\n\\b\\f\\r\\t\"")]
     [InlineData("\"\\tX\\t\"")]
-    [InlineData("\" \u1234 \"")]
+    [InlineData("\" \u1234 \"")] // unicode > ' ' (32)
+    [InlineData("\" \\u001F \"")] // unicode < ' ' (32)
+    [InlineData("\" \\u0000 \"")] // unicode < ' ' (32)
     [InlineData("\"normal text\"")]
     public async Task SDLPrinter_Should_Print_EscapedStrings(string stringValue)
     {
@@ -686,6 +688,24 @@ multilined
 """"""
 ")]
     public async Task Description_Without_Parent_Should_Be_Printed(string text, string expected)
+    {
+        var description = new GraphQLDescription(text);
+        var writer = new StringWriter();
+        var printer = new SDLPrinter();
+        await printer.PrintAsync(description, writer);
+        writer.ToString().ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(
+@"a \u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\u0008\u0009\u000A\u000B\u000C\u000D\u000E\u000F b",
+@"""a \\u0000\\u0001\\u0002\\u0003\\u0004\\u0005\\u0006\\u0007\\u0008\\u0009\\u000A\\u000B\\u000C\\u000D\\u000E\\u000F b""
+")]
+    [InlineData(
+@"a \u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F b",
+@"""a \\u0010\\u0011\\u0012\\u0013\\u0014\\u0015\\u0016\\u0017\\u0018\\u0019\\u001A\\u001B\\u001C\\u001D\\u001E\\u001F b""
+")]
+    public async Task Description_With_Escaped_Unicode_Should_Be_Printed(string text, string expected)
     {
         var description = new GraphQLDescription(text);
         var writer = new StringWriter();
