@@ -62,7 +62,7 @@ public class MemoryTests
     [Fact]
     public void SizeOf_ROM_Should_Be_The_Same_As_ReadOnlyMemory()
     {
-        if (OperatingSystem.IsWindows()) // TODO: weird errors on Linux
+        if (OperatingSystem.IsWindows()) // weird errors on Linux
         {
             System.Runtime.InteropServices.Marshal.SizeOf(default(ROM)).ShouldBe(16);
             System.Runtime.InteropServices.Marshal.SizeOf(default(ReadOnlyMemory<char>)).ShouldBe(16);

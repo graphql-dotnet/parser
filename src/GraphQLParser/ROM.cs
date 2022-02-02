@@ -107,20 +107,6 @@ public readonly struct ROM : IEquatable<ROM>
 #if NET6_0_OR_GREATER
         return string.GetHashCode(_memory.Span);
 #else
-        // ReadOnlyMemory<T> implementation has issue - see MemoryTests.GetHashCode_Issue
-        // public override int GetHashCode()
-        // {
-        //     if (_object == null)
-        //     {
-        //         return 0;
-        //     }
-        //
-        //     return CombineHashCodes(_object.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
-        // }
-
-        //return _memory.GetHashCode();
-
-        // TODO: think about GetHashCode implementation
         if (_memory.Length == 0)
             return 0;
 

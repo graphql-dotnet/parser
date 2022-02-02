@@ -102,6 +102,7 @@ internal partial struct ParserContext
         Advance();
     }
 
+    // This method should be called at the beginning of each ParseXXX method.
     private void IncreaseDepth()
     {
         // Encourage compiler inlining of this method by moving exception to a separate method
@@ -109,6 +110,7 @@ internal partial struct ParserContext
             ThrowMaxDepthException();
     }
 
+    // This method should be called at the end of each ParseXXX method.
     private void DecreaseDepth() => --_currentDepth;
 
     [DoesNotReturn]

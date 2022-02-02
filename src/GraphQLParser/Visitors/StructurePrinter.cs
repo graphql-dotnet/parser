@@ -41,7 +41,7 @@ public class StructurePrinter<TContext> : ASTVisitor<TContext>
             await context.WriteAsync("  ").ConfigureAwait(false);
 
         context.Parents.Push(node);
-        await context.WriteAsync(node.Kind.ToString()).ConfigureAwait(false);
+        await context.WriteAsync(node.Kind.ToString()).ConfigureAwait(false); //ISSUE: allocation
         if (Options.PrintNames && node is GraphQLName name)
         {
             await context.WriteAsync(" [").ConfigureAwait(false);
@@ -51,7 +51,7 @@ public class StructurePrinter<TContext> : ASTVisitor<TContext>
         if (Options.PrintLocations)
         {
             await context.WriteAsync(" ").ConfigureAwait(false);
-            await context.WriteAsync(node.Location.ToString()).ConfigureAwait(false); //TODO: allocations
+            await context.WriteAsync(node.Location.ToString()).ConfigureAwait(false); //ISSUE: allocation
         }
         await context.WriteLineAsync().ConfigureAwait(false);
         await base.VisitAsync(node, context).ConfigureAwait(false);
