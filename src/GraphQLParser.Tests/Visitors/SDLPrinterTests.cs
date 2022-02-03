@@ -707,6 +707,14 @@ multilined
 "a \u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F b",
 @"""a \u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F b""
 ")]
+    [InlineData(                    // TODO: Change test condition?
+"Test\r\nLine 2\rLine 3\nLine 4",
+@"""""""
+Test
+Line 2Line 3
+Line 4
+""""""
+")]
     public async Task Description_With_Escaped_Unicode_Should_Be_Printed(string text, string expected)
     {
         var description = new GraphQLDescription(text);
