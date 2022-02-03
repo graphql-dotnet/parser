@@ -40,7 +40,7 @@ public enum DirectiveLocation
 
     /// <summary>Location adjacent to a variable definition.</summary>
     [Description("Location adjacent to a variable definition.")]
-    VariableDefinition, // TODO: new in October spec, check GraphQL.NET bits
+    VariableDefinition,
 
     // http://spec.graphql.org/October2021/#TypeSystemDirectiveLocation
 

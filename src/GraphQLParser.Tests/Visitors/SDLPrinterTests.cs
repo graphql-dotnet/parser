@@ -580,6 +580,8 @@ type Query {
     [InlineData(28, "Test \\n escaping", "Test \\\\n escaping", false)]
     [InlineData(29, "Test \\u1234 escaping", "Test \\\\u1234 escaping", false)]
     [InlineData(30, "Test \\ escaping", "Test \\\\ escaping", false)]
+    [InlineData(31, "t\"est\n  line2", "\nt\"est\nline2\n", true)] // BlockString with double quote inside
+    [InlineData(32, "t\\\"\"\"est\n  line2", "\nt\\\"\"\"est\nline2\n", true)] // BlockString with triple double quote inside
     public async Task SDLPrinter_Should_Print_BlockStrings(int number, string input, string expected, bool isBlockString)
     {
         number.ShouldBeGreaterThan(0);
@@ -704,6 +706,14 @@ multilined
     [InlineData(
 "a \u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F b",
 @"""a \u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F b""
+")]
+    [InlineData(                    // TODO: Change test condition?
+"Test\r\nLine 2\rLine 3\nLine 4",
+@"""""""
+Test
+Line 2Line 3
+Line 4
+""""""
 ")]
     public async Task Description_With_Escaped_Unicode_Should_Be_Printed(string text, string expected)
     {

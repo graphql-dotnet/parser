@@ -1328,22 +1328,20 @@ internal partial struct ParserContext
             type = ParseNamedType();
         }
 
-        if (!Skip(TokenKind.BANG))
+        if (Skip(TokenKind.BANG))
         {
-            DecreaseDepth();
-            return type;
+            var nonNull = NodeHelper.CreateGraphQLNonNullType(_ignoreOptions);
+
+            nonNull.Type = type;
+            // move comment from wrapped type to wrapping type
+            nonNull.Comments = type.Comments;
+            type.Comments = null;
+            nonNull.Location = GetLocation(start);
+            type = nonNull;
         }
 
-        var nonNull = NodeHelper.CreateGraphQLNonNullType(_ignoreOptions); //TODO: deal with depth
-
-        nonNull.Type = type;
-        // move comment from wrapped type to wrapping type
-        nonNull.Comments = type.Comments;
-        type.Comments = null;
-        nonNull.Location = GetLocation(start);
-
         DecreaseDepth();
-        return nonNull;
+        return type;
     }
 
     // http://spec.graphql.org/October2021/#TypeSystemExtension : SchemaExtension / TypeExtension

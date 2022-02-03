@@ -32,6 +32,7 @@ public class GraphQLParserException : Exception
         Location = location;
     }
 
+    //TODO: all this code can be rewritten to not allocate strings but is it worth it?
     private static string ComposeMessage(string description, ReadOnlySpan<char> source, Location location)
     {
         return $"Syntax Error GraphQL ({location.Line}:{location.Column}) {description}" +
@@ -46,7 +47,7 @@ public class GraphQLParserException : Exception
         string nextLineNum = (line + 1).ToString();
         int padLen = nextLineNum.Length;
         string[] lines = source
-            .ToString() // TODO: heap allocation
+            .ToString()
             .Split(new string[] { "\n" }, StringSplitOptions.None)
             .Select(e => ReplaceWithUnicodeRepresentation(e))
             .ToArray();
@@ -79,7 +80,7 @@ public class GraphQLParserException : Exception
         {
             if (IsReplacementCharacter(code))
             {
-                buffer.Append(GetUnicodeRepresentation(code));
+                buffer.Append("\\u").Append(((int)code).ToString("D4"));
             }
             else
             {
@@ -102,10 +103,4 @@ public class GraphQLParserException : Exception
     }
 
     private static bool IsReplacementCharacter(char code) => code < 0x0020 && code != 0x0009 && code != 0x000A && code != 0x000D;
-
-    private static string GetUnicodeRepresentation(char code) => code switch
-    {
-        '\0' => "\\u0000",
-        _ => "\\u" + ((int)code).ToString("D4")
-    };
 }

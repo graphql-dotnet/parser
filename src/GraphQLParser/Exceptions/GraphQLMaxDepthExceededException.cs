@@ -1,7 +1,9 @@
 namespace GraphQLParser.Exceptions;
 
 /// <summary>
-/// An exception representing a 'maximum depth exceeded' parser error.
+/// An exception representing a 'maximum depth exceeded' parser error
+/// that prevents from <see cref="StackOverflowException"/> while
+/// parsing GraphQL document.
 /// </summary>
 public class GraphQLMaxDepthExceededException : GraphQLParserException
 {
