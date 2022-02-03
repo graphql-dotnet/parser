@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Runtime.InteropServices;
-using GraphQLParser.Exceptions;
 
 namespace GraphQLParser.Tests;
 
@@ -30,108 +29,6 @@ public class ParserTests
         ReferenceEquals(text, str3).ShouldBeTrue();
         start3.ShouldBe(2);
         length3.ShouldBe(4);
-    }
-
-    [Fact]
-    public void Should_Throw_With_Deep_Query()
-    {
-        var count = 63;
-        var sb = new System.Text.StringBuilder(count * 3);
-        for (int i = 0; i < count; i++)
-            sb.Append("{a");
-        sb.Append(new string('}', count));
-        var query = sb.ToString();
-        Should.Throw<GraphQLMaxDepthExceededException>(() => query.Parse());
-    }
-
-    [Fact]
-    public void Should_Throw_With_Deep_Literal()
-    {
-        var count = 61;
-        var sb = new System.Text.StringBuilder(count * 4 + 10);
-        sb.Append("{a(b:");
-        for (int i = 0; i < count; i++)
-            sb.Append("{c:");
-        sb.Append("{}");
-        sb.Append(new string('}', count));
-        sb.Append(")}");
-        var query = sb.ToString();
-        Should.Throw<GraphQLMaxDepthExceededException>(() => query.Parse());
-    }
-
-    [Fact]
-    public void Should_Parse_With_Almost_Deep_Query()
-    {
-        var count = 62;
-        var sb = new System.Text.StringBuilder(count * 3);
-        for (int i = 0; i < count; i++)
-            sb.Append("{a");
-        sb.Append(new string('}', count));
-        var query = sb.ToString();
-        _ = query.Parse();
-    }
-
-    [Fact]
-    public void Should_Parse_With_Almost_Deep_Literal()
-    {
-        var count = 60;
-        var sb = new System.Text.StringBuilder(count * 4 + 10);
-        sb.Append("{a(b:");
-        for (int i = 0; i < count; i++)
-            sb.Append("{c:");
-        sb.Append("{}");
-        sb.Append(new string('}', count));
-        sb.Append(")}");
-        var query = sb.ToString();
-        _ = query.Parse();
-    }
-
-    [Fact]
-    public void Should_Parse_With_Shallow_Long_Query()
-    {
-        var count = 200;
-        var sb = new System.Text.StringBuilder(count * 5);
-        sb.Append('{');
-        for (int i = 0; i < count; i++)
-            sb.Append(" a" + i);
-        sb.Append('}');
-        var query = sb.ToString();
-        _ = query.Parse();
-    }
-
-    [Fact]
-    public void Should_Throw_With_MaxDepth_0_On_SimpleQuery()
-    {
-        var query = "{a}";
-        Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 0 }));
-    }
-
-    [Fact]
-    public void Should_Throw_With_MaxDepth_2_On_TypeDefinition()
-    {
-        var query = "scalar Test";
-        Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 2 }));
-    }
-
-    [Fact]
-    public void Should_Throw_With_MaxDepth_4_On_SimpleQuery()
-    {
-        var query = "{a}";
-        Should.Throw<GraphQLMaxDepthExceededException>(() => Parser.Parse(query, new ParserOptions { MaxDepth = 4 }));
-    }
-
-    [Fact]
-    public void Should_Parse_With_MaxDepth_3_On_TypeDefinition()
-    {
-        var query = "scalar Test";
-        _ = Parser.Parse(query, new ParserOptions { MaxDepth = 3 });
-    }
-
-    [Fact]
-    public void Should_Parse_With_MaxDepth_5_On_SimpleQuery()
-    {
-        var query = "{a}";
-        _ = Parser.Parse(query, new ParserOptions { MaxDepth = 5 });
     }
 
     [Theory]
@@ -645,16 +542,6 @@ scalar JSON
     [Theory]
     [InlineData(IgnoreOptions.None)]
     [InlineData(IgnoreOptions.Comments)]
-    [InlineData(IgnoreOptions.Locations)]
-    [InlineData(IgnoreOptions.All)]
-    public void Parse_Unicode_Char_At_EOF_Should_Throw(IgnoreOptions options)
-    {
-        Should.Throw<GraphQLSyntaxErrorException>(() => "{\"\\ue }".Parse(new ParserOptions { Ignore = options }));
-    }
-
-    [Theory]
-    [InlineData(IgnoreOptions.None)]
-    [InlineData(IgnoreOptions.Comments)]
     //[InlineData(IgnoreOptions.Locations)]
     //[InlineData(IgnoreOptions.All)]
     public void Parse_FieldInput_HasCorrectLocations(IgnoreOptions options)
@@ -702,27 +589,6 @@ scalar JSON
         var document = ParseGraphQLFieldSource(options);
 
         GetSingleOperationDefinition(document).Operation.ShouldBe(OperationType.Query);
-    }
-
-    [Fact]
-    public void Should_Throw_On_Unknown_OperationType()
-    {
-        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => "superquery { a }".Parse());
-        ex.Description.ShouldBe("Expected \"query/mutation/subscription/fragment/schema/scalar/type/interface/union/enum/input/extend/directive\", found Name \"superquery\"");
-        ex.Location.Line.ShouldBe(1);
-        ex.Location.Column.ShouldBe(1);
-    }
-
-    [Theory]
-    [InlineData("enum E { true A }", "Unexpected Name \"true\"; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.", 1, 10)]
-    [InlineData("enum E { B false }", "Unexpected Name \"false\"; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.", 1, 12)]
-    [InlineData("enum E { A null B }", "Unexpected Name \"null\"; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.", 1, 12)]
-    public void Should_Throw_On_Invalid_EnumValue(string query, string description, int line, int column)
-    {
-        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse());
-        ex.Description.ShouldBe(description);
-        ex.Location.Line.ShouldBe(line);
-        ex.Location.Column.ShouldBe(column);
     }
 
     [Theory]
@@ -915,56 +781,6 @@ scalar JSON
         def.Variables.GetEnumerator().ShouldBe(((IEnumerable)def.Variables).GetEnumerator());
     }
 
-    [Theory]
-    [InlineData(IgnoreOptions.None)]
-    [InlineData(IgnoreOptions.Comments)]
-    [InlineData(IgnoreOptions.Locations)]
-    [InlineData(IgnoreOptions.All)]
-    public void Parse_Empty_Field_Arguments_Should_Throw(IgnoreOptions options)
-    {
-        Should.Throw<GraphQLSyntaxErrorException>(() => "{ a() }".Parse(new ParserOptions { Ignore = options }));
-    }
-
-    [Theory]
-    [InlineData(IgnoreOptions.None)]
-    [InlineData(IgnoreOptions.Comments)]
-    [InlineData(IgnoreOptions.Locations)]
-    [InlineData(IgnoreOptions.All)]
-    public void Parse_Empty_Directive_Arguments_Should_Throw(IgnoreOptions options)
-    {
-        Should.Throw<GraphQLSyntaxErrorException>(() => "directive @dir() on FIELD_DEFINITION".Parse(new ParserOptions { Ignore = options }));
-    }
-
-    [Theory]
-    [InlineData(IgnoreOptions.None)]
-    [InlineData(IgnoreOptions.Comments)]
-    [InlineData(IgnoreOptions.Locations)]
-    [InlineData(IgnoreOptions.All)]
-    public void Parse_Empty_Enum_Values_Should_Throw(IgnoreOptions options)
-    {
-        Should.Throw<GraphQLSyntaxErrorException>(() => "enum Empty { }".Parse(new ParserOptions { Ignore = options }));
-    }
-
-    [Theory]
-    [InlineData(IgnoreOptions.None)]
-    [InlineData(IgnoreOptions.Comments)]
-    [InlineData(IgnoreOptions.Locations)]
-    [InlineData(IgnoreOptions.All)]
-    public void Parse_Empty_SelectionSet_Should_Throw(IgnoreOptions options)
-    {
-        Should.Throw<GraphQLSyntaxErrorException>(() => "{ a { } }".Parse(new ParserOptions { Ignore = options }));
-    }
-
-    [Theory]
-    [InlineData(IgnoreOptions.None)]
-    [InlineData(IgnoreOptions.Comments)]
-    [InlineData(IgnoreOptions.Locations)]
-    [InlineData(IgnoreOptions.All)]
-    public void Parse_Empty_VariableDefinitions_Should_Throw(IgnoreOptions options)
-    {
-        Should.Throw<GraphQLSyntaxErrorException>(() => "query test() { a }".Parse(new ParserOptions { Ignore = options }));
-    }
-
     private static GraphQLOperationDefinition GetSingleOperationDefinition(GraphQLDocument document)
     {
         return (GraphQLOperationDefinition)document.Definitions.Single();
@@ -1003,30 +819,6 @@ FIELD_DEFINITION
         document.Definitions[0].ShouldBeAssignableTo<GraphQLDirectiveDefinition>().Repeatable.ShouldBe(repeatable);
     }
 
-    [Theory]
-    [InlineData("directive @dir repeatable on OOPS", 1, 30)]
-    [InlineData("directive @dir(a: Int) repeatable on OOPS", 1, 38)]
-    [InlineData("directive @dir on FIELD_DEFINITION | OOPS", 1, 38)]
-    [InlineData("directive @dir on | OOPS | ENUM_VALUE", 1, 21)]
-    [InlineData(@"directive @dir on
-FIELD_DEFINITION | OOPS", 2, 20)]
-    [InlineData(@"directive @dir on
-OOPS
-| ENUM_VALUE", 2, 1)]
-    [InlineData(@"directive @dir on
-| OOPS
-| ENUM_VALUE", 2, 3)]
-    [InlineData(@"directive @dir on
-|  FIELD_DEFINITION
-|          OOPS", 3, 12)]
-    public void Should_Throw_On_Unknown_DirectiveLocation(string text, int line, int column)
-    {
-        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
-        ex.Description.ShouldBe("Expected \"QUERY/MUTATION/SUBSCRIPTION/FIELD/FRAGMENT_DEFINITION/FRAGMENT_SPREAD/INLINE_FRAGMENT/VARIABLE_DEFINITION/SCHEMA/SCALAR/OBJECT/FIELD_DEFINITION/ARGUMENT_DEFINITION/INTERFACE/UNION/ENUM/ENUM_VALUE/INPUT_OBJECT/INPUT_FIELD_DEFINITION\", found Name \"OOPS\"");
-        ex.Location.Line.ShouldBe(line);
-        ex.Location.Column.ShouldBe(column);
-    }
-
     // http://spec.graphql.org/October2021/#sec--specifiedBy
     [Fact]
     public void Should_Parse_SpecifiedBy()
@@ -1042,17 +834,6 @@ OOPS
         def.Directives[0].Arguments[0].Name.Value.ShouldBe("url");
         var value = def.Directives[0].Arguments[0].Value.ShouldBeAssignableTo<GraphQLStringValue>();
         value.Value.ShouldBe("https://tools.ietf.org/html/rfc4122");
-    }
-
-    [Theory]
-    [InlineData(IgnoreOptions.None)]
-    [InlineData(IgnoreOptions.Comments)]
-    [InlineData(IgnoreOptions.Locations)]
-    [InlineData(IgnoreOptions.All)]
-    public void Should_Fail_On_Empty_Fields(IgnoreOptions options)
-    {
-        string text = "interface Dog { }";
-        Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse(new ParserOptions { Ignore = options })).Message.ShouldContain("Expected Name, found }");
     }
 
     [Theory]
@@ -1088,18 +869,6 @@ OOPS
         def4.Interfaces[1].Name.Value.ShouldBe("Sleep");
         def4.Fields.Count.ShouldBe(1);
         def4.Fields[0].Name.Value.ShouldBe("name");
-    }
-
-    [Theory]
-    [InlineData("directive @dir On FIELD_DEFINITION")]
-    [InlineData("directive @dir onn FIELD_DEFINITION")]
-    [InlineData("directive @dir Repeatable on FIELD_DEFINITION")]
-    [InlineData("directive @dir repeatablee on FIELD_DEFINITION")]
-    [InlineData("directive @dir repeatable On FIELD_DEFINITION")]
-    [InlineData("directive @dir repeatable onn FIELD_DEFINITION")]
-    public void Should_Throw_GraphQLSyntaxErrorException(string text)
-    {
-        Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
     }
 
     [Theory]
@@ -1151,32 +920,6 @@ Cat
     }
 
     [Theory]
-    [InlineData("extend", "Expected \"schema/scalar/type/interface/union/enum/input\", found EOF")]
-    [InlineData("extend variable", "Expected \"schema/scalar/type/interface/union/enum/input\", found Name \"variable\"")]
-    [InlineData("extend schema", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#SchemaExtension")]
-    [InlineData("extend schema A", "Unexpected Name \"A\"; for more information see http://spec.graphql.org/October2021/#SchemaExtension")]
-    [InlineData("extend scalar", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
-    [InlineData("extend scalar A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
-    [InlineData("extend scalar A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#ScalarTypeExtension")]
-    [InlineData("extend type", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension")]
-    [InlineData("extend type A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension")]
-    [InlineData("extend type A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#ObjectTypeExtension")]
-    [InlineData("extend interface", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension")]
-    [InlineData("extend interface A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension")]
-    [InlineData("extend interface A B", "Unexpected Name \"B\"; for more information see http://spec.graphql.org/October2021/#InterfaceTypeExtension")]
-    [InlineData("extend union", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#UnionTypeExtension")]
-    [InlineData("extend union A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#UnionTypeExtension")]
-    [InlineData("extend enum", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#EnumTypeExtension")]
-    [InlineData("extend enum A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#EnumTypeExtension")]
-    [InlineData("extend input", "Expected Name, found EOF; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension")]
-    [InlineData("extend input A", "Unexpected EOF; for more information see http://spec.graphql.org/October2021/#InputObjectTypeExtension")]
-    public void Should_Throw_Extensions(string text, string description)
-    {
-        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
-        ex.Description.ShouldBe(description);
-    }
-
-    [Theory]
     [InlineData("scalar Empty", ASTNodeKind.ScalarTypeDefinition)]
     [InlineData("union Empty", ASTNodeKind.UnionTypeDefinition)]
     [InlineData("type Empty", ASTNodeKind.ObjectTypeDefinition)]
@@ -1188,43 +931,6 @@ Cat
         var document = text.Parse();
         document.ShouldNotBeNull();
         document.Definitions[0].Kind.ShouldBe(kind);
-    }
-
-    [Theory]
-    [InlineData("type Query { }", 1, 14)]
-    [InlineData("extend type Query { }", 1, 21)]
-    [InlineData("input Empty { }", 1, 15)]
-    [InlineData("interface Empty { }", 1, 19)]
-    [InlineData("enum Empty { }", 1, 14)]
-    [InlineData("extend type Type implements Interface { }", 1, 41)]
-    public void Should_Throw_On_Empty_Types_With_Braces(string text, int line, int column)
-    {
-        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
-        ex.Location.Line.ShouldBe(line);
-        ex.Location.Column.ShouldBe(column);
-        ex.Message.ShouldContain("Expected Name, found }");
-    }
-
-    [Theory]
-    [InlineData(@"
-""misplaced description""
-query { a }")]
-    [InlineData(@"
-""misplaced description""
-mutation m { a }")]
-    [InlineData(@"
-""misplaced description""
-subscription s { a }")]
-    [InlineData(@"
-""misplaced description""
-fragment x on User { name }")]
-    [InlineData(@"
-""misplaced description""
-extend type User implements Person")]
-    public void Should_Throw_If_Descriptions_Not_Allowed(string query)
-    {
-        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse());
-        ex.Description.ShouldBe("Unexpected String \"misplaced description\"");
     }
 
     [Theory]
