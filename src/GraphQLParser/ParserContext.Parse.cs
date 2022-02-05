@@ -954,14 +954,12 @@ internal partial struct ParserContext
         {
             return ParseBooleanValue(false);
         }
-        else if (!token.Value.IsEmpty)
+        else
         {
             return token.Value == "null"
                 ? ParseNullValue()
                 : ParseEnumValue();
         }
-
-        return (GraphQLValue)Throw_Unexpected_Token();
     }
 
     // http://spec.graphql.org/October2021/#ObjectValue
