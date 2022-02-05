@@ -50,6 +50,7 @@ public class ParserTestsThrow
     [Theory]
     [InlineData("fragment u for User { name }", "Expected \"on\", found Name \"for\"", 1, 12)]
     [InlineData("fragment u 4 User { name }", "Expected \"on\", found Int \"4\"", 1, 12)]
+    [InlineData("directive @d 4", "Expected \"on\", found Int \"4\"", 1, 14)]
     public void Should_Throw_On__Expect_Keyword(string query, string description, int line, int column)
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse());
