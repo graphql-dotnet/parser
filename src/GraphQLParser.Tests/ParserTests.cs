@@ -797,6 +797,21 @@ scalar JSON
         spread.Directives[0].Name.Value.ShouldBe("skip");
     }
 
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    [InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    [InlineData(IgnoreOptions.All)]
+    public void Should_Read_Directives_on_FragmentDefinition(IgnoreOptions options)
+    {
+        var document = "fragment f on User @documented { name }".Parse(new ParserOptions { Ignore = options });
+
+        document.Definitions.Count.ShouldBe(1);
+        var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLFragmentDefinition>();
+        def.Directives.Count.ShouldBe(1);
+        def.Directives[0].Name.Value.ShouldBe("documented");
+    }
+
     private static GraphQLOperationDefinition GetSingleOperationDefinition(GraphQLDocument document)
     {
         return (GraphQLOperationDefinition)document.Definitions.Single();
