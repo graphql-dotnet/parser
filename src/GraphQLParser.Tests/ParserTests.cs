@@ -781,6 +781,22 @@ scalar JSON
         def.Variables.GetEnumerator().ShouldBe(((IEnumerable)def.Variables).GetEnumerator());
     }
 
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    [InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    [InlineData(IgnoreOptions.All)]
+    public void Should_Read_Directives_on_FragmentSpread(IgnoreOptions options)
+    {
+        var document = "query { ...spread1 @skip(if: false) }".Parse(new ParserOptions { Ignore = options });
+
+        document.Definitions.Count.ShouldBe(1);
+        var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLOperationDefinition>();
+        var spread = def.SelectionSet.Selections[0].ShouldBeAssignableTo<GraphQLFragmentSpread>();
+        spread.Directives.Count.ShouldBe(1);
+        spread.Directives[0].Name.Value.ShouldBe("skip");
+    }
+
     private static GraphQLOperationDefinition GetSingleOperationDefinition(GraphQLDocument document)
     {
         return (GraphQLOperationDefinition)document.Definitions.Single();
