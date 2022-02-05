@@ -273,4 +273,24 @@ extend type User implements Person")]
         ex.Location.Line.ShouldBe(2);
         ex.Location.Column.ShouldBe(1);
     }
+
+    [Fact]
+    public void Should_Throw_On_Unknown_Cases_From_ExpectOneOf()
+    {
+        var context = new ParserContext("abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseNamedDefinition(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseNamedDefinition.");
+
+        context = new ParserContext("abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseOperationType(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseOperationType.");
+
+        context = new ParserContext("abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseDirectiveLocation(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseDirectiveLocation.");
+
+        context = new ParserContext("extend abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseTypeExtension(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseTypeExtension.");
+    }
 }
