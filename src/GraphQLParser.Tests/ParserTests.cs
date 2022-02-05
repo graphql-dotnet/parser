@@ -786,6 +786,21 @@ scalar JSON
     [InlineData(IgnoreOptions.Comments)]
     [InlineData(IgnoreOptions.Locations)]
     [InlineData(IgnoreOptions.All)]
+    public void Should_Read_Directives_on_OperationDefinition(IgnoreOptions options)
+    {
+        var document = "query A @easy { name }".Parse(new ParserOptions { Ignore = options });
+
+        document.Definitions.Count.ShouldBe(1);
+        var def = document.Definitions[0].ShouldBeAssignableTo<GraphQLOperationDefinition>();
+        def.Directives.Count.ShouldBe(1);
+        def.Directives[0].Name.Value.ShouldBe("easy");
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    [InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    [InlineData(IgnoreOptions.All)]
     public void Should_Read_Directives_on_FragmentSpread(IgnoreOptions options)
     {
         var document = "query { ...spread1 @skip(if: false) }".Parse(new ParserOptions { Ignore = options });
