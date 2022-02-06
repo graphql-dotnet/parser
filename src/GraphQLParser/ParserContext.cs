@@ -149,7 +149,7 @@ internal partial struct ParserContext
 
     private bool Skip(TokenKind kind)
     {
-        Debug.Assert(kind != TokenKind.COMMENT && kind != TokenKind.UNKNOWN);
+        Debug.Assert(kind != TokenKind.COMMENT && kind != TokenKind.UNKNOWN, "Skip should be used only with 'normal' tokens");
 
         bool isCurrentTokenMatching = _currentToken.Kind == kind;
 
