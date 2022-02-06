@@ -50,6 +50,7 @@ public class ParserTestsThrow
     [Theory]
     [InlineData("fragment u for User { name }", "Expected \"on\", found Name \"for\"", 1, 12)]
     [InlineData("fragment u 4 User { name }", "Expected \"on\", found Int \"4\"", 1, 12)]
+    [InlineData("directive @d 4", "Expected \"on\", found Int \"4\"", 1, 14)]
     public void Should_Throw_On__Expect_Keyword(string query, string description, int line, int column)
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => query.Parse());
@@ -271,5 +272,25 @@ extend type User implements Person")]
         ex.Description.ShouldBe("Unexpected String \"misplaced description\"");
         ex.Location.Line.ShouldBe(2);
         ex.Location.Column.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Should_Throw_On_Unknown_Cases_From_ExpectOneOf()
+    {
+        var context = new ParserContext("abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseNamedDefinition(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseNamedDefinition.");
+
+        context = new ParserContext("abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseOperationType(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseOperationType.");
+
+        context = new ParserContext("abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseDirectiveLocation(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseDirectiveLocation.");
+
+        context = new ParserContext("extend abc", default);
+        Should.Throw<NotSupportedException>(() => context.ParseTypeExtension(new[] { "abc" }))
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseTypeExtension.");
     }
 }
