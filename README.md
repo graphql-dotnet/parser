@@ -52,12 +52,14 @@ var ast1 = Parser.Parse(@"
 var ast2 = Parser.Parse(@"
 {
   field
-}", new ParserOptions { Ignore = IgnoreOptions.IgnoreComments });
+}", new ParserOptions { Ignore = IgnoreOptions.Comments });
 ```
 
-By default `ParserOptions.Ignore` is `IgnoreOptions.IgnoreComments` to improve performance.
-If you don't need information about tokens locations in the source document, then use `IgnoreOptions.IgnoreCommentsAndLocations`.
-This will maximize the saving of memory allocated in the managed heap for AST.
+By default `ParserOptions.Ignore` is `IgnoreOptions.None`. If you want
+to ignore all comments use `IgnoreOptions.Comments`. If you don't need
+information about tokens locations in the source document, then use flag
+`IgnoreOptions.Locations`. Or just use `IgnoreOptions.All` and this
+will maximize the saving of memory allocated in the managed heap for AST.
 
 ## 3. ASTVisitor
 
