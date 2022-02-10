@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using GraphQLParser.AST;
 using GraphQLParser.Exceptions;
@@ -150,7 +149,7 @@ internal partial struct ParserContext
     private bool Skip(TokenKind kind)
     {
 #if !SUPPRESS_DEBUG_ASSERT
-        Debug.Assert(kind != TokenKind.COMMENT && kind != TokenKind.UNKNOWN, "Skip should be used only with 'normal' tokens");
+        System.Diagnostics.Debug.Assert(kind != TokenKind.COMMENT && kind != TokenKind.UNKNOWN, "Skip should be used only with 'normal' tokens");
 #endif
 
         bool isCurrentTokenMatching = _currentToken.Kind == kind;
