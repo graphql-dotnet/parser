@@ -876,7 +876,7 @@ internal partial struct ParserContext
             "extend" => ParseTypeExtension(),
             "directive" => ParseDirectiveDefinition(),
 
-            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseNamedDefinition)}."),
+            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseNamedDefinition)}.")
         };
     }
 
