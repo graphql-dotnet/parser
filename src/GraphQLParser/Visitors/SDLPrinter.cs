@@ -63,17 +63,17 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context, GraphQLComment comment, bool start)
         {
-            return TryPeekParent(context, out var node) &&
-                ReferenceEquals(node.Comments![start ? 0 : node.Comments.Count - 1], comment) &&
-                node is GraphQLArguments ||
-                node is GraphQLArgument ||
-                node is GraphQLObjectField ||
-                node is GraphQLName ||
-                node is GraphQLUnionMemberTypes ||
-                node is GraphQLEnumValuesDefinition ||
-                node is GraphQLFieldsDefinition ||
-                node is GraphQLInputFieldsDefinition ||
-                node is GraphQLInputValueDefinition;
+            return TryPeekParent(context, out var parent) &&
+                ReferenceEquals(parent.Comments![start ? 0 : parent.Comments.Count - 1], comment) &&
+                parent is GraphQLArguments ||
+                parent is GraphQLArgument ||
+                parent is GraphQLObjectField ||
+                parent is GraphQLName ||
+                parent is GraphQLUnionMemberTypes ||
+                parent is GraphQLEnumValuesDefinition ||
+                parent is GraphQLFieldsDefinition ||
+                parent is GraphQLInputFieldsDefinition ||
+                parent is GraphQLInputValueDefinition;
         }
     }
 
@@ -163,8 +163,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         static bool DescribedNodeShouldBeCloseToPreviousNode(TContext context)
         {
-            return TryPeekParent(context, out var node) &&
-                node is GraphQLInputValueDefinition;
+            return TryPeekParent(context, out var parent) &&
+                parent is GraphQLInputValueDefinition;
         }
 
         if (DescribedNodeShouldBeCloseToPreviousNode(context))
@@ -268,8 +268,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(selectionSet.Comments, context).ConfigureAwait(false);
 
         bool freshLine = selectionSet.Comments != null && Options.PrintComments;
-        bool hasParent = TryPeekParent(context, out var node);
-        if (!freshLine && hasParent && (node is GraphQLOperationDefinition op && op.Name is not null || node is not GraphQLOperationDefinition))
+        bool hasParent = TryPeekParent(context, out var parent);
+        if (!freshLine && hasParent && (parent is GraphQLOperationDefinition op && op.Name is not null || parent is not GraphQLOperationDefinition))
         {
             await context.WriteAsync(" {").ConfigureAwait(false);
         }
@@ -286,7 +286,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await WriteIndentAsync(context).ConfigureAwait(false);
         await context.WriteAsync("}").ConfigureAwait(false);
 
-        if (node is not GraphQLOperationDefinition && node is not GraphQLFragmentDefinition)
+        if (parent is not GraphQLOperationDefinition && parent is not GraphQLFragmentDefinition)
             await context.WriteLineAsync().ConfigureAwait(false);
     }
 
@@ -614,19 +614,18 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitInputValueDefinitionAsync(GraphQLInputValueDefinition inputValueDefinition, TContext context)
     {
-        bool hasParent = TryPeekParent(context, out var node);
+        bool hasParent = TryPeekParent(context, out var parent);
 
-        if (hasParent && node is GraphQLArgumentsDefinition argsDef)
+        if (hasParent && parent is GraphQLArgumentsDefinition argsDef && argsDef.Items.IndexOf(inputValueDefinition) > 0)
         {
-            if (argsDef.Items.IndexOf(inputValueDefinition) > 0)
-                await context.WriteAsync(inputValueDefinition.Description == null ? ", " : ",").ConfigureAwait(false);
+            await context.WriteAsync(inputValueDefinition.Description == null ? ", " : ",").ConfigureAwait(false);
         }
 
         await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
 
         // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync/VisitDescriptionAsync
-        if (hasParent && node is GraphQLInputFieldsDefinition)
+        if (hasParent && parent is GraphQLInputFieldsDefinition)
             await WriteIndentAsync(context).ConfigureAwait(false);
 
         await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);
@@ -1058,7 +1057,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         if (node is GraphQLInputValueDefinition && (context.Parents.Count > 0 && context.Parents.Peek() is GraphQLInputFieldsDefinition))
             ++context.IndentLevel;
 
-        if (node is GraphQLDescription && TryPeekParent(context, out var p) && p is GraphQLArgumentsDefinition)
+        if (node is GraphQLDescription && TryPeekParent(context, out var parent) && parent is GraphQLArgumentsDefinition)
             ++context.IndentLevel;
 
         if (node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine)
