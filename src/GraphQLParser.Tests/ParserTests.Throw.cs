@@ -9,6 +9,23 @@ public class ParserTestsThrow
     [InlineData(IgnoreOptions.Comments)]
     [InlineData(IgnoreOptions.Locations)]
     [InlineData(IgnoreOptions.All)]
+    public void ParseNamedDefinitionWithDescription_At_EOF_Should_Throw(IgnoreOptions options)
+    {
+        var ex = Should.Throw<GraphQLSyntaxErrorException>(() => "\"eof is near\"".Parse(new ParserOptions { Ignore = options }));
+        ex.Message.ShouldBe(@"Syntax Error GraphQL (1:1) Unexpected String ""eof is near""
+1: ""eof is near""
+   ^
+", StringCompareShould.IgnoreLineEndings);
+        ex.Description.ShouldBe("Unexpected String \"eof is near\"");
+        ex.Location.Line.ShouldBe(1);
+        ex.Location.Column.ShouldBe(1);
+    }
+
+    [Theory]
+    [InlineData(IgnoreOptions.None)]
+    [InlineData(IgnoreOptions.Comments)]
+    [InlineData(IgnoreOptions.Locations)]
+    [InlineData(IgnoreOptions.All)]
     public void Parse_Unicode_Char_At_EOF_Should_Throw(IgnoreOptions options)
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => "{\"\\ue }".Parse(new ParserOptions { Ignore = options }));
