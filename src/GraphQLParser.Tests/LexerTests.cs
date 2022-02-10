@@ -436,4 +436,14 @@ public class LexerTests
         actual.Kind.ShouldBe(TokenKind.STRING);
         actual.Value.ToString().ShouldBe(expected);
     }
+
+    [Fact]
+    public void BlockString_LineFeeds()
+    {
+        var str = "\"\"\"test" + new string(' ', 8192) + "\r\ntest\rtest\ntest\"\"\"";
+        var test = new LexerContext(str, 0);
+        var token = test.GetToken();
+        token.Kind.ShouldBe(TokenKind.STRING);
+        token.Value.ToString().ShouldBe("test" + new string(' ', 8192) + "\ntest\ntest\ntest");
+    }
 }
