@@ -859,7 +859,8 @@ internal partial struct ParserContext
 
     internal ASTNode ParseNamedDefinition(string[]? oneOf = null) // internal for tests
     {
-        return ExpectOneOf(oneOf ?? TopLevelKeywordOneOf, advance: false) switch
+        var keyword = ExpectOneOf(oneOf ?? TopLevelKeywordOneOf, advance: false);
+        return keyword switch
         {
             "query" => ParseOperationDefinition(),
             "mutation" => ParseOperationDefinition(),
@@ -875,7 +876,7 @@ internal partial struct ParserContext
             "extend" => ParseTypeExtension(),
             "directive" => ParseDirectiveDefinition(),
 
-            string keyword => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseNamedDefinition)}.")
+            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseNamedDefinition)}."),
         };
     }
 
@@ -1098,20 +1099,22 @@ internal partial struct ParserContext
     // http://spec.graphql.org/October2021/#OperationType
     internal OperationType ParseOperationType(string[]? oneOf = null) // internal for tests
     {
-        return ExpectOneOf(oneOf ?? OperationTypeOneOf) switch
+        var keyword = ExpectOneOf(oneOf ?? OperationTypeOneOf);
+        return keyword switch
         {
             "query" => OperationType.Query,
             "mutation" => OperationType.Mutation,
             "subscription" => OperationType.Subscription,
 
-            string keyword => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseOperationType)}.")
+            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseOperationType)}.")
         };
     }
 
     // http://spec.graphql.org/June2018/#DirectiveLocation
     internal DirectiveLocation ParseDirectiveLocation(string[]? oneOf = null) // internal for tests
     {
-        return ExpectOneOf(oneOf ?? DirectiveLocationOneOf) switch
+        var keyword = ExpectOneOf(oneOf ?? DirectiveLocationOneOf);
+        return keyword switch
         {
             // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
             "QUERY" => DirectiveLocation.Query,
@@ -1136,7 +1139,7 @@ internal partial struct ParserContext
             "INPUT_OBJECT" => DirectiveLocation.InputObject,
             "INPUT_FIELD_DEFINITION" => DirectiveLocation.InputFieldDefinition,
 
-            string keyword => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseDirectiveLocation)}.")
+            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseDirectiveLocation)}.")
         };
     }
 
@@ -1350,7 +1353,8 @@ internal partial struct ParserContext
 
         ExpectKeyword("extend");
 
-        return ExpectOneOf(oneOf ?? TypeExtensionOneOf, advance: false) switch
+        var keyword = ExpectOneOf(oneOf ?? TypeExtensionOneOf, advance: false);
+        return keyword switch
         {
             "schema" => ParseSchemaExtension(start, comments),
             "scalar" => ParseScalarTypeExtension(start, comments),
@@ -1360,7 +1364,7 @@ internal partial struct ParserContext
             "enum" => ParseEnumTypeExtension(start, comments),
             "input" => ParseInputObjectTypeExtension(start, comments),
 
-            string keyword => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseTypeExtension)}.")
+            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseTypeExtension)}.")
         };
     }
 
