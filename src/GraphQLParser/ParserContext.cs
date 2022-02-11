@@ -149,6 +149,7 @@ internal partial struct ParserContext
 
     private bool Skip(TokenKind kind)
     {
+        // & instead of && here to get full code coverage, see https://github.com/graphql-dotnet/parser/pull/242
         Debug.Assert(kind != TokenKind.COMMENT & kind != TokenKind.UNKNOWN, "Skip should be used only with 'normal' tokens");
 
         bool isCurrentTokenMatching = _currentToken.Kind == kind;
