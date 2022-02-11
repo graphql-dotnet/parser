@@ -7,8 +7,6 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6</TargetFrameworks>
     <PackageId>GraphQL-Parser</PackageId>
     <PackageTags>GraphQL;json;api;parser</PackageTags>
-    <!--https://github.com/coverlet-coverage/coverlet/issues/258-->
-    <DefineConstants Condition="'$(GITHUB_ACTIONS)' == 'true'">$(DefineConstants);SUPPRESS_DEBUG_ASSERT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
