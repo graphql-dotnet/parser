@@ -1,4 +1,4 @@
-# GraphQL Dotnet Parser
+# GraphQL.NET Parser
 
 [![Publish release to Nuget registry](https://github.com/graphql-dotnet/parser/actions/workflows/publish-release.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/publish-release.yml)
 [![Publish preview to GitHub registry](https://github.com/graphql-dotnet/parser/actions/workflows/publish-preview.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/publish-preview.yml)
@@ -16,9 +16,11 @@
 
 ![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
 
-This library contains a lexer and parser classes as well as the complete [GraphQL AST model](http://spec.graphql.org/October2021/#sec-Appendix-Grammar-Summary).
+This library contains a lexer and parser as well as the complete [GraphQL AST model](http://spec.graphql.org/October2021/#sec-Appendix-Grammar-Summary)
+that allows you to work with GraphQL documents compatible with the [October 2021 spec](https://spec.graphql.org/October2021/).
 
-The parser from this library is used in [GraphQL for .NET](https://github.com/graphql-dotnet/graphql-dotnet).
+The parser from this library is used by the [GraphQL.NET](https://github.com/graphql-dotnet/graphql-dotnet) project
+and was [verified](https://codecov.io/gh/graphql-dotnet/parser) by many test data sets.
 
 Preview versions of this package are available on [GitHub Packages](https://github.com/orgs/graphql-dotnet/packages?repo_name=parser).
 
