@@ -16,7 +16,7 @@
 
 ![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
 
-This library contains a lexer and parser classes as well as the complete [GraphQL AST model](http://spec.graphql.org/October2021/#sec-Appendix-Grammar-Summary)
+This library contains a lexer and parser as well as the complete [GraphQL AST model](http://spec.graphql.org/October2021/#sec-Appendix-Grammar-Summary)
 that allows you to work with GraphQL documents compatible with the [October 2021 spec](https://spec.graphql.org/October2021/).
 
 The parser from this library is used by [GraphQL.NET](https://github.com/graphql-dotnet/graphql-dotnet) project
