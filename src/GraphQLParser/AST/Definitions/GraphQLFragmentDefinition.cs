@@ -5,7 +5,7 @@ namespace GraphQLParser.AST;
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.FragmentDefinition"/>.
 /// </summary>
-[DebuggerDisplay("GraphQLFragmentDefinition: {Name}")]
+[DebuggerDisplay("GraphQLFragmentDefinition: {FragmentName.Name.StringValue}")]
 public class GraphQLFragmentDefinition : GraphQLExecutableDefinition
 {
     /// <inheritdoc/>
