@@ -21,8 +21,7 @@ public class MemoryTests
     public void HashSet()
     {
         ROM r = "abc";
-        HashSet<ROM> hashSet = new();
-        hashSet.Add(r);
+        HashSet<ROM> hashSet = new() { r };
         hashSet.Contains(r).ShouldBeTrue();
 
         ROM r2 = "abcdef";
@@ -35,8 +34,10 @@ public class MemoryTests
     public void Dictionary()
     {
         ROM r = "abc";
-        Dictionary<ROM, int> dictionary = new();
-        dictionary[r] = 42;
+        Dictionary<ROM, int> dictionary = new()
+        {
+            [r] = 42
+        };
         dictionary.ContainsKey(r).ShouldBeTrue();
 
         ROM r2 = "abcdef";
