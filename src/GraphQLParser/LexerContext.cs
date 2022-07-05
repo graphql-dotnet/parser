@@ -4,8 +4,8 @@ using GraphQLParser.Exceptions;
 
 namespace GraphQLParser;
 
-// WARNING: mutable struct, pass it by reference to those methods that will change it
-internal struct LexerContext
+// WARNING: mutable ref struct, pass it by reference to those methods that will change it
+internal ref struct LexerContext
 {
     private int _currentIndex;
     private readonly ROM _source;
