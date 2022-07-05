@@ -5,8 +5,9 @@ using GraphQLParser.Exceptions;
 
 namespace GraphQLParser;
 
-// WARNING: mutable struct, pass it by reference to those methods that will change it
-internal partial struct ParserContext
+// WARNING: mutable ref struct, pass it by reference to those methods that will change it
+
+internal ref partial struct ParserContext
 {
     private static string[] TopLevelKeywordOneOf { get; set; } = new[]
     {
