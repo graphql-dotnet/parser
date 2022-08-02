@@ -6,10 +6,8 @@
   -->
   <PropertyGroup Condition="'$(SignAssembly)' != 'false'">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)public.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)graphql.snk</AssemblyOriginatorKeyFile>
     <PublicKeyToken>e6238258560628ee</PublicKeyToken>
-    <DelaySign>false</DelaySign>
-    <PublicSign>true</PublicSign>
   </PropertyGroup>
 
 
