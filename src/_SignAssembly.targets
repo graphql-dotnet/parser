@@ -4,12 +4,10 @@
     Workaround for: https://github.com/Microsoft/msbuild/issues/1490 (lack of support for public-signing satellites)
     Delay-signs the satellite assemblies when main assembly is public-signed.
   -->
-  <PropertyGroup Condition="'$(SignAssembly)' != 'false'">
-    <SignAssembly>true</SignAssembly>
+  <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)graphql.snk</AssemblyOriginatorKeyFile>
     <PublicKeyToken>e6238258560628ee</PublicKeyToken>
   </PropertyGroup>
-
 
   <Target Name="PrepareToDelaySignSatelliteAssemblies" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(MSBuildRuntimeType)' != 'Core' and '$(SignAssembly)' != 'false'">
     <PropertyGroup>

@@ -1,6 +1,6 @@
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)_SignAssembly.targets" Condition="Exists('$(MSBuildThisFileDirectory)_SignAssembly.targets')" />
+  <Import Project="$(MSBuildThisFileDirectory)_SignAssembly.targets" Condition="Exists('$(MSBuildThisFileDirectory)_SignAssembly.targets') and '$(SignAssembly)' != 'false'" />
 
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
     <CoverletOutputFormat>opencover</CoverletOutputFormat>
