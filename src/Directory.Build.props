@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>8.0.0-preview</VersionPrefix>
+    <VersionPrefix>8.0.0-strongname</VersionPrefix>
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -25,12 +25,11 @@
     <PackageReadmeFile Condition="'$(IsPackable)' == 'true'">README.md</PackageReadmeFile>
 
     <!--
-      Strong name sign netstandard assemblies for better cross-runtime compatibility
+      Strong name signing of netstandard assemblies for better cross-runtime compatibility
+
         Ref: https://docs.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/strong-name-signing-exceptions#recommended-action
      -->
-    <_TargetNetStandard Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='netstandard2.1'">true</_TargetNetStandard>
-    <SignAssembly Condition="'$(_TargetNetStandard)'!='true'">false</SignAssembly>
-    <SignAssembly Condition="'$(_TargetNetStandard)'=='true'">true</SignAssembly>
+    <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)_SignAssembly.targets</CustomBeforeMicrosoftCommonTargets>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' == 'true'">

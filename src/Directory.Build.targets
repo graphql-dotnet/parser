@@ -1,7 +1,5 @@
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)_SignAssembly.targets" Condition="Exists('$(MSBuildThisFileDirectory)_SignAssembly.targets') And '$(SignAssembly)' == 'true'" />
-
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
     <CoverletOutputFormat>opencover</CoverletOutputFormat>
     <CoverletOutput>$(MSBuildThisFileDirectory)../.coverage/$(AssemblyName)/</CoverletOutput>
