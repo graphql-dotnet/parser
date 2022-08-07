@@ -14,7 +14,7 @@
 
   <PropertyGroup  Condition="'$(TargetFramework)'!='net6'">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)graphql.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)graphql.snk</AssemblyOriginatorKeyFile>
     <PublicKeyToken>e6238258560628ee</PublicKeyToken>
   </PropertyGroup>
 
