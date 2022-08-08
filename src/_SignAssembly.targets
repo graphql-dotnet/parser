@@ -5,7 +5,7 @@
         Ref: https://docs.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/strong-name-signing-exceptions#recommended-action
      -->
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true'">
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)graphql.snk</AssemblyOriginatorKeyFile>
     <PublicKeyToken>e6238258560628ee</PublicKeyToken>
   </PropertyGroup>
