@@ -29,6 +29,7 @@
 
         Ref: https://docs.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/strong-name-signing-exceptions#recommended-action
      -->
+    <SignAssembly>true</SignAssembly>
     <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)_SignAssembly.targets</CustomBeforeMicrosoftCommonTargets>
   </PropertyGroup>
 
