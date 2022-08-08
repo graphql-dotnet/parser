@@ -23,6 +23,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageReadmeFile Condition="'$(IsPackable)' == 'true'">README.md</PackageReadmeFile>
+
+    <!--
+      Strong name signing of netstandard assemblies for better cross-runtime compatibility
+
+        Ref: https://docs.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/strong-name-signing-exceptions#recommended-action
+     -->
+    <SignAssembly>true</SignAssembly>
+    <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)_SignAssembly.targets</CustomBeforeMicrosoftCommonTargets>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
