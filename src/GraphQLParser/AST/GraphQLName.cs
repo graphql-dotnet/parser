@@ -36,12 +36,9 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     {
         get
         {
-            if (_string == null)
-            {
-                _string = Value.Length == 0
+            _string ??= Value.Length == 0
                     ? string.Empty
                     : (string)Value;
-            }
 
             return _string;
         }
