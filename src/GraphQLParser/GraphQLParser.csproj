@@ -15,7 +15,7 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <InternalsVisibleTo Condition="'$(SignAssembly)' == 'true'" Include="$(MSBuildProjectName).Tests, $(_FriendAssembliesPublicKey);$(MSBuildProjectName).Benchmarks, $(_FriendAssembliesPublicKey)"/>
     <InternalsVisibleTo Condition="'$(SignAssembly)' != 'true'" Include="$(MSBuildProjectName).Tests;$(MSBuildProjectName).Benchmarks"/>
   </ItemGroup>
