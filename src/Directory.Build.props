@@ -3,7 +3,6 @@
   <PropertyGroup>
     <VersionPrefix>8.0.0-preview</VersionPrefix>
     <LangVersion>latest</LangVersion>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>CS8766</WarningsNotAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

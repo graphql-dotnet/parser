@@ -58,9 +58,14 @@ jobs:
       - name: Build solution [Debug]
         working-directory: src
         run: dotnet build --no-restore -c Debug
-      - name: Test solution [Debug]
+      - name: Test solution [Debug] with code coverage
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         working-directory: src
-        run: dotnet test --no-restore -p:CollectCoverage=true -p:DoesNotReturnAttribute="DoesNotReturnAttribute"
+        run: dotnet test --no-restore --no-build -p:CollectCoverage=true -p:DoesNotReturnAttribute="DoesNotReturnAttribute"
+      - name: Test solution [Debug] without code coverage
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        working-directory: src
+        run: dotnet test --no-restore --no-build
       - name: Upload coverage to codecov
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: codecov/codecov-action@v3
