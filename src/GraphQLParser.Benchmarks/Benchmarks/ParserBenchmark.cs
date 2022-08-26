@@ -32,7 +32,7 @@ public class ParserBenchmark : BenchmarkBase
                 _ => 5
             };
 
-            public IEnumerable<BenchmarkCase> GetExecutionOrder(ImmutableArray<BenchmarkCase> benchmarksCase) => benchmarksCase;
+            public IEnumerable<BenchmarkCase> GetExecutionOrder(ImmutableArray<BenchmarkCase> benchmarksCase, IEnumerable<BenchmarkLogicalGroupRule>? order = null) => benchmarksCase;
 
             public IEnumerable<BenchmarkCase> GetSummaryOrder(ImmutableArray<BenchmarkCase> benchmarksCase, Summary summary) =>
                 from benchmark in benchmarksCase
@@ -44,7 +44,7 @@ public class ParserBenchmark : BenchmarkBase
 
             public string GetLogicalGroupKey(ImmutableArray<BenchmarkCase> allBenchmarksCases, BenchmarkCase benchmarkCase) => (string)benchmarkCase.Parameters["name"];
 
-            public IEnumerable<IGrouping<string, BenchmarkCase>> GetLogicalGroupOrder(IEnumerable<IGrouping<string, BenchmarkCase>> logicalGroups) => logicalGroups.OrderBy(it => it.Key);
+            public IEnumerable<IGrouping<string, BenchmarkCase>> GetLogicalGroupOrder(IEnumerable<IGrouping<string, BenchmarkCase>> logicalGroups, IEnumerable<BenchmarkLogicalGroupRule>? order = null) => logicalGroups.OrderBy(it => it.Key);
 
             public bool SeparateLogicalGroups => true;
         }
