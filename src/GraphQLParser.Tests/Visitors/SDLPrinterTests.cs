@@ -1,9 +1,41 @@
+using System.Text;
 using GraphQLParser.Visitors;
 
 namespace GraphQLParser.Tests.Visitors;
 
 public class SDLPrinterTests
 {
+    [Fact]
+    public async Task Print_Matches_PrintAsync_String()
+    {
+        var query = "KitchenSink".ReadGraphQLFile().Parse();
+        var writer = new SDLPrinter();
+        var sw = new StringWriter();
+        await writer.PrintAsync(query, sw);
+        sw.Flush();
+        var txt = sw.ToString();
+        var sb = new StringBuilder();
+        writer.Print(query, sb);
+        sb.ToString().ShouldBe(txt);
+    }
+
+    [Fact]
+    public async Task Print_Matches_PrintAsync_Bytes()
+    {
+        var query = "KitchenSink".ReadGraphQLFile().Parse();
+        var writer = new SDLPrinter();
+        var ms1 = new MemoryStream();
+        var sw = new StreamWriter(ms1);
+        await writer.PrintAsync(query, sw);
+        sw.Flush();
+
+        var ms2 = new MemoryStream();
+        writer.Print(query, ms2);
+        var bytes1 = ms1.ToArray();
+        var bytes2 = ms2.ToArray();
+        bytes1.ShouldBe(bytes2);
+    }
+
     [Fact]
     public void SDLPrinter_Should_Have_Default_Options()
     {
