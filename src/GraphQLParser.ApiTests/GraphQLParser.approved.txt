@@ -884,6 +884,11 @@ namespace GraphQLParser.Visitors
             public System.IO.TextWriter Writer { get; }
         }
     }
+    public static class SDLPrinterExtensions
+    {
+        public static void Print(this GraphQLParser.Visitors.SDLPrinter printer, GraphQLParser.AST.ASTNode node, System.Text.StringBuilder stringBuilder) { }
+        public static void Print(this GraphQLParser.Visitors.SDLPrinter printer, GraphQLParser.AST.ASTNode node, System.IO.MemoryStream memoryStream, System.Text.Encoding? encoding = null) { }
+    }
     public class SDLPrinterOptions
     {
         public SDLPrinterOptions() { }
