@@ -1,4 +1,3 @@
-using System.Text;
 using GraphQLParser.Visitors;
 
 namespace GraphQLParser.Tests.Visitors;
@@ -14,9 +13,7 @@ public class SDLPrinterTests
         await writer.PrintAsync(query, sw);
         sw.Flush();
         var txt = sw.ToString();
-        var sb = new StringBuilder();
-        writer.Print(query, sb);
-        sb.ToString().ShouldBe(txt);
+        writer.Print(query).ShouldBe(txt);
     }
 
     [Fact]

@@ -9,6 +9,16 @@ namespace GraphQLParser.Visitors;
 public static class SDLPrinterExtensions
 {
     /// <summary>
+    /// Returns the specified AST printed as a SDL document.
+    /// </summary>
+    public static string Print(this SDLPrinter printer, ASTNode node)
+    {
+        var sb = new StringBuilder();
+        printer.Print(node, sb);
+        return sb.ToString();
+    }
+
+    /// <summary>
     /// Prints the specified AST into the specified <see cref="StringBuilder"/> as a SDL document.
     /// </summary>
     public static void Print(this SDLPrinter printer, ASTNode node, StringBuilder stringBuilder)
