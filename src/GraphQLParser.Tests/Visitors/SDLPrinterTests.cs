@@ -754,7 +754,7 @@ Line 4
     [Fact]
     public void StringBuilder_Runs_Synchronously()
     {
-        var query = "kitchenSink".ReadGraphQLFile().Parse();
+        var query = "KitchenSink".ReadGraphQLFile().Parse();
         var sb = new StringBuilder();
         using var writer = new StringWriter(sb);
         var printer = new SDLPrinter();
@@ -764,7 +764,7 @@ Line 4
     [Fact]
     public void UTF8_MemoryStream_Runs_Synchronously()
     {
-        var query = "kitchenSink".ReadGraphQLFile().Parse();
+        var query = "KitchenSink".ReadGraphQLFile().Parse();
         using var ms = new MemoryStream();
         using var writer = new StreamWriter(ms);
         var printer = new SDLPrinter();
