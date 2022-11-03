@@ -1,3 +1,4 @@
+using System.Text;
 using GraphQLParser.Visitors;
 
 namespace GraphQLParser.Tests.Visitors;
@@ -748,6 +749,26 @@ Line 4
         var printer = new SDLPrinter();
         await printer.PrintAsync(directive, writer);
         writer.ToString().ShouldBe("@upper");
+    }
+
+    [Fact]
+    public void StringBuilder_Runs_Synchronously()
+    {
+        var document = "KitchenSink".ReadGraphQLFile().Parse();
+        var sb = new StringBuilder();
+        using var writer = new StringWriter(sb);
+        var printer = new SDLPrinter();
+        printer.PrintAsync(document, writer).IsCompletedSuccessfully.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void UTF8_MemoryStream_Runs_Synchronously()
+    {
+        var document = "KitchenSink".ReadGraphQLFile().Parse();
+        using var ms = new MemoryStream();
+        using var writer = new StreamWriter(ms);
+        var printer = new SDLPrinter();
+        printer.PrintAsync(document, writer).IsCompletedSuccessfully.ShouldBeTrue();
     }
 
     [Theory]
