@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(SingleTestPlatform)' == 'true'">
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net7</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(SingleTestPlatform)' != 'true'">
-    <TargetFrameworks>netcoreapp3.1;net5;net6</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5;net6;net7</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
