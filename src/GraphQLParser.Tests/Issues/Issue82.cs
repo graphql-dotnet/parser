@@ -2,12 +2,13 @@ namespace GraphQLParser.Tests;
 
 public class Issue82
 {
-    private readonly string _query = @"query($username: String) {
-  Person(uname: $username, firstName: ""Pete"") {
+    private readonly string _query = """
+query($username: String) {
+  Person(uname: $username, firstName: "Pete") {
     id, email
     }
 }
-";
+""";
 
     [Theory]
     [InlineData(IgnoreOptions.None)]
