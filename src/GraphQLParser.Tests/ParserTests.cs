@@ -986,66 +986,66 @@ Cat
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_Should_Read_Correctly(IgnoreOptions options)
     {
-        var document = @"
-""Super schema""
+        var document = """"
+"Super schema"
 schema {
   query: String
 }
 
-""A JSON scalar""
+"A JSON scalar"
 scalar JSON
 
-""""""
+"""
 Human type
-""""""
+"""
 type Human {
-  """"""
+  """
   Name of human
-  """"""
+  """
   name: String
 
-  ""Test""
+  "Test"
   test(
-    ""desc""
+    "desc"
     arg: Int
   ): Int
 }
 
-""Test interface""
+"Test interface"
 interface TestInterface {
-  ""Object name""
+  "Object name"
   name: String
 }
 
-""""""
+"""
 Test union
-""""""
+"""
 union TestUnion = Test1 | Test2
 
-""Example enum""
+"Example enum"
 enum Colors {
-  ""Red"" RED
-  ""Blue"" BLUE
+  "Red" RED
+  "Blue" BLUE
 }
 
-""""""
+"""
 This is an example input object
 Line two of the description
-""""""
+"""
 input TestInputObject {
-    """"""
+    """
     The value of the input object
       (any JSON value is accepted)
-    """"""
+    """
     Value: JSON
 }
 
-""Test directive""
+"Test directive"
 directive @TestDirective (
-  ""Example""
+  "Example"
   Value: Int
 ) on QUERY
-".Parse(new ParserOptions { Ignore = options });
+"""".Parse(new ParserOptions { Ignore = options });
         var defs = document.Definitions;
         defs.Count.ShouldBe(8);
 
@@ -1119,100 +1119,100 @@ directive @TestDirective (
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_WithComments_Should_Read_Correctly_1(IgnoreOptions options)
     {
-        var document = @"
+        var document = """"
 # comment -1
-""Super schema""
+"Super schema"
 # comment 0
 schema {
   query: String
 }
 
 # comment 1
-""A JSON scalar""
+"A JSON scalar"
 # comment 2
 scalar JSON
 
 # comment 3
-""""""
+"""
 Human type
-""""""
+"""
 # comment 4
 type Human {
   # comment 5
-  """"""
+  """
   Name of human
-  """"""
+  """
   # comment 6
   name: String
 
   # comment 7
-  ""Test""
+  "Test"
   # comment 8
   test(
     # comment 9
-    ""desc""
+    "desc"
     # comment 10
     arg: Int
   ): Int
 }
 
 # comment 11
-""Test interface""
+"Test interface"
 # comment 12
 interface TestInterface {
   # comment 13
-  ""Object name""
+  "Object name"
   # comment 14
   name: String
 }
 
 # comment 15
-""""""
+"""
 Test union
-""""""
+"""
 # comment 16
 union TestUnion = Test1 | Test2
 
 # comment 17
-""Example enum""
+"Example enum"
 # comment 18
 enum Colors {
   # comment 19
-  ""Red""
+  "Red"
   # comment 20
   RED
   # comment 21
-  ""Blue""
+  "Blue"
   # comment 22
   BLUE
 }
 
 # comment 23
-""""""
+"""
 This is an example input object
 Line two of the description
-""""""
+"""
 # comment 24
 input TestInputObject {
     # comment 25
-    """"""
+    """
     The value of the input object
       (any JSON value is accepted)
-    """"""
+    """
     # comment 26
     Value: JSON
 }
 
 # comment 27
-""Test directive""
+"Test directive"
 # comment 28
 directive @TestDirective (
   # comment 29
-  ""Example""
+  "Example"
   # comment 30
   Value: Int
 ) on QUERY
-".Parse(new ParserOptions { Ignore = options });
+"""".Parse(new ParserOptions { Ignore = options });
         var defs = document.Definitions;
         defs.Count.ShouldBe(8);
         var parseComments = !options.HasFlag(IgnoreOptions.Comments);
@@ -1319,84 +1319,84 @@ directive @TestDirective (
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_WithComments_Should_Read_Correctly_2(IgnoreOptions options)
     {
-        var document = @"
-""Super schema""
+        var document = """"
+"Super schema"
 # comment 1
 schema {
   query: String
 }
 
-""A JSON scalar""
+"A JSON scalar"
 # comment 2
 scalar JSON
 
-""""""
+"""
 Human type
-""""""
+"""
 # comment 4
 type Human {
-  """"""
+  """
   Name of human
-  """"""
+  """
   # comment 6
   name: String
 
-  ""Test""
+  "Test"
   # comment 8
   test(
-    ""desc""
+    "desc"
     # comment 10
     arg: Int
   ): Int
 }
 
-""Test interface""
+"Test interface"
 # comment 12
 interface TestInterface {
-  ""Object name""
+  "Object name"
   # comment 14
   name: String
 }
 
-""""""
+"""
 Test union
-""""""
+"""
 # comment 16
 union TestUnion = Test1 | Test2
 
-""Example enum""
+"Example enum"
 # comment 18
 enum Colors {
-  ""Red""
+  "Red"
   # comment 20
   RED
-  ""Blue""
+  "Blue"
   # comment 22
   BLUE
 }
 
-""""""
+"""
 This is an example input object
 Line two of the description
-""""""
+"""
 # comment 24
 input TestInputObject {
-    """"""
+    """
     The value of the input object
       (any JSON value is accepted)
-    """"""
+    """
     # comment 26
     Value: JSON
 }
 
-""Test directive""
+"Test directive"
 # comment 28
 directive @TestDirective (
-  ""Example""
+  "Example"
   # comment 30
   Value: Int
 ) on QUERY
-".Parse(new ParserOptions { Ignore = options });
+"""".Parse(new ParserOptions { Ignore = options });
         var defs = document.Definitions;
         defs.Count.ShouldBe(8);
         var parseComments = !options.HasFlag(IgnoreOptions.Comments);
@@ -1503,84 +1503,84 @@ directive @TestDirective (
     [InlineData(IgnoreOptions.All)]
     public void Descriptions_WithComments_Should_Read_Correctly_3(IgnoreOptions options)
     {
-        var document = @"
+        var document = """"
 # comment 0
-""Super schema""
+"Super schema"
 schema {
   query: String
 }
 
 # comment 1
-""A JSON scalar""
+"A JSON scalar"
 scalar JSON
 
 # comment 3
-""""""
+"""
 Human type
-""""""
+"""
 type Human {
   # comment 5
-  """"""
+  """
   Name of human
-  """"""
+  """
   name: String
 
   # comment 7
-  ""Test""
+  "Test"
   test(
     # comment 9
-    ""desc""
+    "desc"
     arg: Int
   ): Int
 }
 
 # comment 11
-""Test interface""
+"Test interface"
 interface TestInterface {
   # comment 13
-  ""Object name""
+  "Object name"
   name: String
 }
 
 # comment 15
-""""""
+"""
 Test union
-""""""
+"""
 union TestUnion = Test1 | Test2
 
 # comment 17
-""Example enum""
+"Example enum"
 enum Colors {
   # comment 19
-  ""Red""
+  "Red"
   RED
   # comment 21
-  ""Blue""
+  "Blue"
   BLUE
 }
 
 # comment 23
-""""""
+"""
 This is an example input object
 Line two of the description
-""""""
+"""
 input TestInputObject {
     # comment 25
-    """"""
+    """
     The value of the input object
       (any JSON value is accepted)
-    """"""
+    """
     Value: JSON
 }
 
 # comment 27
-""Test directive""
+"Test directive"
 directive @TestDirective (
   # comment 29
-  ""Example""
+  "Example"
   Value: Int
 ) on QUERY
-".Parse(new ParserOptions { Ignore = options });
+"""".Parse(new ParserOptions { Ignore = options });
         var defs = document.Definitions;
         defs.Count.ShouldBe(8);
         var parseComments = !options.HasFlag(IgnoreOptions.Comments);

@@ -8,11 +8,12 @@ public class CountVisitorTests
     [InlineData("query a { name age }", 8)]
     [InlineData("scalar JSON @exportable", 6)]
     [InlineData("{a}", 5)] // Document->OperationDefinition->SelectionSet->Field->Name
-    [InlineData(@"
-""""""Very good type""""""
+    [InlineData(""""
+"""Very good type"""
 type T {
 # the best field ever
-field: Int }", 10)]
+field: Int }
+"""", 10)]
     [InlineData("mutation add($a: Int!, $b: [Int]) { result }", 19)]
     [InlineData("type T implements I & K { f: ID }", 13)]
     [InlineData("interface I implements K", 6)]

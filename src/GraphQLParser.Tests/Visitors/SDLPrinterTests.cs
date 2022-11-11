@@ -161,30 +161,32 @@ String!) repeatable on QUERY|MUTATION|SUBSCRIPTION|FIELD|FRAGMENT_DEFINITION|FRA
     [InlineData(18,
 @"extend input Foo @exportable",
 @"extend input Foo @exportable")]
-    [InlineData(19,
-@"#comment
+    [InlineData(19, """
+#comment
 input Example @x
 #comment on fields
 {
   self: [Example!]!
-  value: String = ""xyz""
+  value: String = "xyz"
 }
 input B
-input C",
-@"#comment
+input C
+""", """
+#comment
 input Example @x
 #comment on fields
 {
   self: [Example!]!
-  value: String = ""xyz""
+  value: String = "xyz"
 }
 
 input B
 
-input C")]
-    [InlineData(20,
-@"query inlineFragmentTyping {
-  profiles(handles: [""zuck"", ""coca - cola""])
+input C
+""")]
+    [InlineData(20, """
+query inlineFragmentTyping {
+  profiles(handles: ["zuck", "coca - cola"])
 {
     handle
     ... on User
@@ -202,9 +204,9 @@ input C")]
 }
   }
 }
-",
-@"query inlineFragmentTyping {
-  profiles(handles: [""zuck"", ""coca - cola""]) {
+""", """
+query inlineFragmentTyping {
+  profiles(handles: ["zuck", "coca - cola"]) {
     handle
     ... on User {
       friends {
@@ -217,7 +219,8 @@ input C")]
       }
     }
   }
-}")]
+}
+""")]
     [InlineData(21,
 @"scalar a scalar b scalar c",
 @"scalar a
@@ -277,81 +280,86 @@ fragment Frag on Query {
 @"interface Dog implements Eat & Bark {
   volume: Int!
 }")]
-    [InlineData(27,
-@"enum Color { RED,
+    [InlineData(27, """"
+enum Color { RED,
 #good color
-GREEN @directive(list: [1,2.7,3,null,{}, {name:""tom"" age:42}]),
-""""""
+GREEN @directive(list: [1,2.7,3,null,{}, {name:"tom" age:42}]),
+"""
 another good color
-""""""
-BLUE }",
-@"enum Color {
+"""
+BLUE }
+"""", """
+enum Color {
   RED
   #good color
-  GREEN @directive(list: [1, 2.7, 3, null, {}, {name: ""tom"", age: 42}])
-  ""another good color""
+  GREEN @directive(list: [1, 2.7, 3, null, {}, {name: "tom", age: 42}])
+  "another good color"
   BLUE
-}")]
-    [InlineData(28,
-@"# super query
+}
+""")]
+    [InlineData(28, """
+# super query
 #
 # multiline
-query summary($id: ID!, $detailed: Boolean! = true) { name(full:true,kind: UPPER) age1:age address { street @short(length:5,x:""a"", pi: 3.14)
+query summary($id: ID!, $detailed: Boolean! = true) { name(full:true,kind: UPPER) age1:age address { street @short(length:5,x:"a", pi: 3.14)
 #need
-building } }",
-@"# super query
+building } }
+""", """
+# super query
 #
 # multiline
 query summary($id: ID!, $detailed: Boolean! = true) {
   name(full: true, kind: UPPER)
   age1: age
   address {
-    street @short(length: 5, x: ""a"", pi: 3.14)
+    street @short(length: 5, x: "a", pi: 3.14)
     #need
     building
   }
-}")]
-    [InlineData(29,
-@"
-""""""
+}
+""")]
+    [InlineData(29, """"
+"""
   description
     indent 2
       indent4
-""""""
+"""
 scalar JSON @exportable
 # A dog
 type Dog implements &Animal
      #comment on fields
  {
-  """"""inline docs""""""
+  """inline docs"""
   volume: Float
-  """"""
+  """
  multiline
  docs
-  """"""
+  """
   friends: [Dog!]
   age(precise: Boolean!): Int!
-}",
-@"""""""
+}
+"""", """"
+"""
 description
   indent 2
     indent4
-""""""
+"""
 scalar JSON @exportable
 
 # A dog
 type Dog implements Animal
 #comment on fields
 {
-  ""inline docs""
+  "inline docs"
   volume: Float
-  """"""
+  """
   multiline
   docs
-  """"""
+  """
   friends: [Dog!]
   age(precise: Boolean!): Int!
-}")]
+}
+"""")]
     [InlineData(30,
 @"query q
 {
@@ -514,32 +522,34 @@ rendered: Boolean) : String
   #comment
   rendered: Boolean): String
 }", true)]
-    [InlineData(40,
-@"""This is a Foo object type""
+    [InlineData(40, """
+"This is a Foo object type"
 type Foo {
-  ""This is of type Integer""
+  "This is of type Integer"
   int: Int
-  ""This is of type String""
+  "This is of type String"
   str: String
 }
 
 type Query
 {
     foo: Foo
-}",
-@"""This is a Foo object type""
+}
+""", """
+"This is a Foo object type"
 type Foo {
-  ""This is of type Integer""
+  "This is of type Integer"
   int: Int
-  ""This is of type String""
+  "This is of type String"
   str: String
 }
 
 type Query {
   foo: Foo
-}", true)]
+}
+""", true)]
     [InlineData(41,
-@"directive @skip(""Skipped when true."" if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+"""directive @skip("Skipped when true." if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT""",
 @"directive @skip(
   ""Skipped when true.""
   if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
@@ -549,12 +559,13 @@ type Query {
   ""Skipped when true.""
   if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     [InlineData(43,
-@"directive @skip(""Skipped when true."" if: Boolean!, ""Second argument"" x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
-@"directive @skip(
-  ""Skipped when true.""
+"""directive @skip("Skipped when true." if: Boolean!, "Second argument" x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT""", """
+directive @skip(
+  "Skipped when true."
   if: Boolean!,
-  ""Second argument""
-  x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+  "Second argument"
+  x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+""")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
@@ -738,13 +749,14 @@ multilined
 @"""a \u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F b""
 ")]
     [InlineData(                    // TODO: Change test condition?
-"Test\r\nLine 2\rLine 3\nLine 4",
-@"""""""
+"Test\r\nLine 2\rLine 3\nLine 4", """"
+"""
 Test
 Line 2Line 3
 Line 4
-""""""
-")]
+"""
+
+"""")]
     public async Task Description_With_Escaped_Unicode_Should_Be_Printed(string text, string expected)
     {
         var description = new GraphQLDescription(text);

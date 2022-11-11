@@ -93,11 +93,12 @@ public class StructurePrinterTests
                       Field
                         Name [k]
 ")]
-    [InlineData(@"
-""""""Very good type""""""
+    [InlineData(""""
+"""Very good type"""
 type T {
 # the best field ever
-field: Int }", @"Document
+field: Int }
+"""", @"Document
   ObjectTypeDefinition
     Description
     Name [T]
