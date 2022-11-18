@@ -430,9 +430,9 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#EnumValue
-    private GraphQLEnumValue ParseEnumValue()
+    private GraphQLEnumValue ParseEnumValue(bool validate)
     {
-        if (_currentToken.Value == "true" || _currentToken.Value == "false" || _currentToken.Value == "null")
+        if (validate && (_currentToken.Value == "true" || _currentToken.Value == "false" || _currentToken.Value == "null"))
         {
             Throw_Unexpected_Token("; enum values are represented as unquoted names but not 'true' or 'false' or 'null'.");
         }
@@ -462,7 +462,7 @@ internal ref partial struct ParserContext
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comments = GetComments();
-        def.EnumValue = ParseEnumValue();
+        def.EnumValue = ParseEnumValue(true);
         def.Name = def.EnumValue.Name; // ATTENTION: should set Name property (inherited from GraphQLTypeDefinition)
         def.Directives = Peek(TokenKind.AT) ? ParseDirectives() : null;
         def.Location = GetLocation(start);
@@ -893,37 +893,21 @@ internal ref partial struct ParserContext
         }
 
         // verify this is a NAME
-        if (token.Kind == TokenKind.NAME)
+        if (token.Kind != TokenKind.NAME)
+            return Throw_Unexpected_Token();
+
+        return token.Value.Span switch
         {
-            // retrieve the value
-            var value = token.Value;
-
-            if (value == "schema")
-                return ParseSchemaDefinition();
-
-            if (value == "scalar")
-                return ParseScalarTypeDefinition();
-
-            if (value == "type")
-                return ParseObjectTypeDefinition();
-
-            if (value == "interface")
-                return ParseInterfaceTypeDefinition();
-
-            if (value == "union")
-                return ParseUnionTypeDefinition();
-
-            if (value == "enum")
-                return ParseEnumTypeDefinition();
-
-            if (value == "input")
-                return ParseInputObjectTypeDefinition();
-
-            if (value == "directive")
-                return ParseDirectiveDefinition();
-        }
-
-        return Throw_Unexpected_Token();
+            "schema" => ParseSchemaDefinition(),
+            "scalar" => ParseScalarTypeDefinition(),
+            "type" => ParseObjectTypeDefinition(),
+            "interface" => ParseInterfaceTypeDefinition(),
+            "union" => ParseUnionTypeDefinition(),
+            "enum" => ParseEnumTypeDefinition(),
+            "input" => ParseInputObjectTypeDefinition(),
+            "directive" => ParseDirectiveDefinition(),
+            _ => Throw_Unexpected_Token()
+        };
     }
 
     // http://spec.graphql.org/October2021/#NamedType
@@ -945,22 +929,13 @@ internal ref partial struct ParserContext
 
     private GraphQLValue ParseNameValue(/*bool isConstant*/)
     {
-        var token = _currentToken;
-
-        if (token.Value == "true")
+        return _currentToken.Value.Span switch
         {
-            return ParseBooleanValue(true);
-        }
-        else if (token.Value == "false")
-        {
-            return ParseBooleanValue(false);
-        }
-        else
-        {
-            return token.Value == "null"
-                ? ParseNullValue()
-                : ParseEnumValue();
-        }
+            "true" => ParseBooleanValue(true),
+            "false" => ParseBooleanValue(false),
+            "null" => ParseNullValue(),
+            _ => ParseEnumValue(false)
+        };
     }
 
     // http://spec.graphql.org/October2021/#ObjectValue
