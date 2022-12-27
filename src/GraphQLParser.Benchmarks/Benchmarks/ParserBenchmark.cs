@@ -1,10 +1,12 @@
 using System.Collections.Immutable;
 using System.Globalization;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Order;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
+using Perfolizer.Horology;
 
 namespace GraphQLParser.Benchmarks;
 
@@ -17,7 +19,7 @@ public class ParserBenchmark : BenchmarkBase
     {
         public Config()
         {
-            SummaryStyle = new SummaryStyle(CultureInfo.InvariantCulture, printUnitsInHeader: true, sizeUnit: null, timeUnit: null, printUnitsInContent: false, printZeroValuesInContent: false, maxParameterColumnWidth: 40);
+            SummaryStyle = new SummaryStyle(CultureInfo.InvariantCulture, printUnitsInHeader: true, sizeUnit: SizeUnit.B, timeUnit: TimeUnit.Microsecond, printUnitsInContent: false, printZeroValuesInContent: false, maxParameterColumnWidth: 40);
             Orderer = new ParserOrderer();
         }
 
