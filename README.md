@@ -110,3 +110,11 @@ public static async Task Print(string text)
     Console.WriteLine(rendered);
 }
 ```
+
+## Contributors
+
+This project exists thanks to all the people who contribute. 
+<a href="https://github.com/graphql-dotnet/parser/graphs/contributors"><img src="https://contributors-img.web.app/image?repo=graphql-dotnet/parser" /></a>
+
+PRs are welcome! Looking for something to work on? The list of [open issues](https://github.com/graphql-dotnet/parser/issues)
+is a great place to start. You can help the project simply respond to some of the [asked questions](https://github.com/graphql-dotnet/parser/issues?q=is%3Aissue+is%3Aopen+label%3Aquestion).
