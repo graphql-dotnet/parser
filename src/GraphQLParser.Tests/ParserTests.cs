@@ -720,7 +720,7 @@ scalar JSON
             fieldDef.Comments.ShouldNotBeNull();
             fieldDef.Comments.Count.ShouldBe(3);
             fieldDef.Comments[0].Value.ShouldBe(" multiline comments");
-            fieldDef.Comments[1].Value.ShouldBe(" with very importand description #");
+            fieldDef.Comments[1].Value.ShouldBe(" with very important description #");
             fieldDef.Comments[2].Value.ShouldBe(" # and symbol # and ##");
         }
 

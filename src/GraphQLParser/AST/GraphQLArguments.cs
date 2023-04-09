@@ -9,7 +9,7 @@ public class GraphQLArguments : ASTListNode<GraphQLArgument>
     public override ASTNodeKind Kind => ASTNodeKind.Arguments;
 
     /// <summary>
-    /// Searches arguments for the first matching agrument by its name,
+    /// Searches arguments for the first matching argument by its name,
     /// or returns <see langword="null"/> if none is found.
     /// </summary>
     public GraphQLValue? ValueFor(ROM name)

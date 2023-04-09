@@ -83,7 +83,7 @@ type Foo implements Bar
   # comment 2
   two(argument: InputType!): Type
   # multiline comments
-  # with very importand description #
+  # with very important description #
   # # and symbol # and ##
   three(argument: InputType, other: String): Int
   four(argument: String = "string"): String
