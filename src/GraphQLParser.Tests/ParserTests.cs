@@ -1679,4 +1679,26 @@ directive @TestDirective (
         if (parseComments)
             directiveDef.Arguments[0].Comment.Value.ShouldBe(" comment 29");
     }
+
+    // https://github.com/graphql/graphql-spec/pull/805
+    [Fact]
+    public void Should_Parse_Deprecations_On_Arg_And_InputField()
+    {
+        string text = "DeprecatedOnArgAndInputField".ReadGraphQLFile();
+        var document = text.Parse();
+
+        var queryDef = document.Definitions.First(x => x is GraphQLObjectTypeDefinition) as GraphQLObjectTypeDefinition;
+        queryDef.Name.Value.ShouldBe("Query");
+        var arg = queryDef.Fields[0].Arguments[0];
+        var dir1 = arg.Directives.ShouldNotBeNull()[0];
+        dir1.Name.Value.ShouldBe("deprecated");
+        dir1.Arguments.ShouldNotBeNull()[0].Value.ShouldBeAssignableTo<GraphQLStringValue>().Value.ShouldBe("Do not use this arg");
+
+        var inputDef = document.Definitions.First(x => x is GraphQLInputObjectTypeDefinition) as GraphQLInputObjectTypeDefinition;
+        inputDef.Name.Value.ShouldBe("PersonFilter");
+        var field = inputDef.Fields[0].ShouldNotBeNull();
+        var dir2 = field.Directives.ShouldNotBeNull()[0];
+        dir2.Name.Value.ShouldBe("deprecated");
+        dir2.Arguments.ShouldNotBeNull()[0].Value.ShouldBeAssignableTo<GraphQLStringValue>().Value.ShouldBe("Do not use this field");
+    }
 }

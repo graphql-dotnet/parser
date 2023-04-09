@@ -1,0 +1,11 @@
+type Query {
+  persons(filter: PersonFilter @deprecated(reason: "Do not use this arg")): [Person]
+}
+
+input PersonFilter {
+  namePattern: String @deprecated(reason: "Do not use this field")
+}
+
+type Person {
+  name: String
+}
