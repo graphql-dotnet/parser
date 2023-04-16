@@ -661,6 +661,7 @@ namespace GraphQLParser
     public static class Parser
     {
         public static GraphQLParser.AST.GraphQLDocument Parse(GraphQLParser.ROM source, GraphQLParser.ParserOptions options = default) { }
+        public static GraphQLParser.AST.GraphQLValue ParseValue(GraphQLParser.ROM source, GraphQLParser.ParserOptions options = default) { }
     }
     public struct ParserOptions
     {
