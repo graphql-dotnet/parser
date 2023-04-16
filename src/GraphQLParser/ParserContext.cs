@@ -46,7 +46,7 @@ internal ref partial struct ParserContext
 
     private static string[] DirectiveLocationOneOf { get; set; } = new[]
     {
-            // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
+            // http://spec.graphql.org/October2021/#ExecutableDirectiveLocation
             "QUERY",
             "MUTATION",
             "SUBSCRIPTION",
@@ -55,7 +55,7 @@ internal ref partial struct ParserContext
             "FRAGMENT_SPREAD",
             "INLINE_FRAGMENT",
             "VARIABLE_DEFINITION",
-            // http://spec.graphql.org/June2018/#TypeSystemDirectiveLocation
+            // http://spec.graphql.org/October2021/#TypeSystemDirectiveLocation
             "SCHEMA",
             "SCALAR",
             "OBJECT",

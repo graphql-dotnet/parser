@@ -1085,13 +1085,13 @@ internal ref partial struct ParserContext
         };
     }
 
-    // http://spec.graphql.org/June2018/#DirectiveLocation
+    // http://spec.graphql.org/October2021/#DirectiveLocation
     internal DirectiveLocation ParseDirectiveLocation(string[]? oneOf = null) // internal for tests
     {
         var keyword = ExpectOneOf(oneOf ?? DirectiveLocationOneOf);
         return keyword switch
         {
-            // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
+            // http://spec.graphql.org/October2021/#ExecutableDirectiveLocation
             "QUERY" => DirectiveLocation.Query,
             "MUTATION" => DirectiveLocation.Mutation,
             "SUBSCRIPTION" => DirectiveLocation.Subscription,
@@ -1101,7 +1101,7 @@ internal ref partial struct ParserContext
             "INLINE_FRAGMENT" => DirectiveLocation.InlineFragment,
             "VARIABLE_DEFINITION" => DirectiveLocation.VariableDefinition,
 
-            // http://spec.graphql.org/June2018/#TypeSystemDirectiveLocation
+            // http://spec.graphql.org/October2021/#TypeSystemDirectiveLocation
             "SCHEMA" => DirectiveLocation.Schema,
             "SCALAR" => DirectiveLocation.Scalar,
             "OBJECT" => DirectiveLocation.Object,

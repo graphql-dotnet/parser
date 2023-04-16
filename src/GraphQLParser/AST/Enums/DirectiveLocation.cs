@@ -4,7 +4,7 @@ namespace GraphQLParser.AST;
 
 /// <summary>
 /// Directives must only be used in the locations they are declared to belong in.
-/// https://graphql.github.io/graphql-spec/June2018/#sec-Type-System.Directives
+/// https://graphql.github.io/graphql-spec/October2021/#sec-Type-System.Directives
 /// </summary>
 public enum DirectiveLocation
 {
