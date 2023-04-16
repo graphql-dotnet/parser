@@ -566,19 +566,30 @@ directive @skip(
   "Second argument"
   x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 """)]
+    [InlineData(44,
+"schema { query: Q mutation: M subscription: S }",
+"""
+schema {
+     query: Q
+     mutation: M
+     subscription: S
+}
+""", true, false, false, 5)]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
         string expected,
         bool writeComments = true,
         bool eachDirectiveLocationOnNewLine = false,
-        bool eachUnionMemberOnNewLine = false)
+        bool eachUnionMemberOnNewLine = false,
+        int indentSize = 2)
     {
         var printer = new SDLPrinter(new SDLPrinterOptions
         {
             PrintComments = writeComments,
             EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
-            EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
+            EachUnionMemberOnNewLine = eachUnionMemberOnNewLine,
+            IndentSize = indentSize,
         });
         var writer = new StringWriter();
         var document = text.Parse();
