@@ -893,6 +893,7 @@ namespace GraphQLParser.Visitors
     public class SDLPrinterOptions
     {
         public SDLPrinterOptions() { }
+        public int IndentSize { get; set; }
         public bool EachDirectiveLocationOnNewLine { get; init; }
         public bool EachUnionMemberOnNewLine { get; init; }
         public bool PrintComments { get; init; }

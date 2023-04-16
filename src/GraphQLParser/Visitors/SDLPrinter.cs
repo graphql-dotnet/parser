@@ -1111,10 +1111,13 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         _ => throw new NotSupportedException($"Unknown directive location {location}"),
     };
 
-    private static async ValueTask WriteIndentAsync(TContext context)
+    private async ValueTask WriteIndentAsync(TContext context)
     {
         for (int i = 0; i < context.IndentLevel; ++i)
-            await context.WriteAsync("  ").ConfigureAwait(false);
+        {
+            for (int j = 0; j < Options.IndentSize; ++j)
+                await context.WriteAsync(" ").ConfigureAwait(false);
+        }
     }
 
     // Returns parent if called inside ViisitXXX i.e. after context.Parents.Push(node);
@@ -1264,5 +1267,10 @@ public class SDLPrinterOptions
     /// Whether to print each union member on its own line.
     /// </summary>
     public bool EachUnionMemberOnNewLine { get; init; }
+
+    /// <summary>
+    /// The size of the horizontal indentation in spaces.
+    /// </summary>
+    public int IndentSize { get; set; } = 2;
 }
 
