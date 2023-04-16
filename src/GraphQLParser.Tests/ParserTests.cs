@@ -994,7 +994,7 @@ Cat
     {
         Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(text));
 
-        var value = Parser.ParseValue(text);
+        var value = Parser.Parse<GraphQLValue>(text);
         value.ShouldNotBeNull();
         value.Kind.ShouldBe(kind);
         if (expected != null)
