@@ -52,7 +52,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Argument
-    private GraphQLArgument ParseArgument()
+    internal GraphQLArgument ParseArgument()
     {
         IncreaseDepth();
 
@@ -71,7 +71,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Arguments
-    private GraphQLArguments ParseArguments()
+    internal GraphQLArguments ParseArguments()
     {
         IncreaseDepth();
 
