@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Runtime.InteropServices;
+using GraphQLParser.Exceptions;
 
 namespace GraphQLParser.Tests;
 
@@ -977,6 +978,27 @@ Cat
         var document = text.Parse();
         document.ShouldNotBeNull();
         document.Definitions[0].Kind.ShouldBe(kind);
+    }
+
+    [Theory]
+    [InlineData("null", ASTNodeKind.NullValue)]
+    [InlineData("1", ASTNodeKind.IntValue)]
+    [InlineData("1.1", ASTNodeKind.FloatValue)]
+    [InlineData("\"abc\"", ASTNodeKind.StringValue, "abc")]
+    [InlineData("\"escaped \\n\\r\\b\\t\\f\"", ASTNodeKind.StringValue, "escaped \n\r\b\t\f")]
+    [InlineData("true", ASTNodeKind.BooleanValue)]
+    [InlineData("RED", ASTNodeKind.EnumValue)]
+    [InlineData("[ 1, 2, 3]", ASTNodeKind.ListValue)]
+    [InlineData("{ a: 1, b: \"abc\", c: RED}", ASTNodeKind.ObjectValue)]
+    public void Should_Parse_Value_Literal_But_Not_Entire_Document(string text, ASTNodeKind kind, string expected = null)
+    {
+        Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(text));
+
+        var value = Parser.ParseValue(text);
+        value.ShouldNotBeNull();
+        value.Kind.ShouldBe(kind);
+        if (expected != null)
+            ((GraphQLStringValue)value).Value.ShouldBe(expected);
     }
 
     [Theory]

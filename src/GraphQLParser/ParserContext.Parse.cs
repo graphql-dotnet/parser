@@ -1418,7 +1418,7 @@ internal ref partial struct ParserContext
         return extension;
     }
 
-    private GraphQLValue ParseValueLiteral(bool isConstant)
+    internal GraphQLValue ParseValueLiteral(bool isConstant)
     {
         return _currentToken.Kind switch
         {

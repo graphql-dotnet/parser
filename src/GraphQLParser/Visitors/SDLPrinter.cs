@@ -1213,7 +1213,7 @@ public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
         public TextWriter Writer { get; }
 
         /// <inheritdoc/>
-        public Stack<ASTNode> Parents { get; init; } = new Stack<ASTNode>();
+        public Stack<ASTNode> Parents { get; init; } = new();
 
         /// <inheritdoc/>
         public CancellationToken CancellationToken { get; init; }

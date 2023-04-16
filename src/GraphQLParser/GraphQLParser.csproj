@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
-    <InternalsVisibleTo Condition="'$(SignAssembly)' == 'true'" Include="$(MSBuildProjectName).Tests, $(_FriendAssembliesPublicKey);$(MSBuildProjectName).Benchmarks, $(_FriendAssembliesPublicKey)"/>
-    <InternalsVisibleTo Condition="'$(SignAssembly)' != 'true'" Include="$(MSBuildProjectName).Tests;$(MSBuildProjectName).Benchmarks"/>
+    <InternalsVisibleTo Condition="'$(SignAssembly)' == 'true'" Include="$(MSBuildProjectName).Tests, $(_FriendAssembliesPublicKey);$(MSBuildProjectName).Benchmarks, $(_FriendAssembliesPublicKey)" />
+    <InternalsVisibleTo Condition="'$(SignAssembly)' != 'true'" Include="$(MSBuildProjectName).Tests;$(MSBuildProjectName).Benchmarks" />
   </ItemGroup>
 
 </Project>

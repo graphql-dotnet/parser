@@ -46,28 +46,28 @@ internal ref partial struct ParserContext
 
     private static string[] DirectiveLocationOneOf { get; set; } = new[]
     {
-            // http://spec.graphql.org/October2021/#ExecutableDirectiveLocation
-            "QUERY",
-            "MUTATION",
-            "SUBSCRIPTION",
-            "FIELD",
-            "FRAGMENT_DEFINITION",
-            "FRAGMENT_SPREAD",
-            "INLINE_FRAGMENT",
-            "VARIABLE_DEFINITION",
-            // http://spec.graphql.org/October2021/#TypeSystemDirectiveLocation
-            "SCHEMA",
-            "SCALAR",
-            "OBJECT",
-            "FIELD_DEFINITION",
-            "ARGUMENT_DEFINITION",
-            "INTERFACE",
-            "UNION",
-            "ENUM",
-            "ENUM_VALUE",
-            "INPUT_OBJECT",
-            "INPUT_FIELD_DEFINITION",
-        };
+        // http://spec.graphql.org/October2021/#ExecutableDirectiveLocation
+        "QUERY",
+        "MUTATION",
+        "SUBSCRIPTION",
+        "FIELD",
+        "FRAGMENT_DEFINITION",
+        "FRAGMENT_SPREAD",
+        "INLINE_FRAGMENT",
+        "VARIABLE_DEFINITION",
+        // http://spec.graphql.org/October2021/#TypeSystemDirectiveLocation
+        "SCHEMA",
+        "SCALAR",
+        "OBJECT",
+        "FIELD_DEFINITION",
+        "ARGUMENT_DEFINITION",
+        "INTERFACE",
+        "UNION",
+        "ENUM",
+        "ENUM_VALUE",
+        "INPUT_OBJECT",
+        "INPUT_FIELD_DEFINITION",
+    };
 
     private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
@@ -176,7 +176,7 @@ internal ref partial struct ParserContext
         }
     }
 
-    private void Expect(TokenKind kind, string? description = null)
+    internal void Expect(TokenKind kind, string? description = null)
     {
         if (_currentToken.Kind == kind)
         {
