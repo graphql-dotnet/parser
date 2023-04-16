@@ -25,7 +25,7 @@ public static class Parser
     /// <typeparam name="T">Type of node to parse input text as.</typeparam>
     /// <param name="source">Input data as a sequence of characters.</param>
     /// <param name="options">Parser options.</param>
-    /// <returns>AST (Abstract Syntax Tree) for GraphQL document.</returns>
+    /// <returns>AST (Abstract Syntax Tree) for GraphQL node.</returns>
     /// <exception cref="GraphQLSyntaxErrorException">In case when parser recursion depth exceeds <see cref="ParserOptions.MaxDepth"/>.</exception>
     /// <exception cref="GraphQLMaxDepthExceededException">In case of syntax error.</exception>
     /// <exception cref="NotSupportedException">The specified node type is unsupported.</exception>
