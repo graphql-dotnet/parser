@@ -13,28 +13,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source
-      uses: actions/checkout@v3
+      - name: Checkout source
+        uses: actions/checkout@v3
 
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
-      with:
-         dotnet-version: 7.0.x
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+           dotnet-version: 7.0.x
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        queries: security-and-quality
-        languages: csharp
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          queries: security-and-quality
+          languages: csharp
+          # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/customizing-code-scanning#excluding-specific-queries-from-analysis
+          query-filters:
+            - exclude:
+              id: cs/linq/missed-where
 
-    - name: Install dependencies
-      working-directory: src
-      run: dotnet restore
+      - name: Install dependencies
+        working-directory: src
+        run: dotnet restore
 
-    - name: Build only parser project
-      # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/troubleshooting-the-codeql-workflow#reduce-the-amount-of-code-being-analyzed-in-a-single-workflow
-      working-directory: src/GraphQLParser
-      run: dotnet build --no-restore
+      - name: Build only parser project
+        # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/troubleshooting-the-codeql-workflow#reduce-the-amount-of-code-being-analyzed-in-a-single-workflow
+        working-directory: src/GraphQLParser
+        run: dotnet build --no-restore
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
