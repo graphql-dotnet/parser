@@ -372,24 +372,31 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         if (Options.EachDirectiveLocationOnNewLine)
         {
             await context.WriteAsync(" on").ConfigureAwait(false);
-            await context.WriteLineAsync().ConfigureAwait(false);
-            for (int i = 0; i < directiveLocations.Items.Count; ++i)
+            if (directiveLocations.Items?.Count > 0) // should always be true but may be negligently uninitialized
             {
-                await WriteIndentAsync(context).ConfigureAwait(false);
-                await context.WriteAsync("| ").ConfigureAwait(false);
-                await context.WriteAsync(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
-                if (i < directiveLocations.Items.Count - 1)
-                    await context.WriteLineAsync().ConfigureAwait(false);
+                await context.WriteLineAsync().ConfigureAwait(false);
+                for (int i = 0; i < directiveLocations.Items.Count; ++i)
+                {
+                    await WriteIndentAsync(context).ConfigureAwait(false);
+                    await context.WriteAsync("| ").ConfigureAwait(false);
+                    await context.WriteAsync(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
+                    if (i < directiveLocations.Items.Count - 1)
+                        await context.WriteLineAsync().ConfigureAwait(false);
+                }
             }
         }
         else
         {
-            await context.WriteAsync(" on ").ConfigureAwait(false);
-            for (int i = 0; i < directiveLocations.Items.Count; ++i)
+            await context.WriteAsync(" on").ConfigureAwait(false);
+            if (directiveLocations.Items?.Count > 0) // should always be true but may be negligently uninitialized
             {
-                await context.WriteAsync(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
-                if (i < directiveLocations.Items.Count - 1)
-                    await context.WriteAsync(" | ").ConfigureAwait(false);
+                await context.WriteAsync(" ").ConfigureAwait(false);
+                for (int i = 0; i < directiveLocations.Items.Count; ++i)
+                {
+                    await context.WriteAsync(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
+                    if (i < directiveLocations.Items.Count - 1)
+                        await context.WriteAsync(" | ").ConfigureAwait(false);
+                }
             }
         }
     }
