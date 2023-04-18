@@ -824,6 +824,46 @@ Line 4
     }
 
     [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Printer_Should_Print_DirectiveDefinition_Without_Locations(bool eachDirectiveLocationOnNewLine)
+    {
+        var printer = new SDLPrinter(new SDLPrinterOptions
+        {
+            EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
+        });
+        var document = new GraphQLDocument
+        {
+            Definitions = new List<ASTNode>
+            {
+                new GraphQLDirectiveDefinition
+                {
+                    Name = new GraphQLName("null_locations"),
+                    Locations = new GraphQLDirectiveLocations() // Items is null
+                },
+                new GraphQLDirectiveDefinition
+                {
+                    Name = new GraphQLName("empty_locations"),
+                    Locations = new GraphQLDirectiveLocations() { Items = new List<DirectiveLocation>() } // Items is empty
+                },
+                new GraphQLScalarTypeDefinition
+                {
+                    Name = new GraphQLName("AAA")
+                }
+            }
+        };
+
+        var actual = printer.Print(document);
+        actual.ShouldBe("""
+            directive @null_locations on
+
+            directive @empty_locations on
+
+            scalar AAA
+            """);
+    }
+
+    [Theory]
     [InlineData("query a { name }")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Throw_On_Unknown_Values(string text)
