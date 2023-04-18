@@ -26,10 +26,7 @@ jobs:
         with:
           queries: security-and-quality
           languages: csharp
-          # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/customizing-code-scanning#excluding-specific-queries-from-analysis
-          #query-filters:
-          #  - exclude:
-          #    id: cs/linq/missed-where
+          config-file: ./.github/codeql-config.yml
 
       - name: Install dependencies
         working-directory: src
