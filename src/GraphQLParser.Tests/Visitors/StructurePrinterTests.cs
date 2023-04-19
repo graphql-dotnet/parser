@@ -555,4 +555,41 @@ scalar S", @"Document (10,30)
             actual.ShouldBe(expected);
         }
     }
+
+    [Theory]
+    [InlineData("{a}", @"Document
+  OperationDefinition
+    SelectionSet
+      Field
+        Name
+", 2)]
+    [InlineData("{a}", @"Document
+   OperationDefinition
+      SelectionSet
+         Field
+            Name
+", 3)]
+    [InlineData("{a}", @"Document
+OperationDefinition
+SelectionSet
+Field
+Name
+", 0)]
+    public async Task StructurePrinter_Should_Print_Tree_With_Custom_Indentation(string text, string expected, int indentSize, bool ignoreComments = true)
+    {
+        text = text.Replace("\r\n", "\n");
+        foreach (var option in new[] { IgnoreOptions.None, IgnoreOptions.Comments })
+        {
+            if (option == IgnoreOptions.Comments && !ignoreComments)
+                continue;
+
+            var writer = new StringWriter();
+
+            var document = text.Parse(new ParserOptions { Ignore = option });
+            var printer = new StructurePrinter(new StructurePrinterOptions { PrintNames = false, IndentSize = indentSize });
+            await printer.PrintAsync(document, writer).ConfigureAwait(false);
+            var actual = writer.ToString();
+            actual.ShouldBe(expected);
+        }
+    }
 }

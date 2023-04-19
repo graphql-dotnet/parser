@@ -975,6 +975,7 @@ namespace GraphQLParser.Visitors
     public class StructurePrinterOptions
     {
         public StructurePrinterOptions() { }
+        public int IndentSize { get; init; }
         public bool PrintLocations { get; init; }
         public bool PrintNames { get; init; }
     }
