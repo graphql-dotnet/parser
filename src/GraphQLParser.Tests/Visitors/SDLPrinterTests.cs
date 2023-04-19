@@ -575,6 +575,73 @@ schema {
      subscription: S
 }
 """, true, false, false, 5)]
+    [InlineData(45,
+"""
+"A component contains the parametric details of a PCB part."
+input DesComponentFilterInput {
+    and: [DesComponentFilterInput!]
+    or: [DesComponentFilterInput!]
+    "The library label for this component."
+    name: StringOperationFilterInput
+    "The additional information for this component."
+    comment: StringOperationFilterInput
+    "The summary of function or other performance details for this component."
+    description: StringOperationFilterInput
+    "The component revision."
+    revision: DesRevisionFilterInput
+}
+""",
+"""
+"A component contains the parametric details of a PCB part."
+input DesComponentFilterInput {
+  and: [DesComponentFilterInput!]
+  or: [DesComponentFilterInput!]
+  "The library label for this component."
+  name: StringOperationFilterInput
+  "The additional information for this component."
+  comment: StringOperationFilterInput
+  "The summary of function or other performance details for this component."
+  description: StringOperationFilterInput
+  "The component revision."
+  revision: DesRevisionFilterInput
+}
+""")]
+    [InlineData(46,
+"""
+# comment
+directive @my on FIELD
+""",
+"""
+# comment
+directive @my on FIELD
+""")]
+    [InlineData(47,
+"""
+query q
+# comment
+($a: Int) { x }
+""",
+"""
+query q
+# comment
+($a: Int) {
+  x
+}
+""")]
+    [InlineData(48,
+"""
+query q
+(
+# comment
+$a: Int) { x }
+""",
+"""
+query q(
+# comment
+$a: Int) {
+  x
+}
+""")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
@@ -697,15 +764,13 @@ schema {
         var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
         await printer.PrintAsync(selectionSet, writer);
         writer.ToString().ShouldBe(@"{
-}
-");
+}");
         selectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
         writer = new StringWriter();
         await printer.PrintAsync(selectionSet, writer);
         writer.ToString().ShouldBe(@"#comment
 {
-}
-");
+}");
     }
 
     [Fact]

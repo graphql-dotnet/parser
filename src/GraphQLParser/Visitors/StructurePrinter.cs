@@ -31,15 +31,26 @@ public class StructurePrinter<TContext> : ASTVisitor<TContext>
     /// </summary>
     public StructurePrinterOptions Options { get; }
 
+    private async ValueTask WriteIndentAsync(TContext context)
+    {
+        for (int i = 0; i < context.IndentLevel; ++i)
+        {
+            for (int j = 0; j < Options.IndentSize; ++j)
+                await context.WriteAsync(" ").ConfigureAwait(false);
+        }
+
+        context.IndentPrinted = true;
+    }
+
     /// <inheritdoc/>
     public override async ValueTask VisitAsync(ASTNode? node, TContext context)
     {
         if (node == null)
             return;
 
-        for (int i = 0; i < context.Parents.Count; ++i)
-            await context.WriteAsync("  ").ConfigureAwait(false);
+        await WriteIndentAsync(context).ConfigureAwait(false);
 
+        ++context.IndentLevel;
         context.Parents.Push(node);
         await context.WriteAsync(node.Kind.ToString()).ConfigureAwait(false); //ISSUE: allocation
         if (Options.PrintNames && node is GraphQLName name)
@@ -56,6 +67,7 @@ public class StructurePrinter<TContext> : ASTVisitor<TContext>
         await context.WriteLineAsync().ConfigureAwait(false);
         await base.VisitAsync(node, context).ConfigureAwait(false);
         _ = context.Parents.Pop();
+        --context.IndentLevel;
     }
 }
 
@@ -99,4 +111,9 @@ public class StructurePrinterOptions
     /// Print <see cref="ASTNode.Location"/> into the output.
     /// </summary>
     public bool PrintLocations { get; init; }
+
+    /// <summary>
+    /// The size of the horizontal indentation in spaces.
+    /// </summary>
+    public int IndentSize { get; init; } = 2;
 }

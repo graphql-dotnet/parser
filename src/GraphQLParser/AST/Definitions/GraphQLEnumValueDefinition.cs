@@ -20,6 +20,9 @@ public class GraphQLEnumValueDefinition : GraphQLTypeDefinition, IHasDirectivesN
 
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
+
+    /// <inheritdoc />
+    public override bool IsChildDefinition => true;
 }
 
 internal sealed class GraphQLEnumValueDefinitionWithLocation : GraphQLEnumValueDefinition

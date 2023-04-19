@@ -219,6 +219,7 @@ namespace GraphQLParser.AST
         public GraphQLEnumValueDefinition() { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLEnumValue EnumValue { get; set; }
+        public override bool IsChildDefinition { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
     }
     public class GraphQLEnumValuesDefinition : GraphQLParser.AST.ASTListNode<GraphQLParser.AST.GraphQLEnumValueDefinition>
@@ -252,6 +253,7 @@ namespace GraphQLParser.AST
         public GraphQLFieldDefinition() { }
         public GraphQLParser.AST.GraphQLArgumentsDefinition? Arguments { get; set; }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
+        public override bool IsChildDefinition { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType Type { get; set; }
     }
@@ -326,6 +328,7 @@ namespace GraphQLParser.AST
         public GraphQLInputValueDefinition() { }
         public GraphQLParser.AST.GraphQLValue? DefaultValue { get; set; }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
+        public override bool IsChildDefinition { get; }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLType Type { get; set; }
     }
@@ -521,6 +524,7 @@ namespace GraphQLParser.AST
     {
         protected GraphQLTypeDefinition() { }
         public GraphQLParser.AST.GraphQLDescription? Description { get; set; }
+        public virtual bool IsChildDefinition { get; }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
     }
     public abstract class GraphQLTypeExtension : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
@@ -852,7 +856,11 @@ namespace GraphQLParser.Visitors
     public interface IPrintContext : GraphQLParser.Visitors.IASTVisitorContext
     {
         int IndentLevel { get; set; }
+        bool IndentPrinted { get; set; }
+        [System.Obsolete("Use LastVisitedNode instead")]
         bool LastDefinitionPrinted { get; set; }
+        GraphQLParser.AST.ASTNode? LastVisitedNode { get; set; }
+        bool NewLinePrinted { get; set; }
         System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; }
         System.IO.TextWriter Writer { get; }
     }
@@ -880,7 +888,11 @@ namespace GraphQLParser.Visitors
         {
             public DefaultPrintContext(System.IO.TextWriter writer) { }
             public int IndentLevel { get; set; }
+            public bool IndentPrinted { get; set; }
+            [System.Obsolete]
             public bool LastDefinitionPrinted { get; set; }
+            public GraphQLParser.AST.ASTNode? LastVisitedNode { get; set; }
+            public bool NewLinePrinted { get; set; }
             public System.IO.TextWriter Writer { get; }
             public System.Threading.CancellationToken CancellationToken { get; init; }
             public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; init; }
@@ -895,9 +907,9 @@ namespace GraphQLParser.Visitors
     public class SDLPrinterOptions
     {
         public SDLPrinterOptions() { }
-        public int IndentSize { get; set; }
         public bool EachDirectiveLocationOnNewLine { get; init; }
         public bool EachUnionMemberOnNewLine { get; init; }
+        public int IndentSize { get; init; }
         public bool PrintComments { get; init; }
     }
     public class SDLPrinter<TContext> : GraphQLParser.Visitors.ASTVisitor<TContext>
@@ -906,6 +918,7 @@ namespace GraphQLParser.Visitors
         public SDLPrinter() { }
         public SDLPrinter(GraphQLParser.Visitors.SDLPrinterOptions options) { }
         public GraphQLParser.Visitors.SDLPrinterOptions Options { get; }
+        protected virtual System.Threading.Tasks.ValueTask MakeVerticalIndentationBetweenTopLevelDefinitions(GraphQLParser.AST.ASTNode node, TContext context) { }
         protected override System.Threading.Tasks.ValueTask VisitAliasAsync(GraphQLParser.AST.GraphQLAlias alias, TContext context) { }
         protected override System.Threading.Tasks.ValueTask VisitArgumentAsync(GraphQLParser.AST.GraphQLArgument argument, TContext context) { }
         protected override System.Threading.Tasks.ValueTask VisitArgumentsAsync(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
@@ -975,6 +988,7 @@ namespace GraphQLParser.Visitors
     public class StructurePrinterOptions
     {
         public StructurePrinterOptions() { }
+        public int IndentSize { get; init; }
         public bool PrintLocations { get; init; }
         public bool PrintNames { get; init; }
     }

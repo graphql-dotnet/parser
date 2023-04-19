@@ -23,6 +23,9 @@ public class GraphQLFieldDefinition : GraphQLTypeDefinition, IHasDirectivesNode,
 
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
+
+    /// <inheritdoc />
+    public override bool IsChildDefinition => true;
 }
 
 internal sealed class GraphQLFieldDefinitionWithLocation : GraphQLFieldDefinition

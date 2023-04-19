@@ -182,7 +182,7 @@ int number,
 string text,
 string expected)
     {
-        var printer = new MyPrinter();
+        var printer = new PrintOnlyStartsWithA();
         var writer = new StringWriter();
         var document = text.Parse();
 
@@ -193,8 +193,15 @@ string expected)
         actual.Parse(); // should be parsed back
     }
 
-    private class MyPrinter : SDLPrinter
+    private class PrintOnlyStartsWithA : SDLPrinter
     {
+        protected override ValueTask MakeVerticalIndentationBetweenTopLevelDefinitions(ASTNode node, DefaultPrintContext context)
+        {
+            return node is GraphQLSchemaDefinition || node is GraphQLSchemaExtension || node is INamedNode named && named.Name.Value.Span[0] == 'A'
+                ? base.MakeVerticalIndentationBetweenTopLevelDefinitions(node, context)
+                : default;
+        }
+
         protected override ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, DefaultPrintContext context)
         {
             return objectTypeExtension.Name.Value.Span[0] == 'A'

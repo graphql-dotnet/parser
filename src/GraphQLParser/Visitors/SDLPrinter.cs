@@ -50,35 +50,20 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         if (!Options.PrintComments)
             return;
 
-        if (CommentedNodeShouldBeCloseToPreviousNode(context, comment, true))
+        // comment MUST always be on a new line but VisitAsync may already set indentation
+        // TODO: consider remove
+        if (!context.NewLinePrinted && !context.IndentPrinted)
+        {
             await context.WriteLineAsync().ConfigureAwait(false);
+            await WriteIndentAsync(context).ConfigureAwait(false);
+        }
 
-        await WriteIndentAsync(context).ConfigureAwait(false);
         await context.WriteAsync("#").ConfigureAwait(false);
         await context.WriteAsync(comment.Value).ConfigureAwait(false);
-        await context.WriteLineAsync().ConfigureAwait(false);
-
-        if (CommentedNodeShouldBeCloseToPreviousNode(context, comment, false))
-            await WriteIndentAsync(context).ConfigureAwait(false);
-
-        static bool CommentedNodeShouldBeCloseToPreviousNode(TContext context, GraphQLComment comment, bool start)
-        {
-            return TryPeekParent(context, out var parent) &&
-                ReferenceEquals(parent.Comments![start ? 0 : parent.Comments.Count - 1], comment) &&
-                parent is GraphQLArguments ||
-                parent is GraphQLArgument ||
-                parent is GraphQLObjectField ||
-                parent is GraphQLName ||
-                parent is GraphQLUnionMemberTypes ||
-                parent is GraphQLEnumValuesDefinition ||
-                parent is GraphQLFieldsDefinition ||
-                parent is GraphQLInputFieldsDefinition ||
-                parent is GraphQLInputValueDefinition;
-        }
     }
 
     /// <inheritdoc/>
-    protected override async ValueTask VisitDescriptionAsync(GraphQLDescription description, TContext context)
+    protected override ValueTask VisitDescriptionAsync(GraphQLDescription description, TContext context)
     {
         bool ShouldBeMultilineBlockString()
         {
@@ -105,7 +90,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         async ValueTask WriteMultilineBlockString()
         {
-            await WriteIndentAsync(context).ConfigureAwait(false);
             await context.WriteAsync("\"\"\"").ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
 
@@ -127,7 +111,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                         break;
 
                     case '\n':
-                        await context.WriteLineAsync().ConfigureAwait(false);
+                        // do not use PrintContextExtensions.WriteLineAsync here to avoid NewLinePrinted check
+                        await context.WriteAsync(Environment.NewLine).ConfigureAwait(false);
                         needStartNewLine = true;
                         break;
 
@@ -156,35 +141,21 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         async ValueTask WriteString()
         {
-            await WriteIndentAsync(context).ConfigureAwait(false);
             await WriteEncodedStringAsync(context, description.Value).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
         }
 
-        static bool DescribedNodeShouldBeCloseToPreviousNode(TContext context)
-        {
-            return TryPeekParent(context, out var parent) &&
-                parent is GraphQLInputValueDefinition;
-        }
-
-        if (DescribedNodeShouldBeCloseToPreviousNode(context))
-            await context.WriteLineAsync().ConfigureAwait(false);
-
         // http://spec.graphql.org/October2021/#StringValue
-        if (ShouldBeMultilineBlockString())
-            await WriteMultilineBlockString();
-        else
-            await WriteString();
-
-        if (DescribedNodeShouldBeCloseToPreviousNode(context))
-            await WriteIndentAsync(context).ConfigureAwait(false);
+        return ShouldBeMultilineBlockString()
+            ? WriteMultilineBlockString()
+            : WriteString();
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitNameAsync(GraphQLName name, TContext context)
     {
         await VisitAsync(name.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync(name.Value).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(name.Value), context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -197,44 +168,29 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitFragmentDefinitionAsync(GraphQLFragmentDefinition fragmentDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(fragmentDefinition.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("fragment ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("fragment "), context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
         await context.WriteAsync(" ").ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitFragmentSpreadAsync(GraphQLFragmentSpread fragmentSpread, TContext context)
     {
         await VisitAsync(fragmentSpread.Comments, context).ConfigureAwait(false);
-
-        await WriteIndentAsync(context).ConfigureAwait(false);
-
-        await context.WriteAsync("...").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("..."), context).ConfigureAwait(false);
         await VisitAsync(fragmentSpread.FragmentName, context).ConfigureAwait(false);
         await VisitAsync(fragmentSpread.Directives, context).ConfigureAwait(false);
-        await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, TContext context)
     {
         await VisitAsync(inlineFragment.Comments, context).ConfigureAwait(false);
-
-        await WriteIndentAsync(context).ConfigureAwait(false);
-
-        await context.WriteAsync("... ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("... "), context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.Directives, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.SelectionSet, context).ConfigureAwait(false);
@@ -275,28 +231,25 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         }
         else
         {
-            await WriteIndentAsync(context).ConfigureAwait(false);
-            await context.WriteAsync("{").ConfigureAwait(false);
+            await VisitAsync(LiteralNode.Wrap("{"), context).ConfigureAwait(false);
         }
         await context.WriteLineAsync().ConfigureAwait(false);
 
         foreach (var selection in selectionSet.Selections)
+        {
             await VisitAsync(selection, context).ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false);
+        }
 
+        await context.WriteLineAsync().ConfigureAwait(false);
         await WriteIndentAsync(context).ConfigureAwait(false);
         await context.WriteAsync("}").ConfigureAwait(false);
-
-        if (parent is not GraphQLOperationDefinition && parent is not GraphQLFragmentDefinition)
-            await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitAliasAsync(GraphQLAlias alias, TContext context)
     {
         await VisitAsync(alias.Comments, context).ConfigureAwait(false);
-
-        await WriteIndentAsync(context).ConfigureAwait(false);
-
         await VisitAsync(alias.Name, context).ConfigureAwait(false);
         await context.WriteAsync(":").ConfigureAwait(false);
     }
@@ -307,62 +260,41 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(field.Comments, context).ConfigureAwait(false);
         await VisitAsync(field.Alias, context).ConfigureAwait(false);
 
-        if (field.Alias == null)
-            await WriteIndentAsync(context).ConfigureAwait(false);
-        else if (field.Name.Comments == null || !Options.PrintComments)
+        if (field.Alias != null && (field.Name.Comments == null || !Options.PrintComments))
             await context.WriteAsync(" ").ConfigureAwait(false);
 
         await VisitAsync(field.Name, context).ConfigureAwait(false);
         await VisitAsync(field.Arguments, context).ConfigureAwait(false);
         await VisitAsync(field.Directives, context).ConfigureAwait(false);
         await VisitAsync(field.SelectionSet, context).ConfigureAwait(false);
-
-        if (field.SelectionSet == null)
-            await context.WriteLineAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(operationDefinition.Comments, context).ConfigureAwait(false);
         if (operationDefinition.Name is not null)
         {
-            await context.WriteAsync(GetOperationType(operationDefinition.Operation)).ConfigureAwait(false);
+            await VisitAsync(LiteralNode.Wrap(GetOperationType(operationDefinition.Operation)), context).ConfigureAwait(false);
             await context.WriteAsync(" ").ConfigureAwait(false);
             await VisitAsync(operationDefinition.Name, context).ConfigureAwait(false);
         }
         await VisitAsync(operationDefinition.Variables, context).ConfigureAwait(false);
         await VisitAsync(operationDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(operationDefinition.SelectionSet, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitDirectiveDefinitionAsync(GraphQLDirectiveDefinition directiveDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(directiveDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("directive @").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("directive @"), context).ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Arguments, context).ConfigureAwait(false);
         if (directiveDefinition.Repeatable)
             await context.WriteAsync(" repeatable").ConfigureAwait(false);
         await VisitAsync(directiveDefinition.Locations, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
@@ -377,8 +309,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                 await context.WriteLineAsync().ConfigureAwait(false);
                 for (int i = 0; i < directiveLocations.Items.Count; ++i)
                 {
-                    await WriteIndentAsync(context).ConfigureAwait(false);
-                    await context.WriteAsync("| ").ConfigureAwait(false);
+                    await VisitAsync(LiteralNode.Wrap("| "), context).ConfigureAwait(false);
                     await context.WriteAsync(GetDirectiveLocation(directiveLocations.Items[i])).ConfigureAwait(false);
                     if (i < directiveLocations.Items.Count - 1)
                         await context.WriteLineAsync().ConfigureAwait(false);
@@ -420,7 +351,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitVariablesDefinitionAsync(GraphQLVariablesDefinition variablesDefinition, TContext context)
     {
         await VisitAsync(variablesDefinition.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("(").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("("), context).ConfigureAwait(false);
 
         for (int i = 0; i < variablesDefinition.Items.Count; ++i)
         {
@@ -436,7 +367,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitVariableAsync(GraphQLVariable variable, TContext context)
     {
         await VisitAsync(variable.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("$").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("$"), context).ConfigureAwait(false);
         await VisitAsync(variable.Name, context).ConfigureAwait(false);
     }
 
@@ -450,32 +381,18 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(scalarTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("scalar ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("scalar "), context).ConfigureAwait(false);
         await VisitAsync(scalarTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeDefinition.Directives, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitSchemaExtensionAsync(GraphQLSchemaExtension schemaExtension, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(schemaExtension.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("extend schema").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("extend schema"), context).ConfigureAwait(false);
         await VisitAsync(schemaExtension.Directives, context).ConfigureAwait(false);
 
         //TODO: https://github.com/graphql/graphql-spec/issues/921
@@ -493,62 +410,36 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
             await context.WriteAsync("}").ConfigureAwait(false);
         }
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitScalarTypeExtensionAsync(GraphQLScalarTypeExtension scalarTypeExtension, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(scalarTypeExtension.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("extend scalar ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("extend scalar "), context).ConfigureAwait(false);
         await VisitAsync(scalarTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(scalarTypeExtension.Directives, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitEnumTypeDefinitionAsync(GraphQLEnumTypeDefinition enumTypeDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(enumTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("enum ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("enum "), context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(enumTypeDefinition.Values, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitEnumTypeExtensionAsync(GraphQLEnumTypeExtension enumTypeExtension, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(enumTypeExtension.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("extend enum ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("extend enum "), context).ConfigureAwait(false);
         await VisitAsync(enumTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(enumTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(enumTypeExtension.Values, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
@@ -556,9 +447,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(enumValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(enumValueDefinition.Description, context).ConfigureAwait(false);
-
-        await WriteIndentAsync(context).ConfigureAwait(false);
-
         await VisitAsync(enumValueDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(enumValueDefinition.Directives, context).ConfigureAwait(false);
     }
@@ -569,7 +457,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(enumValuesDefinition.Comments, context).ConfigureAwait(false);
 
         bool freshLine = enumValuesDefinition.Comments != null && Options.PrintComments;
-        await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         foreach (var enumValueDefinition in enumValuesDefinition.Items)
@@ -584,38 +472,22 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitInputObjectTypeDefinitionAsync(GraphQLInputObjectTypeDefinition inputObjectTypeDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(inputObjectTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("input ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("input "), context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeDefinition.Fields, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitInputObjectTypeExtensionAsync(GraphQLInputObjectTypeExtension inputObjectTypeExtension, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(inputObjectTypeExtension.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("extend input ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("extend input "), context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(inputObjectTypeExtension.Fields, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
@@ -630,11 +502,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         await VisitAsync(inputValueDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Description, context).ConfigureAwait(false);
-
-        // Indent only input fields since for arguments indentation is always handled in VisitCommentAsync/VisitDescriptionAsync
-        if (hasParent && parent is GraphQLInputFieldsDefinition)
-            await WriteIndentAsync(context).ConfigureAwait(false);
-
         await VisitAsync(inputValueDefinition.Name, context).ConfigureAwait(false);
         await context.WriteAsync(": ").ConfigureAwait(false);
         await VisitAsync(inputValueDefinition.Type, context).ConfigureAwait(false);
@@ -652,7 +519,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(inputFieldsDefinition.Comments, context).ConfigureAwait(false);
 
         bool freshLine = inputFieldsDefinition.Comments != null && Options.PrintComments;
-        await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         foreach (var inputFieldDefinition in inputFieldsDefinition.Items)
@@ -667,79 +534,47 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitObjectTypeDefinitionAsync(GraphQLObjectTypeDefinition objectTypeDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(objectTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("type ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("type "), context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Interfaces, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(objectTypeDefinition.Fields, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitObjectTypeExtensionAsync(GraphQLObjectTypeExtension objectTypeExtension, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(objectTypeExtension.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("extend type ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("extend type "), context).ConfigureAwait(false);
         await VisitAsync(objectTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(objectTypeExtension.Interfaces, context).ConfigureAwait(false);
         await VisitAsync(objectTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(objectTypeExtension.Fields, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitInterfaceTypeDefinitionAsync(GraphQLInterfaceTypeDefinition interfaceTypeDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(interfaceTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("interface ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("interface "), context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Interfaces, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeDefinition.Fields, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitInterfaceTypeExtensionAsync(GraphQLInterfaceTypeExtension interfaceTypeExtension, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(interfaceTypeExtension.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("extend interface ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("extend interface "), context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeExtension.Interfaces, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(interfaceTypeExtension.Fields, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
@@ -747,9 +582,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(fieldDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(fieldDefinition.Description, context).ConfigureAwait(false);
-
-        await WriteIndentAsync(context).ConfigureAwait(false);
-
         await VisitAsync(fieldDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(fieldDefinition.Arguments, context).ConfigureAwait(false);
         await context.WriteAsync(": ").ConfigureAwait(false);
@@ -763,7 +595,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(fieldsDefinition.Comments, context).ConfigureAwait(false);
 
         bool freshLine = fieldsDefinition.Comments != null && Options.PrintComments;
-        await context.WriteAsync(freshLine ? "{" : " {").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         foreach (var fieldDefinition in fieldsDefinition)
@@ -778,12 +610,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitSchemaDefinitionAsync(GraphQLSchemaDefinition schemaDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(schemaDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Description, context).ConfigureAwait(false);
         await context.WriteAsync("schema").ConfigureAwait(false);
@@ -803,17 +629,12 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         }
 
         await context.WriteAsync("}").ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitRootOperationTypeDefinitionAsync(GraphQLRootOperationTypeDefinition rootOperationTypeDefinition, TContext context)
     {
         await VisitAsync(rootOperationTypeDefinition.Comments, context).ConfigureAwait(false);
-
-        await WriteIndentAsync(context).ConfigureAwait(false);
-
         await context.WriteAsync(GetOperationType(rootOperationTypeDefinition.Operation)).ConfigureAwait(false);
         await context.WriteAsync(": ").ConfigureAwait(false);
         await VisitAsync(rootOperationTypeDefinition.Type, context).ConfigureAwait(false);
@@ -822,38 +643,22 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitUnionTypeDefinitionAsync(GraphQLUnionTypeDefinition unionTypeDefinition, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(unionTypeDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("union ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("union "), context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Name, context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(unionTypeDefinition.Types, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
     protected override async ValueTask VisitUnionTypeExtensionAsync(GraphQLUnionTypeExtension unionTypeExtension, TContext context)
     {
-        if (context.LastDefinitionPrinted)
-        {
-            await context.WriteDoubleLineAsync().ConfigureAwait(false);
-            context.LastDefinitionPrinted = false;
-        }
-
         await VisitAsync(unionTypeExtension.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("extend union ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("extend union "), context).ConfigureAwait(false);
         await VisitAsync(unionTypeExtension.Name, context).ConfigureAwait(false);
         await VisitAsync(unionTypeExtension.Directives, context).ConfigureAwait(false);
         await VisitAsync(unionTypeExtension.Types, context).ConfigureAwait(false);
-
-        context.LastDefinitionPrinted = true;
     }
 
     /// <inheritdoc/>
@@ -866,13 +671,12 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         if (Options.EachUnionMemberOnNewLine)
         {
-            await context.WriteAsync("=").ConfigureAwait(false);
+            await VisitAsync(LiteralNode.Wrap("="), context).ConfigureAwait(false);
             await context.WriteLineAsync().ConfigureAwait(false);
 
             for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
             {
-                await WriteIndentAsync(context).ConfigureAwait(false);
-                await context.WriteAsync("| ").ConfigureAwait(false);
+                await VisitAsync(LiteralNode.Wrap("| "), context).ConfigureAwait(false);
                 await VisitAsync(unionMemberTypes.Items[i], context).ConfigureAwait(false);
                 if (i < unionMemberTypes.Items.Count - 1)
                     await context.WriteLineAsync().ConfigureAwait(false);
@@ -880,7 +684,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         }
         else
         {
-            await context.WriteAsync("= ").ConfigureAwait(false);
+            await VisitAsync(LiteralNode.Wrap("= "), context).ConfigureAwait(false);
 
             for (int i = 0; i < unionMemberTypes.Items.Count; ++i)
             {
@@ -934,7 +738,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitArgumentsAsync(GraphQLArguments arguments, TContext context)
     {
         await VisitAsync(arguments.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("(").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("("), context).ConfigureAwait(false);
         for (int i = 0; i < arguments.Items.Count; ++i)
         {
             await VisitAsync(arguments.Items[i], context).ConfigureAwait(false);
@@ -1045,38 +849,76 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         return base.VisitNamedTypeAsync(namedType, context);
     }
 
+    /// <summary>
+    /// Places vertical indentation between top level definitions.
+    /// </summary>
+    protected virtual async ValueTask MakeVerticalIndentationBetweenTopLevelDefinitions(ASTNode node, TContext context)
+    {
+        static bool IsTopLevelNode(ASTNode? node) =>
+           node is GraphQLSchemaDefinition ||
+           node is GraphQLExecutableDefinition ||
+           node is GraphQLTypeExtension ||
+           node is GraphQLSchemaExtension ||
+           node is GraphQLTypeDefinition { IsChildDefinition: false };
+
+        if (IsTopLevelNode(context.LastVisitedNode) && IsTopLevelNode(node))
+            await context.WriteDoubleLineAsync().ConfigureAwait(false);
+    }
+
     /// <inheritdoc/>
     public override async ValueTask VisitAsync(ASTNode? node, TContext context)
     {
         if (node == null)
             return;
 
+        await MakeVerticalIndentationBetweenTopLevelDefinitions(node, context).ConfigureAwait(false);
+
         int prevLevel = context.IndentLevel;
 
-        if (node is GraphQLField ||
+        if (
+            (
+            node is GraphQLInputValueDefinition ||
             node is GraphQLFieldDefinition ||
             node is GraphQLEnumValueDefinition ||
+            node is GraphQLRootOperationTypeDefinition ||
+            node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine ||
+            node is GraphQLUnionMemberTypes && Options.EachUnionMemberOnNewLine
+            ) && context.Parents.Count > 0
+          )
+            context.IndentLevel = 1; // fixed indentation of 1
+        else if (
+            node is GraphQLField ||
             node is GraphQLFragmentSpread ||
-            node is GraphQLInlineFragment ||
-            node is GraphQLRootOperationTypeDefinition)
-            ++context.IndentLevel;
-
-        if (node is GraphQLInputValueDefinition && (context.Parents.Count > 0 && context.Parents.Peek() is GraphQLInputFieldsDefinition))
-            ++context.IndentLevel;
-
-        if (node is GraphQLDescription && TryPeekParent(context, out var parent) && parent is GraphQLArgumentsDefinition)
-            ++context.IndentLevel;
-
-        if (node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine)
-            ++context.IndentLevel;
-
-        if (node is GraphQLUnionMemberTypes && Options.EachUnionMemberOnNewLine)
-            ++context.IndentLevel;
+            node is GraphQLInlineFragment
+            )
+            ++context.IndentLevel; // nested indentation
 
         context.Parents.Push(node);
 
-        await base.VisitAsync(node, context).ConfigureAwait(false);
+        // TODO: consider uncomment
+        // print new line before printing new comment if previous node did not print it
+        //if (node is GraphQLComment && Options.PrintComments && !context.NewLinePrinted)
+        //    await context.WriteLineAsync().ConfigureAwait(false);
 
+        // print new line after already printed comment before printing new node
+        if (context.LastVisitedNode is GraphQLComment && Options.PrintComments && !context.IndentPrinted)
+            await context.WriteLineAsync().ConfigureAwait(false);
+
+        if (node is GraphQLDescription && !context.IndentPrinted)
+            await context.WriteLineAsync().ConfigureAwait(false);
+
+        if ((context.LastVisitedNode is GraphQLFragmentSpread || context.LastVisitedNode is GraphQLSelectionSet) && !context.IndentPrinted)
+            await context.WriteLineAsync().ConfigureAwait(false);
+
+        if (context.NewLinePrinted)
+            await WriteIndentAsync(context).ConfigureAwait(false);
+
+        if (node is LiteralNode literalNode) // base.VisitAsync will throw on unknown node
+            await context.WriteAsync(literalNode.Literal).ConfigureAwait(false);
+        else
+            await base.VisitAsync(node, context).ConfigureAwait(false);
+
+        context.LastVisitedNode = node;
         context.Parents.Pop();
         context.IndentLevel = prevLevel;
     }
@@ -1125,10 +967,12 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             for (int j = 0; j < Options.IndentSize; ++j)
                 await context.WriteAsync(" ").ConfigureAwait(false);
         }
+
+        context.IndentPrinted = true;
     }
 
-    // Returns parent if called inside ViisitXXX i.e. after context.Parents.Push(node);
-    // Returns grand-parent if called inside ViisitAsync i.e. before context.Parents.Push(node);
+    // Returns parent if called inside VisitXXX i.e. after context.Parents.Push(node);
+    // Returns grand-parent if called inside VisitAsync i.e. before context.Parents.Push(node);
     private static bool TryPeekParent(TContext context, [NotNullWhen(true)] out ASTNode? node)
     {
         node = null;
@@ -1209,7 +1053,7 @@ public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
     public class DefaultPrintContext : IPrintContext
     {
         /// <summary>
-        /// Creates an instance with the specified <see cref="TextWriter"/>.
+        /// Creates an instance with the specified <see cref="TextWriter"/> and indent size.
         /// </summary>
         public DefaultPrintContext(TextWriter writer)
         {
@@ -1229,7 +1073,17 @@ public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
         public int IndentLevel { get; set; }
 
         /// <inheritdoc/>
+        [Obsolete]
         public bool LastDefinitionPrinted { get; set; }
+
+        /// <inheritdoc/>
+        public bool NewLinePrinted { get; set; } = true;
+
+        /// <inheritdoc/>
+        public bool IndentPrinted { get; set; } = false;
+
+        /// <inheritdoc/>
+        public ASTNode? LastVisitedNode { get; set; }
     }
 
     /// <inheritdoc/>
@@ -1278,6 +1132,27 @@ public class SDLPrinterOptions
     /// <summary>
     /// The size of the horizontal indentation in spaces.
     /// </summary>
-    public int IndentSize { get; set; } = 2;
+    public int IndentSize { get; init; } = 2;
 }
 
+// Preudo AST node to allow calls to VisitAsync for indentation purposes.
+internal class LiteralNode : ASTNode
+{
+    [ThreadStatic]
+    internal static LiteralNode? _shared;
+
+    private LiteralNode()
+    {
+    }
+
+    public static LiteralNode Wrap(ROM literal)
+    {
+        _shared ??= new LiteralNode();
+        _shared.Literal = literal;
+        return _shared;
+    }
+
+    public ROM Literal { get; set; }
+
+    public override ASTNodeKind Kind => (ASTNodeKind)(-1);
+}
