@@ -138,11 +138,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             await context.WriteAsync("\"\"\"").ConfigureAwait(false);
         }
 
-        async ValueTask WriteString()
-        {
-            await WriteEncodedStringAsync(context, description.Value).ConfigureAwait(false);
-            await context.WriteLineAsync().ConfigureAwait(false);
-        }
+        ValueTask WriteString() => WriteEncodedStringAsync(context, description.Value);
 
         // http://spec.graphql.org/October2021/#StringValue
         return ShouldBeMultilineBlockString()
