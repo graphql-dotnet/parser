@@ -1,4 +1,4 @@
 query-filters:
   - exclude:
-    id:
-      - cs/linq/missed-where
+      id:
+        - cs/linq/missed-where
