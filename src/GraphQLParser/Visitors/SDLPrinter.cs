@@ -136,7 +136,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             await context.WriteLineAsync().ConfigureAwait(false);
             await WriteIndentAsync(context).ConfigureAwait(false);
             await context.WriteAsync("\"\"\"").ConfigureAwait(false);
-            await context.WriteLineAsync().ConfigureAwait(false);
         }
 
         async ValueTask WriteString()
@@ -902,6 +901,10 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         // print new line after already printed comment before printing new node
         if (context.LastVisitedNode is GraphQLComment && Options.PrintComments && !context.IndentPrinted)
+            await context.WriteLineAsync().ConfigureAwait(false);
+
+        // print new line after already printed description before printing new node
+        if (context.LastVisitedNode is GraphQLDescription && !context.IndentPrinted)
             await context.WriteLineAsync().ConfigureAwait(false);
 
         if (node is GraphQLDescription && !context.IndentPrinted)

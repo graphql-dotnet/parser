@@ -804,8 +804,7 @@ multilined",
 @"""""""
 description
 multilined
-""""""
-")]
+""""""")]
     public async Task Description_Without_Parent_Should_Be_Printed(string text, string expected)
     {
         var description = new GraphQLDescription(text);
@@ -831,7 +830,6 @@ Test
 Line 2Line 3
 Line 4
 """
-
 """")]
     public async Task Description_With_Escaped_Unicode_Should_Be_Printed(string text, string expected)
     {
