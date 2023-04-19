@@ -1132,7 +1132,7 @@ public class SDLPrinterOptions
     /// <summary>
     /// The size of the horizontal indentation in spaces.
     /// </summary>
-    public int IndentSize { get; init; } = 2;
+    public int IndentSize { get; set; } = 2;
 }
 
 /// <summary>
