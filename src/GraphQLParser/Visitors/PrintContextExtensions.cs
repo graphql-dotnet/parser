@@ -15,11 +15,11 @@ public static class PrintContextExtensions
     /// using <see cref="CancellationToken"/> from it.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static async ValueTask WriteAsync<TContext>(this TContext context, ROM value)
+    public static ValueTask WriteAsync<TContext>(this TContext context, ROM value)
         where TContext : IPrintContext
     {
         if (value.Length == 0)
-            return;
+            return default;
 
         context.NewLinePrinted = value.Span[value.Length - 1] == '\n';
         context.IndentPrinted = false;
@@ -31,7 +31,7 @@ public static class PrintContextExtensions
 #elif NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
         context.Writer.WriteAsync(value, context.CancellationToken);
 #endif
-        await task;
+        return new ValueTask(task);
     }
 
     /// <summary>
