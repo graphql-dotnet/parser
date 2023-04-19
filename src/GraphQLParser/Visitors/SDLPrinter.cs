@@ -47,19 +47,11 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     /// <inheritdoc/>
     protected override async ValueTask VisitCommentAsync(GraphQLComment comment, TContext context)
     {
-        if (!Options.PrintComments)
-            return;
-
-        // comment MUST always be on a new line but VisitAsync may already set indentation
-        // TODO: consider remove
-        if (!context.NewLinePrinted && !context.IndentPrinted)
+        if (Options.PrintComments)
         {
-            await context.WriteLineAsync().ConfigureAwait(false);
-            await WriteIndentAsync(context).ConfigureAwait(false);
+            await context.WriteAsync("#").ConfigureAwait(false);
+            await context.WriteAsync(comment.Value).ConfigureAwait(false);
         }
-
-        await context.WriteAsync("#").ConfigureAwait(false);
-        await context.WriteAsync(comment.Value).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -91,7 +83,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         async ValueTask WriteMultilineBlockString()
         {
             await context.WriteAsync("\"\"\"").ConfigureAwait(false);
-            await context.WriteLineAsync().ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false); // internal NewLine in BlockString
 
             bool needStartNewLine = true;
             int length = description.Value.Span.Length;
@@ -133,7 +125,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                 }
             }
 
-            await context.WriteLineAsync().ConfigureAwait(false);
+            await context.WriteLineAsync().ConfigureAwait(false); // internal NewLine in BlockString
             await WriteIndentAsync(context).ConfigureAwait(false);
             await context.WriteAsync("\"\"\"").ConfigureAwait(false);
         }
@@ -228,7 +220,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         {
             await VisitAsync(LiteralNode.Wrap("{"), context).ConfigureAwait(false);
         }
-        await context.WriteLineAsync().ConfigureAwait(false);
+        await context.WriteLineAsync().ConfigureAwait(false); // internal NewLine in SelectionSet
 
         foreach (var selection in selectionSet.Selections)
         {
@@ -455,12 +447,14 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        foreach (var enumValueDefinition in enumValuesDefinition.Items)
+        if (enumValuesDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
         {
-            await VisitAsync(enumValueDefinition, context).ConfigureAwait(false);
-            await context.WriteLineAsync().ConfigureAwait(false);
+            foreach (var enumValueDefinition in enumValuesDefinition.Items)
+            {
+                await VisitAsync(enumValueDefinition, context).ConfigureAwait(false);
+                await context.WriteLineAsync().ConfigureAwait(false);
+            }
         }
-
         await context.WriteAsync("}").ConfigureAwait(false);
     }
 
@@ -517,10 +511,13 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        foreach (var inputFieldDefinition in inputFieldsDefinition.Items)
+        if (inputFieldsDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
         {
-            await VisitAsync(inputFieldDefinition, context).ConfigureAwait(false);
-            await context.WriteLineAsync().ConfigureAwait(false);
+            foreach (var inputFieldDefinition in inputFieldsDefinition.Items)
+            {
+                await VisitAsync(inputFieldDefinition, context).ConfigureAwait(false);
+                await context.WriteLineAsync().ConfigureAwait(false);
+            }
         }
 
         await context.WriteAsync("}").ConfigureAwait(false);
@@ -593,10 +590,13 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
-        foreach (var fieldDefinition in fieldsDefinition)
+        if (fieldsDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
         {
-            await VisitAsync(fieldDefinition, context).ConfigureAwait(false);
-            await context.WriteLineAsync().ConfigureAwait(false);
+            foreach (var fieldDefinition in fieldsDefinition.Items)
+            {
+                await VisitAsync(fieldDefinition, context).ConfigureAwait(false);
+                await context.WriteLineAsync().ConfigureAwait(false);
+            }
         }
 
         await context.WriteAsync("}").ConfigureAwait(false);
@@ -890,25 +890,26 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         context.Parents.Push(node);
 
-        // TODO: consider uncomment
-        // print new line before printing new comment if previous node did not print it
-        //if (node is GraphQLComment && Options.PrintComments && !context.NewLinePrinted)
-        //    await context.WriteLineAsync().ConfigureAwait(false);
+        // ensure NewLine before printing comment if previous node did not print NewLine
+        if (node is GraphQLComment && Options.PrintComments && !context.IndentPrinted)
+            await context.WriteLineAsync().ConfigureAwait(false);
 
-        // print new line after already printed comment before printing new node
+        // ensure NewLine after already printed comment before printing new node
         if (context.LastVisitedNode is GraphQLComment && Options.PrintComments && !context.IndentPrinted)
             await context.WriteLineAsync().ConfigureAwait(false);
 
-        // print new line after already printed description before printing new node
+        // ensure NewLine after already printed description before printing new node
         if (context.LastVisitedNode is GraphQLDescription && !context.IndentPrinted)
             await context.WriteLineAsync().ConfigureAwait(false);
 
+        // ensure NewLine before printing description if previous node did not print NewLine
         if (node is GraphQLDescription && !context.IndentPrinted)
             await context.WriteLineAsync().ConfigureAwait(false);
 
         if ((context.LastVisitedNode is GraphQLFragmentSpread || context.LastVisitedNode is GraphQLSelectionSet) && !context.IndentPrinted)
             await context.WriteLineAsync().ConfigureAwait(false);
 
+        // ensure proper indentation on the current line before printing new node
         if (context.NewLinePrinted)
             await WriteIndentAsync(context).ConfigureAwait(false);
 
@@ -1134,7 +1135,9 @@ public class SDLPrinterOptions
     public int IndentSize { get; init; } = 2;
 }
 
-// Preudo AST node to allow calls to VisitAsync for indentation purposes.
+/// <summary>
+/// Preudo AST node to allow calls to <see cref="SDLPrinter{TContext}.VisitAsync(ASTNode?, TContext)"/> for indentation purposes.
+/// </summary>
 internal class LiteralNode : ASTNode
 {
     [ThreadStatic]
