@@ -31,17 +31,6 @@ public class StructurePrinter<TContext> : ASTVisitor<TContext>
     /// </summary>
     public StructurePrinterOptions Options { get; }
 
-    private async ValueTask WriteIndentAsync(TContext context)
-    {
-        for (int i = 0; i < context.IndentLevel; ++i)
-        {
-            for (int j = 0; j < Options.IndentSize; ++j)
-                await context.WriteAsync(" ").ConfigureAwait(false);
-        }
-
-        context.IndentPrinted = true;
-    }
-
     /// <inheritdoc/>
     public override async ValueTask VisitAsync(ASTNode? node, TContext context)
     {
@@ -68,6 +57,17 @@ public class StructurePrinter<TContext> : ASTVisitor<TContext>
         await base.VisitAsync(node, context).ConfigureAwait(false);
         _ = context.Parents.Pop();
         --context.IndentLevel;
+    }
+
+    private async ValueTask WriteIndentAsync(TContext context)
+    {
+        for (int i = 0; i < context.IndentLevel; ++i)
+        {
+            for (int j = 0; j < Options.IndentSize; ++j)
+                await context.WriteAsync(" ").ConfigureAwait(false);
+        }
+
+        context.IndentPrinted = true;
     }
 }
 
@@ -115,5 +115,5 @@ public class StructurePrinterOptions
     /// <summary>
     /// The size of the horizontal indentation in spaces.
     /// </summary>
-    public int IndentSize { get; init; } = 2;
+    public int IndentSize { get; set; } = 2;
 }
