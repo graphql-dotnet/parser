@@ -323,8 +323,8 @@ extend type User implements Person")]
             () =>
             {
                 var context = new ParserContext("extend abc", default);
-                context.ParseTypeExtension(new[] { "abc" });
+                context.ParseTypeSystemExtension(new[] { "abc" });
             })
-            .Message.ShouldBe("Unexpected keyword 'abc' in ParseTypeExtension.");
+            .Message.ShouldBe("Unexpected keyword 'abc' in ParseTypeSystemExtension.");
     }
 }

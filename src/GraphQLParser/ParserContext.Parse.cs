@@ -52,7 +52,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Argument
-    internal GraphQLArgument ParseArgument()
+    public GraphQLArgument ParseArgument()
     {
         IncreaseDepth();
 
@@ -71,7 +71,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Arguments
-    internal GraphQLArguments ParseArguments()
+    public GraphQLArguments ParseArguments()
     {
         IncreaseDepth();
 
@@ -88,7 +88,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ArgumentsDefinition
-    private GraphQLArgumentsDefinition ParseArgumentsDefinition()
+    public GraphQLArgumentsDefinition ParseArgumentsDefinition()
     {
         IncreaseDepth();
 
@@ -97,7 +97,7 @@ internal ref partial struct ParserContext
         var argsDef = NodeHelper.CreateGraphQLArgumentsDefinition(_ignoreOptions);
 
         argsDef.Comments = GetComments();
-        argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.PAREN_R);
+        argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDefinition(), TokenKind.PAREN_R);
         argsDef.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -105,7 +105,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#InputFieldsDefinition
-    private GraphQLInputFieldsDefinition ParseInputFieldsDefinition()
+    public GraphQLInputFieldsDefinition ParseInputFieldsDefinition()
     {
         IncreaseDepth();
 
@@ -114,7 +114,7 @@ internal ref partial struct ParserContext
         var inputFieldsDef = NodeHelper.CreateGraphQLInputFieldsDefinition(_ignoreOptions);
 
         inputFieldsDef.Comments = GetComments();
-        inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDef(), TokenKind.BRACE_R);
+        inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDefinition(), TokenKind.BRACE_R);
         inputFieldsDef.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -122,7 +122,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#FieldsDefinition
-    private GraphQLFieldsDefinition ParseFieldsDefinition()
+    public GraphQLFieldsDefinition ParseFieldsDefinition()
     {
         IncreaseDepth();
 
@@ -139,7 +139,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#EnumValuesDefinition
-    private GraphQLEnumValuesDefinition ParseEnumValuesDefinition()
+    public GraphQLEnumValuesDefinition ParseEnumValuesDefinition()
     {
         IncreaseDepth();
 
@@ -156,7 +156,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#VariableDefinitions
-    private GraphQLVariablesDefinition ParseVariablesDefinition()
+    public GraphQLVariablesDefinition ParseVariablesDefinition()
     {
         IncreaseDepth();
 
@@ -272,7 +272,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Directive
-    private GraphQLDirective ParseDirective()
+    public GraphQLDirective ParseDirective()
     {
         IncreaseDepth();
 
@@ -291,7 +291,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#DirectiveDefinition
-    private GraphQLDirectiveDefinition ParseDirectiveDefinition()
+    public GraphQLDirectiveDefinition ParseDirectiveDefinition()
     {
         IncreaseDepth();
 
@@ -359,7 +359,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Directives
-    private GraphQLDirectives ParseDirectives()
+    public GraphQLDirectives ParseDirectives()
     {
         IncreaseDepth();
         // Directives go one after another without any "list prefix", so it is impossible
@@ -386,7 +386,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#EnumTypeDefinition
-    private GraphQLEnumTypeDefinition ParseEnumTypeDefinition()
+    public GraphQLEnumTypeDefinition ParseEnumTypeDefinition()
     {
         IncreaseDepth();
 
@@ -452,7 +452,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#EnumValueDefinition
-    private GraphQLEnumValueDefinition ParseEnumValueDefinition()
+    public GraphQLEnumValueDefinition ParseEnumValueDefinition()
     {
         IncreaseDepth();
 
@@ -472,7 +472,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#FieldDefinition
-    private GraphQLFieldDefinition ParseFieldDefinition()
+    public GraphQLFieldDefinition ParseFieldDefinition()
     {
         IncreaseDepth();
 
@@ -495,7 +495,7 @@ internal ref partial struct ParserContext
 
     // http://spec.graphql.org/October2021/#Field
     // http://spec.graphql.org/October2021/#Alias
-    private GraphQLField ParseField()
+    public GraphQLField ParseField()
     {
         IncreaseDepth();
 
@@ -556,7 +556,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#FloatValue
-    private GraphQLFloatValue ParseFloatValue(/*bool isConstant*/)
+    private GraphQLFloatValue ParseFloatValue()
     {
         IncreaseDepth();
 
@@ -617,7 +617,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#FragmentDefinition
-    private GraphQLFragmentDefinition ParseFragmentDefinition()
+    public GraphQLFragmentDefinition ParseFragmentDefinition()
     {
         IncreaseDepth();
 
@@ -692,7 +692,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#InputObjectTypeDefinition
-    private GraphQLInputObjectTypeDefinition ParseInputObjectTypeDefinition()
+    public GraphQLInputObjectTypeDefinition ParseInputObjectTypeDefinition()
     {
         IncreaseDepth();
 
@@ -735,7 +735,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#InputValueDefinition
-    private GraphQLInputValueDefinition ParseInputValueDef()
+    public GraphQLInputValueDefinition ParseInputValueDefinition()
     {
         IncreaseDepth();
 
@@ -757,7 +757,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#IntValue
-    private GraphQLIntValue ParseIntValue(/*bool isConstant*/)
+    private GraphQLIntValue ParseIntValue()
     {
         IncreaseDepth();
 
@@ -774,7 +774,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#InterfaceTypeDefinition
-    private GraphQLInterfaceTypeDefinition ParseInterfaceTypeDefinition()
+    public GraphQLInterfaceTypeDefinition ParseInterfaceTypeDefinition()
     {
         IncreaseDepth();
 
@@ -873,7 +873,7 @@ internal ref partial struct ParserContext
             "union" => ParseUnionTypeDefinition(),
             "enum" => ParseEnumTypeDefinition(),
             "input" => ParseInputObjectTypeDefinition(),
-            "extend" => ParseTypeExtension(),
+            "extend" => ParseTypeSystemExtension(),
             "directive" => ParseDirectiveDefinition(),
 
             _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseNamedDefinition)}.")
@@ -927,7 +927,7 @@ internal ref partial struct ParserContext
         return named;
     }
 
-    private GraphQLValue ParseNameValue(/*bool isConstant*/)
+    private GraphQLValue ParseNameValue()
     {
         return _currentToken.Value.Span switch
         {
@@ -996,7 +996,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ObjectTypeDefinition
-    private GraphQLObjectTypeDefinition ParseObjectTypeDefinition()
+    public GraphQLObjectTypeDefinition ParseObjectTypeDefinition()
     {
         IncreaseDepth();
 
@@ -1041,7 +1041,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#OperationDefinition
-    private ASTNode ParseOperationDefinition()
+    public ASTNode ParseOperationDefinition()
     {
         IncreaseDepth();
 
@@ -1119,7 +1119,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#RootOperationTypeDefinition
-    private GraphQLRootOperationTypeDefinition ParseRootOperationTypeDefinition()
+    public GraphQLRootOperationTypeDefinition ParseRootOperationTypeDefinition()
     {
         IncreaseDepth();
 
@@ -1138,7 +1138,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ScalarTypeDefinition
-    private GraphQLScalarTypeDefinition ParseScalarTypeDefinition()
+    public GraphQLScalarTypeDefinition ParseScalarTypeDefinition()
     {
         IncreaseDepth();
 
@@ -1158,7 +1158,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#SchemaExtension
-    // Note that due to the spec type extensions have no descriptions.
+    // Note that due to the spec schema extensions have no descriptions.
     private GraphQLSchemaExtension ParseSchemaExtension(int start, List<GraphQLComment>? comments)
     {
         IncreaseDepth();
@@ -1200,7 +1200,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#SchemaDefinition
-    private GraphQLSchemaDefinition ParseSchemaDefinition()
+    public GraphQLSchemaDefinition ParseSchemaDefinition()
     {
         IncreaseDepth();
 
@@ -1228,7 +1228,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#SelectionSet
-    private GraphQLSelectionSet ParseSelectionSet()
+    public GraphQLSelectionSet ParseSelectionSet()
     {
         IncreaseDepth();
 
@@ -1245,7 +1245,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#StringValue
-    private GraphQLStringValue ParseStringValue(/*bool isConstant*/)
+    private GraphQLStringValue ParseStringValue()
     {
         IncreaseDepth();
 
@@ -1262,7 +1262,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#Description
-    private GraphQLDescription ParseDescription()
+    public GraphQLDescription ParseDescription()
     {
         IncreaseDepth();
 
@@ -1321,7 +1321,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#TypeSystemExtension : SchemaExtension / TypeExtension
-    internal ASTNode ParseTypeExtension(string[]? oneOf = null) // internal for tests
+    public ASTNode ParseTypeSystemExtension(string[]? oneOf = null)
     {
         int start = _currentToken.Start;
         var comments = GetComments();
@@ -1339,7 +1339,7 @@ internal ref partial struct ParserContext
             "enum" => ParseEnumTypeExtension(start, comments),
             "input" => ParseInputObjectTypeExtension(start, comments),
 
-            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseTypeExtension)}.")
+            _ => throw new NotSupportedException($"Unexpected keyword '{keyword}' in {nameof(ParseTypeSystemExtension)}.")
         };
     }
 
@@ -1376,7 +1376,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#UnionTypeDefinition
-    private GraphQLUnionTypeDefinition ParseUnionTypeDefinition()
+    public GraphQLUnionTypeDefinition ParseUnionTypeDefinition()
     {
         IncreaseDepth();
 
@@ -1418,23 +1418,23 @@ internal ref partial struct ParserContext
         return extension;
     }
 
-    internal GraphQLValue ParseValueLiteral(bool isConstant)
+    public GraphQLValue ParseValueLiteral(bool isConstant)
     {
         return _currentToken.Kind switch
         {
             TokenKind.BRACKET_L => ParseListValue(isConstant),
             TokenKind.BRACE_L => ParseObjectValue(isConstant),
-            TokenKind.INT => ParseIntValue(/*isConstant*/),
-            TokenKind.FLOAT => ParseFloatValue(/*isConstant*/),
-            TokenKind.STRING => ParseStringValue(/*isConstant*/),
-            TokenKind.NAME => ParseNameValue(/*isConstant*/),
+            TokenKind.INT => ParseIntValue(),
+            TokenKind.FLOAT => ParseFloatValue(),
+            TokenKind.STRING => ParseStringValue(),
+            TokenKind.NAME => ParseNameValue(),
             TokenKind.DOLLAR when !isConstant => ParseVariable(),
             _ => (GraphQLValue)Throw_Unexpected_Token()
         };
     }
 
     // http://spec.graphql.org/October2021/#Variable
-    private GraphQLVariable ParseVariable()
+    public GraphQLVariable ParseVariable()
     {
         IncreaseDepth();
 
@@ -1452,7 +1452,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#VariableDefinition
-    private GraphQLVariableDefinition ParseVariableDefinition()
+    public GraphQLVariableDefinition ParseVariableDefinition()
     {
         IncreaseDepth();
 
