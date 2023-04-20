@@ -15,7 +15,7 @@ namespace GraphQLParser.Benchmarks;
 //[RPlotExporter, CsvMeasurementsExporter]
 public class ParserBenchmark : BenchmarkBase
 {
-    private class Config : ManualConfig
+    private sealed class Config : ManualConfig
     {
         public Config()
         {
@@ -23,7 +23,7 @@ public class ParserBenchmark : BenchmarkBase
             Orderer = new ParserOrderer();
         }
 
-        private class ParserOrderer : IOrderer
+        private sealed class ParserOrderer : IOrderer
         {
             private static int GetOrder(object o) => o switch
             {

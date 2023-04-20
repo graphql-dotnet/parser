@@ -35,7 +35,7 @@ public abstract class BenchmarkBase : IBenchmark
             "params" => _params,
             "variables" => _variables,
             "github" => _github,
-            _ => throw new System.Exception(name)
+            _ => throw new ArgumentException(name, nameof(name))
         };
     }
 

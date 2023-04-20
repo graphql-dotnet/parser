@@ -123,7 +123,9 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// <summary>
     /// Visits <see cref="GraphQLAlias"/> node.
     /// </summary>
+#pragma warning disable CA1716 // Identifiers should not match keywords (alias)
     protected virtual async ValueTask VisitAliasAsync(GraphQLAlias alias, TContext context)
+#pragma warning restore CA1716
     {
         await VisitAsync(alias.Comments, context).ConfigureAwait(false);
         await VisitAsync(alias.Name, context).ConfigureAwait(false);
