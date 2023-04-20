@@ -4,12 +4,12 @@ namespace GraphQLParser.Tests.Visitors;
 
 public class ASTVisitorTests
 {
-    private class Context : IASTVisitorContext
+    private sealed class Context : IASTVisitorContext
     {
         public CancellationToken CancellationToken { get; set; }
     }
 
-    private class MySuperNode : ASTNode
+    private sealed class MySuperNode : ASTNode
     {
         public override ASTNodeKind Kind => (ASTNodeKind)12345;
     }
@@ -43,7 +43,7 @@ public class ASTVisitorTests
         Should.Throw<OperationCanceledException>(() => visitor.VisitAsync(document, context).GetAwaiter().GetResult());
     }
 
-    private class MyVisitor : ASTVisitor<Context>
+    private sealed class MyVisitor : ASTVisitor<Context>
     {
         protected override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, Context context)
         {

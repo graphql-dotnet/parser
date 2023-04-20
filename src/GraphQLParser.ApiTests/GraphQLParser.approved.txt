@@ -890,7 +890,7 @@ namespace GraphQLParser.Visitors
             public DefaultPrintContext(System.IO.TextWriter writer) { }
             public int IndentLevel { get; set; }
             public bool IndentPrinted { get; set; }
-            [System.Obsolete]
+            [System.Obsolete("Use LastVisitedNode instead")]
             public bool LastDefinitionPrinted { get; set; }
             public GraphQLParser.AST.ASTNode? LastVisitedNode { get; set; }
             public bool NewLinePrinted { get; set; }

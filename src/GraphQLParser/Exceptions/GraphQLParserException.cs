@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 namespace GraphQLParser.Exceptions;
@@ -42,9 +43,9 @@ public class GraphQLParserException : Exception
     private static string HighlightSourceAtLocation(ReadOnlySpan<char> source, Location location)
     {
         int line = location.Line;
-        string prevLineNum = (line - 1).ToString();
-        string lineNum = line.ToString();
-        string nextLineNum = (line + 1).ToString();
+        string prevLineNum = (line - 1).ToString(CultureInfo.InvariantCulture);
+        string lineNum = line.ToString(CultureInfo.InvariantCulture);
+        string nextLineNum = (line + 1).ToString(CultureInfo.InvariantCulture);
         int padLen = nextLineNum.Length;
         string[] lines = source
             .ToString()
@@ -80,7 +81,7 @@ public class GraphQLParserException : Exception
         {
             if (IsReplacementCharacter(code))
             {
-                buffer.Append("\\u").Append(((int)code).ToString("D4"));
+                buffer.Append("\\u").Append(((int)code).ToString("D4", CultureInfo.InvariantCulture));
             }
             else
             {

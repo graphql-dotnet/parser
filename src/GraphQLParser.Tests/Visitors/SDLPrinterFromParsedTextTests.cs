@@ -791,7 +791,7 @@ $a: Int) {
         ex.Message.ShouldStartWith("Unknown ");
     }
 
-    private class Context : IASTVisitorContext
+    private sealed class Context : IASTVisitorContext
     {
         public CancellationToken CancellationToken { get; set; }
     }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Numerics;
 
 namespace GraphQLParser.Tests;
@@ -5,7 +6,7 @@ namespace GraphQLParser.Tests;
 public class GraphQLIntValueTests
 {
     [Fact]
-    public void Int()
+    public void IntValue_From_Int()
     {
         var value = new GraphQLIntValue(1234567);
         value.Value.Length.ShouldBe(7);
@@ -13,7 +14,7 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void Byte()
+    public void IntValue_From_Byte()
     {
         var value = new GraphQLIntValue((byte)42);
         value.Value.Length.ShouldBe(2);
@@ -21,7 +22,7 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void Sbyte()
+    public void IntValue_From_Sbyte()
     {
         var value = new GraphQLIntValue((sbyte)-10);
         value.Value.Length.ShouldBe(3);
@@ -29,7 +30,7 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void Short()
+    public void IntValue_From_Short()
     {
         var value = new GraphQLIntValue((short)-300);
         value.Value.Length.ShouldBe(4);
@@ -37,7 +38,7 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void Ushort()
+    public void IntValue_From_Ushort()
     {
         var value = new GraphQLIntValue((ushort)60000);
         value.Value.Length.ShouldBe(5);
@@ -45,7 +46,7 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void Uint()
+    public void IntValue_From_Uint()
     {
         var value = new GraphQLIntValue(2247483647U);
         value.Value.Length.ShouldBe(10);
@@ -53,7 +54,7 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void Long()
+    public void IntValue_From_Long()
     {
         var value = new GraphQLIntValue(-60001L);
         value.Value.Length.ShouldBe(6);
@@ -61,7 +62,7 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void Ulong()
+    public void IntValue_From_Ulong()
     {
         var value = new GraphQLIntValue(9223372036854775808UL);
         value.Value.Length.ShouldBe(19);
@@ -69,9 +70,9 @@ public class GraphQLIntValueTests
     }
 
     [Fact]
-    public void BigInt()
+    public void IntValue_From_BigInt()
     {
-        var value = new GraphQLIntValue(BigInteger.Parse("7922816251426433759354395033579228162514264337593543950335"));
+        var value = new GraphQLIntValue(BigInteger.Parse("7922816251426433759354395033579228162514264337593543950335", CultureInfo.InvariantCulture));
         value.Value.Length.ShouldBe(58);
         value.Value.ShouldBe("7922816251426433759354395033579228162514264337593543950335");
     }

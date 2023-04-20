@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using GraphQLParser.AST;
 using GraphQLParser.Visitors;
 
@@ -17,7 +18,9 @@ public static class ASTNodeExtensions
     {
         var visitor = new CountVisitor<DefaultCountContext>();
         var context = new DefaultCountContext(_ => true);
-        visitor.VisitAsync(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
+        var task = visitor.VisitAsync(node, context);
+        Debug.Assert(task.IsCompleted);
+        task.GetAwaiter().GetResult(); // it's safe since method is actually sync that is verified by Debug.Assert
         return context.Count;
     }
 
@@ -30,7 +33,9 @@ public static class ASTNodeExtensions
     {
         var visitor = new MaxDepthVisitor<DefaultMaxDepthContext>();
         var context = new DefaultMaxDepthContext();
-        visitor.VisitAsync(node, context).GetAwaiter().GetResult(); // it's safe since method is actually sync
+        var task = visitor.VisitAsync(node, context);
+        Debug.Assert(task.IsCompleted);
+        task.GetAwaiter().GetResult(); // it's safe since method is actually sync that is verified by Debug.Assert
         return context.MaxDepth;
     }
 
