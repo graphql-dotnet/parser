@@ -642,6 +642,19 @@ $a: Int) {
   x
 }
 """)]
+    [InlineData(49,
+"""
+"description"
+schema {
+  query: Query
+}
+""",
+"""
+"description"
+schema {
+  query: Query
+}
+""")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
