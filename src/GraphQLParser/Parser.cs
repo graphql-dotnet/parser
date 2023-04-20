@@ -40,7 +40,7 @@ public static class Parser
             result = (T)(object)context.ParseDocument();
 
         else if (typeof(T) == typeof(GraphQLValue))
-            result = (T)(object)context.ParseValueLiteral(null);
+            result = (T)(object)context.ParseValueLiteral(false);
         else if (typeof(T) == typeof(GraphQLVariable))
             result = (T)(object)context.ParseVariable();
         else if (typeof(T) == typeof(GraphQLArgument))

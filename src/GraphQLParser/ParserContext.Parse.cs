@@ -819,7 +819,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ListValue
-    private GraphQLValue ParseListValue(bool? isConstant)
+    private GraphQLValue ParseListValue(bool isConstant)
     {
         IncreaseDepth();
 
@@ -828,12 +828,11 @@ internal ref partial struct ParserContext
         // the compiler caches these delegates in the generated code
         ParseCallback<GraphQLValue> constant = (ref ParserContext context) => context.ParseValueLiteral(true);
         ParseCallback<GraphQLValue> value = (ref ParserContext context) => context.ParseValueLiteral(false);
-        ParseCallback<GraphQLValue> notMatter = (ref ParserContext context) => context.ParseValueLiteral(null);
 
         var val = NodeHelper.CreateGraphQLListValue(_ignoreOptions);
 
         val.Comments = GetComments();
-        val.Values = ZeroOrMore(TokenKind.BRACKET_L, isConstant.HasValue ? (isConstant.Value ? constant : value) : notMatter, TokenKind.BRACKET_R);
+        val.Values = ZeroOrMore(TokenKind.BRACKET_L, isConstant ? constant : value, TokenKind.BRACKET_R);
         val.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -940,7 +939,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ObjectValue
-    private GraphQLValue ParseObjectValue(bool? isConstant)
+    private GraphQLValue ParseObjectValue(bool isConstant)
     {
         IncreaseDepth();
 
@@ -949,12 +948,11 @@ internal ref partial struct ParserContext
         // the compiler caches these delegates in the generated code
         ParseCallback<GraphQLObjectField> constant = (ref ParserContext context) => context.ParseObjectField(true);
         ParseCallback<GraphQLObjectField> value = (ref ParserContext context) => context.ParseObjectField(false);
-        ParseCallback<GraphQLObjectField> notMatter = (ref ParserContext context) => context.ParseObjectField(null);
 
         var val = NodeHelper.CreateGraphQLObjectValue(_ignoreOptions);
 
         val.Comments = GetComments();
-        val.Fields = ZeroOrMore(TokenKind.BRACE_L, isConstant.HasValue ? (isConstant.Value ? constant : value) : notMatter, TokenKind.BRACE_R);
+        val.Fields = ZeroOrMore(TokenKind.BRACE_L, isConstant ? constant : value, TokenKind.BRACE_R);
         val.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -979,7 +977,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ObjectField
-    private GraphQLObjectField ParseObjectField(bool? isConstant)
+    private GraphQLObjectField ParseObjectField(bool isConstant)
     {
         IncreaseDepth();
 
@@ -1420,7 +1418,7 @@ internal ref partial struct ParserContext
         return extension;
     }
 
-    public GraphQLValue ParseValueLiteral(bool? isConstant)
+    public GraphQLValue ParseValueLiteral(bool isConstant)
     {
         return _currentToken.Kind switch
         {
@@ -1430,7 +1428,7 @@ internal ref partial struct ParserContext
             TokenKind.FLOAT => ParseFloatValue(),
             TokenKind.STRING => ParseStringValue(),
             TokenKind.NAME => ParseNameValue(),
-            TokenKind.DOLLAR when isConstant != true => ParseVariable(),
+            TokenKind.DOLLAR when !isConstant => ParseVariable(),
             _ => (GraphQLValue)Throw_Unexpected_Token()
         };
     }

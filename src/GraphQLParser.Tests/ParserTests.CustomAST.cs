@@ -20,7 +20,7 @@ public class ParserTestsCustomAST
     [InlineData("true", ASTNodeKind.BooleanValue)]
     [InlineData("RED", ASTNodeKind.EnumValue)]
     [InlineData("[ 1, 2, 3]", ASTNodeKind.ListValue)]
-    [InlineData("{ a: 1, b: \"abc\", c: RED}", ASTNodeKind.ObjectValue)]
+    [InlineData("{ a: 1, b: \"abc\", c: RED, d: $id }", ASTNodeKind.ObjectValue)]
     [InlineData("$id", ASTNodeKind.Variable)]
     public void Should_Parse_Value_Literal_But_Not_Entire_Document(string text, ASTNodeKind kind, string expected = null)
     {
