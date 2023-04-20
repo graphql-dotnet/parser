@@ -8,6 +8,18 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLScalarTypeDefinition: {Name}")]
 public class GraphQLScalarTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
+    internal GraphQLScalarTypeDefinition()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLScalarTypeDefinition"/>.
+    /// </summary>
+    public GraphQLScalarTypeDefinition(GraphQLName name)
+        : base(name)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ScalarTypeDefinition;
 

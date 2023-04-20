@@ -8,11 +8,24 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLVariable: {Name}")]
 public class GraphQLVariable : GraphQLValue, INamedNode
 {
+    internal GraphQLVariable()
+    {
+        Name = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLVariable"/>.
+    /// </summary>
+    public GraphQLVariable(GraphQLName name)
+    {
+        Name = name;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Variable;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; } = null!;
+    public GraphQLName Name { get; set; }
 }
 
 internal sealed class GraphQLVariableWithLocation : GraphQLVariable

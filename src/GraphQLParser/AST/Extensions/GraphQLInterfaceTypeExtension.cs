@@ -5,6 +5,18 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLInterfaceTypeExtension : GraphQLTypeExtension, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
 {
+    internal GraphQLInterfaceTypeExtension()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLInterfaceTypeExtension"/>.
+    /// </summary>
+    public GraphQLInterfaceTypeExtension(GraphQLName name)
+        : base(name)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.InterfaceTypeExtension;
 

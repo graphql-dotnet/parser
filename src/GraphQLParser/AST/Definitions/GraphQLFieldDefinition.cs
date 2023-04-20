@@ -8,6 +8,20 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLFieldDefinition: {Name}")]
 public class GraphQLFieldDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasArgumentsDefinitionNode
 {
+    internal GraphQLFieldDefinition()
+    {
+        Type = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLFieldDefinition"/>.
+    /// </summary>
+    public GraphQLFieldDefinition(GraphQLName name, GraphQLType type)
+        : base(name)
+    {
+        Type = type;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.FieldDefinition;
 
@@ -19,7 +33,7 @@ public class GraphQLFieldDefinition : GraphQLTypeDefinition, IHasDirectivesNode,
     /// <summary>
     /// Nested <see cref="GraphQLType"/> AST node with field type.
     /// </summary>
-    public GraphQLType Type { get; set; } = null!;
+    public GraphQLType Type { get; set; }
 
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }
