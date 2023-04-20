@@ -607,7 +607,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(schemaDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Description, context).ConfigureAwait(false);
-        await context.WriteAsync("schema").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("schema"), context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Directives, context).ConfigureAwait(false);
 
         //bool freshLine = schemaDefinition.Comments != null && Options.PrintComments; always false
