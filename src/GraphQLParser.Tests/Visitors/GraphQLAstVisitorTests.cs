@@ -2,10 +2,9 @@ using GraphQLParser.Visitors;
 
 namespace GraphQLParser.Tests.Visitors;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2012:Use ValueTasks correctly", Justification = "CountVisitor is sync")]
 public class GraphQLAstVisitorTests
 {
-    public class CountVisitor : ASTVisitor<CountContext>
+    internal sealed class CountVisitor : ASTVisitor<CountContext>
     {
         protected override async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, CountContext context)
         {
@@ -180,7 +179,7 @@ public class GraphQLAstVisitorTests
         }
     }
 
-    public class CountContext : IASTVisitorContext
+    internal sealed class CountContext : IASTVisitorContext
     {
         public List<GraphQLAlias> VisitedAliases = new();
         public List<GraphQLArgument> VisitedArguments = new();
@@ -205,7 +204,7 @@ public class GraphQLAstVisitorTests
 
     private readonly CountVisitor _visitor = new();
 
-    public CountContext Context = new();
+    private CountContext Context { get; } = new();
 
     [Theory]
     [InlineData(IgnoreOptions.None)]

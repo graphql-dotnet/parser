@@ -54,7 +54,9 @@ public enum DirectiveLocation
 
     /// <summary>Location adjacent to an object type definition.</summary>
     [Description("Location adjacent to an object type definition.")]
+#pragma warning disable CA1720 // Identifiers should not contain type names
     Object,
+#pragma warning restore CA1720
 
     /// <summary>Location adjacent to a field definition.</summary>
     [Description("Location adjacent to a field definition.")]

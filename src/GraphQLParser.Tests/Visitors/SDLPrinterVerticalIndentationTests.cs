@@ -193,7 +193,7 @@ string expected)
         actual.Parse(); // should be parsed back
     }
 
-    private class PrintOnlyStartsWithA : SDLPrinter
+    private sealed class PrintOnlyStartsWithA : SDLPrinter
     {
         protected override ValueTask MakeVerticalIndentationBetweenTopLevelDefinitions(ASTNode node, DefaultPrintContext context)
         {

@@ -1073,14 +1073,14 @@ public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
         public int IndentLevel { get; set; }
 
         /// <inheritdoc/>
-        [Obsolete]
+        [Obsolete("Use LastVisitedNode instead")]
         public bool LastDefinitionPrinted { get; set; }
 
         /// <inheritdoc/>
         public bool NewLinePrinted { get; set; } = true;
 
         /// <inheritdoc/>
-        public bool IndentPrinted { get; set; } = false;
+        public bool IndentPrinted { get; set; }
 
         /// <inheritdoc/>
         public ASTNode? LastVisitedNode { get; set; }

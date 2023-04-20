@@ -114,7 +114,7 @@ public class GraphQLNameTests
         ((string)nameNull).ShouldBeNull();
     }
 
-    private ROM FuncROM(ROM r) => r;
+    private static ROM FuncROM(ROM r) => r;
 
-    private string FuncString(string s) => s;
+    private static string FuncString(string s) => s;
 }
