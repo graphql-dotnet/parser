@@ -5,6 +5,18 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLDirectives : ASTListNode<GraphQLDirective>
 {
+    internal GraphQLDirectives()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDirectives"/>.
+    /// </summary>
+    public GraphQLDirectives(List<GraphQLDirective> items)
+        : base(items)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Directives;
 }

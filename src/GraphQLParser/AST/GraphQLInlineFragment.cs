@@ -5,6 +5,19 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLInlineFragment : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasDirectivesNode
 {
+    internal GraphQLInlineFragment()
+    {
+        SelectionSet = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLInlineFragment"/>.
+    /// </summary>
+    public GraphQLInlineFragment(GraphQLSelectionSet selectionSet)
+    {
+        SelectionSet = selectionSet;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.InlineFragment;
 
@@ -19,7 +32,7 @@ public class GraphQLInlineFragment : ASTNode, ISelectionNode, IHasSelectionSetNo
 
     /// <inheritdoc/>
 #pragma warning disable CS8767 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
-    public GraphQLSelectionSet SelectionSet { get; set; } = null!;
+    public GraphQLSelectionSet SelectionSet { get; set; }
 #pragma warning restore CS8767
 }
 

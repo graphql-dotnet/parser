@@ -5,13 +5,26 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLTypeCondition : ASTNode
 {
+    internal GraphQLTypeCondition()
+    {
+        Type = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLTypeCondition"/>.
+    /// </summary>
+    public GraphQLTypeCondition(GraphQLNamedType type)
+    {
+        Type = type;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.TypeCondition;
 
     /// <summary>
     /// Type to which this condition is applied.
     /// </summary>
-    public GraphQLNamedType Type { get; set; } = null!;
+    public GraphQLNamedType Type { get; set; }
 }
 
 internal sealed class GraphQLTypeConditionWithLocation : GraphQLTypeCondition

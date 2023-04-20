@@ -8,6 +8,20 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLDirectiveDefinition: {Name}")]
 public class GraphQLDirectiveDefinition : GraphQLTypeDefinition, IHasArgumentsDefinitionNode
 {
+    internal GraphQLDirectiveDefinition()
+    {
+        Locations = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDirectiveDefinition"/>.
+    /// </summary>
+    public GraphQLDirectiveDefinition(GraphQLName name, GraphQLDirectiveLocations locations)
+        : base(name)
+    {
+        Locations = locations;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.DirectiveDefinition;
 
@@ -29,7 +43,7 @@ public class GraphQLDirectiveDefinition : GraphQLTypeDefinition, IHasArgumentsDe
     /// <summary>
     /// Returns a node with a list of locations representing the valid locations this directive may be placed.
     /// </summary>
-    public GraphQLDirectiveLocations Locations { get; set; } = null!;
+    public GraphQLDirectiveLocations Locations { get; set; }
 }
 
 internal sealed class GraphQLDirectiveDefinitionWithLocation : GraphQLDirectiveDefinition

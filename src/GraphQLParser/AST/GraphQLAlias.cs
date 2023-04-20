@@ -5,11 +5,24 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLAlias : ASTNode, INamedNode
 {
+    internal GraphQLAlias()
+    {
+        Name = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLAlias"/>.
+    /// </summary>
+    public GraphQLAlias(GraphQLName name)
+    {
+        Name = name;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Alias;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; } = null!;
+    public GraphQLName Name { get; set; }
 }
 
 internal sealed class GraphQLAliasWithLocation : GraphQLAlias
