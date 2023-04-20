@@ -26,7 +26,7 @@ public class ParserTestsCustomAST
     {
         Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(text));
 
-        var value = Parser.Parse<GraphQLValue>(text);
+        var value = text.Parse<GraphQLValue>();
         value.ShouldNotBeNull();
         value.Kind.ShouldBe(kind);
         if (expected != null)
