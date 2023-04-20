@@ -5,13 +5,26 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLDocument : ASTNode
 {
+    internal GraphQLDocument()
+    {
+        Definitions = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDocument"/>.
+    /// </summary>
+    public GraphQLDocument(List<ASTNode> definitions)
+    {
+        Definitions = definitions;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Document;
 
     /// <summary>
     /// All definitions in this document represented as a list of nested AST nodes.
     /// </summary>
-    public List<ASTNode> Definitions { get; set; } = null!;
+    public List<ASTNode> Definitions { get; set; }
 
     /// <summary>
     /// Comments that have not been correlated to any AST node of GraphQL document.

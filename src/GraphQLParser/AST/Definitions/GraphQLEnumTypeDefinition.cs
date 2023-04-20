@@ -8,6 +8,18 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLEnumTypeDefinition: {Name}")]
 public class GraphQLEnumTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
+    internal GraphQLEnumTypeDefinition()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLEnumTypeDefinition"/>.
+    /// </summary>
+    public GraphQLEnumTypeDefinition(GraphQLName name)
+        : base(name)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.EnumTypeDefinition;
 
