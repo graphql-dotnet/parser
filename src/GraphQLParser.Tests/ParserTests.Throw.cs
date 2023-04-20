@@ -1,3 +1,4 @@
+using System.Globalization;
 using GraphQLParser.Exceptions;
 
 namespace GraphQLParser.Tests;
@@ -216,7 +217,7 @@ OOPS
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
         ex.Message.ShouldContain(ex.Description);
-        ex.Description.ShouldBe(description, number.ToString());
+        ex.Description.ShouldBe(description, number.ToString(CultureInfo.InvariantCulture));
         ex.Location.Line.ShouldBe(line);
         ex.Location.Column.ShouldBe(column);
     }
@@ -261,7 +262,7 @@ OOPS
     {
         var ex = Should.Throw<GraphQLSyntaxErrorException>(() => text.Parse());
         ex.Message.ShouldContain(ex.Description);
-        ex.Description.ShouldBe(description, number.ToString());
+        ex.Description.ShouldBe(description, number.ToString(CultureInfo.InvariantCulture));
         ex.Location.Line.ShouldBe(line);
         ex.Location.Column.ShouldBe(column);
     }

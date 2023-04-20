@@ -82,6 +82,8 @@ public enum TokenKind
     /// </summary>
     NAME = 15,
 
+#pragma warning disable CA1720 // Identifiers should not contain type names
+
     /// <summary>
     /// An integer number is specified without a decimal point or exponent (ex. 1).
     /// </summary>
@@ -109,6 +111,8 @@ public enum TokenKind
     /// Within a block string, line termination sequences (LF, CR, or CRLF) are always replaced with a line-feed (LF) character.
     /// </remarks>
     STRING = 18,
+
+#pragma warning restore CA1720
 
     /// <summary>
     /// GraphQL source documents may contain single‐line comments, starting with the # marker.

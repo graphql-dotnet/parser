@@ -478,7 +478,7 @@ public class ParserTests
     //[InlineData(IgnoreOptions.Comments)]
     [InlineData(IgnoreOptions.Locations)]
     //[InlineData(IgnoreOptions.All)]
-    public void Comments_On_SelectionSet_Should_Read_Correctly(IgnoreOptions options)
+    public void Comments_On_Fields_Should_Read_Correctly(IgnoreOptions options)
     {
         var document = @"
 query {

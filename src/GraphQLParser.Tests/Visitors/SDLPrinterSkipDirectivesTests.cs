@@ -61,7 +61,7 @@ string expected)
         actual.Parse(); // should be parsed back
     }
 
-    private class MyPrinter : SDLPrinter
+    private sealed class MyPrinter : SDLPrinter
     {
         protected override ValueTask VisitDirectiveAsync(GraphQLDirective directive, DefaultPrintContext context)
         {
