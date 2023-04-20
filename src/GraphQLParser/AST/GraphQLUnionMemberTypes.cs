@@ -5,6 +5,20 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLUnionMemberTypes : ASTListNode<GraphQLNamedType>
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLUnionMemberTypes()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLUnionMemberTypes"/>.
+    /// </summary>
+    public GraphQLUnionMemberTypes(List<GraphQLNamedType> items)
+        : base(items)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.UnionMemberTypes;
 }

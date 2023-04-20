@@ -8,6 +8,20 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLOperationDefinition: {Operation}")]
 public class GraphQLOperationDefinition : GraphQLExecutableDefinition, INamedNode
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLOperationDefinition()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLOperationDefinition"/>.
+    /// </summary>
+    public GraphQLOperationDefinition(GraphQLSelectionSet selectionSet)
+        : base(selectionSet)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.OperationDefinition;
 

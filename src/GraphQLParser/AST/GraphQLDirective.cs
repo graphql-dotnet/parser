@@ -8,11 +8,26 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLDirective: {Name}")]
 public class GraphQLDirective : ASTNode, INamedNode, IHasArgumentsNode
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLDirective()
+    {
+        Name = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDirective"/>.
+    /// </summary>
+    public GraphQLDirective(GraphQLName name)
+    {
+        Name = name;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Directive;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; } = null!;
+    public GraphQLName Name { get; set; }
 
     /// <summary>
     /// Arguments for this directive.

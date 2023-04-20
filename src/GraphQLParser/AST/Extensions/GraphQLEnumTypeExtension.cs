@@ -5,6 +5,20 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLEnumTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLEnumTypeExtension()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLEnumTypeExtension"/>.
+    /// </summary>
+    public GraphQLEnumTypeExtension(GraphQLName name)
+        : base(name)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.EnumTypeExtension;
 

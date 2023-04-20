@@ -5,6 +5,20 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLUnionTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLUnionTypeExtension()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLUnionTypeExtension"/>.
+    /// </summary>
+    public GraphQLUnionTypeExtension(GraphQLName name)
+        : base(name)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.UnionTypeExtension;
 

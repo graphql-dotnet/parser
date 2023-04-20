@@ -5,6 +5,20 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLEnumValuesDefinition : ASTListNode<GraphQLEnumValueDefinition>
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLEnumValuesDefinition()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLEnumValuesDefinition"/>.
+    /// </summary>
+    public GraphQLEnumValuesDefinition(List<GraphQLEnumValueDefinition> items)
+        : base(items)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.EnumValuesDefinition;
 }
