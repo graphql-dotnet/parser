@@ -66,6 +66,8 @@ public class StructurePrinter<TContext> : ASTVisitor<TContext>
             for (int j = 0; j < Options.IndentSize; ++j)
                 await context.WriteAsync(" ").ConfigureAwait(false);
         }
+
+        context.IndentPrinted = true;
     }
 }
 
