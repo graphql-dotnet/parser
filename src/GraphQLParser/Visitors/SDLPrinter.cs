@@ -158,7 +158,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(fragmentDefinition.Comments, context).ConfigureAwait(false);
         await VisitAsync(LiteralNode.Wrap("fragment "), context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
-        await context.WriteAsync(" ").ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
@@ -177,7 +176,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitInlineFragmentAsync(GraphQLInlineFragment inlineFragment, TContext context)
     {
         await VisitAsync(inlineFragment.Comments, context).ConfigureAwait(false);
-        await VisitAsync(LiteralNode.Wrap("... "), context).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("..."), context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.Directives, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.SelectionSet, context).ConfigureAwait(false);
@@ -187,7 +186,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitTypeConditionAsync(GraphQLTypeCondition typeCondition, TContext context)
     {
         await VisitAsync(typeCondition.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("on ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(typeCondition) ? "on " : " on "), context).ConfigureAwait(false);
         await VisitAsync(typeCondition.Type, context).ConfigureAwait(false);
     }
 
@@ -195,13 +194,13 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitImplementsInterfacesAsync(GraphQLImplementsInterfaces implementsInterfaces, TContext context)
     {
         await VisitAsync(implementsInterfaces.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync(" implements ").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(implementsInterfaces) ? "implements " : " implements "), context).ConfigureAwait(false);
 
         for (int i = 0; i < implementsInterfaces.Items.Count; ++i)
         {
             await VisitAsync(implementsInterfaces.Items[i], context).ConfigureAwait(false);
             if (i < implementsInterfaces.Items.Count - 1)
-                await context.WriteAsync(" & ").ConfigureAwait(false);
+                await context.WriteAsync(HasPrintableComments(implementsInterfaces[i + 1]) ? " &" : " & ").ConfigureAwait(false);
         }
     }
 
@@ -210,9 +209,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     {
         await VisitAsync(selectionSet.Comments, context).ConfigureAwait(false);
 
-        bool freshLine = selectionSet.Comments != null && Options.PrintComments;
         bool hasParent = TryPeekParent(context, out var parent);
-        if (!freshLine && hasParent && (parent is GraphQLOperationDefinition op && op.Name is not null || parent is not GraphQLOperationDefinition))
+        if (!HasPrintableComments(selectionSet) && hasParent && (parent is GraphQLOperationDefinition op && op.Name is not null || parent is not GraphQLOperationDefinition))
         {
             await context.WriteAsync(" {").ConfigureAwait(false);
         }
@@ -385,8 +383,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         //TODO: https://github.com/graphql/graphql-spec/issues/921
         if (schemaExtension.OperationTypes?.Count > 0)
         {
-            //bool freshLine = schemaExtension.Comments != null && Options.PrintComments; always false
-            await context.WriteAsync(/*freshLine ? "{" :*/" {").ConfigureAwait(false);
+            await context.WriteAsync(/*HasPrintableComments(schemaExtension) ? "{" :*/" {").ConfigureAwait(false); // always false
             await context.WriteLineAsync().ConfigureAwait(false);
 
             for (int i = 0; i < schemaExtension.OperationTypes.Count; ++i)
@@ -442,9 +439,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
         await VisitAsync(enumValuesDefinition.Comments, context).ConfigureAwait(false);
-
-        bool freshLine = enumValuesDefinition.Comments != null && Options.PrintComments;
-        await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(enumValuesDefinition) ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (enumValuesDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
@@ -506,9 +501,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
         await VisitAsync(inputFieldsDefinition.Comments, context).ConfigureAwait(false);
-
-        bool freshLine = inputFieldsDefinition.Comments != null && Options.PrintComments;
-        await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(inputFieldsDefinition) ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (inputFieldsDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
@@ -585,9 +578,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
         await VisitAsync(fieldsDefinition.Comments, context).ConfigureAwait(false);
-
-        bool freshLine = fieldsDefinition.Comments != null && Options.PrintComments;
-        await VisitAsync(LiteralNode.Wrap(freshLine ? "{" : " {"), context).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(fieldsDefinition) ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (fieldsDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
@@ -609,9 +600,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(schemaDefinition.Description, context).ConfigureAwait(false);
         await VisitAsync(LiteralNode.Wrap("schema"), context).ConfigureAwait(false);
         await VisitAsync(schemaDefinition.Directives, context).ConfigureAwait(false);
-
-        //bool freshLine = schemaDefinition.Comments != null && Options.PrintComments; always false
-        await context.WriteAsync(/*freshLine? "{" : */" {").ConfigureAwait(false);
+        await context.WriteAsync(/*HasPrintableComments(schemaDefinition) ? "{" : */" {").ConfigureAwait(false); // always false
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (schemaDefinition.OperationTypes.Count > 0)
@@ -839,9 +828,10 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     }
 
     /// <inheritdoc/>
-    protected override ValueTask VisitNamedTypeAsync(GraphQLNamedType namedType, TContext context)
+    protected override async ValueTask VisitNamedTypeAsync(GraphQLNamedType namedType, TContext context)
     {
-        return base.VisitNamedTypeAsync(namedType, context);
+        await VisitAsync(namedType.Comments, context).ConfigureAwait(false);
+        await VisitAsync(namedType.Name, context).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -878,7 +868,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                 node is GraphQLRootOperationTypeDefinition ||
                 node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine ||
                 node is GraphQLUnionMemberTypes && Options.EachUnionMemberOnNewLine ||
-                node is GraphQLArgumentsDefinition && node.Comments?.Count > 0
+                node is GraphQLArgumentsDefinition && HasPrintableComments(node)
               )
                 context.IndentLevel = 1; // fixed indentation of 1
             else if (
@@ -973,6 +963,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         context.IndentPrinted = true;
     }
+
+    private bool HasPrintableComments(ASTNode node) => node.Comments?.Count > 0 && Options.PrintComments;
 
     // Returns parent if called inside VisitXXX i.e. after context.Parents.Push(node);
     // Returns grand-parent if called inside VisitAsync i.e. before context.Parents.Push(node);
@@ -1139,7 +1131,9 @@ public class SDLPrinterOptions
 }
 
 /// <summary>
-/// Preudo AST node to allow calls to <see cref="SDLPrinter{TContext}.VisitAsync(ASTNode?, TContext)"/> for indentation purposes.
+/// Preudo AST node to allow calls to <see cref="SDLPrinter{TContext}.VisitAsync(ASTNode?, TContext)"/>
+/// for indentation purposes. Any literal printed first after optional comment or description nodes in
+/// any VisitXXX method should be wrapped into <see cref="LiteralNode"/> for proper indentation.
 /// </summary>
 internal class LiteralNode : ASTNode
 {
