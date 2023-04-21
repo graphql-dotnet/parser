@@ -409,8 +409,8 @@ type Dog implements Animal
   #arguments comment
   #multilined
   (x: 10, y: {
-  #comment on object field
-  z: 1})
+    #comment on object field
+    z: 1})
 }")]
     [InlineData(33,
 @"{
@@ -519,8 +519,8 @@ rendered: Boolean) : String
 }",
 @"type T {
   data(
-  #comment
-  rendered: Boolean): String
+    #comment
+    rendered: Boolean): String
 }", true)]
     [InlineData(40, """
 "This is a Foo object type"
@@ -653,6 +653,142 @@ schema {
 "description"
 schema {
   query: Query
+}
+""")]
+    [InlineData(50,
+"""
+type Query {
+"Fetches an object given its ID."
+node(
+"ID of the object."
+id: ID!): Node
+"Lookup nodes by a list of IDs."
+nodes(
+"The list of node IDs."
+ids: [ID!]!): [Node]!
+"Search for workspaces associated with this account."
+desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]!
+"Search a specific workspace by its unique identifier."
+desWorkspaceById(
+"The node identifier for a workspace." id: ID!): DesWorkspace
+}
+""",
+"""
+type Query {
+  "Fetches an object given its ID."
+  node(
+    "ID of the object."
+    id: ID!): Node
+  "Lookup nodes by a list of IDs."
+  nodes(
+    "The list of node IDs."
+    ids: [ID!]!): [Node]!
+  "Search for workspaces associated with this account."
+  desWorkspaces(where: DesWorkspaceFilterInput): [DesWorkspace!]!
+  "Search a specific workspace by its unique identifier."
+  desWorkspaceById(
+    "The node identifier for a workspace."
+    id: ID!): DesWorkspace
+}
+""")]
+    [InlineData(51,
+"""
+type Query {
+  user
+  # comment 1
+  (
+    # comment 2
+    id: ID!
+    name: Name!): Node
+}
+""",
+"""
+type Query {
+  user
+  # comment 1
+  (
+    # comment 2
+    id: ID!, name: Name!): Node
+}
+""")]
+    [InlineData(52,
+"""
+directive @my
+  # comment 1
+  (
+    # comment 2
+    arg: Boolean!) on FIELD
+""",
+"""
+directive @my
+  # comment 1
+  (
+    # comment 2
+    arg: Boolean!) on FIELD
+""")]
+    [InlineData(53,
+"""
+query Q {
+  field1(arg1: 1) {
+    field2(arg2: 2) {
+      field3(arg3: 3)
+    }
+  }
+}
+""",
+"""
+query Q {
+  field1(arg1: 1) {
+    field2(arg2: 2) {
+      field3(arg3: 3)
+    }
+  }
+}
+""")]
+    [InlineData(54,
+"""
+query Q {
+  field1
+  #comment
+  (
+    #comment
+    arg1: 1
+  ) {
+    field2
+    #comment
+    (
+      #comment
+      arg2: 2
+    ) {
+      field3
+      #comment
+      (
+        #comment
+        arg3: 3
+      )
+    }
+  }
+}
+""",
+"""
+query Q {
+  field1
+  #comment
+  (
+    #comment
+    arg1: 1) {
+    field2
+    #comment
+    (
+      #comment
+      arg2: 2) {
+      field3
+      #comment
+      (
+        #comment
+        arg3: 3)
+    }
+  }
 }
 """)]
     public async Task SDLPrinter_Should_Print_Document(
