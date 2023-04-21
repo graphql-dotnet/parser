@@ -211,6 +211,7 @@ namespace GraphQLParser.AST
     public class GraphQLEnumValue : GraphQLParser.AST.GraphQLValue, GraphQLParser.AST.INamedNode
     {
         public GraphQLEnumValue() { }
+        public GraphQLEnumValue(GraphQLParser.AST.GraphQLName name) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
     }
@@ -240,6 +241,7 @@ namespace GraphQLParser.AST
     public class GraphQLField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasArgumentsNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode, GraphQLParser.AST.INamedNode, GraphQLParser.AST.ISelectionNode
     {
         public GraphQLField() { }
+        public GraphQLField(GraphQLParser.AST.GraphQLName name) { }
         public GraphQLParser.AST.GraphQLAlias? Alias { get; set; }
         public GraphQLParser.AST.GraphQLArguments? Arguments { get; set; }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
@@ -420,6 +422,7 @@ namespace GraphQLParser.AST
     public class GraphQLObjectField : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
         public GraphQLObjectField() { }
+        public GraphQLObjectField(GraphQLParser.AST.GraphQLName name, GraphQLParser.AST.GraphQLValue value) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
         public GraphQLParser.AST.GraphQLValue Value { get; set; }
@@ -427,6 +430,7 @@ namespace GraphQLParser.AST
     public class GraphQLObjectTypeDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasFieldsDefinitionNode, GraphQLParser.AST.IHasInterfacesNode
     {
         public GraphQLObjectTypeDefinition() { }
+        public GraphQLObjectTypeDefinition(GraphQLParser.AST.GraphQLName name) { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLFieldsDefinition? Fields { get; set; }
         public GraphQLParser.AST.GraphQLImplementsInterfaces? Interfaces { get; set; }
@@ -492,6 +496,7 @@ namespace GraphQLParser.AST
     public class GraphQLSelectionSet : GraphQLParser.AST.ASTNode
     {
         public GraphQLSelectionSet() { }
+        public GraphQLSelectionSet(System.Collections.Generic.List<GraphQLParser.AST.ASTNode> selections) { }
         public override GraphQLParser.AST.ASTNodeKind Kind { get; }
         public System.Collections.Generic.List<GraphQLParser.AST.ASTNode> Selections { get; set; }
     }
@@ -520,6 +525,7 @@ namespace GraphQLParser.AST
     public abstract class GraphQLTypeDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDescriptionNode, GraphQLParser.AST.INamedNode
     {
         protected GraphQLTypeDefinition() { }
+        protected GraphQLTypeDefinition(GraphQLParser.AST.GraphQLName name) { }
         public GraphQLParser.AST.GraphQLDescription? Description { get; set; }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
     }

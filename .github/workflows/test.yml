@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - v8 
     paths:
       - src/**
       - .github/workflows/**

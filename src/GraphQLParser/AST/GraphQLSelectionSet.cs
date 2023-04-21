@@ -5,6 +5,22 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLSelectionSet : ASTNode
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLSelectionSet"/>.
+    /// </summary>
+    public GraphQLSelectionSet()
+    {
+        Selections = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLSelectionSet"/>.
+    /// </summary>
+    public GraphQLSelectionSet(List<ASTNode> selections)
+    {
+        Selections = selections;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.SelectionSet;
 
@@ -18,7 +34,7 @@ public class GraphQLSelectionSet : ASTNode
     /// <item><see cref="GraphQLInlineFragment"/></item>
     /// </list>
     /// </summary>
-    public List<ASTNode> Selections { get; set; } = null!;
+    public List<ASTNode> Selections { get; set; }
 }
 
 internal sealed class GraphQLSelectionSetWithLocation : GraphQLSelectionSet

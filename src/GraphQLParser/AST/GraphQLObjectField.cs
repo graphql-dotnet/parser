@@ -5,16 +5,34 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLObjectField : ASTNode, INamedNode
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectField"/>.
+    /// </summary>
+    public GraphQLObjectField()
+    {
+        Name = null!;
+        Value = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectField"/>.
+    /// </summary>
+    public GraphQLObjectField(GraphQLName name, GraphQLValue value)
+    {
+        Name = name;
+        Value = value;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ObjectField;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; } = null!;
+    public GraphQLName Name { get; set; }
 
     /// <summary>
     /// Value of the field represented as a nested AST node.
     /// </summary>
-    public GraphQLValue Value { get; set; } = null!;
+    public GraphQLValue Value { get; set; }
 }
 
 internal sealed class GraphQLObjectFieldWithLocation : GraphQLObjectField
