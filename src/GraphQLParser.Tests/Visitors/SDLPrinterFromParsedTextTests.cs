@@ -123,7 +123,7 @@ public class SDLPrinterFromParsedTextTests
 @"directive @skip(if: Boolean!) on
   | FIELD
   | FRAGMENT_SPREAD
-  | INLINE_FRAGMENT", false, true)]
+  | INLINE_FRAGMENT", false, true, true)]
     [InlineData(8,
 @"directive @twoArgs
 (a: Int, b:
@@ -488,7 +488,7 @@ extend union Unity =   C
   | B
 
 extend union Unity =
-  | C", true, false, true)]
+  | C", true, true, false, true)]
     [InlineData(38,
 @"enum Color
     #comment
@@ -574,7 +574,7 @@ schema {
      mutation: M
      subscription: S
 }
-""", true, false, false, 5)]
+""", true, true, false, false, 5)]
     [InlineData(45,
 """
 "A component contains the parametric details of a PCB part."
@@ -834,11 +834,24 @@ Entity2 {
   name: String
 }
 """)]
+    [InlineData(58,
+""""
+"description"
+type Person {
+"""description"""
+name: String }
+"""",
+"""
+type Person {
+  name: String
+}
+""", false, false)]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
         string expected,
         bool writeComments = true,
+        bool writeDescriptions = true,
         bool eachDirectiveLocationOnNewLine = false,
         bool eachUnionMemberOnNewLine = false,
         int indentSize = 2)
@@ -846,6 +859,7 @@ Entity2 {
         var printer = new SDLPrinter(new SDLPrinterOptions
         {
             PrintComments = writeComments,
+            PrintDescriptions = writeDescriptions,
             EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
             EachUnionMemberOnNewLine = eachUnionMemberOnNewLine,
             IndentSize = indentSize,

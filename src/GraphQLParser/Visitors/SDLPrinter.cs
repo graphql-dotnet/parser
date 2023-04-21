@@ -132,6 +132,9 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         ValueTask WriteString() => WriteEncodedStringAsync(context, description.Value);
 
+        if (!Options.PrintDescriptions)
+            return default;
+
         // http://spec.graphql.org/October2021/#StringValue
         return ShouldBeMultilineBlockString()
             ? WriteMultilineBlockString()
@@ -1111,21 +1114,31 @@ public class SDLPrinterOptions
 {
     /// <summary>
     /// Print comments into the output.
+    /// By default <see langword="false"/>.
     /// </summary>
     public bool PrintComments { get; init; }
 
     /// <summary>
+    /// Print descriptions into the output.
+    /// By default <see langword="true"/>.
+    /// </summary>
+    public bool PrintDescriptions { get; set; } = true;
+
+    /// <summary>
     /// Whether to print each directive location on its own line.
+    /// By default <see langword="false"/>.
     /// </summary>
     public bool EachDirectiveLocationOnNewLine { get; init; }
 
     /// <summary>
     /// Whether to print each union member on its own line.
+    /// By default <see langword="false"/>.
     /// </summary>
     public bool EachUnionMemberOnNewLine { get; init; }
 
     /// <summary>
     /// The size of the horizontal indentation in spaces.
+    /// By default 2.
     /// </summary>
     public int IndentSize { get; set; } = 2;
 }
