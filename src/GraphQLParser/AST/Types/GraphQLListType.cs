@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLListType: [{Type}]")]
 public class GraphQLListType : GraphQLType
 {
-    internal GraphQLListType()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLListType"/>.
+    /// </summary>
+    public GraphQLListType()
     {
         Type = null!;
     }

@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLOperationDefinition: {Operation}")]
 public class GraphQLOperationDefinition : GraphQLExecutableDefinition, INamedNode
 {
-    internal GraphQLOperationDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLOperationDefinition"/>.
+    /// </summary>
+    public GraphQLOperationDefinition()
     {
     }
 

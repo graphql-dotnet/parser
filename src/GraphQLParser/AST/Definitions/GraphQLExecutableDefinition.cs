@@ -7,7 +7,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public abstract class GraphQLExecutableDefinition : ASTNode, IHasSelectionSetNode, IHasDirectivesNode
 {
-    internal GraphQLExecutableDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLExecutableDefinition"/>.
+    /// </summary>
+    protected GraphQLExecutableDefinition()
     {
         SelectionSet = null!;
     }

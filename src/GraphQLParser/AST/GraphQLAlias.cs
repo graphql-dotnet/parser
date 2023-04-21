@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLAlias : ASTNode, INamedNode
 {
-    internal GraphQLAlias()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLAlias"/>.
+    /// </summary>
+    public GraphQLAlias()
     {
         Name = null!;
     }

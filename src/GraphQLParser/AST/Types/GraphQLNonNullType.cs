@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLNonNullType: {Type}!")]
 public class GraphQLNonNullType : GraphQLType
 {
-    internal GraphQLNonNullType()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLNonNullType"/>.
+    /// </summary>
+    public GraphQLNonNullType()
     {
         Type = null!;
     }

@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLDirectiveLocations : ASTNode // no ASTListNode<DirectiveLocation> since DirectiveLocation is enum
 {
-    internal GraphQLDirectiveLocations()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDirectiveLocations"/>.
+    /// </summary>
+    public GraphQLDirectiveLocations()
     {
         Items = null!;
     }

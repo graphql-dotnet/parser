@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLDirectiveDefinition: {Name}")]
 public class GraphQLDirectiveDefinition : GraphQLTypeDefinition, IHasArgumentsDefinitionNode
 {
-    internal GraphQLDirectiveDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDirectiveDefinition"/>.
+    /// </summary>
+    public GraphQLDirectiveDefinition()
     {
         Locations = null!;
     }

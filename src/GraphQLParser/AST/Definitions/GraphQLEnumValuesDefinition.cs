@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLEnumValuesDefinition : ASTListNode<GraphQLEnumValueDefinition>
 {
-    internal GraphQLEnumValuesDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLEnumValuesDefinition"/>.
+    /// </summary>
+    public GraphQLEnumValuesDefinition()
     {
     }
 

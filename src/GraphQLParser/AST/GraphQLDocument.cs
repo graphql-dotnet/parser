@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLDocument : ASTNode
 {
-    internal GraphQLDocument()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDocument"/>.
+    /// </summary>
+    public GraphQLDocument()
     {
         Definitions = null!;
     }

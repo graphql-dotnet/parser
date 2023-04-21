@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLEnumValueDefinition: {EnumValue}")]
 public class GraphQLEnumValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
-    internal GraphQLEnumValueDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLEnumValueDefinition"/>.
+    /// </summary>
+    public GraphQLEnumValueDefinition()
     {
         EnumValue = null!;
     }

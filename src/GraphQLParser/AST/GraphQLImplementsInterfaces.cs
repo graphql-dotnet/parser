@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLImplementsInterfaces : ASTListNode<GraphQLNamedType>
 {
-    internal GraphQLImplementsInterfaces()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLImplementsInterfaces"/>.
+    /// </summary>
+    public GraphQLImplementsInterfaces()
     {
     }
 

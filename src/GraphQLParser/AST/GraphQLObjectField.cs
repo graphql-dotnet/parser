@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLObjectField : ASTNode, INamedNode
 {
-    internal GraphQLObjectField()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectField"/>.
+    /// </summary>
+    public GraphQLObjectField()
     {
         Name = null!;
         Value = null!;

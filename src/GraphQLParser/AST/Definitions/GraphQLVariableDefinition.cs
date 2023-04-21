@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLVariableDefinition: {Variable}")]
 public class GraphQLVariableDefinition : ASTNode, IHasDirectivesNode, IHasDefaultValueNode
 {
-    internal GraphQLVariableDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLVariableDefinition"/>.
+    /// </summary>
+    public GraphQLVariableDefinition()
     {
         Variable = null!;
         Type = null!;

@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLField : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
 {
-    internal GraphQLField()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLField"/>.
+    /// </summary>
+    public GraphQLField()
     {
         Name = null!;
     }

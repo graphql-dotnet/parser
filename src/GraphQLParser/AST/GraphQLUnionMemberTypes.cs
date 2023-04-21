@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLUnionMemberTypes : ASTListNode<GraphQLNamedType>
 {
-    internal GraphQLUnionMemberTypes()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLUnionMemberTypes"/>.
+    /// </summary>
+    public GraphQLUnionMemberTypes()
     {
     }
 

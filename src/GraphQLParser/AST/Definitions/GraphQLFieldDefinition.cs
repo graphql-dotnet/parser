@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLFieldDefinition: {Name}")]
 public class GraphQLFieldDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasArgumentsDefinitionNode
 {
-    internal GraphQLFieldDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLFieldDefinition"/>.
+    /// </summary>
+    public GraphQLFieldDefinition()
     {
         Type = null!;
     }

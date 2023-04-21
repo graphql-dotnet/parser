@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLInlineFragment : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasDirectivesNode
 {
-    internal GraphQLInlineFragment()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLInlineFragment"/>.
+    /// </summary>
+    public GraphQLInlineFragment()
     {
         SelectionSet = null!;
     }

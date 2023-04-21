@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLDirective: {Name}")]
 public class GraphQLDirective : ASTNode, INamedNode, IHasArgumentsNode
 {
-    internal GraphQLDirective()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLDirective"/>.
+    /// </summary>
+    public GraphQLDirective()
     {
         Name = null!;
     }

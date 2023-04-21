@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLObjectTypeDefinition: {Name}")]
 public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
 {
-    internal GraphQLObjectTypeDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectTypeDefinition"/>.
+    /// </summary>
+    public GraphQLObjectTypeDefinition()
     {
     }
 

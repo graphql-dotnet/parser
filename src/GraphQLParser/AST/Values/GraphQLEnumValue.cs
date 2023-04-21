@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLEnumValue: {Name}")]
 public class GraphQLEnumValue : GraphQLValue, INamedNode
 {
-    internal GraphQLEnumValue()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLEnumValue"/>.
+    /// </summary>
+    public GraphQLEnumValue()
     {
         Name = null!;
     }

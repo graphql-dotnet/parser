@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLSelectionSet : ASTNode
 {
-    internal GraphQLSelectionSet()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLSelectionSet"/>.
+    /// </summary>
+    public GraphQLSelectionSet()
     {
         Selections = null!;
     }

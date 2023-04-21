@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLNamedType: {Name}")]
 public class GraphQLNamedType : GraphQLType, INamedNode
 {
-    internal GraphQLNamedType()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLNamedType"/>.
+    /// </summary>
+    public GraphQLNamedType()
     {
         Name = null!;
     }

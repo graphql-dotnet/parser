@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLTypeCondition : ASTNode
 {
-    internal GraphQLTypeCondition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLTypeCondition"/>.
+    /// </summary>
+    public GraphQLTypeCondition()
     {
         Type = null!;
     }

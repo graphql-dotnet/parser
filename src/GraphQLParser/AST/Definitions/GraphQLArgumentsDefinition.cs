@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLArgumentsDefinition : ASTListNode<GraphQLInputValueDefinition>
 {
-    internal GraphQLArgumentsDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLArgumentsDefinition"/>.
+    /// </summary>
+    public GraphQLArgumentsDefinition()
     {
     }
 

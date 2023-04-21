@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLArgument : ASTNode, INamedNode
 {
-    internal GraphQLArgument()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLArgument"/>.
+    /// </summary>
+    public GraphQLArgument()
     {
         Name = null!;
         Value = null!;

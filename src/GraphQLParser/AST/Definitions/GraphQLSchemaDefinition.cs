@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHasDescriptionNode
 {
-    internal GraphQLSchemaDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLSchemaDefinition"/>.
+    /// </summary>
+    public GraphQLSchemaDefinition()
     {
         OperationTypes = null!;
     }

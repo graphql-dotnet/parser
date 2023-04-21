@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLEnumTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
 {
-    internal GraphQLEnumTypeExtension()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLEnumTypeExtension"/>.
+    /// </summary>
+    public GraphQLEnumTypeExtension()
     {
     }
 

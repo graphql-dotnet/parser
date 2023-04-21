@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLFragmentName : ASTNode, INamedNode
 {
-    internal GraphQLFragmentName()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLFragmentName"/>.
+    /// </summary>
+    public GraphQLFragmentName()
     {
         Name = null!;
     }

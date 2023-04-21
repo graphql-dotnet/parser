@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLArguments : ASTListNode<GraphQLArgument>
 {
-    internal GraphQLArguments()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLArguments"/>.
+    /// </summary>
+    public GraphQLArguments()
     {
     }
 

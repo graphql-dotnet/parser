@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLScalarTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
 {
-    internal GraphQLScalarTypeExtension()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLScalarTypeExtension"/>.
+    /// </summary>
+    public GraphQLScalarTypeExtension()
     {
     }
 

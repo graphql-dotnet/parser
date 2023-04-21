@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasDefaultValueNode
 {
-    internal GraphQLInputValueDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLInputValueDefinition"/>.
+    /// </summary>
+    public GraphQLInputValueDefinition()
     {
         Type = null!;
     }

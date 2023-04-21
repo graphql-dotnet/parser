@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLFragmentSpread : ASTNode, ISelectionNode, IHasDirectivesNode
 {
-    internal GraphQLFragmentSpread()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLFragmentSpread"/>.
+    /// </summary>
+    public GraphQLFragmentSpread()
     {
         FragmentName = null!;
     }

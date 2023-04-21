@@ -5,7 +5,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLVariablesDefinition : ASTListNode<GraphQLVariableDefinition>
 {
-    internal GraphQLVariablesDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLVariablesDefinition"/>.
+    /// </summary>
+    public GraphQLVariablesDefinition()
     {
     }
 

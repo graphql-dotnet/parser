@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLInputObjectTypeDefinition: {Name}")]
 public class GraphQLInputObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
-    internal GraphQLInputObjectTypeDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLInputObjectTypeDefinition"/>.
+    /// </summary>
+    public GraphQLInputObjectTypeDefinition()
     {
     }
 

@@ -8,7 +8,10 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLFragmentDefinition: {FragmentName.Name.StringValue}")]
 public class GraphQLFragmentDefinition : GraphQLExecutableDefinition
 {
-    internal GraphQLFragmentDefinition()
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLFragmentDefinition"/>.
+    /// </summary>
+    public GraphQLFragmentDefinition()
     {
         FragmentName = null!;
         TypeCondition = null!;

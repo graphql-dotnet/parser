@@ -25,7 +25,7 @@ public class GraphQLComment : ASTNode, IHasValueNode
     public ROM Value { get; internal set; }
 }
 
-internal class GraphQLCommentWithLocation : GraphQLComment
+internal sealed class GraphQLCommentWithLocation : GraphQLComment
 {
     private GraphQLLocation _location;
 
