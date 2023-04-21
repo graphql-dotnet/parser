@@ -791,6 +791,49 @@ query Q {
   }
 }
 """)]
+    [InlineData(55,
+"""
+fragment f
+#comment
+on Person { name }
+""",
+"""
+fragment f
+#comment
+on Person {
+  name
+}
+""")]
+    [InlineData(56,
+"""
+type Person
+#comment
+implements Entity { name: String }
+""",
+"""
+type Person
+#comment
+implements Entity {
+  name: String
+}
+""")]
+    [InlineData(57,
+"""
+type Person
+#comment
+implements Entity &
+#comment
+Entity2 { name: String }
+""",
+"""
+type Person
+#comment
+implements Entity &
+#comment
+Entity2 {
+  name: String
+}
+""")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
