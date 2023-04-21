@@ -885,6 +885,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                 node is GraphQLField ||
                 node is GraphQLFragmentSpread ||
                 node is GraphQLInlineFragment ||
+                node is GraphQLArgument ||
                 node is GraphQLInputValueDefinition
                 )
                 ++context.IndentLevel; // nested indentation

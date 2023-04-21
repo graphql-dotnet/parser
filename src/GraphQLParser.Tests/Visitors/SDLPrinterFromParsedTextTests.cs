@@ -409,8 +409,8 @@ type Dog implements Animal
   #arguments comment
   #multilined
   (x: 10, y: {
-  #comment on object field
-  z: 1})
+    #comment on object field
+    z: 1})
 }")]
     [InlineData(33,
 @"{
@@ -725,6 +725,71 @@ directive @my
   (
     # comment 2
     arg: Boolean!) on FIELD
+""")]
+    [InlineData(53,
+"""
+query Q {
+  field1(arg1: 1) {
+    field2(arg2: 2) {
+      field3(arg3: 3)
+    }
+  }
+}
+""",
+"""
+query Q {
+  field1(arg1: 1) {
+    field2(arg2: 2) {
+      field3(arg3: 3)
+    }
+  }
+}
+""")]
+    [InlineData(54,
+"""
+query Q {
+  field1
+  #comment
+  (
+    #comment
+    arg1: 1
+  ) {
+    field2
+    #comment
+    (
+      #comment
+      arg2: 2
+    ) {
+      field3
+      #comment
+      (
+        #comment
+        arg3: 3
+      )
+    }
+  }
+}
+""",
+"""
+query Q {
+  field1
+  #comment
+  (
+    #comment
+    arg1: 1) {
+    field2
+    #comment
+    (
+      #comment
+      arg2: 2) {
+      field3
+      #comment
+      (
+        #comment
+        arg3: 3)
+    }
+  }
+}
 """)]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
