@@ -721,7 +721,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitArgumentsDefinitionAsync(GraphQLArgumentsDefinition argumentsDefinition, TContext context)
     {
         await VisitAsync(argumentsDefinition.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("(").ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap("("), context).ConfigureAwait(false);
 
         foreach (var argumentDefinition in argumentsDefinition.Items)
             await VisitAsync(argumentDefinition, context).ConfigureAwait(false);
@@ -870,23 +870,25 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         int prevLevel = context.IndentLevel;
 
-        if (
-            (
-            node is GraphQLInputValueDefinition ||
-            node is GraphQLFieldDefinition ||
-            node is GraphQLEnumValueDefinition ||
-            node is GraphQLRootOperationTypeDefinition ||
-            node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine ||
-            node is GraphQLUnionMemberTypes && Options.EachUnionMemberOnNewLine
-            ) && context.Parents.Count > 0
-          )
-            context.IndentLevel = 1; // fixed indentation of 1
-        else if (
-            node is GraphQLField ||
-            node is GraphQLFragmentSpread ||
-            node is GraphQLInlineFragment
-            )
-            ++context.IndentLevel; // nested indentation
+        if (context.Parents.Count > 0)
+        {
+            if (
+                node is GraphQLFieldDefinition ||
+                node is GraphQLEnumValueDefinition ||
+                node is GraphQLRootOperationTypeDefinition ||
+                node is GraphQLDirectiveLocations && Options.EachDirectiveLocationOnNewLine ||
+                node is GraphQLUnionMemberTypes && Options.EachUnionMemberOnNewLine ||
+                node is GraphQLArgumentsDefinition && node.Comments?.Count > 0
+              )
+                context.IndentLevel = 1; // fixed indentation of 1
+            else if (
+                node is GraphQLField ||
+                node is GraphQLFragmentSpread ||
+                node is GraphQLInlineFragment ||
+                node is GraphQLInputValueDefinition
+                )
+                ++context.IndentLevel; // nested indentation
+        }
 
         context.Parents.Push(node);
 
