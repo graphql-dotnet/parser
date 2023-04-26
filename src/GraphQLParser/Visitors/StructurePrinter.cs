@@ -105,12 +105,12 @@ public class StructurePrinterOptions
     /// <summary>
     /// Print <see cref="GraphQLName.Value"/> into the output.
     /// </summary>
-    public bool PrintNames { get; init; } = true;
+    public bool PrintNames { get; set; } = true;
 
     /// <summary>
     /// Print <see cref="ASTNode.Location"/> into the output.
     /// </summary>
-    public bool PrintLocations { get; init; }
+    public bool PrintLocations { get; set; }
 
     /// <summary>
     /// The size of the horizontal indentation in spaces.

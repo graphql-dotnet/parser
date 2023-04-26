@@ -49,11 +49,11 @@ public interface IMaxDepthContext : IASTVisitorContext
 public class DefaultMaxDepthContext : IMaxDepthContext
 {
     /// <inheritdoc/>
-    public CancellationToken CancellationToken { get; init; }
+    public CancellationToken CancellationToken { get; set; }
 
     /// <inheritdoc/>
     public int MaxDepth { get; set; }
 
     /// <inheritdoc/>
-    public Stack<ASTNode> Parents { get; init; } = new Stack<ASTNode>();
+    public Stack<ASTNode> Parents { get; set; } = new Stack<ASTNode>();
 }
