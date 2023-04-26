@@ -1062,10 +1062,10 @@ public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
         public TextWriter Writer { get; }
 
         /// <inheritdoc/>
-        public Stack<ASTNode> Parents { get; init; } = new();
+        public Stack<ASTNode> Parents { get; set; } = new();
 
         /// <inheritdoc/>
-        public CancellationToken CancellationToken { get; init; }
+        public CancellationToken CancellationToken { get; set; }
 
         /// <inheritdoc/>
         public int IndentLevel { get; set; }
@@ -1116,7 +1116,7 @@ public class SDLPrinterOptions
     /// Print comments into the output.
     /// By default <see langword="false"/>.
     /// </summary>
-    public bool PrintComments { get; init; }
+    public bool PrintComments { get; set; }
 
     /// <summary>
     /// Print descriptions into the output.
@@ -1128,13 +1128,13 @@ public class SDLPrinterOptions
     /// Whether to print each directive location on its own line.
     /// By default <see langword="false"/>.
     /// </summary>
-    public bool EachDirectiveLocationOnNewLine { get; init; }
+    public bool EachDirectiveLocationOnNewLine { get; set; }
 
     /// <summary>
     /// Whether to print each union member on its own line.
     /// By default <see langword="false"/>.
     /// </summary>
-    public bool EachUnionMemberOnNewLine { get; init; }
+    public bool EachUnionMemberOnNewLine { get; set; }
 
     /// <summary>
     /// The size of the horizontal indentation in spaces.

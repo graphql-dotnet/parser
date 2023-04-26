@@ -50,7 +50,7 @@ public class DefaultCountContext : ICountContext
     }
 
     /// <inheritdoc/>
-    public CancellationToken CancellationToken { get; init; }
+    public CancellationToken CancellationToken { get; set; }
 
     /// <inheritdoc/>
     public int Count { get; set; }
