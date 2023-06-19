@@ -1,0 +1,68 @@
+# l2 - comments on default query line 1
+# l1 - comments on default query line 2
+# l3 - comments on default query line 3
+{
+  field1(arg1: [3, 1, 2], arg2: "value1", arg3: {sub1: 2, sub2: 1, sub3: 3})
+  field2
+  field3 @dir1(arg1: [3, 1, 2], arg2: "value1", arg3: {sub1: 2, sub2: 1, sub3: 3}) @dir2 @dir3
+  ...  {
+    field4
+  }
+  ... on Type2 {
+    field5
+  }
+  ... on Type3 {
+    field6
+  }
+  ...fragment7
+  ...fragment8
+  ...fragment9
+}
+
+# comments for q2
+query q2 {
+  dummy
+}
+
+# comments for q3
+query q3($arg1: String, $arg2: ID, $arg3: Float) {
+  dummy
+}
+
+mutation m1 {
+  field
+}
+
+mutation m2 {
+  field
+}
+
+mutation m3 {
+  field
+}
+
+subscription s1 {
+  dummy
+}
+
+subscription s2 {
+  dummy
+}
+
+subscription s3 @dir1 @dir2 @dir3 {
+  dummy
+}
+
+fragment frag2 on Type1 {
+  dummy
+}
+
+fragment frag1 on Type2 {
+  dummy
+}
+
+fragment frag3 on Type3 {
+  dummy1
+  dummy2
+  dummy3
+}

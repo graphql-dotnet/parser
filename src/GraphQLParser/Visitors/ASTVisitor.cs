@@ -668,7 +668,7 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// sibling nodes of some parent node, for example, argument nodes for
     /// parent field node or value nodes for parent list node.
     /// </summary>
-    protected async ValueTask VisitAsync<T>(List<T>? nodes, TContext context)
+    protected virtual async ValueTask VisitAsync<T>(List<T>? nodes, TContext context)
         where T : ASTNode
     {
         if (nodes != null)
