@@ -899,6 +899,7 @@ namespace GraphQLParser.Visitors
     public class SDLPrinterOptions
     {
         public SDLPrinterOptions() { }
+        public bool PrintDeprecationReasons { get; set; }
         public bool EachDirectiveLocationOnNewLine { get; init; }
         public bool EachUnionMemberOnNewLine { get; init; }
         public bool PrintComments { get; init; }

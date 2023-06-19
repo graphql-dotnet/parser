@@ -890,7 +890,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(directive.Comments, context).ConfigureAwait(false);
         await context.WriteAsync(TryPeekParent(context, out _) ? " @" : "@").ConfigureAwait(false);
         await VisitAsync(directive.Name, context).ConfigureAwait(false);
-        await VisitAsync(directive.Arguments, context).ConfigureAwait(false);
+        if (Options.PrintDeprecationReasons || directive.Name.Value != "deprecated")
+            await VisitAsync(directive.Arguments, context).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -1254,6 +1255,12 @@ public class SDLPrinterOptions
     /// Print comments into the output.
     /// </summary>
     public bool PrintComments { get; init; }
+
+    /// <summary>
+    /// Print deprecation reasons into the output.
+    /// By default <see langword="true"/>.
+    /// </summary>
+    public bool PrintDeprecationReasons { get; set; } = true;
 
     /// <summary>
     /// Whether to print each directive location on its own line.
