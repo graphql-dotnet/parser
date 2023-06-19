@@ -1,0 +1,30 @@
+schema {
+  query: Type3
+  mutation: Type2
+  subscription: Type1
+}
+
+directive @zdir1 on FIELD
+
+directive @zdir2 on INLINE_FRAGMENT
+
+directive @zdir3(arg1: Float, arg2: Int!, arg3: [ID]) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+type Type1 @dir1 @dir2 @dir3 {
+  f1(arg1: Float, arg2: Int!, arg3: [ID]): String
+  f2: Float
+  f3: ID
+}
+
+# Type2 comment
+"Type2 description"
+input Type2 {
+  "f1 description"
+  f1: String
+  "f2 description"
+  f2: [[Float!]!]!
+  "f3 description"
+  f3: ID!
+}
+
+scalar Type3
