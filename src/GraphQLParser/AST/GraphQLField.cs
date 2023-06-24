@@ -8,6 +8,7 @@ public class GraphQLField : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasD
     /// <summary>
     /// Creates a new instance of <see cref="GraphQLField"/>.
     /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
     public GraphQLField()
     {
         Name = null!;

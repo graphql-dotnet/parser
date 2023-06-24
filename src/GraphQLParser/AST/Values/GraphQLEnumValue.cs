@@ -11,6 +11,7 @@ public class GraphQLEnumValue : GraphQLValue, INamedNode
     /// <summary>
     /// Creates a new instance of <see cref="GraphQLEnumValue"/>.
     /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
     public GraphQLEnumValue()
     {
         Name = null!;

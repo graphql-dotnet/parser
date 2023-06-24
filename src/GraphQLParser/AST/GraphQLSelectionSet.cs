@@ -8,6 +8,7 @@ public class GraphQLSelectionSet : ASTNode
     /// <summary>
     /// Creates a new instance of <see cref="GraphQLSelectionSet"/>.
     /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
     public GraphQLSelectionSet()
     {
         Selections = null!;

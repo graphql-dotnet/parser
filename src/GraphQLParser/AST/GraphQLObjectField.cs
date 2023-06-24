@@ -8,6 +8,7 @@ public class GraphQLObjectField : ASTNode, INamedNode
     /// <summary>
     /// Creates a new instance of <see cref="GraphQLObjectField"/>.
     /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
     public GraphQLObjectField()
     {
         Name = null!;
