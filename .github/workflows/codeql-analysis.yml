@@ -4,9 +4,9 @@ name: CodeQL analysis
 
 on:
   push:
-    branches: [master, develop]
+    branches: [master, develop, v8]
   pull_request:
-    branches: [master, develop]
+    branches: [master, develop, v8]
 
 jobs:
   analyze:

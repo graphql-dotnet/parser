@@ -763,7 +763,7 @@ namespace GraphQLParser.Visitors
         protected virtual System.Threading.Tasks.ValueTask VisitArgumentsAsync(GraphQLParser.AST.GraphQLArguments arguments, TContext context) { }
         protected virtual System.Threading.Tasks.ValueTask VisitArgumentsDefinitionAsync(GraphQLParser.AST.GraphQLArgumentsDefinition argumentsDefinition, TContext context) { }
         public virtual System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
-        protected System.Threading.Tasks.ValueTask VisitAsync<T>(System.Collections.Generic.List<T>? nodes, TContext context)
+        protected virtual System.Threading.Tasks.ValueTask VisitAsync<T>(System.Collections.Generic.List<T>? nodes, TContext context)
             where T : GraphQLParser.AST.ASTNode { }
         protected virtual System.Threading.Tasks.ValueTask VisitBooleanValueAsync(GraphQLParser.AST.GraphQLBooleanValue booleanValue, TContext context) { }
         protected virtual System.Threading.Tasks.ValueTask VisitCommentAsync(GraphQLParser.AST.GraphQLComment comment, TContext context) { }
@@ -980,6 +980,21 @@ namespace GraphQLParser.Visitors
         protected override System.Threading.Tasks.ValueTask VisitVariableAsync(GraphQLParser.AST.GraphQLVariable variable, TContext context) { }
         protected override System.Threading.Tasks.ValueTask VisitVariableDefinitionAsync(GraphQLParser.AST.GraphQLVariableDefinition variableDefinition, TContext context) { }
         protected override System.Threading.Tasks.ValueTask VisitVariablesDefinitionAsync(GraphQLParser.AST.GraphQLVariablesDefinition variablesDefinition, TContext context) { }
+    }
+    public sealed class SDLSorter : GraphQLParser.Visitors.ASTVisitor<GraphQLParser.Visitors.SDLSorterOptions>
+    {
+        protected override System.Threading.Tasks.ValueTask VisitAsync<T>(System.Collections.Generic.List<T>? nodes, GraphQLParser.Visitors.SDLSorterOptions context)
+            where T : GraphQLParser.AST.ASTNode { }
+        protected override System.Threading.Tasks.ValueTask VisitDirectiveLocationsAsync(GraphQLParser.AST.GraphQLDirectiveLocations directiveLocations, GraphQLParser.Visitors.SDLSorterOptions context) { }
+        public static void Sort(GraphQLParser.AST.ASTNode node, GraphQLParser.Visitors.SDLSorterOptions? options = null) { }
+    }
+    public class SDLSorterOptions : GraphQLParser.Visitors.IASTVisitorContext, System.Collections.Generic.IComparer<GraphQLParser.AST.ASTNode>, System.Collections.Generic.IComparer<GraphQLParser.AST.DirectiveLocation>
+    {
+        public SDLSorterOptions(System.StringComparison stringComparison) { }
+        public System.StringComparison StringComparison { get; }
+        public static GraphQLParser.Visitors.SDLSorterOptions Default { get; }
+        public virtual int Compare(GraphQLParser.AST.ASTNode x, GraphQLParser.AST.ASTNode y) { }
+        public int Compare(GraphQLParser.AST.DirectiveLocation x, GraphQLParser.AST.DirectiveLocation y) { }
     }
     public class StructurePrinter : GraphQLParser.Visitors.StructurePrinter<GraphQLParser.Visitors.SDLPrinter.DefaultPrintContext>
     {

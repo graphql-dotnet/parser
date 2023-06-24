@@ -1,0 +1,142 @@
+{
+  query
+  unnamed(falsey: false, truthy: true)
+}
+
+# Copyright (c) 2015, Facebook, Inc.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree. An additional grant
+# of patent rights can be found in the PATENTS file in the same directory.
+query queryName($foo: ComplexType, $site: Site = MOBILE) {
+  whoever123is: node(id: [123, 456]) {
+    id
+    ... @skip(unless: $foo) {
+      id
+    }
+    ... {
+      id
+    }
+    ... on User @defer {
+      field2 {
+        alias: field1(after: $foo, first: 10) @include(if: $foo) {
+          id
+          ...frag
+        }
+        id
+      }
+    }
+  }
+}
+
+mutation likeStory {
+  like(story: 123) @defer {
+    story {
+      id
+    }
+  }
+}
+
+mutation updateStory {
+  like(story: {EndDate: null, id: 123}) {
+    story {
+      id
+    }
+  }
+}
+
+subscription StoryLikeSubscription($input: StoryLikeSubscribeInput) {
+  storyLikeSubscribe(input: $input) {
+    story {
+      likers {
+        count
+      }
+      likeSentence {
+        text
+      }
+    }
+  }
+}
+
+fragment frag on Friend {
+  foo(bar: $b, obj: {key: "value"}, size: $size)
+}
+
+# Copyright (c) 2015, Facebook, Inc.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree. An additional grant
+# of patent rights can be found in the PATENTS file in the same directory.
+schema {
+  query: QueryType
+  mutation: MutationType
+}
+
+directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+enum AnnotatedEnum @onEnum {
+  ANNOTATED_VALUE @onEnumValue
+  OTHER_VALUE
+}
+
+input AnnotatedInput @onInputObjectType {
+  annotatedField: Type @onField
+}
+
+interface AnnotatedInterface @onInterface {
+  annotatedField(arg: Type @onArg): Type @onField
+}
+
+type AnnotatedObject @onObject(arg: "value") {
+  # a comment
+  annotatedField(arg: Type = "default" @onArg): Type @onField
+}
+
+scalar AnnotatedScalar @onScalar
+
+union AnnotatedUnion @onUnion = A | B
+
+interface Bar {
+  four(argument: String = "string"): String
+  one: Type
+}
+
+scalar CustomScalar
+
+union Feed = Advert | Article | Story
+
+type Foo implements Bar {
+  five(argument: [String] = ["string", "string"]): String
+  four(argument: String = "string"): String
+  # comment 1
+  one: Type
+  six(argument: InputType = {key: "value"}): Type
+  # multiline comments
+  # with very important description #
+  # # and symbol # and ##
+  three(argument: InputType, other: String): Int
+  # comment 2
+  two(argument: InputType!): Type
+}
+
+input InputType {
+  answer: Int = 42
+  key: String!
+}
+
+type NoFields
+
+enum Site {
+  DESKTOP
+  MOBILE
+}
+
+extend type Foo {
+  seven(argument: [String]): Type
+}
+
+extend type Foo @onType
