@@ -3,7 +3,7 @@ namespace GraphQLParser.AST
     public abstract class ASTListNode<TNode> : GraphQLParser.AST.ASTNode, System.Collections.Generic.IEnumerable<TNode>, System.Collections.Generic.IReadOnlyCollection<TNode>, System.Collections.Generic.IReadOnlyList<TNode>, System.Collections.IEnumerable
     {
         [System.Obsolete("This constructor will be removed in v9.")]
-        public ASTListNode() { }
+        protected ASTListNode() { }
         protected ASTListNode(System.Collections.Generic.List<TNode> items) { }
         public int Count { get; }
         public TNode this[int index] { get; }
@@ -259,7 +259,7 @@ namespace GraphQLParser.AST
     public abstract class GraphQLExecutableDefinition : GraphQLParser.AST.ASTNode, GraphQLParser.AST.IHasDirectivesNode, GraphQLParser.AST.IHasSelectionSetNode
     {
         [System.Obsolete("This constructor will be removed in v9.")]
-        public GraphQLExecutableDefinition() { }
+        protected GraphQLExecutableDefinition() { }
         protected GraphQLExecutableDefinition(GraphQLParser.AST.GraphQLSelectionSet selectionSet) { }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
         public GraphQLParser.AST.GraphQLSelectionSet SelectionSet { get; set; }
@@ -612,7 +612,7 @@ namespace GraphQLParser.AST
     public abstract class GraphQLTypeExtension : GraphQLParser.AST.ASTNode, GraphQLParser.AST.INamedNode
     {
         [System.Obsolete("This constructor will be removed in v9.")]
-        public GraphQLTypeExtension() { }
+        protected GraphQLTypeExtension() { }
         protected GraphQLTypeExtension(GraphQLParser.AST.GraphQLName name) { }
         public GraphQLParser.AST.GraphQLName Name { get; set; }
     }
