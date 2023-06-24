@@ -19,7 +19,7 @@ public abstract class GraphQLTypeExtension : ASTNode, INamedNode
 {
     /// <summary>Initializes a new instance.</summary>
     [Obsolete("This constructor will be removed in v9.")]
-    public GraphQLTypeExtension()
+    protected GraphQLTypeExtension()
     {
         Name = null!;
     }

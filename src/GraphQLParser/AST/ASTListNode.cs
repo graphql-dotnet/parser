@@ -9,7 +9,7 @@ public abstract class ASTListNode<TNode> : ASTNode, IReadOnlyList<TNode>
 {
     /// <summary>Initializes a new instance.</summary>
     [Obsolete("This constructor will be removed in v9.")]
-    public ASTListNode()
+    protected ASTListNode()
     {
         Items = null!;
     }
