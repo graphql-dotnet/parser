@@ -5,6 +5,23 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLField : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLField"/>.
+    /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLField()
+    {
+        Name = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLField"/>.
+    /// </summary>
+    public GraphQLField(GraphQLName name)
+    {
+        Name = name;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Field;
 

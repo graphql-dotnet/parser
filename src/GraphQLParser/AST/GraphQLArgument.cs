@@ -5,16 +5,33 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLArgument : ASTNode, INamedNode
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLArgument()
+    {
+        Name = null!;
+        Value = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLArgument"/>.
+    /// </summary>
+    public GraphQLArgument(GraphQLName name, GraphQLValue value)
+    {
+        Name = name;
+        Value = value;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Argument;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; } = null!;
+    public GraphQLName Name { get; set; }
 
     /// <summary>
     /// Nested <see cref="GraphQLValue"/> AST node with argument value.
     /// </summary>
-    public GraphQLValue Value { get; set; } = null!;
+    public GraphQLValue Value { get; set; }
 }
 
 internal sealed class GraphQLArgumentWithLocation : GraphQLArgument

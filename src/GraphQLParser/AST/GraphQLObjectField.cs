@@ -5,6 +5,25 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLObjectField : ASTNode, INamedNode
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectField"/>.
+    /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLObjectField()
+    {
+        Name = null!;
+        Value = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectField"/>.
+    /// </summary>
+    public GraphQLObjectField(GraphQLName name, GraphQLValue value)
+    {
+        Name = name;
+        Value = value;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ObjectField;
 

@@ -26,6 +26,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\graphql.snk</AssemblyOriginatorKeyFile>
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' == 'true'">

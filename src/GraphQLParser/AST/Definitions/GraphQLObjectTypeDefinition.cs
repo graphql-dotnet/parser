@@ -8,6 +8,22 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLObjectTypeDefinition: {Name}")]
 public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasInterfacesNode, IHasFieldsDefinitionNode
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectTypeDefinition"/>.
+    /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLObjectTypeDefinition()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLObjectTypeDefinition"/>.
+    /// </summary>
+    public GraphQLObjectTypeDefinition(GraphQLName name)
+        : base(name)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ObjectTypeDefinition;
 

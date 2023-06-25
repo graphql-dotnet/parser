@@ -5,6 +5,23 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLSelectionSet : ASTNode
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLSelectionSet"/>.
+    /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLSelectionSet()
+    {
+        Selections = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLSelectionSet"/>.
+    /// </summary>
+    public GraphQLSelectionSet(List<ASTNode> selections)
+    {
+        Selections = selections;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.SelectionSet;
 

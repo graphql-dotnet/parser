@@ -5,6 +5,20 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLImplementsInterfaces : ASTListNode<GraphQLNamedType>
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLImplementsInterfaces()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLImplementsInterfaces"/>.
+    /// </summary>
+    public GraphQLImplementsInterfaces(List<GraphQLNamedType> items)
+        : base(items)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ImplementsInterfaces;
 }
