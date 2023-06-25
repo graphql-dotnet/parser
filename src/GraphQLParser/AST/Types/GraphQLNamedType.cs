@@ -8,11 +8,26 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLNamedType: {Name}")]
 public class GraphQLNamedType : GraphQLType, INamedNode
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLNamedType()
+    {
+        Name = null!;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLNamedType"/>.
+    /// </summary>
+    public GraphQLNamedType(GraphQLName name)
+    {
+        Name = name;
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.NamedType;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; } = null!;
+    public GraphQLName Name { get; set; }
 }
 
 internal sealed class GraphQLNamedTypeWithLocation : GraphQLNamedType

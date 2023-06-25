@@ -8,6 +8,7 @@ public abstract class GraphQLTypeDefinition : ASTNode, INamedNode, IHasDescripti
     /// <summary>
     /// Creates a new instance of <see cref="GraphQLTypeDefinition"/>.
     /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
     protected GraphQLTypeDefinition()
     {
         Name = null!;

@@ -5,6 +5,20 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLFieldsDefinition : ASTListNode<GraphQLFieldDefinition>
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLFieldsDefinition()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLFieldsDefinition"/>.
+    /// </summary>
+    public GraphQLFieldsDefinition(List<GraphQLFieldDefinition> items)
+        : base(items)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.FieldsDefinition;
 }

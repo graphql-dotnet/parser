@@ -11,6 +11,7 @@ public class GraphQLObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectives
     /// <summary>
     /// Creates a new instance of <see cref="GraphQLObjectTypeDefinition"/>.
     /// </summary>
+    [Obsolete("This constructor will be removed in v9.")]
     public GraphQLObjectTypeDefinition()
     {
     }

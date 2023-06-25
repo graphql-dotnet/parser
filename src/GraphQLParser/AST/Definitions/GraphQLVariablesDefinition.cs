@@ -5,6 +5,20 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLVariablesDefinition : ASTListNode<GraphQLVariableDefinition>
 {
+    /// <summary>Initializes a new instance.</summary>
+    [Obsolete("This constructor will be removed in v9.")]
+    public GraphQLVariablesDefinition()
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="GraphQLVariablesDefinition"/>.
+    /// </summary>
+    public GraphQLVariablesDefinition(List<GraphQLVariableDefinition> items)
+        : base(items)
+    {
+    }
+
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.VariablesDefinition;
 }
