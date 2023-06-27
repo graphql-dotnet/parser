@@ -19,7 +19,7 @@ public sealed class SDLSorter : ASTVisitor<SDLSorterOptions>
     /// </summary>
     public static void Sort(ASTNode node, SDLSorterOptions? options = null)
 #pragma warning disable CA2012 // Use ValueTasks correctly
-        => _ = _sorter.VisitAsync(node, options ?? SDLSorterOptions.Default);
+        => _sorter.VisitAsync(node, options ?? SDLSorterOptions.Default).GetAwaiter().GetResult();
 #pragma warning restore CA2012 // Use ValueTasks correctly
 
     /// <inheritdoc/>
