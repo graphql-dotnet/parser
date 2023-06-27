@@ -69,7 +69,7 @@ public class SDLSorterOptions : IASTVisitorContext, IComparer<ASTNode>, ICompare
 
     /// <inheritdoc/>
     public int Compare(DirectiveLocation x, DirectiveLocation y)
-        => Comparer<string>.Default.Compare(x.ToString(), y.ToString());
+        => string.Compare(x.ToString(), y.ToString(), StringComparison);
 
     int IComparer<ASTNode>.Compare(ASTNode? x, ASTNode? y) => Compare(x!, y!);
 }
