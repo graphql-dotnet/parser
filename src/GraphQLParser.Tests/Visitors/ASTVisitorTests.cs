@@ -33,12 +33,13 @@ public class ASTVisitorTests
     }
 
     [Fact]
-    public void ASTVisitor_Should_Respect_CancellationToken()
+    public void ASTVisitor_Should_Pass_CancellationToken()
     {
         var document = "scalar JSON".Parse();
         var visitor = new MyVisitor();
         using var cts = new CancellationTokenSource(500);
         var context = new Context { CancellationToken = cts.Token };
+        context.CancellationToken.ThrowIfCancellationRequested();
 
         Should.Throw<OperationCanceledException>(() => visitor.VisitAsync(document, context).GetAwaiter().GetResult());
     }
@@ -48,6 +49,7 @@ public class ASTVisitorTests
         protected override async ValueTask VisitScalarTypeDefinitionAsync(GraphQLScalarTypeDefinition scalarTypeDefinition, Context context)
         {
             await Task.Delay(700);
+            context.CancellationToken.ThrowIfCancellationRequested();
             await base.VisitScalarTypeDefinitionAsync(scalarTypeDefinition, context);
         }
     }
