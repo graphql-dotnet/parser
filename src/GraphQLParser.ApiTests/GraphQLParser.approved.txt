@@ -840,6 +840,10 @@ namespace GraphQLParser.Visitors
         public int MaxDepth { get; set; }
         public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
     }
+    public struct DefaultVisitorContext : GraphQLParser.Visitors.IASTVisitorContext
+    {
+        public System.Threading.CancellationToken CancellationToken { get; set; }
+    }
     public interface IASTVisitorContext
     {
         System.Threading.CancellationToken CancellationToken { get; }
@@ -870,6 +874,10 @@ namespace GraphQLParser.Visitors
     {
         public MaxDepthVisitor() { }
         public override System.Threading.Tasks.ValueTask VisitAsync(GraphQLParser.AST.ASTNode? node, TContext context) { }
+    }
+    public struct NullVisitorContext : GraphQLParser.Visitors.IASTVisitorContext
+    {
+        public System.Threading.CancellationToken CancellationToken { get; }
     }
     public static class PrintContextExtensions
     {
