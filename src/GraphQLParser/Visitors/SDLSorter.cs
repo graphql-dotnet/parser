@@ -18,9 +18,7 @@ public sealed class SDLSorter : ASTVisitor<SDLSorterOptions>
     /// Nodes that have the same sort order will be retain their relative position.
     /// </summary>
     public static void Sort(ASTNode node, SDLSorterOptions? options = null)
-#pragma warning disable CA2012 // Use ValueTasks correctly
-        => _sorter.VisitAsync(node, options ?? SDLSorterOptions.Default).GetAwaiter().GetResult();
-#pragma warning restore CA2012 // Use ValueTasks correctly
+        => _sorter.VisitAsync(node, options ?? SDLSorterOptions.Default).AsTask().GetAwaiter().GetResult();
 
     /// <inheritdoc/>
     protected override ValueTask VisitAsync<T>(List<T>? nodes, SDLSorterOptions context)
