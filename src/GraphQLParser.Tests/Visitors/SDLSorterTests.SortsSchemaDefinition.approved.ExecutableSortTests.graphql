@@ -53,11 +53,11 @@ subscription s3 @dir1 @dir2 @dir3 {
   dummy
 }
 
-fragment frag2 on Type1 {
+fragment frag1 on Type2 {
   dummy
 }
 
-fragment frag1 on Type2 {
+fragment frag2 on Type1 {
   dummy
 }
 
