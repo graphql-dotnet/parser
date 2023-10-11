@@ -38,7 +38,7 @@ field: Int }
 
         var document = text.Parse();
 
-        await visitor.VisitAsync(document, context).ConfigureAwait(false);
+        await visitor.VisitAsync(document, context);
         context.Count.ShouldBe(expectedCount);
         document.AllNestedCount().ShouldBe(expectedCount);
     }
@@ -55,7 +55,7 @@ field: Int }
 
         var document = text.Parse();
 
-        await visitor.VisitAsync(document, context).ConfigureAwait(false);
+        await visitor.VisitAsync(document, context);
         context.Count.ShouldBe(0);
     }
 }
