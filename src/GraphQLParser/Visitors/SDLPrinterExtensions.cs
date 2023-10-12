@@ -36,14 +36,9 @@ public static class SDLPrinterExtensions
     {
         int bufferSize = -1;
 #if NET462
-        if (encoding == null)
-        {
-            encoding = _uTF8NoBOM;
-        }
+        encoding ??= _uTF8NoBOM;
         if (bufferSize == -1)
-        {
             bufferSize = 1024;
-        }
 #endif
         using var streamWriter = new StreamWriter(memoryStream, encoding, bufferSize, true);
         printer.PrintAsync(node, streamWriter, default).AsTask().GetAwaiter().GetResult();
