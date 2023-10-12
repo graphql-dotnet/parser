@@ -13,7 +13,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
       - name: Check github.ref starts with 'refs/tags/'
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: |

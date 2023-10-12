@@ -22,9 +22,7 @@ public static class SDLPrinterExtensions
     /// Prints the specified AST into the specified <see cref="StringBuilder"/> as a SDL document.
     /// </summary>
     public static void Print(this SDLPrinter printer, ASTNode node, StringBuilder stringBuilder)
-#pragma warning disable CA2012 // Use ValueTasks correctly
-        => printer.PrintAsync(node, new StringWriter(stringBuilder), default).GetAwaiter().GetResult();
-#pragma warning restore CA2012 // Use ValueTasks correctly
+        => printer.PrintAsync(node, new StringWriter(stringBuilder), default).AsTask().GetAwaiter().GetResult();
 
 #if NET462
     private static readonly Encoding _uTF8NoBOM = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
@@ -48,9 +46,7 @@ public static class SDLPrinterExtensions
         }
 #endif
         using var streamWriter = new StreamWriter(memoryStream, encoding, bufferSize, true);
-#pragma warning disable CA2012 // Use ValueTasks correctly
-        printer.PrintAsync(node, streamWriter, default).GetAwaiter().GetResult();
-#pragma warning restore CA2012 // Use ValueTasks correctly
+        printer.PrintAsync(node, streamWriter, default).AsTask().GetAwaiter().GetResult();
         // flush encoder state to stream
         streamWriter.Flush();
     }
