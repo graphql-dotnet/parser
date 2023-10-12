@@ -24,13 +24,23 @@ public static class SDLPrinterExtensions
     public static void Print(this SDLPrinter printer, ASTNode node, StringBuilder stringBuilder)
         => printer.PrintAsync(node, new StringWriter(stringBuilder), default).AsTask().GetAwaiter().GetResult();
 
+#if !NET6_0_OR_GREATER
+    private static readonly Encoding _uTF8NoBOM = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+#endif
+
     /// <summary>
     /// Prints the specified AST into the specified <see cref="MemoryStream"/> as a SDL document.
     /// If no encoding is specified, the document is written in UTF-8 format without a byte order mark.
     /// </summary>
     public static void Print(this SDLPrinter printer, ASTNode node, MemoryStream memoryStream, Encoding? encoding = null)
     {
-        using var streamWriter = new StreamWriter(memoryStream, encoding, -1 /* default */, true);
+        int bufferSize = -1;
+#if !NET6_0_OR_GREATER
+        encoding ??= _uTF8NoBOM;
+        if (bufferSize == -1)
+            bufferSize = 1024;
+#endif
+        using var streamWriter = new StreamWriter(memoryStream, encoding, bufferSize, true);
         printer.PrintAsync(node, streamWriter, default).AsTask().GetAwaiter().GetResult();
         // flush encoder state to stream
         streamWriter.Flush();

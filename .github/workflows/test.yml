@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - develop
-      - v8 
+      - v8
     paths:
       - src/**
       - .github/workflows/**
@@ -39,7 +39,6 @@ jobs:
         with:
           dotnet-version: |
             3.1.x
-            5.0.x
             6.0.x
             7.0.x
           source-url: https://nuget.pkg.github.com/graphql-dotnet/index.json
