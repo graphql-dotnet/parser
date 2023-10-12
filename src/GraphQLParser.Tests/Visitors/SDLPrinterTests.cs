@@ -583,7 +583,7 @@ directive @skip(
         var writer = new StringWriter();
         var document = text.Parse();
 
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var actual = writer.ToString();
         actual.ShouldBe(expected, $"Test {number} failed");
 
@@ -640,11 +640,11 @@ directive @skip(
         var document = (input + " scalar a").Parse();
 
         var printer = new SDLPrinter();
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var renderedOriginal = writer.ToString();
 
-        var lines = renderedOriginal.Split(Environment.NewLine);
-        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(1));
+        var lines = renderedOriginal.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        var renderedDescription = string.Join(Environment.NewLine, lines.Take(lines.Length - 1));
         renderedDescription = renderedDescription.Replace("\r\n", "\n");
         renderedDescription.ShouldBe(expected);
 
@@ -671,7 +671,7 @@ directive @skip(
         var document = query.Parse();
 
         var printer = new SDLPrinter();
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var rendered = writer.ToString();
         rendered.ShouldBe(expected);
 

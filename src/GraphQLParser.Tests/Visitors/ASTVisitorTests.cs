@@ -23,17 +23,17 @@ public class ASTVisitorTests
     }
 
     [Fact]
-    public void ASTVisitor_Should_Throw_On_Unknown_Node()
+    public async Task ASTVisitor_Should_Throw_On_Unknown_Node()
     {
         var visitor = new ASTVisitor<Context>();
         var context = new Context();
 
-        var ex = Should.Throw<NotSupportedException>(() => visitor.VisitAsync(new MySuperNode(), context).GetAwaiter().GetResult());
+        var ex = await Should.ThrowAsync<NotSupportedException>(async () => await visitor.VisitAsync(new MySuperNode(), context));
         ex.Message.ShouldBe("Unknown node 'MySuperNode'.");
     }
 
     [Fact]
-    public void ASTVisitor_Should_Pass_CancellationToken()
+    public async Task ASTVisitor_Should_Pass_CancellationToken()
     {
         var document = "scalar JSON".Parse();
         var visitor = new MyVisitor();
@@ -41,7 +41,7 @@ public class ASTVisitorTests
         var context = new Context { CancellationToken = cts.Token };
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        Should.Throw<OperationCanceledException>(() => visitor.VisitAsync(document, context).GetAwaiter().GetResult());
+        await Should.ThrowAsync<OperationCanceledException>(async () => await visitor.VisitAsync(document, context));
     }
 
     private class MyVisitor : ASTVisitor<Context>

@@ -19,7 +19,7 @@ public static class PrintContextExtensions
         where TContext : IPrintContext
     {
         var task =
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NET462
         // no cancellationToken support on netstandard2.0
         context.Writer.WriteAsync(value.ToString()); //ISSUE: allocation - either WriteAsync(value.ToString()) or Write(char value) in a loop
 #elif NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
