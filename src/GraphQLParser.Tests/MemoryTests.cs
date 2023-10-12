@@ -150,7 +150,7 @@ public class MemoryTests
         ROM rom = str;
 
         // so no heap allocation when ROM is actually backed by whole string object
-        //ReferenceEquals(rom.ToString(), str).ShouldBeTrue();
+        ReferenceEquals(rom.ToString(), str).ShouldBeTrue();
         ReferenceEquals((string)rom, str).ShouldBeTrue();
     }
 
