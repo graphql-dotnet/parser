@@ -927,8 +927,8 @@ type Person {
         await printer.PrintAsync(document, writer);
         var renderedOriginal = writer.ToString();
 
-        var lines = renderedOriginal.Split(Environment.NewLine);
-        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(1));
+        var lines = renderedOriginal.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        var renderedDescription = string.Join(Environment.NewLine, lines.Take(lines.Length - 1));
         renderedDescription = renderedDescription.Replace("\r\n", "\n");
         renderedDescription.ShouldBe(expected);
 
