@@ -12,10 +12,10 @@
 query queryName($foo: ComplexType, $site: Site = MOBILE) {
   whoever123is: node(id: [123, 456]) {
     id
-    ...  @skip(unless: $foo) {
+    ... @skip(unless: $foo) {
       id
     }
-    ...  {
+    ... {
       id
     }
     ... on User @defer {
