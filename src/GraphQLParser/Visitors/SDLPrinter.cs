@@ -206,7 +206,6 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
         await VisitAsync(fragmentDefinition.Comments, context).ConfigureAwait(false);
         await context.WriteAsync("fragment ").ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.FragmentName, context).ConfigureAwait(false);
-        await context.WriteAsync(" ").ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.Directives, context).ConfigureAwait(false);
         await VisitAsync(fragmentDefinition.SelectionSet, context).ConfigureAwait(false);
@@ -234,7 +233,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
 
         await WriteIndentAsync(context).ConfigureAwait(false);
 
-        await context.WriteAsync("... ").ConfigureAwait(false);
+        await context.WriteAsync("...").ConfigureAwait(false);
         await VisitAsync(inlineFragment.TypeCondition, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.Directives, context).ConfigureAwait(false);
         await VisitAsync(inlineFragment.SelectionSet, context).ConfigureAwait(false);
@@ -244,7 +243,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitTypeConditionAsync(GraphQLTypeCondition typeCondition, TContext context)
     {
         await VisitAsync(typeCondition.Comments, context).ConfigureAwait(false);
-        await context.WriteAsync("on ").ConfigureAwait(false);
+        await context.WriteAsync(TryPeekParent(context, out _) ? " on " : "on ").ConfigureAwait(false);
         await VisitAsync(typeCondition.Type, context).ConfigureAwait(false);
     }
 
@@ -1117,8 +1116,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
             await context.WriteAsync("  ").ConfigureAwait(false);
     }
 
-    // Returns parent if called inside ViisitXXX i.e. after context.Parents.Push(node);
-    // Returns grand-parent if called inside ViisitAsync i.e. before context.Parents.Push(node);
+    // Returns parent if called inside VisitXXX i.e. after context.Parents.Push(node);
+    // Returns grand-parent if called inside VisitAsync i.e. before context.Parents.Push(node);
     private static bool TryPeekParent(TContext context, [NotNullWhen(true)] out ASTNode? node)
     {
         node = null;
