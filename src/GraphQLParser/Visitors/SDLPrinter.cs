@@ -111,7 +111,8 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
                     case '"':
                         if (i < length - 2 && description.Value.Span[i + 1] == '"' && description.Value.Span[i + 2] == '"')
                         {
-                            await context.WriteAsync("\\\"").ConfigureAwait(false);
+                            await context.WriteAsync("\\\"\"\"").ConfigureAwait(false);
+                            i += 2;
                         }
                         else
                         {
