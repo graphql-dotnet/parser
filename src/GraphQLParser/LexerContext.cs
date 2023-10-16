@@ -217,7 +217,30 @@ internal ref struct LexerContext
                 // if last character was \ then go ahead and write out the """, skipping the \
                 if (escape)
                 {
+                    // write """ to buffer
+                    if ((index + 2) < buffer.Length)
+                    {
+                        buffer[index++] = '\"';
+                        buffer[index++] = '\"';
+                        buffer[index++] = '\"';
+                    }
+                    else // fallback to StringBuilder in case of buffer overflow
+                    {
+                        sb ??= new StringBuilder(buffer.Length * 2);
+
+                        for (int i = 0; i < index; ++i)
+                            sb.Append(buffer[i]);
+
+                        sb.Append("\"\"\"");
+                        index = 0;
+                    }
+                    // skip \""" from source
+                    _currentIndex += 2;
                     escape = false;
+                    lastWasCr = false;
+                    // advance to next character
+                    code = NextCode();
+                    continue;
                 }
                 else
                 {
