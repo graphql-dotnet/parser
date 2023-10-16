@@ -8,24 +8,11 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLEnumValue: {Name}")]
 public class GraphQLEnumValue : GraphQLValue, INamedNode
 {
-    internal GraphQLEnumValue()
-    {
-        Name = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLEnumValue"/>.
-    /// </summary>
-    public GraphQLEnumValue(GraphQLName name)
-    {
-        Name = name;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.EnumValue;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; }
+    public GraphQLName Name { get; set; } = null!;
 }
 
 internal sealed class GraphQLEnumValueWithLocation : GraphQLEnumValue

@@ -7,23 +7,10 @@ namespace GraphQLParser.AST;
 /// </summary>
 public abstract class ASTListNode<TNode> : ASTNode, IReadOnlyList<TNode>
 {
-    internal ASTListNode()
-    {
-        Items = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="ASTListNode{TNode}"/>.
-    /// </summary>
-    protected ASTListNode(List<TNode> items)
-    {
-        Items = items;
-    }
-
     /// <summary>
     /// A list of nested AST nodes.
     /// </summary>
-    public List<TNode> Items { get; set; }
+    public List<TNode> Items { get; set; } = null!;
 
     /// <summary>
     /// Get the number of AST nodes in the list.

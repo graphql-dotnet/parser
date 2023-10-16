@@ -8,20 +8,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLEnumValueDefinition: {EnumValue}")]
 public class GraphQLEnumValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
-    internal GraphQLEnumValueDefinition()
-    {
-        EnumValue = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLEnumValueDefinition"/>.
-    /// </summary>
-    public GraphQLEnumValueDefinition(GraphQLName name, GraphQLEnumValue enumValue)
-        : base(name)
-    {
-        EnumValue = enumValue;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.EnumValueDefinition;
 
@@ -30,7 +16,7 @@ public class GraphQLEnumValueDefinition : GraphQLTypeDefinition, IHasDirectivesN
     /// <see cref="GraphQLTypeDefinition.Name"/> property holds almost
     /// the same data and should be set as well.
     /// </summary>
-    public GraphQLEnumValue EnumValue { get; set; }
+    public GraphQLEnumValue EnumValue { get; set; } = null!;
 
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }

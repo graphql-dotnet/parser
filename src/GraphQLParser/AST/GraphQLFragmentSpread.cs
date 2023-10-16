@@ -5,26 +5,13 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLFragmentSpread : ASTNode, ISelectionNode, IHasDirectivesNode
 {
-    internal GraphQLFragmentSpread()
-    {
-        FragmentName = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLFragmentSpread"/>.
-    /// </summary>
-    public GraphQLFragmentSpread(GraphQLFragmentName name)
-    {
-        FragmentName = name;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.FragmentSpread;
 
     /// <summary>
     /// Fragment name represented as a nested AST node.
     /// </summary>
-    public GraphQLFragmentName FragmentName { get; set; }
+    public GraphQLFragmentName FragmentName { get; set; } = null!;
 
     /// <inheritdoc/>
     public GraphQLDirectives? Directives { get; set; }

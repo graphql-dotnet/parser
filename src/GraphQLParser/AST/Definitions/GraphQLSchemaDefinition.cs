@@ -5,19 +5,6 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHasDescriptionNode
 {
-    internal GraphQLSchemaDefinition()
-    {
-        OperationTypes = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLSchemaDefinition"/>.
-    /// </summary>
-    public GraphQLSchemaDefinition(List<GraphQLRootOperationTypeDefinition> operationTypes)
-    {
-        OperationTypes = operationTypes;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.SchemaDefinition;
 
@@ -30,7 +17,7 @@ public class GraphQLSchemaDefinition : ASTNode, IHasDirectivesNode, IHasDescript
     /// <summary>
     /// All root operation type definitions in this schema represented as a list of nested AST nodes.
     /// </summary>
-    public List<GraphQLRootOperationTypeDefinition> OperationTypes { get; set; }
+    public List<GraphQLRootOperationTypeDefinition> OperationTypes { get; set; } = null!;
     //TODO: https://github.com/graphql/graphql-spec/issues/921
 }
 

@@ -5,19 +5,6 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLField : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasDirectivesNode, IHasArgumentsNode, INamedNode
 {
-    internal GraphQLField()
-    {
-        Name = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLField"/>.
-    /// </summary>
-    public GraphQLField(GraphQLName name)
-    {
-        Name = name;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Field;
 
@@ -27,7 +14,7 @@ public class GraphQLField : ASTNode, ISelectionNode, IHasSelectionSetNode, IHasD
     public GraphQLAlias? Alias { get; set; }
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; }
+    public GraphQLName Name { get; set; } = null!;
 
     /// <summary>
     /// Arguments for this field.

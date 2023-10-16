@@ -8,27 +8,13 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLInputValueDefinition: {Name}: {Type}")]
 public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasDefaultValueNode
 {
-    internal GraphQLInputValueDefinition()
-    {
-        Type = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLInputValueDefinition"/>.
-    /// </summary>
-    public GraphQLInputValueDefinition(GraphQLName name, GraphQLType type)
-        : base(name)
-    {
-        Type = type;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.InputValueDefinition;
 
     /// <summary>
     /// Nested <see cref="GraphQLType"/> AST node with input value type.
     /// </summary>
-    public GraphQLType Type { get; set; }
+    public GraphQLType Type { get; set; } = null!;
 
     /// <inheritdoc />
     public GraphQLValue? DefaultValue { get; set; }

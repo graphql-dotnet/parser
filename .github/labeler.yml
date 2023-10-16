@@ -1,6 +1,6 @@
 test:
+  - src/GraphQLParser.ApiTests/**/*
   - src/GraphQLParser.Tests/**/*
-  - src/GraphQLParser.ApiTests/**/*.cs
 
 CI:
   - .github/workflows/**/*

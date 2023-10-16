@@ -8,18 +8,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLInputObjectTypeDefinition: {Name}")]
 public class GraphQLInputObjectTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
-    internal GraphQLInputObjectTypeDefinition()
-    {
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLInputObjectTypeDefinition"/>.
-    /// </summary>
-    public GraphQLInputObjectTypeDefinition(GraphQLName name)
-        : base(name)
-    {
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeDefinition;
 

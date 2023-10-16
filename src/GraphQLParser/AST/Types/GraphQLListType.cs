@@ -8,26 +8,13 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLListType: [{Type}]")]
 public class GraphQLListType : GraphQLType
 {
-    internal GraphQLListType()
-    {
-        Type = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLListType"/>.
-    /// </summary>
-    public GraphQLListType(GraphQLType type)
-    {
-        Type = type;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.ListType;
 
     /// <summary>
     /// Nested <see cref="GraphQLType"/> AST node with wrapped type.
     /// </summary>
-    public GraphQLType Type { get; set; }
+    public GraphQLType Type { get; set; } = null!;
 }
 
 internal sealed class GraphQLListTypeWithLocation : GraphQLListType

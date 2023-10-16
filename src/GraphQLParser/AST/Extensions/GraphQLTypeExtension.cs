@@ -17,19 +17,6 @@ namespace GraphQLParser.AST;
 /// </summary>
 public abstract class GraphQLTypeExtension : ASTNode, INamedNode
 {
-    internal GraphQLTypeExtension()
-    {
-        Name = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLTypeExtension"/>.
-    /// </summary>
-    protected GraphQLTypeExtension(GraphQLName name)
-    {
-        Name = name;
-    }
-
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; }
+    public GraphQLName Name { get; set; } = null!;
 }

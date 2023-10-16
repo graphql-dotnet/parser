@@ -5,18 +5,6 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLInputObjectTypeExtension : GraphQLTypeExtension, IHasDirectivesNode
 {
-    internal GraphQLInputObjectTypeExtension()
-    {
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLInputObjectTypeExtension"/>.
-    /// </summary>
-    public GraphQLInputObjectTypeExtension(GraphQLName name)
-        : base(name)
-    {
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.InputObjectTypeExtension;
 

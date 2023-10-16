@@ -8,34 +8,18 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLFragmentDefinition: {FragmentName.Name.StringValue}")]
 public class GraphQLFragmentDefinition : GraphQLExecutableDefinition
 {
-    internal GraphQLFragmentDefinition()
-    {
-        FragmentName = null!;
-        TypeCondition = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLFragmentDefinition"/>.
-    /// </summary>
-    public GraphQLFragmentDefinition(GraphQLFragmentName name, GraphQLTypeCondition typeCondition, GraphQLSelectionSet selectionSet)
-        : base(selectionSet)
-    {
-        FragmentName = name;
-        TypeCondition = typeCondition;
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.FragmentDefinition;
 
     /// <summary>
     /// Fragment name represented as a nested AST node.
     /// </summary>
-    public GraphQLFragmentName FragmentName { get; set; }
+    public GraphQLFragmentName FragmentName { get; set; } = null!;
 
     /// <summary>
     /// Nested <see cref="GraphQLTypeCondition"/> AST node with type condition of this fragment.
     /// </summary>
-    public GraphQLTypeCondition TypeCondition { get; set; }
+    public GraphQLTypeCondition TypeCondition { get; set; } = null!;
 }
 
 internal sealed class GraphQLFragmentDefinitionWithLocation : GraphQLFragmentDefinition

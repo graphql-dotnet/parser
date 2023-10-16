@@ -8,18 +8,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLUnionTypeDefinition: {Name}")]
 public class GraphQLUnionTypeDefinition : GraphQLTypeDefinition, IHasDirectivesNode
 {
-    internal GraphQLUnionTypeDefinition()
-    {
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLUnionTypeDefinition"/>.
-    /// </summary>
-    public GraphQLUnionTypeDefinition(GraphQLName name)
-        : base(name)
-    {
-    }
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.UnionTypeDefinition;
 

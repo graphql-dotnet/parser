@@ -5,24 +5,11 @@ namespace GraphQLParser.AST;
 /// </summary>
 public class GraphQLFragmentName : ASTNode, INamedNode
 {
-    internal GraphQLFragmentName()
-    {
-        Name = null!;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="GraphQLFragmentName"/>.
-    /// </summary>
-    public GraphQLFragmentName(GraphQLName name)
-    {
-        Name = name;
-
-    }
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.FragmentName;
 
     /// <inheritdoc/>
-    public GraphQLName Name { get; set; }
+    public GraphQLName Name { get; set; } = null!;
 }
 
 internal sealed class GraphQLFragmentNameWithLocation : GraphQLFragmentName
