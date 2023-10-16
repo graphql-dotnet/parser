@@ -907,6 +907,12 @@ namespace GraphQLParser.Visitors
             public System.IO.TextWriter Writer { get; }
         }
     }
+    public enum SDLPrinterArgumentsMode
+    {
+        None = 0,
+        PreferNewLine = 1,
+        ForceNewLine = 2,
+    }
     public static class SDLPrinterExtensions
     {
         public static string Print(this GraphQLParser.Visitors.SDLPrinter printer, GraphQLParser.AST.ASTNode node) { }
@@ -916,6 +922,7 @@ namespace GraphQLParser.Visitors
     public class SDLPrinterOptions
     {
         public SDLPrinterOptions() { }
+        public GraphQLParser.Visitors.SDLPrinterArgumentsMode ArgumentsPrintMode { get; set; }
         public bool EachDirectiveLocationOnNewLine { get; set; }
         public bool EachUnionMemberOnNewLine { get; set; }
         public int IndentSize { get; set; }
