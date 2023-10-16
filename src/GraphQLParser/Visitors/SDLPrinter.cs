@@ -442,7 +442,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitEnumValuesDefinitionAsync(GraphQLEnumValuesDefinition enumValuesDefinition, TContext context)
     {
         await VisitAsync(enumValuesDefinition.Comments, context).ConfigureAwait(false);
-        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(enumValuesDefinition) ? "{" : " {"), context).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(enumValuesDefinition) || !TryPeekParent(context, out _) ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (enumValuesDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
@@ -497,7 +497,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitInputFieldsDefinitionAsync(GraphQLInputFieldsDefinition inputFieldsDefinition, TContext context)
     {
         await VisitAsync(inputFieldsDefinition.Comments, context).ConfigureAwait(false);
-        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(inputFieldsDefinition) ? "{" : " {"), context).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(inputFieldsDefinition) || !TryPeekParent(context, out _) ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (inputFieldsDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
@@ -574,7 +574,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitFieldsDefinitionAsync(GraphQLFieldsDefinition fieldsDefinition, TContext context)
     {
         await VisitAsync(fieldsDefinition.Comments, context).ConfigureAwait(false);
-        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(fieldsDefinition) ? "{" : " {"), context).ConfigureAwait(false);
+        await VisitAsync(LiteralNode.Wrap(HasPrintableComments(fieldsDefinition) || !TryPeekParent(context, out _) ? "{" : " {"), context).ConfigureAwait(false);
         await context.WriteLineAsync().ConfigureAwait(false);
 
         if (fieldsDefinition.Items?.Count > 0) // should always be true but may be negligently uninitialized
