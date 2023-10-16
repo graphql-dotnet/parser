@@ -928,16 +928,16 @@ namespace GraphQLParser.Visitors
     public class DefaultCountContext : GraphQLParser.Visitors.IASTVisitorContext, GraphQLParser.Visitors.ICountContext
     {
         public DefaultCountContext(System.Func<GraphQLParser.AST.ASTNode, bool> shouldInclude) { }
-        public System.Threading.CancellationToken CancellationToken { get; set; }
         public int Count { get; set; }
         public System.Func<GraphQLParser.AST.ASTNode, bool> ShouldInclude { get; }
+        public System.Threading.CancellationToken CancellationToken { get; init; }
     }
     public class DefaultMaxDepthContext : GraphQLParser.Visitors.IASTVisitorContext, GraphQLParser.Visitors.IMaxDepthContext
     {
         public DefaultMaxDepthContext() { }
-        public System.Threading.CancellationToken CancellationToken { get; set; }
         public int MaxDepth { get; set; }
-        public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
+        public System.Threading.CancellationToken CancellationToken { get; init; }
+        public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; init; }
     }
     public struct DefaultVisitorContext : GraphQLParser.Visitors.IASTVisitorContext
     {
@@ -995,15 +995,15 @@ namespace GraphQLParser.Visitors
         public class DefaultPrintContext : GraphQLParser.Visitors.IASTVisitorContext, GraphQLParser.Visitors.IPrintContext
         {
             public DefaultPrintContext(System.IO.TextWriter writer) { }
-            public System.Threading.CancellationToken CancellationToken { get; set; }
             public int IndentLevel { get; set; }
             public bool IndentPrinted { get; set; }
             [System.Obsolete("Use LastVisitedNode instead")]
             public bool LastDefinitionPrinted { get; set; }
             public GraphQLParser.AST.ASTNode? LastVisitedNode { get; set; }
             public bool NewLinePrinted { get; set; }
-            public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; set; }
             public System.IO.TextWriter Writer { get; }
+            public System.Threading.CancellationToken CancellationToken { get; init; }
+            public System.Collections.Generic.Stack<GraphQLParser.AST.ASTNode> Parents { get; init; }
         }
     }
     public enum SDLPrinterArgumentsMode
@@ -1022,11 +1022,11 @@ namespace GraphQLParser.Visitors
     {
         public SDLPrinterOptions() { }
         public GraphQLParser.Visitors.SDLPrinterArgumentsMode ArgumentsPrintMode { get; set; }
-        public bool EachDirectiveLocationOnNewLine { get; set; }
-        public bool EachUnionMemberOnNewLine { get; set; }
         public int IndentSize { get; set; }
-        public bool PrintComments { get; set; }
         public bool PrintDescriptions { get; set; }
+        public bool EachDirectiveLocationOnNewLine { get; init; }
+        public bool EachUnionMemberOnNewLine { get; init; }
+        public bool PrintComments { get; init; }
     }
     public class SDLPrinter<TContext> : GraphQLParser.Visitors.ASTVisitor<TContext>
         where TContext : GraphQLParser.Visitors.IPrintContext
@@ -1120,8 +1120,8 @@ namespace GraphQLParser.Visitors
     {
         public StructurePrinterOptions() { }
         public int IndentSize { get; set; }
-        public bool PrintLocations { get; set; }
-        public bool PrintNames { get; set; }
+        public bool PrintLocations { get; init; }
+        public bool PrintNames { get; init; }
     }
     public class StructurePrinter<TContext> : GraphQLParser.Visitors.ASTVisitor<TContext>
         where TContext : GraphQLParser.Visitors.IPrintContext
