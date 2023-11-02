@@ -1,19 +1,12 @@
 # GraphQL.NET Parser
 
-[![Publish release to Nuget registry](https://github.com/graphql-dotnet/parser/actions/workflows/publish-release.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/publish-release.yml)
-[![Publish preview to GitHub registry](https://github.com/graphql-dotnet/parser/actions/workflows/publish-preview.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/publish-preview.yml)
-
-[![Run unit tests](https://github.com/graphql-dotnet/parser/actions/workflows/test.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/test.yml)
-[![CodeQL analysis](https://github.com/graphql-dotnet/parser/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/graphql-dotnet/parser/actions/workflows/codeql-analysis.yml)
+[![License](https://img.shields.io/github/license/graphql-dotnet/parser)](LICENSE.md)
 [![codecov](https://codecov.io/gh/graphql-dotnet/parser/branch/master/graph/badge.svg?token=GEjwg1by60)](https://codecov.io/gh/graphql-dotnet/parser)
-
-[![NuGet](https://img.shields.io/nuget/v/GraphQL-Parser.svg)](https://www.nuget.org/packages/GraphQL-Parser)
 [![Nuget](https://img.shields.io/nuget/dt/GraphQL-Parser)](https://www.nuget.org/packages/GraphQL-Parser)
-
-![Activity](https://img.shields.io/github/commit-activity/w/graphql-dotnet/parser)
-![Activity](https://img.shields.io/github/commit-activity/m/graphql-dotnet/parser)
-![Activity](https://img.shields.io/github/commit-activity/y/graphql-dotnet/parser)
-
+[![Nuget](https://img.shields.io/nuget/v/GraphQL-Parser)](https://www.nuget.org/packages/GraphQL-Parser)
+[![GitHub Release Date](https://img.shields.io/github/release-date/graphql-dotnet/parser?label=released)](https://github.com/graphql-dotnet/parser/releases)
+[![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/graphql-dotnet/parser/latest?label=new+commits)](https://github.com/graphql-dotnet/parser/commits/master)
+[![GitHub contributors](https://img.shields.io/github/contributors/graphql-dotnet/parser)](https://github.com/graphql-dotnet/parser/graphs/contributors)
 ![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
 
 This library contains a lexer and parser as well as the complete [GraphQL AST model](http://spec.graphql.org/October2021/#sec-Appendix-Grammar-Summary)
