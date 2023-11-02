@@ -3,15 +3,11 @@
 [![License](https://img.shields.io/github/license/graphql-dotnet/parser)](LICENSE.md)
 [![codecov](https://codecov.io/gh/graphql-dotnet/parser/branch/master/graph/badge.svg?token=GEjwg1by60)](https://codecov.io/gh/graphql-dotnet/parser)
 [![Nuget](https://img.shields.io/nuget/dt/GraphQL-Parser)](https://www.nuget.org/packages/GraphQL-Parser)
-[![NuGet](https://img.shields.io/nuget/v/GraphQL-Parser.svg)](https://www.nuget.org/packages/GraphQL-Parser)
+[![Nuget](https://img.shields.io/nuget/v/GraphQL-Parser)](https://www.nuget.org/packages/GraphQL-Parser)
 [![GitHub Release Date](https://img.shields.io/github/release-date/graphql-dotnet/parser?label=released)](https://github.com/graphql-dotnet/parser/releases)
 [![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/graphql-dotnet/parser/latest?label=new+commits)](https://github.com/graphql-dotnet/parser/commits/master)
-![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
-
 [![GitHub contributors](https://img.shields.io/github/contributors/graphql-dotnet/parser)](https://github.com/graphql-dotnet/parser/graphs/contributors)
-![Activity](https://img.shields.io/github/commit-activity/w/graphql-dotnet/parser)
-![Activity](https://img.shields.io/github/commit-activity/m/graphql-dotnet/parser)
-![Activity](https://img.shields.io/github/commit-activity/y/graphql-dotnet/parser)
+![Size](https://img.shields.io/github/repo-size/graphql-dotnet/parser)
 
 This library contains a lexer and parser as well as the complete [GraphQL AST model](http://spec.graphql.org/October2021/#sec-Appendix-Grammar-Summary)
 that allows you to work with GraphQL documents compatible with the [October 2021 spec](https://spec.graphql.org/October2021/).
@@ -78,15 +74,82 @@ Default implementation traverses all AST nodes of the provided one. You can
 inherit from it and override desired methods to implement your own AST
 processing algorithm.
 
+### SDLPrinter
+
 For printing SDL from AST, you can use `SDLPrinter`. This is a highly
 optimized visitor for asynchronous non-blocking SDL output into provided
 `TextWriter`. In the majority of cases it does not allocate memory in
-the managed heap at all.
+the managed heap at all. Extension methods are also provided for printing
+directly to a string, which utilize the `StringBuilder` and `StringWriter`
+classes.
+
+```csharp
+var document = Parser.Parse("query { hero { name age } }");
+
+// print to a string with default options
+var sdl = new SDLPrinter().Print(document);
+
+// print to a string builder
+var sb = new StringBuilder();
+new SDLPrinter().Print(document, sb);
+
+// print to a string with some options
+var sdlPrinter = new SDLPrinter(
+    new SDLPrinterOptions {
+        PrintComments = true,
+        EachDirectiveLocationOnNewLine = true,
+        EachUnionMemberOnNewLine = true,
+    });
+var sdl = sdlPrinter.Print(document);
+
+// print to a stream asynchronously
+using var writer = new StreamWriter(stream);
+await sdlPrinter.PrintAsync(document, writer, default);
+await writer.FlushAsync();
+```
+
+Output:
+
+```graphql
+query {
+  hero {
+    name
+    age
+  }
+}
+```
+
+### SDLSorter
+
+An AST document can be sorted with the `SDLSorter` using a predefined
+sort order.  You can specify the string comparison; by default it uses
+a culture-invariant case-insensitive comparison.  Any futher customization
+is possible by deriving from `SDLSorterOptions` and overriding the `Compare`
+methods.
+
+```csharp
+var document = Parser.Parse("query { hero { name age } }");
+SDLSorter.Sort(document);
+var sdl = new SDLPrinter().Print(document);
+```
+
+Output:
+
+```graphql
+query {
+  hero {
+    age
+    name
+  }
+}
+```
+
+### StructurePrinter
 
 You can also find a `StructurePrinter` visitor that prints AST into the
 provided `TextWriter` as a hierarchy of node types. It can be useful
 when debugging for better understanding the AST structure.
-Consider GraphQL document
+Consider the following GraphQL document:
 
 ```graphql
 query a { name age }
@@ -105,14 +168,14 @@ Document
         Name [age]
 ```
 
-### Usage
+Usage:
 
 ```csharp
-public static async Task Print(string text)
+public static async Task PrintStructure(string sdl)
 {
-    using var document = Parser.Parse(text);
-    var writer = new StringWriter(); 
-    var printer = new SDLPrinter()
+    var document = Parser.Parse(sdl);
+    using var writer = new StringWriter(); 
+    var printer = new StructurePrinter()
     await printer.PrintAsync(document, writer);
     var rendered = writer.ToString();
     Console.WriteLine(rendered);
