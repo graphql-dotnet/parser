@@ -70,15 +70,82 @@ Default implementation traverses all AST nodes of the provided one. You can
 inherit from it and override desired methods to implement your own AST
 processing algorithm.
 
+### SDLPrinter
+
 For printing SDL from AST, you can use `SDLPrinter`. This is a highly
 optimized visitor for asynchronous non-blocking SDL output into provided
 `TextWriter`. In the majority of cases it does not allocate memory in
-the managed heap at all.
+the managed heap at all. Extension methods are also provided for printing
+directly to a string, which utilize the `StringBuilder` and `StringWriter`
+classes.
+
+```csharp
+var document = Parser.Parse("query { hero { name age } }");
+
+// print to a string with default options
+var sdl = new SDLPrinter().Print(document);
+
+// print to a string builder
+var sb = new StringBuilder();
+new SDLPrinter().Print(document, sb);
+
+// print to a string with some options
+var sdlPrinter = new SDLPrinter(
+    new SDLPrinterOptions {
+        PrintComments = true,
+        EachDirectiveLocationOnNewLine = true,
+        EachUnionMemberOnNewLine = true,
+    });
+var sdl = sdlPrinter.Print(document);
+
+// print to a stream asynchronously
+using var writer = new StreamWriter(stream);
+await sdlPrinter.PrintAsync(document, writer, default);
+await writer.FlushAsync();
+```
+
+Output:
+
+```graphql
+query {
+  hero {
+    name
+    age
+  }
+}
+```
+
+### SDLSorter
+
+An AST document can be sorted with the `SDLSorter` using a predefined
+sort order.  You can specify the string comparison; by default it uses
+a culture-invariant case-insensitive comparison.  Any futher customization
+is possible by deriving from `SDLSorterOptions` and overriding the `Compare`
+methods.
+
+```csharp
+var document = Parser.Parse("query { hero { name age } }");
+SDLSorter.Sort(document);
+var sdl = new SDLPrinter().Print(document);
+```
+
+Output:
+
+```graphql
+query {
+  hero {
+    age
+    name
+  }
+}
+```
+
+### StructurePrinter
 
 You can also find a `StructurePrinter` visitor that prints AST into the
 provided `TextWriter` as a hierarchy of node types. It can be useful
 when debugging for better understanding the AST structure.
-Consider GraphQL document
+Consider the following GraphQL document:
 
 ```graphql
 query a { name age }
@@ -97,14 +164,14 @@ Document
         Name [age]
 ```
 
-### Usage
+Usage:
 
 ```csharp
-public static async Task Print(string text)
+public static async Task PrintStructure(string sdl)
 {
-    using var document = Parser.Parse(text);
-    var writer = new StringWriter(); 
-    var printer = new SDLPrinter()
+    var document = Parser.Parse(sdl);
+    using var writer = new StringWriter(); 
+    var printer = new StructurePrinter()
     await printer.PrintAsync(document, writer);
     var rendered = writer.ToString();
     Console.WriteLine(rendered);
