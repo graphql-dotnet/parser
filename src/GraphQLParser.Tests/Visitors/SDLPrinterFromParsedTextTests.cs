@@ -1061,6 +1061,17 @@ type DesPcb {
     }
 
     [Theory]
+    [InlineData("{ field1 }", "{\n  field1\n}")]
+    [InlineData("query { field1 }", "{\n  field1\n}")]
+    [InlineData("query q1 { field1 }", "query q1 {\n  field1\n}")]
+    [InlineData("mutation { field1 }", "mutation {\n  field1\n}")]
+    [InlineData("mutation m1 { field1 }", "mutation m1 {\n  field1\n}")]
+    public void OperationPrints(string input, string expected)
+    {
+        new SDLPrinter().Print(Parser.Parse(input)).ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
+    }
+
+    [Theory]
     [InlineData("query a { name }")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Throw_On_Unknown_Values(string text)
