@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GraphQLParser\GraphQLParser.csproj" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.9" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.11" />
   </ItemGroup>
 
 </Project>
