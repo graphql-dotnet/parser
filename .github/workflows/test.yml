@@ -41,12 +41,10 @@ jobs:
             3.1.x
             6.0.x
             7.0.x
+            8.0.x
           source-url: https://nuget.pkg.github.com/graphql-dotnet/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Disable MSVS Nuget Source # see https://github.com/graphql-dotnet/graphql-dotnet/issues/2422
-        if: ${{ startsWith(matrix.os, 'windows') }}
-        run: dotnet nuget disable source 'Microsoft Visual Studio Offline Packages'
       - name: Install dependencies
         working-directory: src
         run: dotnet restore
@@ -73,7 +71,7 @@ jobs:
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: codecov/codecov-action@v3
         with:
-          files: .coverage/GraphQLParser.Tests/coverage.net5.opencover.xml
+          files: .coverage/GraphQLParser.Tests/coverage.net8.opencover.xml
 
   buildcheck:
     needs:
