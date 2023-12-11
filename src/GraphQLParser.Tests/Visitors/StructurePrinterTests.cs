@@ -283,7 +283,7 @@ field: Int }
 ")]
     public async Task StructurePrinter_Should_Print_Tree(string text, string expected)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
         await _structPrinter1.PrintAsync(document, writer);
         var actual = writer.ToString();
@@ -302,7 +302,7 @@ field: Int }
 ")]
     public async Task StructurePrinter_Should_Print_Tree_Without_Names(string text, string expected)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
         await _structPrinter2.PrintAsync(document, writer);
         var actual = writer.ToString();
@@ -547,7 +547,7 @@ scalar S", @"Document (10,30)
             if (option == IgnoreOptions.Comments && !ignoreComments)
                 continue;
 
-            var writer = new StringWriter();
+            using var writer = new StringWriter();
 
             var document = text.Parse(new ParserOptions { Ignore = option });
             await _structPrinter3.PrintAsync(document, writer);

@@ -10,7 +10,7 @@ public class SDLPrinterFromParsedTextTests
     {
         var query = "KitchenSink".ReadGraphQLFile().Parse();
         var writer = new SDLPrinter();
-        var sw = new StringWriter();
+        using var sw = new StringWriter();
         await writer.PrintAsync(query, sw);
         sw.Flush();
         var txt = sw.ToString();
@@ -941,7 +941,7 @@ type DesPcb {
             IndentSize = indentSize,
             ArgumentsPrintMode = mode,
         });
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
         await printer.PrintAsync(document, writer);
@@ -997,7 +997,7 @@ type DesPcb {
             ? "\"\"\"" + expected + "\"\"\""
             : "\"" + expected + "\"";
 
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
 
         var document = (input + " scalar a").Parse();
 
@@ -1028,7 +1028,7 @@ type DesPcb {
         string expected = @$"{{
   a(p: {stringValue})
 }}";
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
 
         var document = query.Parse();
 
@@ -1076,7 +1076,7 @@ type DesPcb {
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Throw_On_Unknown_Values(string text)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
         await new DoBadThingsVisitor().VisitAsync(document, new Context());

@@ -22,7 +22,7 @@ Preview versions of this package are available on [GitHub Packages](https://gith
 Generates token based on input text. Lexer takes advantage of `ReadOnlyMemory<char>` and in most cases
 does not allocate memory on the managed heap at all.
 
-### Usage
+Usage:
 
 ```csharp
 var token = Lexer.Lex("\"str\"");
@@ -36,7 +36,7 @@ Lex method always returns the first token it finds. In this case case the result
 Parses provided GraphQL expression into AST (abstract syntax tree). Parser also takes advantage of
 `ReadOnlyMemory<char>` but still allocates memory for AST.
 
-### Usage
+Usage:
 
 ```csharp
 var ast1 = Parser.Parse(@"
@@ -95,7 +95,8 @@ new SDLPrinter().Print(document, sb);
 
 // print to a string with some options
 var sdlPrinter = new SDLPrinter(
-    new SDLPrinterOptions {
+    new SDLPrinterOptions
+    {
         PrintComments = true,
         EachDirectiveLocationOnNewLine = true,
         EachUnionMemberOnNewLine = true,
@@ -122,8 +123,8 @@ query {
 ### SDLSorter
 
 An AST document can be sorted with the `SDLSorter` using a predefined
-sort order.  You can specify the string comparison; by default it uses
-a culture-invariant case-insensitive comparison.  Any futher customization
+sort order. You can specify the string comparison; by default it uses
+a culture-invariant case-insensitive comparison. Any futher customization
 is possible by deriving from `SDLSorterOptions` and overriding the `Compare`
 methods.
 

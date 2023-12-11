@@ -51,7 +51,7 @@ string text,
 string expected)
     {
         var printer = new MyPrinter();
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
         await printer.PrintAsync(document, writer);
