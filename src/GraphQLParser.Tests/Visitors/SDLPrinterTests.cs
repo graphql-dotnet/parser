@@ -10,7 +10,7 @@ public class SDLPrinterTests
     {
         var query = "KitchenSink".ReadGraphQLFile().Parse();
         var writer = new SDLPrinter();
-        var sw = new StringWriter();
+        using var sw = new StringWriter();
         await writer.PrintAsync(query, sw);
         sw.Flush();
         var txt = sw.ToString();
@@ -580,7 +580,7 @@ directive @skip(
             EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
             EachUnionMemberOnNewLine = eachUnionMemberOnNewLine
         });
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
         await printer.PrintAsync(document, writer);
@@ -636,7 +636,7 @@ directive @skip(
             ? "\"\"\"" + expected + "\"\"\""
             : "\"" + expected + "\"";
 
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
 
         var document = (input + " scalar a").Parse();
 
@@ -667,7 +667,7 @@ directive @skip(
         string expected = @$"{{
   a(p: {stringValue})
 }}";
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
 
         var document = query.Parse();
 
@@ -683,16 +683,16 @@ directive @skip(
     public async Task SelectionSet_Without_Parent_Should_Be_Printed_On_New_Line()
     {
         var selectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() };
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
         await printer.PrintAsync(selectionSet, writer);
         writer.ToString().ShouldBe(@"{
 }
 ");
         selectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
-        writer = new StringWriter();
-        await printer.PrintAsync(selectionSet, writer);
-        writer.ToString().ShouldBe(@"#comment
+        using var writer2 = new StringWriter();
+        await printer.PrintAsync(selectionSet, writer2);
+        writer2.ToString().ShouldBe(@"#comment
 {
 }
 ");
@@ -705,15 +705,15 @@ directive @skip(
         {
             SelectionSet = new GraphQLSelectionSetWithComment { Selections = new List<ASTNode>() }
         };
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var printer = new SDLPrinter(new SDLPrinterOptions { PrintComments = true });
         await printer.PrintAsync(def, writer);
         writer.ToString().ShouldBe(@"{
 }");
         def.SelectionSet.Comments = new List<GraphQLComment> { new GraphQLComment("comment") };
-        writer = new StringWriter();
-        await printer.PrintAsync(def, writer);
-        writer.ToString().ShouldBe(@"#comment
+        using var writer2 = new StringWriter();
+        await printer.PrintAsync(def, writer2);
+        writer2.ToString().ShouldBe(@"#comment
 {
 }");
     }
@@ -734,7 +734,7 @@ multilined
     public async Task Description_Without_Parent_Should_Be_Printed(string text, string expected)
     {
         var description = new GraphQLDescription(text);
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var printer = new SDLPrinter();
         await printer.PrintAsync(description, writer);
         writer.ToString().ShouldBe(expected);
@@ -761,7 +761,7 @@ Line 4
     public async Task Description_With_Escaped_Unicode_Should_Be_Printed(string text, string expected)
     {
         var description = new GraphQLDescription(text);
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var printer = new SDLPrinter();
         await printer.PrintAsync(description, writer);
         writer.ToString().ShouldBe(expected);
@@ -777,7 +777,7 @@ Line 4
             DefaultValue = new GraphQLStringValue("abc")
         };
 
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var printer = new SDLPrinter();
         await printer.PrintAsync(def, writer);
         writer.ToString().ShouldBe("field: String = \"abc\"");
@@ -787,7 +787,7 @@ Line 4
     public async Task Directive_Without_Parent_Should_Be_Printed()
     {
         var directive = new GraphQLDirective { Name = new GraphQLName("upper") };
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var printer = new SDLPrinter();
         await printer.PrintAsync(directive, writer);
         writer.ToString().ShouldBe("@upper");
@@ -829,7 +829,7 @@ Line 4
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Throw_On_Unknown_Values(string text)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
         await new DoBadThingsVisitor().VisitAsync(document, new Context());
