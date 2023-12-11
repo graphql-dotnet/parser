@@ -9,8 +9,8 @@ namespace GraphQLParser;
 
 internal ref partial struct ParserContext
 {
-    private static string[] TopLevelKeywordOneOf { get; set; } = new[]
-    {
+    private static string[] TopLevelKeywordOneOf { get; set; } =
+    [
         "query",
         "mutation",
         "subscription",
@@ -24,10 +24,10 @@ internal ref partial struct ParserContext
         "input",
         "extend",
         "directive",
-    };
+    ];
 
-    private static string[] TypeExtensionOneOf { get; set; } = new[]
-    {
+    private static string[] TypeExtensionOneOf { get; set; } =
+    [
         "schema",
         "scalar",
         "type",
@@ -35,39 +35,39 @@ internal ref partial struct ParserContext
         "union",
         "enum",
         "input",
-    };
+    ];
 
-    private static string[] OperationTypeOneOf { get; set; } = new[]
-    {
+    private static string[] OperationTypeOneOf { get; set; } =
+    [
         "query",
         "mutation",
         "subscription",
-    };
+    ];
 
-    private static string[] DirectiveLocationOneOf { get; set; } = new[]
-    {
-            // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
-            "QUERY",
-            "MUTATION",
-            "SUBSCRIPTION",
-            "FIELD",
-            "FRAGMENT_DEFINITION",
-            "FRAGMENT_SPREAD",
-            "INLINE_FRAGMENT",
-            "VARIABLE_DEFINITION",
-            // http://spec.graphql.org/June2018/#TypeSystemDirectiveLocation
-            "SCHEMA",
-            "SCALAR",
-            "OBJECT",
-            "FIELD_DEFINITION",
-            "ARGUMENT_DEFINITION",
-            "INTERFACE",
-            "UNION",
-            "ENUM",
-            "ENUM_VALUE",
-            "INPUT_OBJECT",
-            "INPUT_FIELD_DEFINITION",
-        };
+    private static string[] DirectiveLocationOneOf { get; set; } =
+    [
+        // http://spec.graphql.org/June2018/#ExecutableDirectiveLocation
+        "QUERY",
+        "MUTATION",
+        "SUBSCRIPTION",
+        "FIELD",
+        "FRAGMENT_DEFINITION",
+        "FRAGMENT_SPREAD",
+        "INLINE_FRAGMENT",
+        "VARIABLE_DEFINITION",
+        // http://spec.graphql.org/June2018/#TypeSystemDirectiveLocation
+        "SCHEMA",
+        "SCALAR",
+        "OBJECT",
+        "FIELD_DEFINITION",
+        "ARGUMENT_DEFINITION",
+        "INTERFACE",
+        "UNION",
+        "ENUM",
+        "ENUM_VALUE",
+        "INPUT_OBJECT",
+        "INPUT_FIELD_DEFINITION",
+    ];
 
     private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 
