@@ -26,6 +26,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{9985185E-F78C-4837-9F3E-5A0D8F7CE4CC}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\codecov.yml = ..\.github\codecov.yml
+		..\.github\codeql-config.yml = ..\.github\codeql-config.yml
 		..\.github\dependabot.yml = ..\.github\dependabot.yml
 		..\.github\labeler.yml = ..\.github\labeler.yml
 	EndProjectSection
