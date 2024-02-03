@@ -70,6 +70,7 @@ jobs:
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: .coverage/GraphQLParser.Tests/coverage.net8.opencover.xml
 
   buildcheck:
