@@ -61,16 +61,17 @@ jobs:
       - name: Test solution [Debug] with code coverage
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
         working-directory: src
-        run: dotnet test --no-restore --no-build -p:CollectCoverage=true -p:DoesNotReturnAttribute="DoesNotReturnAttribute"
+        run: dotnet test --no-restore --no-build -p:CollectCoverage=true -p:CoverletOutputFormat=opencover -p:CoverletOutput=../.coverage/ -p:DoesNotReturnAttribute="DoesNotReturnAttribute"
       - name: Test solution [Debug] without code coverage
         if: ${{ startsWith(matrix.os, 'windows') }}
         working-directory: src
         run: dotnet test --no-restore --no-build
       - name: Upload coverage to codecov
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
-          files: .coverage/GraphQLParser.Tests/coverage.net8.opencover.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: src/.coverage/*.opencover.xml
 
   buildcheck:
     needs:
