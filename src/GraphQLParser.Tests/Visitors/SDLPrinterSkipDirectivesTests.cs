@@ -14,7 +14,8 @@ public class SDLPrinterSkipDirectivesTests
 @"type Foo {
   f: Int @aliased
   k: Boolean
-}")]
+}
+")]
     [InlineData(2,
 @"type Foo {
   f: Int @bad @aliased
@@ -24,7 +25,8 @@ public class SDLPrinterSkipDirectivesTests
 @"type Foo {
   f: Int @aliased
   k: Boolean
-}")]
+}
+")]
     [InlineData(3,
 @"type Foo {
   f: Int @aliased @bad
@@ -34,7 +36,8 @@ public class SDLPrinterSkipDirectivesTests
 @"type Foo {
   f: Int @aliased
   k: Boolean
-}")]
+}
+")]
     [InlineData(4,
 @"type Foo {
   f: Int @bad
@@ -44,11 +47,12 @@ public class SDLPrinterSkipDirectivesTests
 @"type Foo {
   f: Int
   k: Boolean
-}")]
+}
+")]
     public async Task Printer_Should_Print_Pretty_If_Directives_Skipped(
-int number,
-string text,
-string expected)
+        int number,
+        string text,
+        string expected)
     {
         var printer = new MyPrinter();
         using var writer = new StringWriter();

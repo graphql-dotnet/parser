@@ -946,7 +946,7 @@ type DesPcb {
 
         await printer.PrintAsync(document, writer);
         var actual = writer.ToString();
-        actual.ShouldBe(expected, $"Test {number} failed");
+        actual.ShouldBe(expected + Environment.NewLine, $"Test {number} failed");
 
         actual.Parse(); // should be parsed back
     }
@@ -1006,7 +1006,7 @@ type DesPcb {
         var renderedOriginal = writer.ToString();
 
         var lines = renderedOriginal.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-        var renderedDescription = string.Join(Environment.NewLine, lines.Take(lines.Length - 1));
+        var renderedDescription = string.Join(Environment.NewLine, lines.Take(lines.Length - 2));
         renderedDescription = renderedDescription.Replace("\r\n", "\n");
         renderedDescription.ShouldBe(expected);
 
@@ -1025,9 +1025,12 @@ type DesPcb {
     public async Task SDLPrinter_Should_Print_EscapedStrings(string stringValue)
     {
         string query = $"{{a(p:{stringValue})}}";
-        string expected = @$"{{
-  a(p: {stringValue})
-}}";
+        string expected = $$"""
+            {
+              a(p: {{stringValue}})
+            }
+
+            """;
         using var writer = new StringWriter();
 
         var document = query.Parse();
@@ -1061,11 +1064,11 @@ type DesPcb {
     }
 
     [Theory]
-    [InlineData("{ field1 }", "{\n  field1\n}")]
-    [InlineData("query { field1 }", "{\n  field1\n}")]
-    [InlineData("query q1 { field1 }", "query q1 {\n  field1\n}")]
-    [InlineData("mutation { field1 }", "mutation {\n  field1\n}")]
-    [InlineData("mutation m1 { field1 }", "mutation m1 {\n  field1\n}")]
+    [InlineData("{ field1 }", "{\n  field1\n}\n")]
+    [InlineData("query { field1 }", "{\n  field1\n}\n")]
+    [InlineData("query q1 { field1 }", "query q1 {\n  field1\n}\n")]
+    [InlineData("mutation { field1 }", "mutation {\n  field1\n}\n")]
+    [InlineData("mutation m1 { field1 }", "mutation m1 {\n  field1\n}\n")]
     public void OperationPrints(string input, string expected)
     {
         new SDLPrinter().Print(Parser.Parse(input)).ShouldBe(expected, StringCompareShould.IgnoreLineEndings);

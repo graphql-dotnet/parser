@@ -1158,13 +1158,15 @@ public class SDLPrinter : SDLPrinter<SDLPrinter.DefaultPrintContext>
     }
 
     /// <inheritdoc cref="SDLPrinter{TContext}"/>
-    public virtual ValueTask PrintAsync(ASTNode node, TextWriter writer, CancellationToken cancellationToken = default)
+    public virtual async ValueTask PrintAsync(ASTNode node, TextWriter writer, CancellationToken cancellationToken = default)
     {
         var context = new DefaultPrintContext(writer)
         {
             CancellationToken = cancellationToken,
         };
-        return VisitAsync(node, context);
+        await VisitAsync(node, context).ConfigureAwait(false);
+        if (!context.NewLinePrinted && node is GraphQLDocument)
+            await writer.WriteLineAsync().ConfigureAwait(false);
     }
 }
 
