@@ -178,9 +178,9 @@ extend type A2 {
   a: Int
 }")]
     public async Task Printer_Should_Print_Pretty_If_Definitions_Skipped(
-int number,
-string text,
-string expected)
+        int number,
+        string text,
+        string expected)
     {
         var printer = new PrintOnlyStartsWithA();
         var writer = new StringWriter();
@@ -188,7 +188,7 @@ string expected)
 
         await printer.PrintAsync(document, writer).ConfigureAwait(false);
         var actual = writer.ToString();
-        actual.ShouldBe(expected, $"Test {number} failed");
+        actual.ShouldBe(expected + Environment.NewLine, $"Test {number} failed");
 
         actual.Parse(); // should be parsed back
     }

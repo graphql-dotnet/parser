@@ -148,6 +148,7 @@ Line 4
             directive @empty_locations on
 
             scalar AAA
+
             """);
     }
 
@@ -186,6 +187,7 @@ Line 4
 
             enum EnumWithValuesDefinitionOfEmptyItems {
             }
+
             """);
     }
 
@@ -224,6 +226,7 @@ Line 4
 
             input InputWithFieldsDefinitionOfEmptyItems {
             }
+
             """);
     }
 
@@ -262,6 +265,7 @@ Line 4
 
             type TypeWithFieldsDefinitionOfEmptyItems {
             }
+
             """);
     }
 }

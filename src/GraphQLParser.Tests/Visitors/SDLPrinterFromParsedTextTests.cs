@@ -869,7 +869,7 @@ type Person {
 
         await printer.PrintAsync(document, writer).ConfigureAwait(false);
         var actual = writer.ToString();
-        actual.ShouldBe(expected, $"Test {number} failed");
+        actual.ShouldBe(expected + Environment.NewLine, $"Test {number} failed");
 
         actual.Parse(); // should be parsed back
     }
@@ -928,7 +928,7 @@ type Person {
         var renderedOriginal = writer.ToString();
 
         var lines = renderedOriginal.Split(Environment.NewLine);
-        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(1));
+        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
         renderedDescription = renderedDescription.Replace("\r\n", "\n");
         renderedDescription.ShouldBe(expected);
 
@@ -947,9 +947,12 @@ type Person {
     public async Task SDLPrinter_Should_Print_EscapedStrings(string stringValue)
     {
         string query = $"{{a(p:{stringValue})}}";
-        string expected = @$"{{
-  a(p: {stringValue})
-}}";
+        string expected = $$"""
+            {
+              a(p: {{stringValue}})
+            }
+
+            """;
         var writer = new StringWriter();
 
         var document = query.Parse();
