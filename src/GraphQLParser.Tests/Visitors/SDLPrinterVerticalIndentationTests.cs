@@ -183,10 +183,10 @@ extend type A2 {
         string expected)
     {
         var printer = new PrintOnlyStartsWithA();
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var actual = writer.ToString();
         actual.ShouldBe(expected + Environment.NewLine, $"Test {number} failed");
 

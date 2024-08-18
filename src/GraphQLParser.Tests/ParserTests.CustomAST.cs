@@ -1,9 +1,13 @@
 using GraphQLParser.Exceptions;
+using GraphQLParser.Visitors;
 
 namespace GraphQLParser.Tests;
 
 public class ParserTestsCustomAST
 {
+    // Note - printing was added here eventually just in case of testing different existing ASTs.
+    private readonly SDLPrinter _printer = new();
+
     [Fact]
     public void Should_Throw_On_Comment()
     {
@@ -19,10 +23,10 @@ public class ParserTestsCustomAST
     [InlineData("\"escaped \\n\\r\\b\\t\\f\"", ASTNodeKind.StringValue, "escaped \n\r\b\t\f")]
     [InlineData("true", ASTNodeKind.BooleanValue)]
     [InlineData("RED", ASTNodeKind.EnumValue)]
-    [InlineData("[ 1, 2, 3]", ASTNodeKind.ListValue)]
-    [InlineData("{ a: 1, b: \"abc\", c: RED, d: $id }", ASTNodeKind.ObjectValue)]
+    [InlineData("[ 1, 2, 3]", ASTNodeKind.ListValue, null, "[1, 2, 3]")]
+    [InlineData("{ a: 1, b: \"abc\", c: RED, d: $id }", ASTNodeKind.ObjectValue, null, "{a: 1, b: \"abc\", c: RED, d: $id}")]
     [InlineData("$id", ASTNodeKind.Variable)]
-    public void Should_Parse_Value_Literal_But_Not_Entire_Document(string text, ASTNodeKind kind, string expected = null)
+    public void Should_Parse_Value_Literal_But_Not_Entire_Document(string text, ASTNodeKind kind, string expected = null, string expectedFromPrinter = null)
     {
         Should.Throw<GraphQLSyntaxErrorException>(() => Parser.Parse(text));
 
@@ -31,6 +35,8 @@ public class ParserTestsCustomAST
         value.Kind.ShouldBe(kind);
         if (expected != null)
             ((GraphQLStringValue)value).Value.ShouldBe(expected);
+
+        _printer.Print(value).ShouldBe(expectedFromPrinter ?? text);
     }
 
     [Fact]
@@ -39,6 +45,8 @@ public class ParserTestsCustomAST
         string text = "$id";
         var ast = text.Parse<GraphQLVariable>().ShouldNotBeNull();
         ast.Name.Value.ShouldBe("id");
+
+        _printer.Print(ast).ShouldBe(text);
     }
 
     [Fact]
@@ -47,6 +55,8 @@ public class ParserTestsCustomAST
         string text = "id: 5";
         var ast = text.Parse<GraphQLArgument>().ShouldNotBeNull();
         ast.Name.Value.ShouldBe("id");
+
+        _printer.Print(ast).ShouldBe(text);
     }
 
     [Fact]
@@ -55,6 +65,9 @@ public class ParserTestsCustomAST
         string text = "(id: 5 code: abc)";
         var ast = text.Parse<GraphQLArguments>().ShouldNotBeNull();
         ast.Items.Count.ShouldBe(2);
+
+
+        _printer.Print(ast).ShouldBe("(id: 5, code: abc)");
     }
 
     [Fact]
@@ -63,6 +76,8 @@ public class ParserTestsCustomAST
         string text = "\"blablalba\"";
         var ast = text.Parse<GraphQLDescription>().ShouldNotBeNull();
         ast.Value.ShouldBe("blablalba");
+
+        _printer.Print(ast).ShouldBe(text);
     }
 
     [Fact]
@@ -71,6 +86,8 @@ public class ParserTestsCustomAST
         string text = "@my";
         var ast = text.Parse<GraphQLDirective>().ShouldNotBeNull();
         ast.Name.Value.ShouldBe("my");
+
+        _printer.Print(ast).ShouldBe(text);
     }
 
     [Fact]
@@ -79,6 +96,9 @@ public class ParserTestsCustomAST
         string text = "@my @your";
         var ast = text.Parse<GraphQLDirectives>().ShouldNotBeNull();
         ast.Items.Count.ShouldBe(2);
+
+        // TODO: fix leading space before first directive
+        // _printer.Print(ast).ShouldBe(text);
     }
 
     [Fact]
@@ -87,6 +107,8 @@ public class ParserTestsCustomAST
         string text = "name";
         var ast = text.Parse<GraphQLField>().ShouldNotBeNull();
         ast.Name.Value.ShouldBe("name");
+
+        _printer.Print(ast).ShouldBe(text);
     }
 
     [Fact]
@@ -95,6 +117,13 @@ public class ParserTestsCustomAST
         string text = "{ a b }";
         var ast = text.Parse<GraphQLSelectionSet>().ShouldNotBeNull();
         ast.Selections.Count.ShouldBe(2);
+
+        _printer.Print(ast).ShouldBe("""
+            {
+              a
+              b
+            }
+            """);
     }
 
     [Fact]
@@ -103,6 +132,8 @@ public class ParserTestsCustomAST
         string text = "(size: Int)";
         var definition = text.Parse<GraphQLArgumentsDefinition>().ShouldNotBeNull();
         definition.Items.Count.ShouldBe(1);
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -111,6 +142,8 @@ public class ParserTestsCustomAST
         string text = "size: Int";
         var definition = text.Parse<GraphQLInputValueDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("size");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -119,6 +152,8 @@ public class ParserTestsCustomAST
         string text = "directive @my on FIELD";
         var definition = text.Parse<GraphQLDirectiveDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("my");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -127,6 +162,12 @@ public class ParserTestsCustomAST
         string text = "enum Color { RED }";
         var definition = text.Parse<GraphQLEnumTypeDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Color");
+
+        _printer.Print(definition).ShouldBe("""
+            enum Color {
+              RED
+            }
+            """);
     }
 
     [Fact]
@@ -135,6 +176,8 @@ public class ParserTestsCustomAST
         string text = "RED";
         var definition = text.Parse<GraphQLEnumValueDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("RED");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -143,6 +186,13 @@ public class ParserTestsCustomAST
         string text = "{ RED GREEN }";
         var definition = text.Parse<GraphQLEnumValuesDefinition>().ShouldNotBeNull();
         definition.Items.Count.ShouldBe(2);
+
+        _printer.Print(definition).ShouldBe("""
+            {
+              RED
+              GREEN
+            }
+            """);
     }
 
     [Fact]
@@ -151,6 +201,8 @@ public class ParserTestsCustomAST
         string text = "name: String";
         var definition = text.Parse<GraphQLFieldDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("name");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -159,6 +211,13 @@ public class ParserTestsCustomAST
         string text = "{ name: String age: Int }";
         var definition = text.Parse<GraphQLFieldsDefinition>().ShouldNotBeNull();
         definition.Items.Count.ShouldBe(2);
+
+        _printer.Print(definition).ShouldBe("""
+            {
+              name: String
+              age: Int
+            }
+            """);
     }
 
     [Fact]
@@ -167,6 +226,12 @@ public class ParserTestsCustomAST
         string text = "fragment frag on Person { name }";
         var definition = text.Parse<GraphQLFragmentDefinition>().ShouldNotBeNull();
         definition.FragmentName.Name.Value.ShouldBe("frag");
+
+        _printer.Print(definition).ShouldBe("""
+            fragment frag on Person {
+              name
+            }
+            """);
     }
 
     [Fact]
@@ -175,6 +240,13 @@ public class ParserTestsCustomAST
         string text = "{ name: String age: Int }";
         var definition = text.Parse<GraphQLInputFieldsDefinition>().ShouldNotBeNull();
         definition.Items.Count.ShouldBe(2);
+
+        _printer.Print(definition).ShouldBe("""
+            {
+              name: String
+              age: Int
+            }
+            """);
     }
 
     [Fact]
@@ -183,6 +255,12 @@ public class ParserTestsCustomAST
         string text = "input Person { name: String }";
         var definition = text.Parse<GraphQLInputObjectTypeDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Person");
+
+        _printer.Print(definition).ShouldBe("""
+            input Person {
+              name: String
+            }
+            """);
     }
 
     [Fact]
@@ -191,6 +269,12 @@ public class ParserTestsCustomAST
         string text = "interface Person { name: String }";
         var definition = text.Parse<GraphQLInterfaceTypeDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Person");
+
+        _printer.Print(definition).ShouldBe("""
+            interface Person {
+              name: String
+            }
+            """);
     }
 
     [Fact]
@@ -199,6 +283,12 @@ public class ParserTestsCustomAST
         string text = "type Person { name: String }";
         var definition = text.Parse<GraphQLObjectTypeDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Person");
+
+        _printer.Print(definition).ShouldBe("""
+            type Person {
+              name: String
+            }
+            """);
     }
 
     [Fact]
@@ -207,6 +297,12 @@ public class ParserTestsCustomAST
         string text = "mutation x { set(value: 1) }";
         var definition = text.Parse<GraphQLOperationDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("x");
+
+        _printer.Print(definition).ShouldBe("""
+            mutation x {
+              set(value: 1)
+            }
+            """);
     }
 
     [Fact]
@@ -215,6 +311,8 @@ public class ParserTestsCustomAST
         string text = "query: Q";
         var definition = text.Parse<GraphQLRootOperationTypeDefinition>().ShouldNotBeNull();
         definition.Operation.ShouldBe(OperationType.Query);
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -223,6 +321,8 @@ public class ParserTestsCustomAST
         string text = "scalar JSON";
         var definition = text.Parse<GraphQLScalarTypeDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("JSON");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -231,6 +331,13 @@ public class ParserTestsCustomAST
         string text = "schema { query: Q subscription: S }";
         var definition = text.Parse<GraphQLSchemaDefinition>().ShouldNotBeNull();
         definition.OperationTypes.Count.ShouldBe(2);
+
+        _printer.Print(definition).ShouldBe("""
+            schema {
+              query: Q
+              subscription: S
+            }
+            """);
     }
 
     [Fact]
@@ -239,6 +346,8 @@ public class ParserTestsCustomAST
         string text = "union U = A | B";
         var definition = text.Parse<GraphQLUnionTypeDefinition>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("U");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -247,6 +356,8 @@ public class ParserTestsCustomAST
         string text = "$id: Int";
         var definition = text.Parse<GraphQLVariableDefinition>().ShouldNotBeNull();
         definition.Variable.Name.Value.ShouldBe("id");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -255,6 +366,8 @@ public class ParserTestsCustomAST
         string text = "($id: Int, $amount: Float)";
         var definition = text.Parse<GraphQLVariablesDefinition>().ShouldNotBeNull();
         definition.Items.Count.ShouldBe(2);
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -263,6 +376,12 @@ public class ParserTestsCustomAST
         string text = "extend enum Color { YELLOW }";
         var definition = text.Parse<GraphQLEnumTypeExtension>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Color");
+
+        _printer.Print(definition).ShouldBe("""
+            extend enum Color {
+              YELLOW
+            }
+            """);
     }
 
     [Fact]
@@ -271,6 +390,12 @@ public class ParserTestsCustomAST
         string text = "extend input Person { address: String }";
         var definition = text.Parse<GraphQLInputObjectTypeExtension>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Person");
+
+        _printer.Print(definition).ShouldBe("""
+            extend input Person {
+              address: String
+            }
+            """);
     }
 
     [Fact]
@@ -279,6 +404,12 @@ public class ParserTestsCustomAST
         string text = "extend interface Person { address: String }";
         var definition = text.Parse<GraphQLInterfaceTypeExtension>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Person");
+
+        _printer.Print(definition).ShouldBe("""
+            extend interface Person {
+              address: String
+            }
+            """);
     }
 
     [Fact]
@@ -287,6 +418,12 @@ public class ParserTestsCustomAST
         string text = "extend type Person { address: String }";
         var definition = text.Parse<GraphQLObjectTypeExtension>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("Person");
+
+        _printer.Print(definition).ShouldBe("""
+            extend type Person {
+              address: String
+            }
+            """);
     }
 
     [Fact]
@@ -295,6 +432,8 @@ public class ParserTestsCustomAST
         string text = "extend scalar JSON @my";
         var definition = text.Parse<GraphQLScalarTypeExtension>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("JSON");
+
+        _printer.Print(definition).ShouldBe(text);
     }
 
     [Fact]
@@ -303,6 +442,12 @@ public class ParserTestsCustomAST
         string text = "extend schema { subscription : S }";
         var definition = text.Parse<GraphQLSchemaExtension>().ShouldNotBeNull();
         definition.OperationTypes.Count.ShouldBe(1);
+
+        _printer.Print(definition).ShouldBe("""
+            extend schema {
+              subscription: S
+            }
+            """);
     }
 
     [Fact]
@@ -312,5 +457,7 @@ public class ParserTestsCustomAST
         var definition = text.Parse<GraphQLUnionTypeExtension>().ShouldNotBeNull();
         definition.Name.Value.ShouldBe("U");
         definition.Directives.Items.Count.ShouldBe(2);
+
+        _printer.Print(definition).ShouldBe(text);
     }
 }

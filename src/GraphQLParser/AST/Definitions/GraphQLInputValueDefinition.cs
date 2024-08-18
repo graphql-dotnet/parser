@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace GraphQLParser.AST;
 
 /// <summary>
 /// AST node for <see cref="ASTNodeKind.InputValueDefinition"/>.
 /// </summary>
+[DebuggerDisplay("GraphQLInputValueDefinition: {Name}: {Type}")]
 public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectivesNode, IHasDefaultValueNode
 {
     internal GraphQLInputValueDefinition()

@@ -63,6 +63,7 @@ public class SDLSorterOptions : IASTVisitorContext, IComparer<ASTNode>, ICompare
             GraphQLFragmentSpread x => x.FragmentName.Name.Value,
             GraphQLRootOperationTypeDefinition x => x.Operation switch { OperationType.Query => "a", OperationType.Mutation => "b", _ => "c" },
             GraphQLVariableDefinition x => x.Variable.Name.Value,
+            GraphQLFragmentDefinition x => x.FragmentName.Name.Value,
             _ => "", // do not sort values, comments, etc
         };
     }

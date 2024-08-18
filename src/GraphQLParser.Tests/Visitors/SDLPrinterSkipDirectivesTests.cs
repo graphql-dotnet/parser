@@ -55,10 +55,10 @@ public class SDLPrinterSkipDirectivesTests
         string expected)
     {
         var printer = new MyPrinter();
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var actual = writer.ToString();
         actual.ShouldBe(expected, $"Test {number} failed");
 

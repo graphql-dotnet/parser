@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>9.2.0-preview</VersionPrefix>
+    <VersionPrefix>9.3.0-preview</VersionPrefix>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);CA1707</NoWarn>
@@ -31,7 +31,7 @@
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
     <None Include="..\..\assets\logo.64x64.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

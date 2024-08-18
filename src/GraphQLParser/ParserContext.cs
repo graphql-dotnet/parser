@@ -9,8 +9,8 @@ namespace GraphQLParser;
 
 internal ref partial struct ParserContext
 {
-    private static string[] TopLevelKeywordOneOf { get; set; } = new[]
-    {
+    private static string[] TopLevelKeywordOneOf { get; set; } =
+    [
         "query",
         "mutation",
         "subscription",
@@ -24,10 +24,10 @@ internal ref partial struct ParserContext
         "input",
         "extend",
         "directive",
-    };
+    ];
 
-    private static string[] TypeExtensionOneOf { get; set; } = new[]
-    {
+    private static string[] TypeExtensionOneOf { get; set; } =
+    [
         "schema",
         "scalar",
         "type",
@@ -35,17 +35,17 @@ internal ref partial struct ParserContext
         "union",
         "enum",
         "input",
-    };
+    ];
 
-    private static string[] OperationTypeOneOf { get; set; } = new[]
-    {
+    private static string[] OperationTypeOneOf { get; set; } =
+    [
         "query",
         "mutation",
         "subscription",
-    };
+    ];
 
-    private static string[] DirectiveLocationOneOf { get; set; } = new[]
-    {
+    private static string[] DirectiveLocationOneOf { get; set; } =
+    [
         // http://spec.graphql.org/October2021/#ExecutableDirectiveLocation
         "QUERY",
         "MUTATION",
@@ -67,7 +67,7 @@ internal ref partial struct ParserContext
         "ENUM_VALUE",
         "INPUT_OBJECT",
         "INPUT_FIELD_DEFINITION",
-    };
+    ];
 
     private delegate TResult ParseCallback<out TResult>(ref ParserContext context);
 

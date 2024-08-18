@@ -10,7 +10,7 @@ public class SDLPrinterFromParsedTextTests
     {
         var query = "KitchenSink".ReadGraphQLFile().Parse();
         var writer = new SDLPrinter();
-        var sw = new StringWriter();
+        using var sw = new StringWriter();
         await writer.PrintAsync(query, sw);
         sw.Flush();
         var txt = sw.ToString();
@@ -557,8 +557,19 @@ type Query {
 @"directive @skip(""Skipped when true."" if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
 @"directive @skip(
   ""Skipped when true.""
-  if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+  if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT", true, true, false, false, 2, SDLPrinterArgumentsMode.None)]
     [InlineData(43,
+@"directive @skip(if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  if: Boolean!,
+  x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT", true, true, false, false, 2, SDLPrinterArgumentsMode.ForceNewLine)]
+    [InlineData(44,
+@"directive @skip(""Skipped when true."" if: Boolean!, x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT",
+@"directive @skip(
+  ""Skipped when true.""
+  if: Boolean!,
+  x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
+    [InlineData(45,
 """directive @skip("Skipped when true." if: Boolean!, "Second argument" x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT""", """
 directive @skip(
   "Skipped when true."
@@ -566,7 +577,7 @@ directive @skip(
   "Second argument"
   x: Some) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 """)]
-    [InlineData(44,
+    [InlineData(46,
 "schema { query: Q mutation: M subscription: S }",
 """
 schema {
@@ -575,7 +586,7 @@ schema {
      subscription: S
 }
 """, true, true, false, false, 5)]
-    [InlineData(45,
+    [InlineData(47,
 """
 "A component contains the parametric details of a PCB part."
 input DesComponentFilterInput {
@@ -606,7 +617,7 @@ input DesComponentFilterInput {
   revision: DesRevisionFilterInput
 }
 """)]
-    [InlineData(46,
+    [InlineData(48,
 """
 # comment
 directive @my on FIELD
@@ -615,7 +626,7 @@ directive @my on FIELD
 # comment
 directive @my on FIELD
 """)]
-    [InlineData(47,
+    [InlineData(49,
 """
 query q
 # comment
@@ -628,7 +639,7 @@ query q
   x
 }
 """)]
-    [InlineData(48,
+    [InlineData(50,
 """
 query q
 (
@@ -642,7 +653,7 @@ $a: Int) {
   x
 }
 """)]
-    [InlineData(49,
+    [InlineData(51,
 """
 "description"
 schema {
@@ -655,7 +666,7 @@ schema {
   query: Query
 }
 """)]
-    [InlineData(50,
+    [InlineData(52,
 """
 type Query {
 "Fetches an object given its ID."
@@ -691,7 +702,7 @@ type Query {
     id: ID!): DesWorkspace
 }
 """)]
-    [InlineData(51,
+    [InlineData(53,
 """
 type Query {
   user
@@ -710,42 +721,84 @@ type Query {
     # comment 2
     id: ID!, name: Name!): Node
 }
-""")]
-    [InlineData(52,
-"""
-directive @my
-  # comment 1
-  (
-    # comment 2
-    arg: Boolean!) on FIELD
-""",
-"""
-directive @my
-  # comment 1
-  (
-    # comment 2
-    arg: Boolean!) on FIELD
-""")]
-    [InlineData(53,
-"""
-query Q {
-  field1(arg1: 1) {
-    field2(arg2: 2) {
-      field3(arg3: 3)
-    }
-  }
-}
-""",
-"""
-query Q {
-  field1(arg1: 1) {
-    field2(arg2: 2) {
-      field3(arg3: 3)
-    }
-  }
-}
-""")]
+""", true, true, false, false, 2, SDLPrinterArgumentsMode.None)]
     [InlineData(54,
+"""
+type Query {
+  user
+  # comment 1
+  (
+    # comment 2
+    id: ID!
+    name: Name!): Node
+}
+""",
+"""
+type Query {
+  user
+  # comment 1
+  (
+    # comment 2
+    id: ID!,
+    name: Name!): Node
+}
+""", true, true, false, false, 2, SDLPrinterArgumentsMode.ForceNewLine)]
+    [InlineData(55,
+"""
+type Query {
+  user
+  # comment 1
+  (
+    # comment 2
+    id: ID!
+    name: Name!): Node
+}
+""",
+"""
+type Query {
+  user
+  # comment 1
+  (
+    # comment 2
+    id: ID!,
+    name: Name!): Node
+}
+""")]
+    [InlineData(56,
+"""
+directive @my
+  # comment 1
+  (
+    # comment 2
+    arg: Boolean!) on FIELD
+""",
+"""
+directive @my
+  # comment 1
+  (
+    # comment 2
+    arg: Boolean!) on FIELD
+""")]
+    [InlineData(57,
+"""
+query Q {
+  field1(arg1: 1) {
+    field2(arg2: 2) {
+      field3(arg3: 3)
+    }
+  }
+}
+""",
+"""
+query Q {
+  field1(arg1: 1) {
+    field2(arg2: 2) {
+      field3(arg3: 3)
+    }
+  }
+}
+""")]
+    [InlineData(58,
 """
 query Q {
   field1
@@ -791,7 +844,7 @@ query Q {
   }
 }
 """)]
-    [InlineData(55,
+    [InlineData(59,
 """
 fragment f
 #comment
@@ -804,7 +857,7 @@ on Person {
   name
 }
 """)]
-    [InlineData(56,
+    [InlineData(60,
 """
 type Person
 #comment
@@ -817,7 +870,7 @@ implements Entity {
   name: String
 }
 """)]
-    [InlineData(57,
+    [InlineData(61,
 """
 type Person
 #comment
@@ -834,7 +887,7 @@ Entity2 {
   name: String
 }
 """)]
-    [InlineData(58,
+    [InlineData(62,
 """"
 "description"
 type Person {
@@ -846,6 +899,28 @@ type Person {
   name: String
 }
 """, false, false)]
+    [InlineData(63, // https://github.com/graphql-dotnet/parser/issues/330
+""""
+type DesPcb {
+  designItems("An optional array of designators to search." designators: [String!] "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DesDesignItemFilterInput): DesDesignItemConnection
+}
+"""",
+"""
+type DesPcb {
+  designItems(
+    "An optional array of designators to search."
+    designators: [String!],
+    "Returns the first _n_ elements from the list."
+    first: Int,
+    "Returns the elements in the list that come after the specified cursor."
+    after: String,
+    "Returns the last _n_ elements from the list."
+    last: Int,
+    "Returns the elements in the list that come before the specified cursor."
+    before: String,
+    where: DesDesignItemFilterInput): DesDesignItemConnection
+}
+""")]
     public async Task SDLPrinter_Should_Print_Document(
         int number,
         string text,
@@ -854,7 +929,8 @@ type Person {
         bool writeDescriptions = true,
         bool eachDirectiveLocationOnNewLine = false,
         bool eachUnionMemberOnNewLine = false,
-        int indentSize = 2)
+        int indentSize = 2,
+        SDLPrinterArgumentsMode mode = SDLPrinterArgumentsMode.PreferNewLine)
     {
         var printer = new SDLPrinter(new SDLPrinterOptions
         {
@@ -863,11 +939,12 @@ type Person {
             EachDirectiveLocationOnNewLine = eachDirectiveLocationOnNewLine,
             EachUnionMemberOnNewLine = eachUnionMemberOnNewLine,
             IndentSize = indentSize,
+            ArgumentsPrintMode = mode,
         });
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var actual = writer.ToString();
         actual.ShouldBe(expected + Environment.NewLine, $"Test {number} failed");
 
@@ -907,6 +984,7 @@ type Person {
     [InlineData(30, "Test \\ escaping", "Test \\\\ escaping", false)]
     [InlineData(31, "t\"est\n  line2", "\nt\"est\nline2\n", true)] // BlockString with double quote inside
     [InlineData(32, "t\\\"\"\"est\n  line2", "\nt\\\"\"\"est\nline2\n", true)] // BlockString with triple double quote inside
+    [InlineData(32, "t\\\"\"\"\"est\n  line2", "\nt\\\"\"\"\"est\nline2\n", true)] // BlockString with quad double quote inside
     public async Task SDLPrinter_Should_Print_BlockStrings(int number, string input, string expected, bool isBlockString)
     {
         number.ShouldBeGreaterThan(0);
@@ -919,16 +997,16 @@ type Person {
             ? "\"\"\"" + expected + "\"\"\""
             : "\"" + expected + "\"";
 
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
 
         var document = (input + " scalar a").Parse();
 
         var printer = new SDLPrinter();
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var renderedOriginal = writer.ToString();
 
-        var lines = renderedOriginal.Split(Environment.NewLine);
-        var renderedDescription = string.Join(Environment.NewLine, lines.SkipLast(2));
+        var lines = renderedOriginal.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        var renderedDescription = string.Join(Environment.NewLine, lines.Take(lines.Length - 2));
         renderedDescription = renderedDescription.Replace("\r\n", "\n");
         renderedDescription.ShouldBe(expected);
 
@@ -953,12 +1031,12 @@ type Person {
             }
 
             """;
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
 
         var document = query.Parse();
 
         var printer = new SDLPrinter();
-        await printer.PrintAsync(document, writer).ConfigureAwait(false);
+        await printer.PrintAsync(document, writer);
         var rendered = writer.ToString();
         rendered.ShouldBe(expected);
 
@@ -986,11 +1064,22 @@ type Person {
     }
 
     [Theory]
+    [InlineData("{ field1 }", "{\n  field1\n}")]
+    [InlineData("query { field1 }", "{\n  field1\n}")]
+    [InlineData("query q1 { field1 }", "query q1 {\n  field1\n}")]
+    [InlineData("mutation { field1 }", "mutation {\n  field1\n}")]
+    [InlineData("mutation m1 { field1 }", "mutation m1 {\n  field1\n}")]
+    public void OperationPrints(string input, string expected)
+    {
+        new SDLPrinter().Print(Parser.Parse(input)).ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
+    }
+
+    [Theory]
     [InlineData("query a { name }")]
     [InlineData("directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT")]
     public async Task SDLPrinter_Should_Throw_On_Unknown_Values(string text)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
 
         await new DoBadThingsVisitor().VisitAsync(document, new Context());

@@ -283,9 +283,9 @@ field: Int }
 ")]
     public async Task StructurePrinter_Should_Print_Tree(string text, string expected)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
-        await _structPrinter1.PrintAsync(document, writer).ConfigureAwait(false);
+        await _structPrinter1.PrintAsync(document, writer);
         var actual = writer.ToString();
         actual.ShouldBe(expected);
     }
@@ -302,9 +302,9 @@ field: Int }
 ")]
     public async Task StructurePrinter_Should_Print_Tree_Without_Names(string text, string expected)
     {
-        var writer = new StringWriter();
+        using var writer = new StringWriter();
         var document = text.Parse();
-        await _structPrinter2.PrintAsync(document, writer).ConfigureAwait(false);
+        await _structPrinter2.PrintAsync(document, writer);
         var actual = writer.ToString();
         actual.ShouldBe(expected);
     }
@@ -547,10 +547,10 @@ scalar S", @"Document (10,30)
             if (option == IgnoreOptions.Comments && !ignoreComments)
                 continue;
 
-            var writer = new StringWriter();
+            using var writer = new StringWriter();
 
             var document = text.Parse(new ParserOptions { Ignore = option });
-            await _structPrinter3.PrintAsync(document, writer).ConfigureAwait(false);
+            await _structPrinter3.PrintAsync(document, writer);
             var actual = writer.ToString();
             actual.ShouldBe(expected);
         }
@@ -587,7 +587,7 @@ Name
 
             var document = text.Parse(new ParserOptions { Ignore = option });
             var printer = new StructurePrinter(new StructurePrinterOptions { PrintNames = false, IndentSize = indentSize });
-            await printer.PrintAsync(document, writer).ConfigureAwait(false);
+            await printer.PrintAsync(document, writer);
             var actual = writer.ToString();
             actual.ShouldBe(expected);
         }
