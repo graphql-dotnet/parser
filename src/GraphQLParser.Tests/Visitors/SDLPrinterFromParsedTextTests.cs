@@ -1064,11 +1064,11 @@ type DesPcb {
     }
 
     [Theory]
-    [InlineData("{ field1 }", "{\n  field1\n}")]
-    [InlineData("query { field1 }", "{\n  field1\n}")]
-    [InlineData("query q1 { field1 }", "query q1 {\n  field1\n}")]
-    [InlineData("mutation { field1 }", "mutation {\n  field1\n}")]
-    [InlineData("mutation m1 { field1 }", "mutation m1 {\n  field1\n}")]
+    [InlineData("{ field1 }", "{\n  field1\n}\n")]
+    [InlineData("query { field1 }", "{\n  field1\n}\n")]
+    [InlineData("query q1 { field1 }", "query q1 {\n  field1\n}\n")]
+    [InlineData("mutation { field1 }", "mutation {\n  field1\n}\n")]
+    [InlineData("mutation m1 { field1 }", "mutation m1 {\n  field1\n}\n")]
     public void OperationPrints(string input, string expected)
     {
         new SDLPrinter().Print(Parser.Parse(input)).ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
