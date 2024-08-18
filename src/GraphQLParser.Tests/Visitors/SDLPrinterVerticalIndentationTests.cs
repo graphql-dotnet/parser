@@ -19,7 +19,8 @@ schema {
   query: Q
 }
 
-extend schema @bad")]
+extend schema @bad
+")]
     [InlineData(2,
 @"scalar A1
 scalar B
@@ -28,7 +29,8 @@ scalar A2
 ",
 @"scalar A1
 
-scalar A2")]
+scalar A2
+")]
     [InlineData(3,
 @"scalar A1
 scalar B
@@ -38,7 +40,8 @@ scalar D
 ",
 @"scalar A1
 
-scalar A2")]
+scalar A2
+")]
     [InlineData(4,
 @"query A1 { x }
 query B { y }
@@ -50,7 +53,8 @@ query A2 { z }
 
 query A2 {
   z
-}")]
+}
+")]
     [InlineData(5,
 @"directive @A1 on FIELD
 directive @B on FIELD
@@ -58,7 +62,8 @@ directive @A2 on FIELD
 ",
 @"directive @A1 on FIELD
 
-directive @A2 on FIELD")]
+directive @A2 on FIELD
+")]
     [InlineData(6,
 @"enum A1 { X Y }
 enum B { X Y }
@@ -74,7 +79,8 @@ enum D { X Y }
 enum A2 {
   X
   Y
-}")]
+}
+")]
     [InlineData(7,
 @"extend enum A1 { X Y }
 extend enum B { X Y }
@@ -90,7 +96,8 @@ extend enum D { X Y }
 extend enum A2 {
   X
   Y
-}")]
+}
+")]
     [InlineData(8,
 @"input A1 @vip
 input B
@@ -102,7 +109,8 @@ input D
 
 input A2 {
   a: Int
-}")]
+}
+")]
     [InlineData(9,
 @"type A1 @vip
 type B
@@ -114,7 +122,8 @@ type D
 
 type A2 {
   a: Int
-}")]
+}
+")]
     [InlineData(10,
 @"interface A1 @vip
 interface B
@@ -126,7 +135,8 @@ interface D
 
 interface A2 {
   a: Int
-}")]
+}
+")]
     [InlineData(11,
 @"extend interface A1 @vip
 extend interface B { a: Int }
@@ -138,7 +148,8 @@ extend interface D { a: Int }
 
 extend interface A2 {
   a: Int
-}")]
+}
+")]
     [InlineData(12,
 @"union A1 @vip
 union B = X | Y
@@ -148,7 +159,8 @@ union D = X | Y
 ",
 @"union A1 @vip
 
-union A2 = X | Y")]
+union A2 = X | Y
+")]
     [InlineData(13,
 @"extend input A1 { a: Int }
 extend input B { a: Int }
@@ -162,7 +174,8 @@ extend input D { a: Int }
 
 extend input A2 {
   a: Int
-}")]
+}
+")]
     [InlineData(14,
 @"extend type A1 { a: Int }
 extend type B { a: Int }
@@ -176,7 +189,8 @@ extend type D { a: Int }
 
 extend type A2 {
   a: Int
-}")]
+}
+")]
     public async Task Printer_Should_Print_Pretty_If_Definitions_Skipped(
         int number,
         string text,
@@ -188,7 +202,7 @@ extend type A2 {
 
         await printer.PrintAsync(document, writer);
         var actual = writer.ToString();
-        actual.ShouldBe(expected + Environment.NewLine, $"Test {number} failed");
+        actual.ShouldBe(expected, $"Test {number} failed");
 
         actual.Parse(); // should be parsed back
     }
