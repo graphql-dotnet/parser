@@ -643,6 +643,7 @@ namespace GraphQLParser
             where TNode :  class, GraphQLParser.AST.INamedNode { }
         public static GraphQLParser.AST.GraphQLFragmentDefinition? FindFragmentDefinition(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM name) { }
         public static int FragmentsCount(this GraphQLParser.AST.GraphQLDocument document) { }
+        public static GraphQLParser.AST.DirectiveLocation GetDirectiveLocation(this GraphQLParser.AST.ASTNode node) { }
         public static int MaxNestedDepth(this GraphQLParser.AST.ASTNode node) { }
         public static GraphQLParser.AST.GraphQLOperationDefinition? OperationWithName(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM operationName) { }
         public static int OperationsCount(this GraphQLParser.AST.GraphQLDocument document) { }
