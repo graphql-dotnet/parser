@@ -132,4 +132,36 @@ public static class ASTNodeExtensions
 
         return null;
     }
+
+    /// <summary>
+    /// Returns the directive location for the specified AST node.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"/>
+    public static DirectiveLocation GetDirectiveLocation(this ASTNode node) => node switch
+    {
+        // type definitions
+        GraphQLSchemaDefinition => DirectiveLocation.Schema,
+        GraphQLScalarTypeDefinition => DirectiveLocation.Scalar,
+        GraphQLObjectTypeDefinition => DirectiveLocation.Object,
+        GraphQLFieldDefinition => DirectiveLocation.FieldDefinition,
+        GraphQLArgumentDefinition => DirectiveLocation.ArgumentDefinition,
+        GraphQLInterfaceTypeDefinition => DirectiveLocation.Interface,
+        GraphQLUnionTypeDefinition => DirectiveLocation.Union,
+        GraphQLEnumTypeDefinition => DirectiveLocation.Enum,
+        GraphQLEnumValueDefinition => DirectiveLocation.EnumValue,
+        GraphQLInputObjectTypeDefinition => DirectiveLocation.InputObject,
+        GraphQLInputFieldDefinition => DirectiveLocation.InputFieldDefinition,
+
+        // executable definitions
+        GraphQLOperationDefinition opDef when opDef.Operation == OperationType.Query => DirectiveLocation.Query,
+        GraphQLOperationDefinition opDef when opDef.Operation == OperationType.Mutation => DirectiveLocation.Mutation,
+        GraphQLOperationDefinition opDef when opDef.Operation == OperationType.Subscription => DirectiveLocation.Subscription,
+        GraphQLField => DirectiveLocation.Field,
+        GraphQLFragmentDefinition => DirectiveLocation.FragmentDefinition,
+        GraphQLFragmentSpread => DirectiveLocation.FragmentSpread,
+        GraphQLInlineFragment => DirectiveLocation.InlineFragment,
+        GraphQLVariableDefinition => DirectiveLocation.VariableDefinition,
+
+        _ => throw new ArgumentOutOfRangeException(nameof(node), "The supplied node cannot")
+    };
 }
