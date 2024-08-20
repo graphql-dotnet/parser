@@ -97,7 +97,7 @@ internal ref partial struct ParserContext
         var argsDef = NodeHelper.CreateGraphQLArgumentsDefinition(_ignoreOptions);
 
         argsDef.Comments = GetComments();
-        argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDefinition(), TokenKind.PAREN_R);
+        argsDef.Items = OneOrMore(TokenKind.PAREN_L, (ref ParserContext context) => context.ParseInputValueDefinition(true), TokenKind.PAREN_R);
         argsDef.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -114,7 +114,7 @@ internal ref partial struct ParserContext
         var inputFieldsDef = NodeHelper.CreateGraphQLInputFieldsDefinition(_ignoreOptions);
 
         inputFieldsDef.Comments = GetComments();
-        inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDefinition(), TokenKind.BRACE_R);
+        inputFieldsDef.Items = OneOrMore(TokenKind.BRACE_L, (ref ParserContext context) => context.ParseInputValueDefinition(false), TokenKind.BRACE_R);
         inputFieldsDef.Location = GetLocation(start);
 
         DecreaseDepth();
@@ -735,13 +735,13 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#InputValueDefinition
-    public GraphQLInputValueDefinition ParseInputValueDefinition()
+    public GraphQLInputValueDefinition ParseInputValueDefinition(bool? argument)
     {
         IncreaseDepth();
 
         int start = _currentToken.Start;
 
-        var def = NodeHelper.CreateGraphQLInputValueDefinition(_ignoreOptions);
+        var def = NodeHelper.CreateGraphQLInputValueDefinition(_ignoreOptions, argument);
 
         def.Description = Peek(TokenKind.STRING) ? ParseDescription() : null;
         def.Comments = GetComments();

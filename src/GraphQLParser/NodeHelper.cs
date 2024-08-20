@@ -483,15 +483,32 @@ internal static class NodeHelper
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static GraphQLInputValueDefinition CreateGraphQLInputValueDefinition(IgnoreOptions options)
+    public static GraphQLInputValueDefinition CreateGraphQLInputValueDefinition(IgnoreOptions options, bool? argument)
     {
-        return options switch
-        {
-            IgnoreOptions.All => new GraphQLInputValueDefinition(),
-            IgnoreOptions.Comments => new GraphQLInputValueDefinitionWithLocation(),
-            IgnoreOptions.Locations => new GraphQLInputValueDefinitionWithComment(),
-            _ => new GraphQLInputValueDefinitionFull(),
-        };
+        if (argument == true)
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLArgumentDefinition(),
+                IgnoreOptions.Comments => new GraphQLArgumentDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLArgumentDefinitionWithComment(),
+                _ => new GraphQLArgumentDefinitionFull(),
+            };
+        else if (argument == false)
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLInputFieldDefinition(),
+                IgnoreOptions.Comments => new GraphQLInputFieldDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLInputFieldDefinitionWithComment(),
+                _ => new GraphQLInputFieldDefinitionFull(),
+            };
+        else
+            return options switch
+            {
+                IgnoreOptions.All => new GraphQLInputValueDefinition(),
+                IgnoreOptions.Comments => new GraphQLInputValueDefinitionWithLocation(),
+                IgnoreOptions.Locations => new GraphQLInputValueDefinitionWithComment(),
+                _ => new GraphQLInputValueDefinitionFull(),
+            };
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

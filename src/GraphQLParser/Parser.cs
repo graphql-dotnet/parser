@@ -80,7 +80,11 @@ public static class Parser
         else if (typeof(T) == typeof(GraphQLInputObjectTypeDefinition))
             result = (T)(object)context.ParseInputObjectTypeDefinition();
         else if (typeof(T) == typeof(GraphQLInputValueDefinition))
-            result = (T)(object)context.ParseInputValueDefinition();
+            result = (T)(object)context.ParseInputValueDefinition(null);
+        else if (typeof(T) == typeof(GraphQLInputFieldDefinition))
+            result = (T)(object)context.ParseInputValueDefinition(false);
+        else if (typeof(T) == typeof(GraphQLArgumentDefinition))
+            result = (T)(object)context.ParseInputValueDefinition(true);
         else if (typeof(T) == typeof(GraphQLInterfaceTypeDefinition))
             result = (T)(object)context.ParseInterfaceTypeDefinition();
         else if (typeof(T) == typeof(GraphQLObjectTypeDefinition))

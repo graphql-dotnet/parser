@@ -130,6 +130,10 @@ namespace GraphQLParser.AST
         public GraphQLParser.AST.GraphQLName Name { get; set; }
         public GraphQLParser.AST.GraphQLValue Value { get; set; }
     }
+    public class GraphQLArgumentDefinition : GraphQLParser.AST.GraphQLInputValueDefinition
+    {
+        public GraphQLArgumentDefinition(GraphQLParser.AST.GraphQLName name, GraphQLParser.AST.GraphQLType type) { }
+    }
     public class GraphQLArguments : GraphQLParser.AST.ASTListNode<GraphQLParser.AST.GraphQLArgument>
     {
         public GraphQLArguments(System.Collections.Generic.List<GraphQLParser.AST.GraphQLArgument> items) { }
@@ -304,6 +308,10 @@ namespace GraphQLParser.AST
         public GraphQLParser.AST.GraphQLSelectionSet SelectionSet { get; set; }
         public GraphQLParser.AST.GraphQLTypeCondition? TypeCondition { get; set; }
     }
+    public class GraphQLInputFieldDefinition : GraphQLParser.AST.GraphQLInputValueDefinition
+    {
+        public GraphQLInputFieldDefinition(GraphQLParser.AST.GraphQLName name, GraphQLParser.AST.GraphQLType type) { }
+    }
     public class GraphQLInputFieldsDefinition : GraphQLParser.AST.ASTListNode<GraphQLParser.AST.GraphQLInputValueDefinition>
     {
         public GraphQLInputFieldsDefinition(System.Collections.Generic.List<GraphQLParser.AST.GraphQLInputValueDefinition> items) { }
@@ -325,6 +333,8 @@ namespace GraphQLParser.AST
     }
     public class GraphQLInputValueDefinition : GraphQLParser.AST.GraphQLTypeDefinition, GraphQLParser.AST.IHasDefaultValueNode, GraphQLParser.AST.IHasDirectivesNode
     {
+        [System.Obsolete("Please use the GraphQLArgumentDefinition or GraphQLInputFieldDefinition construct" +
+            "or.")]
         public GraphQLInputValueDefinition(GraphQLParser.AST.GraphQLName name, GraphQLParser.AST.GraphQLType type) { }
         public GraphQLParser.AST.GraphQLValue? DefaultValue { get; set; }
         public GraphQLParser.AST.GraphQLDirectives? Directives { get; set; }
@@ -633,6 +643,7 @@ namespace GraphQLParser
             where TNode :  class, GraphQLParser.AST.INamedNode { }
         public static GraphQLParser.AST.GraphQLFragmentDefinition? FindFragmentDefinition(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM name) { }
         public static int FragmentsCount(this GraphQLParser.AST.GraphQLDocument document) { }
+        public static GraphQLParser.AST.DirectiveLocation GetDirectiveLocation(this GraphQLParser.AST.ASTNode node) { }
         public static int MaxNestedDepth(this GraphQLParser.AST.ASTNode node) { }
         public static GraphQLParser.AST.GraphQLOperationDefinition? OperationWithName(this GraphQLParser.AST.GraphQLDocument document, GraphQLParser.ROM operationName) { }
         public static int OperationsCount(this GraphQLParser.AST.GraphQLDocument document) { }
