@@ -162,6 +162,6 @@ public static class ASTNodeExtensions
         GraphQLInlineFragment => DirectiveLocation.InlineFragment,
         GraphQLVariableDefinition => DirectiveLocation.VariableDefinition,
 
-        _ => throw new ArgumentOutOfRangeException(nameof(node), "The supplied node cannot")
+        _ => throw new ArgumentOutOfRangeException(nameof(node), "Directives cannot be supplied for the specified node.")
     };
 }
