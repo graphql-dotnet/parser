@@ -64,9 +64,7 @@ public sealed class SDLSorter : ASTVisitor<SDLSorterOptions>
             {
                 if (comparer.Compare(list[j], list[j + 1]) > 0)
                 {
-                    var temp = list[j];
-                    list[j] = list[j + 1];
-                    list[j + 1] = temp;
+                    (list[j], list[j + 1]) = (list[j + 1], list[j]);
                 }
             }
         }
