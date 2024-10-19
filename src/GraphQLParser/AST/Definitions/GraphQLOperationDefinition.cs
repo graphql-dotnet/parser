@@ -46,40 +46,17 @@ public class GraphQLOperationDefinition : GraphQLExecutableDefinition, INamedNod
 
 internal sealed class GraphQLOperationDefinitionWithLocation : GraphQLOperationDefinition
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLOperationDefinitionWithComment : GraphQLOperationDefinition
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLOperationDefinitionFull : GraphQLOperationDefinition
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }

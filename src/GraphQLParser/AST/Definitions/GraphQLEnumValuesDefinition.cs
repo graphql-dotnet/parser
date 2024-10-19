@@ -23,40 +23,17 @@ public class GraphQLEnumValuesDefinition : ASTListNode<GraphQLEnumValueDefinitio
 
 internal sealed class GraphQLEnumValuesDefinitionWithLocation : GraphQLEnumValuesDefinition
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLEnumValuesDefinitionWithComment : GraphQLEnumValuesDefinition
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLEnumValuesDefinitionFull : GraphQLEnumValuesDefinition
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }

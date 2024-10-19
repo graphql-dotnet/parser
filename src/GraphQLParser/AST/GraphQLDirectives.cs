@@ -23,11 +23,5 @@ public class GraphQLDirectives : ASTListNode<GraphQLDirective>
 
 internal sealed class GraphQLDirectivesWithLocation : GraphQLDirectives
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
