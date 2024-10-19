@@ -45,6 +45,7 @@ public sealed class SDLSorter : ASTVisitor<SDLSorterOptions>
     /// otherwise uses LINQ to sort, which is a much faster algorithm when
     /// there are a greater quantity of items, at the cost of higher memory requirements.
     /// </summary>
+#pragma warning disable CA1859 // Change type of parameter 'comparer' from 'System.Collections.Generic.IComparer<T>' to 'GraphQLParser.Visitors.SDLSorterOptions' for improved performance
     private static void StableSort<T>(List<T> list, IComparer<T> comparer)
     {
         var n = list.Count;
@@ -70,4 +71,5 @@ public sealed class SDLSorter : ASTVisitor<SDLSorterOptions>
             }
         }
     }
+#pragma warning restore CA1859
 }
