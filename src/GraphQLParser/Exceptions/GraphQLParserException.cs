@@ -8,10 +8,12 @@ namespace GraphQLParser.Exceptions;
 /// </summary>
 public class GraphQLParserException : Exception
 {
-    /// <summary>
-    /// Error description.
-    /// </summary>
-    public string Description { get; private set; }
+    private static string[] NewlineSeparator = new string[] { "\n" };
+
+/// <summary>
+/// Error description.
+/// </summary>
+public string Description { get; private set; }
 
     /// <summary>
     /// Location of the symbol that caused the error.
@@ -49,7 +51,7 @@ public class GraphQLParserException : Exception
         int padLen = nextLineNum.Length;
         string[] lines = source
             .ToString()
-            .Split(new string[] { "\n" }, StringSplitOptions.None)
+            .Split(NewlineSeparator, StringSplitOptions.None)
             .Select(e => ReplaceWithUnicodeRepresentation(e))
             .ToArray();
 
