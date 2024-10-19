@@ -8,12 +8,12 @@ namespace GraphQLParser.Exceptions;
 /// </summary>
 public class GraphQLParserException : Exception
 {
-    private static readonly string[] NewlineSeparator = new string[] { "\n" };
+    private static readonly char[] NewlineSeparator = ['\n'];
 
-/// <summary>
-/// Error description.
-/// </summary>
-public string Description { get; private set; }
+    /// <summary>
+    /// Error description.
+    /// </summary>
+    public string Description { get; private set; }
 
     /// <summary>
     /// Location of the symbol that caused the error.
