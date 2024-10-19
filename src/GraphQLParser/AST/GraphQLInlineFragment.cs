@@ -38,40 +38,17 @@ public class GraphQLInlineFragment : ASTNode, ISelectionNode, IHasSelectionSetNo
 
 internal sealed class GraphQLInlineFragmentWithLocation : GraphQLInlineFragment
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLInlineFragmentWithComment : GraphQLInlineFragment
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLInlineFragmentFull : GraphQLInlineFragment
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }

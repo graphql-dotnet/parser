@@ -42,80 +42,34 @@ public class GraphQLFalseBooleanValue : GraphQLBooleanValue
 
 internal sealed class GraphQLTrueBooleanValueWithLocation : GraphQLTrueBooleanValue
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLTrueBooleanValueWithComment : GraphQLTrueBooleanValue
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLTrueBooleanValueFull : GraphQLTrueBooleanValue
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLFalseBooleanValueWithLocation : GraphQLFalseBooleanValue
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLFalseBooleanValueWithComment : GraphQLFalseBooleanValue
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLFalseBooleanValueFull : GraphQLFalseBooleanValue
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
