@@ -121,13 +121,7 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
 
 internal sealed class GraphQLNameWithLocation : GraphQLName
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 
     /// <inheritdoc cref="GraphQLName(ROM)"/>
     public GraphQLNameWithLocation(ROM value)
@@ -138,13 +132,7 @@ internal sealed class GraphQLNameWithLocation : GraphQLName
 
 internal sealed class GraphQLNameWithComment : GraphQLName
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 
     /// <inheritdoc cref="GraphQLName(ROM)"/>
     public GraphQLNameWithComment(ROM value)
@@ -155,20 +143,9 @@ internal sealed class GraphQLNameWithComment : GraphQLName
 
 internal sealed class GraphQLNameFull : GraphQLName
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 
     /// <inheritdoc cref="GraphQLName(ROM)"/>
     public GraphQLNameFull(ROM value)

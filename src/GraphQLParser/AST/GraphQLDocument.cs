@@ -39,11 +39,5 @@ public class GraphQLDocument : ASTNode
 
 internal sealed class GraphQLDocumentWithLocation : GraphQLDocument
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }

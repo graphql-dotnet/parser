@@ -68,13 +68,7 @@ public class GraphQLFloatValue : GraphQLValue, IHasValueNode
 
 internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 
     /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
     public GraphQLFloatValueWithLocation(ROM value)
@@ -85,13 +79,7 @@ internal sealed class GraphQLFloatValueWithLocation : GraphQLFloatValue
 
 internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 
     /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
     public GraphQLFloatValueWithComment(ROM value)
@@ -102,20 +90,9 @@ internal sealed class GraphQLFloatValueWithComment : GraphQLFloatValue
 
 internal sealed class GraphQLFloatValueFull : GraphQLFloatValue
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 
     /// <inheritdoc cref="GraphQLFloatValue(ROM)"/>
     public GraphQLFloatValueFull(ROM value)

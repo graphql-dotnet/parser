@@ -25,15 +25,9 @@ public class GraphQLComment : ASTNode, IHasValueNode
     public ROM Value { get; internal set; }
 }
 
-internal class GraphQLCommentWithLocation : GraphQLComment
+internal sealed class GraphQLCommentWithLocation : GraphQLComment
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 
     /// <inheritdoc cref="GraphQLComment(ROM)"/>
     public GraphQLCommentWithLocation(ROM value)

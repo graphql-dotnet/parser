@@ -819,7 +819,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ListValue
-    private GraphQLValue ParseListValue(bool isConstant)
+    private GraphQLListValue ParseListValue(bool isConstant)
     {
         IncreaseDepth();
 
@@ -939,7 +939,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#ObjectValue
-    private GraphQLValue ParseObjectValue(bool isConstant)
+    private GraphQLObjectValue ParseObjectValue(bool isConstant)
     {
         IncreaseDepth();
 
@@ -960,7 +960,7 @@ internal ref partial struct ParserContext
     }
 
     // http://spec.graphql.org/October2021/#NullValue
-    private GraphQLValue ParseNullValue()
+    private GraphQLNullValue ParseNullValue()
     {
         IncreaseDepth();
 

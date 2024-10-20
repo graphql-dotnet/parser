@@ -27,13 +27,7 @@ public class GraphQLDescription : ASTNode, IHasValueNode
 
 internal sealed class GraphQLDescriptionWithLocation : GraphQLDescription
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 
     /// <inheritdoc cref="GraphQLDescription(ROM)"/>
     public GraphQLDescriptionWithLocation(ROM value)

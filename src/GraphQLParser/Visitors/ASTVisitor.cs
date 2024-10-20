@@ -76,9 +76,9 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// <summary>
     /// Visits <see cref="GraphQLName"/> node.
     /// </summary>
-    protected virtual async ValueTask VisitNameAsync(GraphQLName name, TContext context)
+    protected virtual ValueTask VisitNameAsync(GraphQLName name, TContext context)
     {
-        await VisitAsync(name.Comments, context).ConfigureAwait(false);
+        return VisitAsync(name.Comments, context);
     }
 
     /// <summary>
@@ -207,33 +207,33 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// <summary>
     /// Visits <see cref="GraphQLIntValue"/> node.
     /// </summary>
-    protected virtual async ValueTask VisitIntValueAsync(GraphQLIntValue intValue, TContext context)
+    protected virtual ValueTask VisitIntValueAsync(GraphQLIntValue intValue, TContext context)
     {
-        await VisitAsync(intValue.Comments, context).ConfigureAwait(false);
+        return VisitAsync(intValue.Comments, context);
     }
 
     /// <summary>
     /// Visits <see cref="GraphQLFloatValue"/> node.
     /// </summary>
-    protected virtual async ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, TContext context)
+    protected virtual ValueTask VisitFloatValueAsync(GraphQLFloatValue floatValue, TContext context)
     {
-        await VisitAsync(floatValue.Comments, context).ConfigureAwait(false);
+        return VisitAsync(floatValue.Comments, context);
     }
 
     /// <summary>
     /// Visits <see cref="GraphQLStringValue"/> node.
     /// </summary>
-    protected virtual async ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, TContext context)
+    protected virtual ValueTask VisitStringValueAsync(GraphQLStringValue stringValue, TContext context)
     {
-        await VisitAsync(stringValue.Comments, context).ConfigureAwait(false);
+        return VisitAsync(stringValue.Comments, context);
     }
 
     /// <summary>
     /// Visits <see cref="GraphQLBooleanValue"/> node.
     /// </summary>
-    protected virtual async ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, TContext context)
+    protected virtual ValueTask VisitBooleanValueAsync(GraphQLBooleanValue booleanValue, TContext context)
     {
-        await VisitAsync(booleanValue.Comments, context).ConfigureAwait(false);
+        return VisitAsync(booleanValue.Comments, context);
     }
 
     /// <summary>
@@ -322,9 +322,9 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// <summary>
     /// Visits <see cref="GraphQLNullValue"/> node.
     /// </summary>
-    protected virtual async ValueTask VisitNullValueAsync(GraphQLNullValue nullValue, TContext context)
+    protected virtual ValueTask VisitNullValueAsync(GraphQLNullValue nullValue, TContext context)
     {
-        await VisitAsync(nullValue.Comments, context).ConfigureAwait(false);
+        return VisitAsync(nullValue.Comments, context);
     }
 
     /// <summary>
@@ -508,9 +508,9 @@ public class ASTVisitor<TContext> where TContext : IASTVisitorContext
     /// <summary>
     /// Visits <see cref="GraphQLDirectiveLocations"/> node.
     /// </summary>
-    protected virtual async ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, TContext context)
+    protected virtual ValueTask VisitDirectiveLocationsAsync(GraphQLDirectiveLocations directiveLocations, TContext context)
     {
-        await VisitAsync(directiveLocations.Comments, context).ConfigureAwait(false);
+        return VisitAsync(directiveLocations.Comments, context);
     }
 
     /// <summary>

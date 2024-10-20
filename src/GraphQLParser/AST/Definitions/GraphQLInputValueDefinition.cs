@@ -43,42 +43,19 @@ public class GraphQLInputValueDefinition : GraphQLTypeDefinition, IHasDirectives
 
 internal sealed class GraphQLInputValueDefinitionWithLocation : GraphQLInputValueDefinition
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLInputValueDefinitionWithComment : GraphQLInputValueDefinition
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLInputValueDefinitionFull : GraphQLInputValueDefinition
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 /// <summary>
@@ -100,42 +77,19 @@ public class GraphQLArgumentDefinition : GraphQLInputValueDefinition
 
 internal sealed class GraphQLArgumentDefinitionWithLocation : GraphQLArgumentDefinition
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLArgumentDefinitionWithComment : GraphQLArgumentDefinition
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLArgumentDefinitionFull : GraphQLArgumentDefinition
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 /// <summary>
@@ -157,40 +111,17 @@ public class GraphQLInputFieldDefinition : GraphQLInputValueDefinition
 
 internal sealed class GraphQLInputFieldDefinitionWithLocation : GraphQLInputFieldDefinition
 {
-    private GraphQLLocation _location;
-
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
+    public override GraphQLLocation Location { get; set; }
 }
 
 internal sealed class GraphQLInputFieldDefinitionWithComment : GraphQLInputFieldDefinition
 {
-    private List<GraphQLComment>? _comments;
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }
 
 internal sealed class GraphQLInputFieldDefinitionFull : GraphQLInputFieldDefinition
 {
-    private GraphQLLocation _location;
-    private List<GraphQLComment>? _comments;
+    public override GraphQLLocation Location { get; set; }
 
-    public override GraphQLLocation Location
-    {
-        get => _location;
-        set => _location = value;
-    }
-
-    public override List<GraphQLComment>? Comments
-    {
-        get => _comments;
-        set => _comments = value;
-    }
+    public override List<GraphQLComment>? Comments { get; set; }
 }

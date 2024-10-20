@@ -9,7 +9,7 @@ namespace GraphQLParser;
 
 internal ref partial struct ParserContext
 {
-    private static string[] TopLevelKeywordOneOf { get; set; } =
+    private static string[] TopLevelKeywordOneOf { get; } =
     [
         "query",
         "mutation",
@@ -26,7 +26,7 @@ internal ref partial struct ParserContext
         "directive",
     ];
 
-    private static string[] TypeExtensionOneOf { get; set; } =
+    private static string[] TypeExtensionOneOf { get; } =
     [
         "schema",
         "scalar",
@@ -37,14 +37,14 @@ internal ref partial struct ParserContext
         "input",
     ];
 
-    private static string[] OperationTypeOneOf { get; set; } =
+    private static string[] OperationTypeOneOf { get; } =
     [
         "query",
         "mutation",
         "subscription",
     ];
 
-    private static string[] DirectiveLocationOneOf { get; set; } =
+    private static string[] DirectiveLocationOneOf { get; } =
     [
         // http://spec.graphql.org/October2021/#ExecutableDirectiveLocation
         "QUERY",

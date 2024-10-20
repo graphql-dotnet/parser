@@ -1217,7 +1217,7 @@ public class SDLPrinterOptions
 /// for indentation purposes. Any literal printed first after optional comment or description nodes in
 /// any VisitXXX method should be wrapped into <see cref="LiteralNode"/> for proper indentation.
 /// </summary>
-internal class LiteralNode : ASTNode
+internal sealed class LiteralNode : ASTNode
 {
     [ThreadStatic]
     internal static LiteralNode? _shared;
