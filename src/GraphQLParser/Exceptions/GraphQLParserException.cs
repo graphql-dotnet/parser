@@ -8,7 +8,9 @@ namespace GraphQLParser.Exceptions;
 /// </summary>
 public class GraphQLParserException : Exception
 {
-    private static readonly char[] NewlineSeparator = ['\n'];
+#if NETSTANDARD2_0
+    private static readonly char[] _newlineSeparator = ['\n'];
+#endif
 
     /// <summary>
     /// Error description.
@@ -51,7 +53,11 @@ public class GraphQLParserException : Exception
         int padLen = nextLineNum.Length;
         string[] lines = source
             .ToString()
-            .Split(NewlineSeparator, StringSplitOptions.None)
+#if NETSTANDARD2_0
+            .Split(_newlineSeparator, StringSplitOptions.None)
+#else
+            .Split('\n', StringSplitOptions.None)
+#endif
             .Select(e => ReplaceWithUnicodeRepresentation(e))
             .ToArray();
 
