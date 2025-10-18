@@ -28,7 +28,7 @@ Usage:
 var token = Lexer.Lex("\"str\"");
 ```
 
-Lex method always returns the first token it finds. In this case case the result would look like following.
+Lex method always returns the first token it finds. In this case the result would look like following.
 ![lexer example](assets/lexer-example.png)
 
 ## 2. Parser
