@@ -1066,6 +1066,7 @@ type DesPcb {
     [Theory]
     [InlineData("{ field1 }", "{\n  field1\n}\n")]
     [InlineData("query { field1 }", "{\n  field1\n}\n")]
+    [InlineData("query ($arg: String) { field1 }", "query ($arg: String){\n  field1\n}\n")]
     [InlineData("query q1 { field1 }", "query q1 {\n  field1\n}\n")]
     [InlineData("mutation { field1 }", "mutation {\n  field1\n}\n")]
     [InlineData("mutation m1 { field1 }", "mutation m1 {\n  field1\n}\n")]
