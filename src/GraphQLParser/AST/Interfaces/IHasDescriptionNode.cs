@@ -9,5 +9,5 @@ public interface IHasDescriptionNode
     /// <summary>
     /// Description of a GraphQL definition.
     /// </summary>
-    GraphQLDescription? Description { get; set; }
+    public GraphQLDescription? Description { get; set; }
 }

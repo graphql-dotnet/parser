@@ -8,5 +8,5 @@ public interface IHasFieldsDefinitionNode
     /// <summary>
     /// Nested <see cref="GraphQLFieldsDefinition"/> AST node with fields definition of this AST node.
     /// </summary>
-    GraphQLFieldsDefinition? Fields { get; set; }
+    public GraphQLFieldsDefinition? Fields { get; set; }
 }
