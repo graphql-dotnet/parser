@@ -8,5 +8,5 @@ public interface IHasArgumentsNode
     /// <summary>
     /// Arguments of the node represented as a nested node.
     /// </summary>
-    GraphQLArguments? Arguments { get; set; }
+    public GraphQLArguments? Arguments { get; set; }
 }

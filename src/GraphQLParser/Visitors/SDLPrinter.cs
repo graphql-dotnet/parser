@@ -262,7 +262,7 @@ public class SDLPrinter<TContext> : ASTVisitor<TContext>
     protected override async ValueTask VisitOperationDefinitionAsync(GraphQLOperationDefinition operationDefinition, TContext context)
     {
         await VisitAsync(operationDefinition.Comments, context).ConfigureAwait(false);
-        if (operationDefinition.Name is not null || operationDefinition.Operation != OperationType.Query)
+        if (operationDefinition.Name is not null || operationDefinition.Operation != OperationType.Query || operationDefinition.Variables is not null)
         {
             await VisitAsync(LiteralNode.Wrap(GetOperationType(operationDefinition.Operation)), context).ConfigureAwait(false);
             await context.WriteAsync(" ").ConfigureAwait(false);

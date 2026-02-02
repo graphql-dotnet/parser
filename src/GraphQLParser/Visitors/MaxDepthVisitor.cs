@@ -35,12 +35,12 @@ public interface IMaxDepthContext : IASTVisitorContext
     /// <summary>
     /// Maximum depth of AST found. Minimum depth is 1.
     /// </summary>
-    int MaxDepth { get; set; }
+    public int MaxDepth { get; set; }
 
     /// <summary>
     /// Stack of AST nodes to track the current visitor position.
     /// </summary>
-    Stack<ASTNode> Parents { get; }
+    public Stack<ASTNode> Parents { get; }
 }
 
 /// <summary>

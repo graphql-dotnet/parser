@@ -8,5 +8,5 @@ public interface IHasInterfacesNode
     /// <summary>
     /// Nested <see cref="GraphQLImplementsInterfaces"/> AST node with interfaces implemented by this AST node.
     /// </summary>
-    GraphQLImplementsInterfaces? Interfaces { get; set; }
+    public GraphQLImplementsInterfaces? Interfaces { get; set; }
 }

@@ -8,5 +8,5 @@ public interface IASTVisitorContext
     /// <summary>
     /// The token to monitor for cancellation requests.
     /// </summary>
-    CancellationToken CancellationToken { get; }
+    public CancellationToken CancellationToken { get; }
 }

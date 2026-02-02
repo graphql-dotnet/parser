@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           show-progress: false
       - name: Setup .NET SDK
@@ -41,7 +41,7 @@ jobs:
         working-directory: src
         run: dotnet pack --no-restore -c Release -p:VersionSuffix=$GITHUB_RUN_NUMBER -o out
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Nuget packages
           path: |
