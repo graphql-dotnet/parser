@@ -27,12 +27,12 @@ public interface ICountContext : IASTVisitorContext
     /// <summary>
     /// Number of found AST nodes.
     /// </summary>
-    int Count { get; set; }
+    public int Count { get; set; }
 
     /// <summary>
     /// Predicate used to increment <see cref="Count"/>.
     /// </summary>
-    Func<ASTNode, bool> ShouldInclude { get; }
+    public Func<ASTNode, bool> ShouldInclude { get; }
 }
 
 /// <summary>

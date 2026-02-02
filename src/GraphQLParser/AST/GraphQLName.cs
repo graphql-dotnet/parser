@@ -8,8 +8,6 @@ namespace GraphQLParser.AST;
 [DebuggerDisplay("GraphQLName: {Value}")]
 public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
 {
-    private string? _string;
-
     /// <inheritdoc/>
     public override ASTNodeKind Kind => ASTNodeKind.Name;
 
@@ -36,12 +34,14 @@ public class GraphQLName : ASTNode, IHasValueNode, IEquatable<GraphQLName>
     {
         get
         {
-            _string ??= Value.Length == 0
+            field ??= Value.Length == 0
                     ? string.Empty
                     : (string)Value;
 
-            return _string;
+            return field;
         }
+
+        private set;
     }
 
     /// <inheritdoc />
