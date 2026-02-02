@@ -8,5 +8,5 @@ public interface IHasDirectivesNode
     /// <summary>
     /// Directives of the AST node represented as a nested node.
     /// </summary>
-    GraphQLDirectives? Directives { get; set; }
+    public GraphQLDirectives? Directives { get; set; }
 }

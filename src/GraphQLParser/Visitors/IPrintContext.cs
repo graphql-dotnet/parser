@@ -10,17 +10,17 @@ public interface IPrintContext : IASTVisitorContext
     /// <summary>
     /// A text writer to print document.
     /// </summary>
-    TextWriter Writer { get; }
+    public TextWriter Writer { get; }
 
     /// <summary>
     /// Stack of AST nodes to track the current visitor position.
     /// </summary>
-    Stack<ASTNode> Parents { get; }
+    public Stack<ASTNode> Parents { get; }
 
     /// <summary>
     /// Tracks the current indent level.
     /// </summary>
-    int IndentLevel { get; set; }
+    public int IndentLevel { get; set; }
 
     /// <summary>
     /// Indicates whether last GraphQL AST definition node (executable definition,
@@ -29,22 +29,22 @@ public interface IPrintContext : IASTVisitorContext
     /// indents between definitions.
     /// </summary>
     [Obsolete("Use LastVisitedNode instead")]
-    bool LastDefinitionPrinted { get; set; }
+    public bool LastDefinitionPrinted { get; set; }
 
     /// <summary>
     /// Indicates whether last printed character was NewLine. This property is
     /// required to properly print indentations.
     /// </summary>
-    bool NewLinePrinted { get; set; }
+    public bool NewLinePrinted { get; set; }
 
     /// <summary>
     /// Indicates whether last printed characters were for horizontal indentation.
     /// It is assumed that the indentation is always printed after NewLine.
     /// </summary>
-    bool IndentPrinted { get; set; }
+    public bool IndentPrinted { get; set; }
 
     /// <summary>
     /// The last node visited by a printer.
     /// </summary>
-    ASTNode? LastVisitedNode { get; set; }
+    public ASTNode? LastVisitedNode { get; set; }
 }
