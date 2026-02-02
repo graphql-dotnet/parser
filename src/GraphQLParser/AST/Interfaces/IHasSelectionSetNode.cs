@@ -8,5 +8,5 @@ public interface IHasSelectionSetNode
     /// <summary>
     /// Nested <see cref="GraphQLSelectionSet"/> AST node with selection set of this AST node.
     /// </summary>
-    GraphQLSelectionSet? SelectionSet { get; set; }
+    public GraphQLSelectionSet? SelectionSet { get; set; }
 }
